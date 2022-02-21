@@ -1,4 +1,4 @@
-package be.vinci.pae.donnees.utilisateur;
+package be.vinci.pae.business.utilisateur;
 
 public interface Utilisateur extends UtilisateurDTO {
 
