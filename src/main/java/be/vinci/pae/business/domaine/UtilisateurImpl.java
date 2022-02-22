@@ -137,14 +137,14 @@ class UtilisateurImpl implements Utilisateur {
 
   @Override
   public String toString() {
-    return "Utilisateur{" +
-        "idUtilisateur=" + idUtilisateur +
-        ", pseudo='" + pseudo + '\'' +
-        ", nom='" + nom + '\'' +
-        ", prenom='" + prenom + '\'' +
-        ", mdp='" + mdp + '\'' +
-        ", gsm='" + gsm + '\'' +
-        ", estAdmin=" + estAdmin +
-        '}';
+    return "Utilisateur{"
+        + "idUtilisateur=" + idUtilisateur
+        + ", pseudo='" + pseudo + '\''
+        + ", nom='" + nom + '\''
+        + ", prenom='" + prenom + '\''
+        + ", mdp='" + mdp + '\''
+        + ", gsm='" + gsm + '\''
+        + ", estAdmin=" + estAdmin
+        + '}';
   }
 }
