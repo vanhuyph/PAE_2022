@@ -1,7 +1,5 @@
 package be.vinci.pae.main;
 
-import be.vinci.pae.donnees.DAO.UtilisateurDAO;
-
 /**
  * Main class.
  */
