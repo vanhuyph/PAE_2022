@@ -1,4 +1,4 @@
-package be.vinci.pae.donnees.DAO.utilisateur;
+package be.vinci.pae.donnees.dao.utilisateur;
 
 import be.vinci.pae.business.domaine.DomaineFactory;
 import be.vinci.pae.business.domaine.UtilisateurDTO;
@@ -19,7 +19,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     try {
       ResultSet rs = servicesDAL.getPs(
-              "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin FROM projet.utilisateurs u WHERE u.pseudo="
+              "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin"
+                  + "FROM projet.utilisateurs u WHERE u.pseudo="
                   + pseudo + ";")
           .executeQuery();
       utilisateurDTO.setIdUtilisateur(rs.getInt(1));

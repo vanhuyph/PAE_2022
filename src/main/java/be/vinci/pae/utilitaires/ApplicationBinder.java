@@ -2,8 +2,8 @@ package be.vinci.pae.utilitaires;
 
 import be.vinci.pae.business.domaine.DomaineFactory;
 import be.vinci.pae.business.domaine.DomaineFactoryImpl;
-import be.vinci.pae.donnees.DAO.utilisateur.UtilisateurDAO;
-import be.vinci.pae.donnees.DAO.utilisateur.UtilisateurDAOImpl;
+import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
+import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAOImpl;
 import be.vinci.pae.donnees.services.ServicesDAL;
 import be.vinci.pae.donnees.services.ServicesDALImpl;
 import jakarta.inject.Singleton;
