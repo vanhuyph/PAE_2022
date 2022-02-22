@@ -5,4 +5,6 @@ import be.vinci.pae.business.domaine.UtilisateurDTO;
 public interface UtilisateurDAO {
 
   UtilisateurDTO rechercheParPseudo(String pseudo);
+
+  UtilisateurDTO rechercheParId(int id);
 }
