@@ -2,7 +2,7 @@ package be.vinci.pae.donnees.services;
 
 import java.sql.PreparedStatement;
 
-public interface ServicesDAL {
+public interface ServiceDAL {
 
   PreparedStatement getPs(String query);
 }
