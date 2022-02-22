@@ -3,12 +3,15 @@ package be.vinci.pae.donnees.DAO.utilisateur;
 import be.vinci.pae.business.domaine.DomaineFactory;
 import be.vinci.pae.business.domaine.UtilisateurDTO;
 import be.vinci.pae.donnees.services.ServicesDAL;
+import jakarta.inject.Inject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UtilisateurDAOImpl implements UtilisateurDAO {
 
+  @Inject
   private DomaineFactory factory;
+  @Inject
   private ServicesDAL servicesDAL;
 
   @Override
