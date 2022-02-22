@@ -1,4 +1,4 @@
-package be.vinci.pae.utils;
+package be.vinci.pae.utilitaires;
 
 import be.vinci.pae.business.domaine.DomaineFactory;
 import be.vinci.pae.business.domaine.DomaineFactoryImpl;
