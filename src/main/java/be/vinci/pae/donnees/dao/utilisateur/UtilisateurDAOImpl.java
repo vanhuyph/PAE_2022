@@ -14,6 +14,12 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Inject
   private ServiceDAL serviceDAL;
 
+  /*
+   * recherche un utilisateur via un pseudo unique dans la base de donnée
+   * @param pseudo : le pseudo de l'utilisateur
+   * @exception : SQLException est lancée s'il ne trouve pas l'utilisateur
+   * @return : l'utilisateur, s'il trouve un utilisateur qui possède ce pseudo
+   */
   @Override
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
@@ -37,6 +43,12 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     return utilisateurDTO;
   }
 
+  /*
+   * recherche un utilisateur via un id dans la base de donnée
+   * @param id : l'id de l'utilisateur
+   * @exception : SQLException est lancée s'il ne trouve pas l'utilisateur
+   * @return : l'utilisateur, s'il trouve un utilisateur qui possède ce id
+   */
   @Override
   public UtilisateurDTO rechercheParId(int id) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();

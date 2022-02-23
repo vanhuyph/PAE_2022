@@ -22,7 +22,11 @@ public class ServiceDALImpl implements ServiceDAL {
     }
 
   }
-
+  /* precompile l'instruction SQL
+   * @param query : instruction SQL sous format String
+   * @exception : SQLException est lancée si l'instruction SQL n'a pas su se precompile
+   * @return : une instruction SQL precompile
+   */
   @Override
   public PreparedStatement getPs(String query) {
     PreparedStatement preparedStatement = null;
