@@ -1,10 +1,10 @@
 import HomePage from "../Pages/HomePage";
-import NewPage from "../Pages/NewPage";
+import PageConnexion from "../Pages/PageConnexion";
 
 // Configure your routes here
 const routes = {
   "/": HomePage,
-  "/new": NewPage,
+  "/connexion": PageConnexion,
 };
 
 /**
