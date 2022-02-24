@@ -20,6 +20,7 @@ import java.io.IOException;
 public class FiltreAutorisationRequete implements ContainerRequestFilter {
 
   //a refactor en fonction de UtilisateurUCC
+
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
   private final JWTVerifier jwtVerifier = JWT.require(this.jwtAlgorithm).withIssuer("auth0")
       .build();
@@ -40,7 +41,8 @@ public class FiltreAutorisationRequete implements ContainerRequestFilter {
             .entity("token malformé: " + e.getMessage()).type("text/plain").build());
       }
 
-      Object authenticatedUser = tokenDecode;//utilisateurUCC.getUtilisateur(tokenDecode.getClaim("user").asInt());
+      Object authenticatedUser = tokenDecode;
+      //utilisateurUCC.getUtilisateur(tokenDecode.getClaim("user").asInt());
       if (authenticatedUser == null) {
         requestContext.abortWith(Response.status(Status.FORBIDDEN)
             .entity("Vous ne pouvez pas accéder a cette ressource").build());
