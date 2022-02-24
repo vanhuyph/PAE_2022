@@ -19,36 +19,36 @@ import java.io.IOException;
 @Autorisation
 public class FiltreAutorisationRequete implements ContainerRequestFilter {
 
-    //a refactor en fonction de UtilisateurUCC
-    private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
-    private final JWTVerifier jwtVerifier = JWT.require(this.jwtAlgorithm).withIssuer("auth0")
-        .build();
-    private Object utilisateurUCC;
+  //a refactor en fonction de UtilisateurUCC
+  private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
+  private final JWTVerifier jwtVerifier = JWT.require(this.jwtAlgorithm).withIssuer("auth0")
+      .build();
+  private Object utilisateurUCC;
 
-    @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
-        String token = requestContext.getHeaderString("Authorization");
-        if (token == null) {
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
-                .entity("un token est nécessaire pour accéder à cette ressource").build());
-        } else {
-            DecodedJWT tokenDecode = null;
-            try {
-                tokenDecode = this.jwtVerifier.verify(token);
-            } catch (Exception e) {
-                throw new WebApplicationException(Response.status(Status.UNAUTHORIZED)
-                    .entity("token malformé: " + e.getMessage()).type("text/plain").build());
-            }
+  @Override
+  public void filter(ContainerRequestContext requestContext) throws IOException {
+    String token = requestContext.getHeaderString("Authorization");
+    if (token == null) {
+      requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+          .entity("un token est nécessaire pour accéder à cette ressource").build());
+    } else {
+      DecodedJWT tokenDecode = null;
+      try {
+        tokenDecode = this.jwtVerifier.verify(token);
+      } catch (Exception e) {
+        throw new WebApplicationException(Response.status(Status.UNAUTHORIZED)
+            .entity("token malformé: " + e.getMessage()).type("text/plain").build());
+      }
 
-            Object authenticatedUser = utilisateurUCC;//.getUtilisateur(tokenDecode.getClaim("user").asInt());
-            if (authenticatedUser == null) {
-                requestContext.abortWith(Response.status(Status.FORBIDDEN)
-                    .entity("Vous ne pouvez pas accéder a cette ressource").build());
-            }
+      Object authenticatedUser = tokenDecode;//utilisateurUCC.getUtilisateur(tokenDecode.getClaim("user").asInt());
+      if (authenticatedUser == null) {
+        requestContext.abortWith(Response.status(Status.FORBIDDEN)
+            .entity("Vous ne pouvez pas accéder a cette ressource").build());
+      }
 
-            requestContext.setProperty("user",
-                utilisateurUCC);//.getUtilisateur(tokenDecode.getClaim("user").asInt()));
-        }
+      requestContext.setProperty("user",
+          utilisateurUCC);//.getUtilisateur(tokenDecode.getClaim("user").asInt()));
     }
+  }
 
 }
