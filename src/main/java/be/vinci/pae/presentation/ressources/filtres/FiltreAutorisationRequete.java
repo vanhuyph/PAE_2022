@@ -1,5 +1,6 @@
 package be.vinci.pae.presentation.ressources.filtres;
 
+import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -16,10 +17,10 @@ import java.io.IOException;
 
 @Singleton
 @Provider
-@Authorisation
-public class FiltreAuthorisationRequete implements ContainerRequestFilter {
+@Autorisation
+public class FiltreAutorisationRequete implements ContainerRequestFilter {
     //a refactor en fonction de UtilisateurUCC
-    private final Algorithm jwtAlgorithm = Algorithm.HMAC256("Secret");//Config.getProperty("JWTSecret"));
+    private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
     private final JWTVerifier jwtVerifier = JWT.require(this.jwtAlgorithm).withIssuer("auth0").build();
     private Object utilisateurUCC ;
 

@@ -1,5 +1,8 @@
-package be.vinci.pae.presentation;
+package be.vinci.pae.presentation.ressources;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.JWTVerifier;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.ws.rs.*;
@@ -9,20 +12,23 @@ import jakarta.ws.rs.core.Response;
 @Path("/utilisateur")
 public class RessourceUtilisateur {
 
-    private utilisateurUCC;
+    // changer en UtilisateurUCC
+    private Object utilisateurUCC;
 
     /**
      *
      * @params json reçu du formulaire de connexion
-     * @exception lance une WebApplicationException si pseudo ou mot de passe incorrects ou manquants
+     * @exception  WebApplicationException si pseudo ou mot de passe incorrects ou manquants
      * @return l'utilisateur connecte
      */
     @POST
     @Path("connexion")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public UtilisateurDTO connexion(JsonNode json) {
-        // verification présence des paramètres
+    public Object connexion(JsonNode json) {
+        // appel de connexionToken sur utilisateurUCC
+
+        // verification presence des parametres
         if (!json.hasNonNull("pseudo") || !json.hasNonNull("mdp")) {
             throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST) // vérifier code d'erreur
                     .entity("pseudo ou mot de passe manquants").type("text/plain").build());
@@ -31,7 +37,7 @@ public class RessourceUtilisateur {
         String mdp = json.get("mdp").asText();
 
         // tentative de connexion
-        UtilisateurDTO utilisateurDTO = utilisateurUCC.connexion(pseudo, mdp);
+        Object utilisateurDTO = utilisateurUCC; //.connexion(pseudo,mdp);
         if (utilisateurDTO == null) {
             throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("pseudo ou mot de passe incorrect").type(MediaType.TEXT_PLAIN)
@@ -40,13 +46,6 @@ public class RessourceUtilisateur {
         return utilisateurDTO;
 
     }
-
-    @POST
-    @Path("deconnexion")
-    public void deconnexion(){
-        utilisateurUCC.deconnexion();
-    }
-
 
 
 }
