@@ -16,7 +16,7 @@ public class Config {
     private static Properties props;
 
     /**
-     * charge les propriétés contenu dans file
+     * Charge les propriétés contenu dans file
      *
      * @param file fichier .properties
      */
@@ -40,6 +40,7 @@ public class Config {
     public static Integer getIntProperty(String key) {
         return Integer.parseInt(props.getProperty(key));
     }
+
 
     public static boolean getBoolProperty(String key) {
         return Boolean.parseBoolean(props.getProperty(key));
