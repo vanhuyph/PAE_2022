@@ -28,21 +28,17 @@ public class Main {
   public static HttpServer startServer() {
 
     final ResourceConfig rc = new ResourceConfig().packages("be.vinci.pae").register(JacksonFeature.class);
-
-
-
     return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
   }
 
   /**
    * Main method.
-   * @param args
+   *
    * @throws IOException
    */
   public static void main(String[] args) throws IOException {
     final HttpServer server = startServer();
-    System.out.println(String.format("Jersey app started with endpoints available at "
-            + "%s%nHit Ctrl-C to stop it...", BASE_URI));
+    System.out.println(String.format("Jersey app disponible sur ", BASE_URI));
     System.in.read();
     server.stop();
   }
