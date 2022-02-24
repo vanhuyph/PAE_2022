@@ -36,11 +36,11 @@ public class RessourceUtilisateur {
           Response.status(Response.Status.BAD_REQUEST) // vérifier code d'erreur
               .entity("pseudo ou mot de passe manquants").type("text/plain").build());
     }
-    String pseudo = json.get("pseudo").asText();
-    String mdp = json.get("mdp").asText();
+    //String pseudo = json.get("pseudo").asText();
+    //String mdp = json.get("mdp").asText();
 
     // tentative de connexion
-    Object utilisateurDTO = utilisateurUCC; //.connexion(pseudo,mdp);
+    Object utilisateurDTO = utilisateurUCC;//.connexion(pseudo,mdp);
     if (utilisateurDTO == null) {
       throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
           .entity("pseudo ou mot de passe incorrect").type(MediaType.TEXT_PLAIN)
