@@ -13,37 +13,37 @@ import java.util.Properties;
 public class Config {
 
 
-    private static Properties props;
+  private static Properties props;
 
-    /**
-     * Charge les propriétés contenu dans file
-     *
-     * @param file fichier .properties
-     */
-    public static void load(String file) {
+  /**
+   * Load Charge les propriétés contenu dans file
+   *
+   * @param file fichier .properties
+   */
+  public static void load(String file) {
 
-        props = new Properties();
-        try (InputStream input = new FileInputStream(file)) {
-            props.load(input);
-        } catch (IOException e) {
-            throw new WebApplicationException(
-                Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
-                    .type("text/plain")
-                    .build());
-        }
+    props = new Properties();
+    try (InputStream input = new FileInputStream(file)) {
+      props.load(input);
+    } catch (IOException e) {
+      throw new WebApplicationException(
+          Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
+              .type("text/plain")
+              .build());
     }
+  }
 
-    public static String getProperty(String key) {
-        return props.getProperty(key);
-    }
+  public static String getProperty(String key) {
+    return props.getProperty(key);
+  }
 
-    public static Integer getIntProperty(String key) {
-        return Integer.parseInt(props.getProperty(key));
-    }
+  public static Integer getIntProperty(String key) {
+    return Integer.parseInt(props.getProperty(key));
+  }
 
 
-    public static boolean getBoolProperty(String key) {
-        return Boolean.parseBoolean(props.getProperty(key));
-    }
+  public static boolean getBoolProperty(String key) {
+    return Boolean.parseBoolean(props.getProperty(key));
+  }
 
 }
