@@ -1,6 +1,5 @@
 package be.vinci.pae.utilitaires;
 
-
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -9,21 +8,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-
 public class Config {
-
 
   private static Properties props;
 
   /**
-   * Load Charge les propriétés contenu dans file
+   * Charge les propriétés contenu dans fichier.
    *
-   * @param file fichier .properties
+   * @param fichier : le fichier .properties
    */
-  public static void load(String file) {
-
+  public static void charger(String fichier) {
     props = new Properties();
-    try (InputStream input = new FileInputStream(file)) {
+    try (InputStream input = new FileInputStream(fichier)) {
       props.load(input);
     } catch (IOException e) {
       throw new WebApplicationException(
@@ -33,17 +29,16 @@ public class Config {
     }
   }
 
-  public static String getProperty(String key) {
-    return props.getProperty(key);
+  public static String getPropriete(String cle) {
+    return props.getProperty(cle);
   }
 
-  public static Integer getIntProperty(String key) {
-    return Integer.parseInt(props.getProperty(key));
+  public static Integer getIntPropriete(String cle) {
+    return Integer.parseInt(props.getProperty(cle));
   }
 
-
-  public static boolean getBoolProperty(String key) {
-    return Boolean.parseBoolean(props.getProperty(key));
+  public static boolean getBoolPropriete(String cle) {
+    return Boolean.parseBoolean(props.getProperty(cle));
   }
 
 }

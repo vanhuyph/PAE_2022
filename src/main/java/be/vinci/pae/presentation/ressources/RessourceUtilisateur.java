@@ -25,7 +25,7 @@ import jakarta.ws.rs.core.Response.Status;
 public class RessourceUtilisateur {
 
   private static final ObjectMapper jsonMapper = new ObjectMapper();
-  private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
+  private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getPropriete("JWTSecret"));
   @Inject
   private UtilisateurUCC utilisateurUCC;
 

@@ -10,10 +10,10 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 public class Main {
 
-  public static final String BASE_URI = Config.getProperty("BaseURI");
+  public static final String BASE_URI = Config.getPropriete("BaseURI");
 
   static {
-    Config.load("dev.properties");
+    Config.charger("dev.properties");
   }
 
   /**

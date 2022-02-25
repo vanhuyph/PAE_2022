@@ -21,7 +21,7 @@ public class FiltreAutorisationRequete implements ContainerRequestFilter {
 
   //a refactor en fonction de UtilisateurUCC
 
-  private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
+  private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getPropriete("JWTSecret"));
   private final JWTVerifier jwtVerifier = JWT.require(this.jwtAlgorithm).withIssuer("auth0")
       .build();
   private Object utilisateurUCC;
