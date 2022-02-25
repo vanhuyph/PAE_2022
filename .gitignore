@@ -109,3 +109,5 @@ webapp/.vscode
 webapp/package-lock.json
 webapp/.env
 webapp/dist/*
+
+*/.DS_Store
