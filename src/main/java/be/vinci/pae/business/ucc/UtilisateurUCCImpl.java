@@ -11,12 +11,12 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   UtilisateurDAO utilisateurDAO;
 
   /**
-   * Vérifie si le mot de passe de l'utilisateur est correct à sa connexion
+   * Vérifie si le mot de passe de l'utilisateur est correct à sa connexion.
    *
    * @param pseudo : le pseudo de l'utilisateur
    * @param mdp    : le mot de passe de l'utilisateur
    * @return : l'utilisateur si le mot de passe est bon
-   * @throws : IllegalStateException est lancée si le mot de passe est incorrect
+   * @throws IllegalStateException : est lancée si le mot de passe est incorrect
    */
   @Override
   public UtilisateurDTO connexion(String pseudo, String mdp) {
@@ -31,7 +31,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   }
 
   /**
-   * Renvoie un utilisateur en fonction de son id
+   * Renvoie un utilisateur en fonction de son id.
    *
    * @param id : l'id de l'utilisateur
    * @return : l'utilisateur possèdant l'id passé en paramètre

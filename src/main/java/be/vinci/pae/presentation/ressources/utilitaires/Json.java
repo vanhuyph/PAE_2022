@@ -6,10 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Json {
 
-  private final static ObjectMapper jsonMapper = new ObjectMapper();
+  private static final ObjectMapper jsonMapper = new ObjectMapper();
 
   /**
-   * Sérialise un objet java en json
+   * Sérialise un objet java en json.
    *
    * @param item        : l'objet à sérialiser
    * @param classeCible : la classe ciblé faisant référence à l'objet

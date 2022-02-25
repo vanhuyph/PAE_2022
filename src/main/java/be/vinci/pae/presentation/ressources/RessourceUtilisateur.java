@@ -24,13 +24,13 @@ import jakarta.ws.rs.core.Response.Status;
 @Path("/utilisateurs")
 public class RessourceUtilisateur {
 
-  private final static ObjectMapper jsonMapper = new ObjectMapper();
+  private static final ObjectMapper jsonMapper = new ObjectMapper();
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
   @Inject
   private UtilisateurUCC utilisateurUCC;
 
   /**
-   * Méthode qui connecte l'utilisateur à l'application
+   * Méthode qui connecte l'utilisateur à l'application.
    *
    * @param json : json reçu du formulaire de connexion
    * @return noeud : l'objet json contenant le token et l'utilisateur
@@ -59,7 +59,7 @@ public class RessourceUtilisateur {
   }
 
   /**
-   * Méthode permettant de créer le token de l'utilisateur
+   * Méthode permettant de créer le token de l'utilisateur.
    *
    * @param utilisateur : l'utilisateur qui aura le token
    * @return noeud : l'objet json contenant le token et l'utilisateur
