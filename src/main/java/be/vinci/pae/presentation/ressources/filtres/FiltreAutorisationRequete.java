@@ -1,10 +1,13 @@
 package be.vinci.pae.presentation.ressources.filtres;
 
+import be.vinci.pae.business.domaine.UtilisateurDTO;
+import be.vinci.pae.business.ucc.UtilisateurUCC;
 import be.vinci.pae.utilitaires.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerRequestContext;
@@ -19,12 +22,11 @@ import java.io.IOException;
 @Autorisation
 public class FiltreAutorisationRequete implements ContainerRequestFilter {
 
-  //a refactor en fonction de UtilisateurUCC
-
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getPropriete("JWTSecret"));
   private final JWTVerifier jwtVerifier = JWT.require(this.jwtAlgorithm).withIssuer("auth0")
       .build();
-  private Object utilisateurUCC;
+  @Inject
+  private UtilisateurUCC utilisateurUCC;
 
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -41,15 +43,15 @@ public class FiltreAutorisationRequete implements ContainerRequestFilter {
             .entity("token malformé: " + e.getMessage()).type("text/plain").build());
       }
 
-      Object authenticatedUser = tokenDecode;
-      //utilisateurUCC.getUtilisateur(tokenDecode.getClaim("user").asInt());
+      UtilisateurDTO authenticatedUser = utilisateurUCC.rechercheParId(
+          tokenDecode.getClaim("user").asInt());
       if (authenticatedUser == null) {
         requestContext.abortWith(Response.status(Status.FORBIDDEN)
             .entity("Vous ne pouvez pas accéder a cette ressource").build());
       }
 
       requestContext.setProperty("user",
-          utilisateurUCC);//.getUtilisateur(tokenDecode.getClaim("user").asInt()));
+          authenticatedUser);
     }
   }
 
