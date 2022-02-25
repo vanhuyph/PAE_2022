@@ -27,9 +27,9 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin"
-            + "FROM projet.utilisateurs u WHERE u.pseudo="
-            + pseudo + ";");
+            + " FROM projet.utilisateurs u WHERE u.pseudo = ?;");
     try {
+      ps.setString(1, pseudo);
       utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
@@ -49,9 +49,9 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin"
-            + "FROM projet.utilisateurs u WHERE u.id_utilisateur="
-            + id + ";");
+            + " FROM projet.utilisateurs u WHERE u.id_utilisateur = ?;");
     try {
+      ps.setInt(1, id);
       utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
@@ -61,11 +61,11 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 
 
   /**
-   * Remplis les données de l'utilisateur depuis un ResultSet.
+   * Rempli les données de l'utilisateur depuis un ResultSet.
    *
-   * @param utilisateurDTO : L'utilisateur vide, qui va être remplis
-   * @param ps             : Le PreparedStatement déjà mis en place
-   * @return utilisateurDTO : L'utilisateur remplis
+   * @param utilisateurDTO : l'utilisateur vide, qui va être rempli
+   * @param ps             : le PreparedStatement déjà mis en place
+   * @return utilisateurDTO : l'utilisateur rempli
    * @throws SQLException : est lancée si il y a un problème
    */
   private UtilisateurDTO remplirUtilisateurDepuisResulSet(UtilisateurDTO utilisateurDTO,

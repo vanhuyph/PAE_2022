@@ -1,6 +1,8 @@
 package be.vinci.pae.main;
 
+import be.vinci.pae.utilitaires.ApplicationBinder;
 import be.vinci.pae.utilitaires.Config;
+import be.vinci.pae.utilitaires.WebExceptionMapper;
 import java.io.IOException;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -17,7 +19,9 @@ public class Main {
    */
   public static HttpServer startServer() {
     final ResourceConfig rc = new ResourceConfig().packages("be.vinci.pae")
-        .register(JacksonFeature.class);
+        .register(JacksonFeature.class)
+        .register(ApplicationBinder.class)
+        .register(WebExceptionMapper.class);
     return GrizzlyHttpServerFactory.createHttpServer(URI.create(Config.getPropriete("BaseURI")),
         rc);
   }
