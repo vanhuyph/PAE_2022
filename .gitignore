@@ -111,3 +111,4 @@ webapp/.env
 webapp/dist/*
 
 */.DS_Store
+*.properties
