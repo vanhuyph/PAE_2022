@@ -1,4 +1,4 @@
- package be.vinci.pae.business.domaine;
+package be.vinci.pae.business.domaine;
 
 public interface DomaineFactory {
 

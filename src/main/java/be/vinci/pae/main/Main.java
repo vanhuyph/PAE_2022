@@ -1,7 +1,7 @@
 package be.vinci.pae.main;
 
 
-import be.vinci.pae.utils.Config;
+import be.vinci.pae.utilitaires.Config;
 import java.io.IOException;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;

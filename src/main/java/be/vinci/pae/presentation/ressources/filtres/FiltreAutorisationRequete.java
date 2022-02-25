@@ -1,6 +1,6 @@
 package be.vinci.pae.presentation.ressources.filtres;
 
-import be.vinci.pae.utils.Config;
+import be.vinci.pae.utilitaires.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
