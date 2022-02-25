@@ -4,6 +4,7 @@ import be.vinci.pae.business.domaine.DomaineFactory;
 import be.vinci.pae.business.domaine.UtilisateurDTO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import jakarta.inject.Inject;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -14,60 +15,71 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Inject
   private ServiceDAL serviceDAL;
 
-  /*
-   * recherche un utilisateur via un pseudo unique dans la base de donnée
+  /**
+   * Recherche un utilisateur via un pseudo unique dans la base de donnée.
+   *
    * @param pseudo : le pseudo de l'utilisateur
-   * @exception : SQLException est lancée s'il ne trouve pas l'utilisateur
-   * @return : l'utilisateur, s'il trouve un utilisateur qui possède ce pseudo
+   * @return utilisateurDTO : l'utilisateur, s'il trouve un utilisateur qui possède ce pseudo
+   * @throws SQLException : est lancée s'il ne trouve pas l'utilisateur
    */
   @Override
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
+    PreparedStatement ps = serviceDAL.getPs(
+        "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin"
+            + "FROM projet.utilisateurs u WHERE u.pseudo="
+            + pseudo + ";");
     try {
-      ResultSet rs = serviceDAL.getPs(
-              "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin"
-                  + "FROM projet.utilisateurs u WHERE u.pseudo="
-                  + pseudo + ";")
-          .executeQuery();
-      utilisateurDTO.setIdUtilisateur(rs.getInt(1));
-      utilisateurDTO.setPseudo(rs.getString(2));
-      utilisateurDTO.setNom(rs.getString(3));
-      utilisateurDTO.setPrenom(rs.getString(4));
-      utilisateurDTO.setMdp(rs.getString(5));
-      utilisateurDTO.setGsm(rs.getString(6));
-      utilisateurDTO.setEstAdmin(rs.getBoolean(7));
-
+      utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
     }
     return utilisateurDTO;
   }
 
-  /*
-   * recherche un utilisateur via un id dans la base de donnée
+  /**
+   * Recherche un utilisateur via un id dans la base de donnée.
+   *
    * @param id : l'id de l'utilisateur
-   * @exception : SQLException est lancée s'il ne trouve pas l'utilisateur
-   * @return : l'utilisateur, s'il trouve un utilisateur qui possède ce id
+   * @return utilisateurDTO : l'utilisateur, s'il trouve un utilisateur qui possède ce id
+   * @throws SQLException : est lancée s'il ne trouve pas l'utilisateur
    */
   @Override
   public UtilisateurDTO rechercheParId(int id) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
+    PreparedStatement ps = serviceDAL.getPs(
+        "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin"
+            + "FROM projet.utilisateurs u WHERE u.id_utilisateur="
+            + id + ";");
     try {
-      ResultSet rs = serviceDAL.getPs(
-              "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin"
-                  + "FROM projet.utilisateurs u WHERE u.id_utilisateur="
-                  + id + ";")
-          .executeQuery();
-      utilisateurDTO.setIdUtilisateur(rs.getInt(1));
-      utilisateurDTO.setPseudo(rs.getString(2));
-      utilisateurDTO.setNom(rs.getString(3));
-      utilisateurDTO.setPrenom(rs.getString(4));
-      utilisateurDTO.setMdp(rs.getString(5));
-      utilisateurDTO.setGsm(rs.getString(6));
-      utilisateurDTO.setEstAdmin(rs.getBoolean(7));
-
+      utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
+    }
+    return utilisateurDTO;
+  }
+
+
+  /**
+   * Remplis les données de l'utilisateur depuis un ResultSet.
+   *
+   * @param utilisateurDTO : L'utilisateur vide, qui va être remplis
+   * @param ps             : Le PreparedStatement déjà mis en place
+   * @return utilisateurDTO : L'utilisateur remplis
+   * @throws SQLException : est lancée si il y a un problème
+   */
+  private UtilisateurDTO remplirUtilisateurDepuisResulSet(UtilisateurDTO utilisateurDTO,
+      PreparedStatement ps) throws SQLException {
+    try (ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        utilisateurDTO.setIdUtilisateur(rs.getInt(1));
+        utilisateurDTO.setPseudo(rs.getString(2));
+        utilisateurDTO.setNom(rs.getString(3));
+        utilisateurDTO.setPrenom(rs.getString(4));
+        utilisateurDTO.setMdp(rs.getString(5));
+        utilisateurDTO.setGsm(rs.getString(6));
+        utilisateurDTO.setEstAdmin(rs.getBoolean(7));
+      }
     }
     return utilisateurDTO;
   }
