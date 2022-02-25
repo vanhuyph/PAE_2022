@@ -10,12 +10,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 public class Main {
 
-  public static final String BASE_URI = Config.getPropriete("BaseURI");
-
-  static {
-    Config.charger("dev.properties");
-  }
-
   /**
    * Démarre le serveur Grizzly.
    *
@@ -24,7 +18,8 @@ public class Main {
   public static HttpServer startServer() {
     final ResourceConfig rc = new ResourceConfig().packages("be.vinci.pae")
         .register(JacksonFeature.class);
-    return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+    return GrizzlyHttpServerFactory.createHttpServer(URI.create(Config.getPropriete("BaseURI")),
+        rc);
   }
 
   /**
@@ -33,8 +28,10 @@ public class Main {
    * @throws IOException : est lancée si le serveur n'a pas pu se lancer
    */
   public static void main(String[] args) throws IOException {
+    Config.charger("dev.properties");
     final HttpServer server = startServer();
-    System.out.println(String.format("Jersey app disponible sur ", BASE_URI));
+    System.out.println(
+        String.format("Jersey app disponible sur " + Config.getPropriete("BaseURI")));
     System.in.read();
     server.stop();
   }
