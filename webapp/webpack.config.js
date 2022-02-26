@@ -12,14 +12,14 @@ module.exports = {
   devtool: "eval-source-map",
   devServer: {
     contentBase: path.join(__dirname, "dist"),
-    port: 8080,
+    port: 8081,
     host: '0.0.0.0', // server to be accessible externally
-    public: "localhost:8080", // force to open localhost instead of 0.0.0.0
+    public: "localhost:8081", // force to open localhost instead of 0.0.0.0
     open: true, // open the default browser
     historyApiFallback: true, // serve index.html instead of routes leading to no specific ressource
     proxy: {
       "/api": {
-        target: "http://localhost:3000",
+        target: "http://localhost:8080",
         pathRewrite: {'^/api' : ''}
       },
     },
