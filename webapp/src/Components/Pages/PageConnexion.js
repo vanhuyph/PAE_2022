@@ -66,7 +66,7 @@ const surConnexion = (e) => {
 }
 
 const surConUtilisateur = (donnee) => {
-  const utilisateur = {...donnee, is}
+  const utilisateur = {...donnee, isAutenticated: true}
   creationDonneeSessionUtilisateur(utilisateur)
   Navbar()
   Redirect("/")
@@ -75,6 +75,7 @@ const surConUtilisateur = (donnee) => {
 const surErreur = (err) => {
   let messageErreur = document.querySelector("#messageErreur");
   let erreurMessage = "";
+  console.log(err)
   if (err.message.includes("401")) erreurMessage = "Pseudo/mot de passe incorrect.";
   else erreurMessage = err.message;
   messageErreur.innerText = erreurMessage;

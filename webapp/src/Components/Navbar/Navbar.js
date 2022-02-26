@@ -16,7 +16,7 @@ const Navbar = () => {
             </a>
             <ul class="nav-list">
                 <li><a href="#" data-uri="/">Accueil</a></li>
-                <li><a href="#" data-uri="/connexion">Se deconnecter</a></li>
+                <li><a href="#" data-uri="/deconnexion">Se deconnecter</a></li>
             </ul>
             <div class="menu"></div>
         </div>
@@ -32,7 +32,7 @@ const Navbar = () => {
             <ul class="nav-list">
                 <li><a href="#" data-uri="/">Accueil</a></li>
                 <li><a href="#" data-uri="">Admin</a></li>
-                <li><a href="#" data-uri="/connexion">Se deconnecter</a></li>
+                <li><a href="#" data-uri="/deconnexion">Se deconnecter</a></li>
             </ul>
             <div class="menu"></div>
         </div>

@@ -24,7 +24,7 @@ const creationDonneeSessionUtilisateur = (user) => {
 //   localStorage.setItem(THEME, storageValue);
 // };
 
-const removeSessionData = () => {
+const enleverDonneeSession = () => {
   localStorage.removeItem(STORE_NAME);
 //   localStorage.removeItem(THEME);
 };
@@ -32,7 +32,7 @@ const removeSessionData = () => {
 export {
   recupUtilisateurDonneesSession,
   creationDonneeSessionUtilisateur,
-  removeSessionData,
+  enleverDonneeSession,
 //   getTheme,
 //   setTheme,
 };
