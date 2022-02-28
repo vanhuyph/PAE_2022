@@ -3,7 +3,9 @@ package be.vinci.pae.business.ucc;
 import be.vinci.pae.business.domaine.Utilisateur;
 import be.vinci.pae.business.domaine.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
+import be.vinci.pae.utilitaires.exceptions.ExceptionBusiness;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Response.Status;
 
 public class UtilisateurUCCImpl implements UtilisateurUCC {
 
@@ -20,13 +22,11 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    */
   @Override
   public UtilisateurDTO connexion(String pseudo, String mdp) {
-
     Utilisateur utilisateur = (Utilisateur) utilisateurDAO.rechercheParPseudo(pseudo);
-
     if (utilisateur.verifierMdp(mdp)) {
       return utilisateur;
     } else {
-      throw new IllegalStateException("Non autorisé");
+      throw new ExceptionBusiness("Pseudo ou mot de passe incorrect.", Status.UNAUTHORIZED);
     }
   }
 
@@ -38,7 +38,11 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    */
   @Override
   public UtilisateurDTO rechercheParId(int id) {
-    return utilisateurDAO.rechercheParId(id);
+    UtilisateurDTO utilisateur = utilisateurDAO.rechercheParId(id);
+    if (utilisateur == null) {
+      throw new ExceptionBusiness("L'utilisateur n'existe pas.", Status.BAD_REQUEST);
+    }
+    return utilisateur;
   }
 
 }
