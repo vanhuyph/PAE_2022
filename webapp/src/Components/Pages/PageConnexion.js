@@ -14,7 +14,8 @@ let pageCon = `
                 <input type="password" id="mdp" class="mdp">
                 
             </div>
-             <div id="messageErreur"></div>
+            <div class="se-souvenir"><input type="checkbox" id="souvenir" name="souvenir"><label for="souvenir">Se souvenir de moi</label></div>
+            <div id="messageErreur"></div>
             <button class="connexion" type="submit">CONNEXION</button>
             <p class="separateur-ou">ou</p>
             <button class="insciption">S'INSCRIRE</button>
@@ -29,6 +30,7 @@ const PageConnexion = () => {
   let formCon = document.querySelector(".formulaire-connexion")
 
   const utilisateur = recupUtilisateurDonneesSession()
+
 
   if(utilisateur){
     Navbar()
@@ -46,7 +48,7 @@ const surConnexion = (e) => {
     pseudo: document.querySelector("#pseudo").value,
     mdp: document.querySelector("#mdp").value
   }
-
+  let souvenir = document.querySelector("#souvenir").checked
   fetch("/api/utilisateurs/connexion", {
     method:"POST",
     body:JSON.stringify(utilisateur),
@@ -60,14 +62,14 @@ const surConnexion = (e) => {
     }
     return reponse.json();
   })
-  .then((donnee) => surConUtilisateur(donnee))
+  .then((donnee) => surConUtilisateur(donnee, souvenir))
   .catch(err => surErreur(err))
 
 }
 
-const surConUtilisateur = (donnee) => {
+const surConUtilisateur = (donnee, souvenir) => {
   const utilisateur = {...donnee, isAutenticated: true}
-  creationDonneeSessionUtilisateur(utilisateur)
+  creationDonneeSessionUtilisateur(utilisateur, souvenir)
   Navbar()
   Redirect("/")
 }

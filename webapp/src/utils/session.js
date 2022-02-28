@@ -1,38 +1,30 @@
 const STORE_NAME = "utilisateur";
 
-// const THEME = "theme";
 
 const recupUtilisateurDonneesSession = () => {
-  const retrievedUser = localStorage.getItem(STORE_NAME);
-  if (!retrievedUser) return;
+  let retrievedUser = localStorage.getItem(STORE_NAME);
+  if (!retrievedUser) retrievedUser = sessionStorage.getItem(STORE_NAME);
   return JSON.parse(retrievedUser);
 };
 
-const creationDonneeSessionUtilisateur = (user) => {
+const creationDonneeSessionUtilisateur = (user, isRemember) => {
   const storageValue = JSON.stringify(user);
-  localStorage.setItem(STORE_NAME, storageValue);
+  if(isRemember) {
+    localStorage.setItem(STORE_NAME, storageValue);
+  } else{
+    sessionStorage.setItem(STORE_NAME, storageValue);
+  }
 };
-
-// const getTheme = () => {
-//   const theme = localStorage.getItem(THEME);
-//   if (!theme) return;
-//   return JSON.parse(theme);
-// };
-
-// const setTheme = (theme) => {
-//   const storageValue = JSON.stringify(theme);
-//   localStorage.setItem(THEME, storageValue);
-// };
 
 const enleverDonneeSession = () => {
   localStorage.removeItem(STORE_NAME);
-//   localStorage.removeItem(THEME);
+  sessionStorage.removeItem(STORE_NAME);
+
 };
 
 export {
   recupUtilisateurDonneesSession,
   creationDonneeSessionUtilisateur,
   enleverDonneeSession,
-//   getTheme,
-//   setTheme,
+
 };
