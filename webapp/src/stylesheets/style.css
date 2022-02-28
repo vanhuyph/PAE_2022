@@ -141,7 +141,20 @@ body{
     border: 1px solid #c8d0d6;
     
 }
+.page-connexion .formulaire-connexion .se-souvenir{
+    align-self: flex-start;
+    display: flex;
+}
+.page-connexion .formulaire-connexion .se-souvenir input{
+    width: 15px;
+    height: 23px;
+    margin: 0;
+    margin-right: 10px;
+}
 
+.page-connexion .formulaire-connexion .se-souvenir label{
+    font-size: 15px;
+}
 
 .formulaire-connexion button{
     cursor: pointer;
