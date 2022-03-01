@@ -38,7 +38,8 @@ public class UtilisateurUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode connexion avec mauvais pseudo et bon mdp.")
+  @DisplayName("Test raté : méthode connexion avec mauvais pseudo et bon mdp. "
+      + "Identifiants corrects : pseudo = test1, mdp = test123")
   public void testConnexionV1() {
     utilisateurDTO.setPseudo("test1");
     utilisateur = (Utilisateur) utilisateurDTO;
@@ -48,7 +49,8 @@ public class UtilisateurUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode connexion avec bon pseudo et mauvais mdp.")
+  @DisplayName("Test raté : méthode connexion avec bon pseudo et mauvais mdp. "
+      + "Identifiants corrects : pseudo = test1, mdp = test123")
   public void testConnexionV2() {
     utilisateurDTO.setPseudo("test1");
     utilisateur = (Utilisateur) utilisateurDTO;
@@ -58,7 +60,8 @@ public class UtilisateurUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode connexion avec les bons identifiants.")
+  @DisplayName("Test réussi : méthode connexion avec les bons identifiants. "
+      + "Identifiants corrects : pseudo = test1, mdp = test123")
   public void testConnexionV3() {
     utilisateurDTO.setPseudo("test1");
     utilisateur = (Utilisateur) utilisateurDTO;
