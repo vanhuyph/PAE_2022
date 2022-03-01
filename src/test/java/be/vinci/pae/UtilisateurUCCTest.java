@@ -77,7 +77,8 @@ public class UtilisateurUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode rechercheParId renvoie null car l'utilisateur n'est pas trouvable.")
+  @DisplayName("Test raté : méthode rechercheParId renvoie null car l'utilisateur "
+      + "n'est pas trouvable.")
   public void testRecherchePardIdV2() {
     int id = -1;
     Mockito.when(utilisateurDAO.rechercheParId(id)).thenReturn(null);
