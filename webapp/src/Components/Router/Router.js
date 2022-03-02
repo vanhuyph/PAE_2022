@@ -1,10 +1,10 @@
-import HomePage from "../Pages/HomePage";
+import PageAccueil from "../Pages/PageAccueil";
 import PageConnexion from "../Pages/PageConnexion";
 import PageDeconnexion from "../Pages/PageDeconnexion";
 
 // Configure your routes here
 const routes = {
-  "/": HomePage,
+  "/": PageAccueil,
   "/connexion": PageConnexion,
   "/deconnexion": PageDeconnexion,
 };
