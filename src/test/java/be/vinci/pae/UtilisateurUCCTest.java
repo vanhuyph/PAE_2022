@@ -55,7 +55,8 @@ public class UtilisateurUCCTest {
     utilisateurDTO.setPseudo("test1");
     utilisateur = (Utilisateur) utilisateurDTO;
     utilisateur.setMdp(utilisateur.hashMdp("test123"));
-    Mockito.when(utilisateurDAO.rechercheParPseudo("test")).thenReturn(null);
+    Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()))
+        .thenReturn(utilisateurDTO);
     assertThrows(ExceptionBusiness.class, () -> utilisateurUCC.connexion("test1", "test1234"));
   }
 
