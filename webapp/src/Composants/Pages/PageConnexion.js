@@ -1,12 +1,9 @@
 import {
   creationDonneeSessionUtilisateur,
   recupUtilisateurDonneesSession
-} from "../../utils/session"
+} from "../../utilitaires/session"
 import {Redirect} from "../Router/Router";
 import Navbar from "../Navbar/Navbar";
-
-
-
 
 let pageCon = `
     <div class="page-connexion">
@@ -34,40 +31,31 @@ let pageCon = `
 const PageConnexion = () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = pageCon;
-
   let formCon = document.querySelector(".formulaire-connexion")
-
   const utilisateur = recupUtilisateurDonneesSession()
-
   if (utilisateur) {
     Navbar()
     Redirect("/")
   } else {
-
     formCon.addEventListener("submit", surConnexion)
   }
 }
 
-
-
-
 const surConnexion = (e) => {
   e.preventDefault()
-
   let pseudo = document.querySelector("#pseudo")
   let mdp = document.querySelector("#mdp")
   document.querySelector(".erreur-pseudo").innerHTML = ""
   document.querySelector(".erreur-mdp").innerHTML = ""
   document.querySelector("#messageErreur").innerHTML = ""
-
-  if (pseudo.value === "" ){
+  if (pseudo.value === "") {
     document.querySelector(".erreur-pseudo").innerHTML = "Votre pseudo est vide"
   }
-  if (mdp.value === ""){
-    document.querySelector(".erreur-mdp").innerHTML = "Votre mot de passe est vide"
+  if (mdp.value === "") {
+    document.querySelector(
+        ".erreur-mdp").innerHTML = "Votre mot de passe est vide"
   }
-  if(pseudo.value !== "" && mdp.value !== ""){
-
+  if (pseudo.value !== "" && mdp.value !== "") {
     let utilisateur = {
       pseudo: pseudo.value,
       mdp: mdp.value
@@ -111,10 +99,8 @@ const surErreur = (err) => {
     erreurMessage = err.message;
   }
   messageErreur.innerText = erreurMessage;
-
   document.querySelector("#pseudo").value = ""
   document.querySelector("#mdp").value = ""
-
 }
 
 export default PageConnexion

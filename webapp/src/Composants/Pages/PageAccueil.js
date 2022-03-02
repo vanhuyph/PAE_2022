@@ -1,7 +1,6 @@
 /**
- * Render the PageAccueil
+ * Fait un rendu de la page d'accueil
  */
-
 let modal = `
 <div class="conteneur-modal">
   <div class="overlay declancheur-modal"></div>
@@ -15,16 +14,12 @@ let modal = `
 
 const PageAccueil = () => {
   const pageDiv = document.querySelector("#page");
-
   pageDiv.innerHTML = modal;
-
   const conteneurModal = document.querySelector(".conteneur-modal")
   const declancheurModal = document.querySelectorAll(".declancheur-modal")
-
   declancheurModal.forEach(decl => decl.addEventListener("click", () => {
     conteneurModal.classList.toggle("active")
   }))
-
 };
 
 export default PageAccueil;

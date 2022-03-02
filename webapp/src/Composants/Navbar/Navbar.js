@@ -1,5 +1,5 @@
 import logo from "../../img/logo.png";
-import {recupUtilisateurDonneesSession} from "../../utils/session";
+import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 
 const Navbar = () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
