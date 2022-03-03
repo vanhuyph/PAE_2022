@@ -8,30 +8,39 @@ import Navbar from "../Navbar/Navbar";
 let pageCon = `
     <div class="page-connexion">
         <h2>Connexion</h2>
-        <form class="formulaire-connexion">
-            <label for="pseudo">Pseudo</label>
-            <div class="pseudo-conteneur">
-                <input type="text" id="pseudo" class="pseudo">
-                <p class="message-erreur erreur-pseudo"></p>
+        <form id="formulaire-connexion" class="ui form">
+        
+            <div class="field">
+              <label for="pseudo">Pseudo</label>
+              <div class="pseudo-conteneur">
+                  <input type="text" id="pseudo" class="pseudo">
+                  <p class="message-erreur erreur-pseudo"></p>
+              </div>
             </div>
-            <label for="mdp">Mot de passe</label>
-            <div class="mdp-conteneur">
-                <input type="password" id="mdp" class="mdp">
-                <p class="message-erreur erreur-mdp"></p>
+            
+            <div class="field">
+              <label for="mdp">Mot de passe</label>
+              <div class="mdp-conteneur">
+                  <input type="password" id="mdp" class="mdp">
+                  <p class="message-erreur erreur-mdp"></p>
+              </div>
             </div>
-            <div class="se-souvenir"><input type="checkbox" id="souvenir" name="souvenir"><label for="souvenir">Se souvenir de moi</label></div>
+            <div class="field">
+              <div class="ui checkbox"><input type="checkbox" id="souvenir" name="souvenir"><label for="souvenir">Se souvenir de moi</label></div>
+            </div>
             <div id="messageErreur" class="message-erreur"></div>
-            <button class="connexion" type="submit">CONNEXION</button>
-            <p class="separateur-ou">ou</p>
-            <button class="insciption">S'INSCRIRE</button>
+            <button class="ui secondary inverted button" type="submit">Connexion</button>
+            
         </form>
+        <p class="separateur-ou">ou</p>
+        <button class="ui secondary inverted button">S'inscrire</button>
     </div>
   `;
 
 const PageConnexion = () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = pageCon;
-  let formCon = document.querySelector(".formulaire-connexion")
+  let formCon = document.querySelector("#formulaire-connexion")
   const utilisateur = recupUtilisateurDonneesSession()
   if (utilisateur) {
     Navbar()

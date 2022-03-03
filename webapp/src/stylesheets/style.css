@@ -17,6 +17,20 @@ body{
     /* background-color: #d0c6df; */
 }
 
+/* Modification UI */
+.button{
+    width: 100%;
+    border-radius: 10px !important;
+    margin: 5px 0 !important;
+}
+
+
+.field input{
+    background: #dbe3ec !important;
+    border-radius: 10px !important;
+}
+/* Modification UI */
+
 /* Début style navbar */
 
 .conteneur-navbar{
@@ -186,7 +200,7 @@ body{
     text-align: center;
     align-items: center;
     width: 100%;
-    font-size: large;
+    margin: 6px 0 !important;
 }
 
 .separateur-ou::after, .separateur-ou::before{
