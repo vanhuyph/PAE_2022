@@ -1,6 +1,7 @@
 package be.vinci.pae.donnees.services;
 
 
+import be.vinci.pae.utilitaires.Config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -17,9 +18,10 @@ public class ServiceDALImpl implements ServiceDAL {
    * @throws SQLException : est lancée si la connexion n'a pas pu aboutir
    */
   public ServiceDALImpl() {
-    url = "jdbc:postgresql://coursinfo.vinci.be:5432/dbabdenour_didi";
+    url = Config.getPropriete("PostgresCheminDB");
     try {
-      conn = DriverManager.getConnection(url, "abdenour_didi", "batbat123");
+      conn = DriverManager.getConnection(url, Config.getPropriete("PostgresUtilisateur"),
+          Config.getPropriete("PostgresMdp"));
     } catch (SQLException e) {
       e.printStackTrace();
       System.out.println("Impossible de joindre le serveur !");
