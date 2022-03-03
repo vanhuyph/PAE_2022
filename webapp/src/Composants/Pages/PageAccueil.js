@@ -25,7 +25,7 @@ const PageAccueil = () => {
     <div class="overlay declencheur-modal"></div>
     <div class="ui modal active">
       <button class="fermer-modal declencheur-modal">X</button>
-      <div class="header">Votre inscription est "${etatInscription}"</div>
+      <div class="header">Statut de votre inscription : "${etatInscription}"</div>
       <div class="content">
         <p>${commentaire}</p>
       </div>

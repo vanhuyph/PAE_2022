@@ -22,4 +22,5 @@ public class ApplicationBinder extends AbstractBinder {
     bind(ServiceDALImpl.class).to(ServiceDAL.class).in(Singleton.class);
     bind(UtilisateurUCCImpl.class).to(UtilisateurUCC.class).in(Singleton.class);
   }
+
 }

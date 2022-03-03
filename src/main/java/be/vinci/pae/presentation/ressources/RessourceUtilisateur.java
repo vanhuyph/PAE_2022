@@ -81,5 +81,4 @@ public class RessourceUtilisateur {
     return noeud;
   }
 
-
 }

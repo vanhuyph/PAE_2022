@@ -27,7 +27,6 @@ public class ServiceDALImpl implements ServiceDAL {
       System.out.println("Impossible de joindre le serveur !");
       System.exit(1);
     }
-
   }
 
   /**

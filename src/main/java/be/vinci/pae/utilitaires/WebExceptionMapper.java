@@ -18,4 +18,5 @@ public class WebExceptionMapper implements ExceptionMapper<Throwable> {
     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(exception.getMessage())
         .build();
   }
+
 }

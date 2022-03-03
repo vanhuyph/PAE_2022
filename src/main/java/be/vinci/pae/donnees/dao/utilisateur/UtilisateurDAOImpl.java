@@ -60,7 +60,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     return utilisateurDTO;
   }
 
-
   /**
    * Rempli les données de l'utilisateur depuis un ResultSet.
    *

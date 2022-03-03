@@ -42,16 +42,13 @@ public class FiltreAutorisationRequete implements ContainerRequestFilter {
         throw new WebApplicationException(Response.status(Status.UNAUTHORIZED)
             .entity("token malformé: " + e.getMessage()).type("text/plain").build());
       }
-
       UtilisateurDTO authenticatedUser = utilisateurUCC.rechercheParId(
           tokenDecode.getClaim("user").asInt());
       if (authenticatedUser == null) {
         requestContext.abortWith(Response.status(Status.FORBIDDEN)
             .entity("Vous ne pouvez pas accéder a cette ressource").build());
       }
-
-      requestContext.setProperty("user",
-          authenticatedUser);
+      requestContext.setProperty("user", authenticatedUser);
     }
   }
 
