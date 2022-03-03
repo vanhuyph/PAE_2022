@@ -5,7 +5,6 @@ const Navbar = () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
   let navbar
   let utilisateur = recupUtilisateurDonneesSession()
-  console.log(utilisateur)
   if (utilisateur && utilisateur.utilisateur.estAdmin === false) {
     navbar = `
     <nav class="navbar">
