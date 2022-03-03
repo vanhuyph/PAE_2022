@@ -23,11 +23,10 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   @Override
   public UtilisateurDTO connexion(String pseudo, String mdp) {
     Utilisateur utilisateur = (Utilisateur) utilisateurDAO.rechercheParPseudo(pseudo);
-    if (utilisateur.verifierMdp(mdp)) {
-      return utilisateur;
-    } else {
+    if (utilisateur == null || !utilisateur.verifierMdp(mdp)) {
       throw new ExceptionBusiness("Pseudo ou mot de passe incorrect.", Status.UNAUTHORIZED);
     }
+    return utilisateur;
   }
 
   /**
