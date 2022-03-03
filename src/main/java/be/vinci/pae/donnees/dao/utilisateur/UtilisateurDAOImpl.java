@@ -26,8 +26,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
-        "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin"
-            + " FROM projet.utilisateurs u WHERE u.pseudo = ?;");
+        "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+            + "u.etat_inscription, u.commentaire FROM projet.utilisateurs u WHERE u.pseudo = ?;");
     try {
       ps.setString(1, pseudo);
       utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
@@ -48,8 +48,9 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public UtilisateurDTO rechercheParId(int id) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
-        "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin"
-            + " FROM projet.utilisateurs u WHERE u.id_utilisateur = ?;");
+        "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+            + "u.etat_inscription, u.commentaire"
+            + "FROM projet.utilisateurs u WHERE u.id_utilisateur = ?;");
     try {
       ps.setInt(1, id);
       utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
@@ -79,6 +80,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         utilisateurDTO.setMdp(rs.getString(5));
         utilisateurDTO.setGsm(rs.getString(6));
         utilisateurDTO.setEstAdmin(rs.getBoolean(7));
+        utilisateurDTO.setEtatInscription(rs.getString(8));
+        utilisateurDTO.setCommentaire(rs.getString(9));
       }
     }
     return utilisateurDTO;
