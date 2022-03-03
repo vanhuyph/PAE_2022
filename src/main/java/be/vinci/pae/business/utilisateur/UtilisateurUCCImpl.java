@@ -1,7 +1,5 @@
-package be.vinci.pae.business.ucc;
+package be.vinci.pae.business.utilisateur;
 
-import be.vinci.pae.business.domaine.Utilisateur;
-import be.vinci.pae.business.domaine.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.utilitaires.exceptions.ExceptionBusiness;
 import jakarta.inject.Inject;
