@@ -28,22 +28,6 @@ public class UtilisateurImpl implements Utilisateur {
   @JsonView(Vues.Public.class)
   private String commentaire;
 
-  public UtilisateurImpl() {
-  }
-
-  public UtilisateurImpl(int idUtilisateur, String pseudo, String nom, String prenom,
-      String mdp, String gsm, boolean estAdmin, String etatInscription, String commentaire) {
-    this.idUtilisateur = idUtilisateur;
-    this.pseudo = pseudo;
-    this.nom = nom;
-    this.prenom = prenom;
-    this.mdp = mdp;
-    this.gsm = gsm;
-    this.estAdmin = estAdmin;
-    this.etatInscription = etatInscription;
-    this.commentaire = commentaire;
-  }
-
   @Override
   public int getIdUtilisateur() {
     return idUtilisateur;
