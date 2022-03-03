@@ -1,4 +1,4 @@
-package be.vinci.pae.business.domaine;
+package be.vinci.pae.business.utilisateur;
 
 import be.vinci.pae.vue.Vues;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,7 +7,7 @@ import java.util.Objects;
 import org.mindrot.jbcrypt.BCrypt;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class UtilisateurImpl implements Utilisateur {
+public class UtilisateurImpl implements Utilisateur {
 
   @JsonView(Vues.Public.class)
   private int idUtilisateur;

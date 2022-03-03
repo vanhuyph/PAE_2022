@@ -1,9 +1,7 @@
-package be.vinci.pae.business.ucc;
-
-import be.vinci.pae.business.domaine.UtilisateurDTO;
+package be.vinci.pae.business.utilisateur;
 
 public interface UtilisateurUCC {
-  
+
   UtilisateurDTO connexion(String pseudo, String mdp);
 
   UtilisateurDTO rechercheParId(int id);

@@ -1,7 +1,7 @@
 package be.vinci.pae.presentation.ressources.filtres;
 
-import be.vinci.pae.business.domaine.UtilisateurDTO;
-import be.vinci.pae.business.ucc.UtilisateurUCC;
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
+import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.utilitaires.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

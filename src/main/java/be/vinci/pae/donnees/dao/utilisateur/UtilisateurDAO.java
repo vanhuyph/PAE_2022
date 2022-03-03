@@ -1,6 +1,6 @@
 package be.vinci.pae.donnees.dao.utilisateur;
 
-import be.vinci.pae.business.domaine.UtilisateurDTO;
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 
 public interface UtilisateurDAO {
 

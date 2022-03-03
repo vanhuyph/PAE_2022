@@ -1,7 +1,7 @@
 package be.vinci.pae.donnees.dao.utilisateur;
 
-import be.vinci.pae.business.domaine.DomaineFactory;
-import be.vinci.pae.business.domaine.UtilisateurDTO;
+import be.vinci.pae.business.DomaineFactory;
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
