@@ -3,10 +3,10 @@ package be.vinci.pae;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import be.vinci.pae.business.domaine.DomaineFactory;
-import be.vinci.pae.business.domaine.Utilisateur;
-import be.vinci.pae.business.domaine.UtilisateurDTO;
-import be.vinci.pae.business.ucc.UtilisateurUCC;
+import be.vinci.pae.business.DomaineFactory;
+import be.vinci.pae.business.utilisateur.Utilisateur;
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
+import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.utilitaires.exceptions.ExceptionBusiness;
 import org.glassfish.hk2.api.ServiceLocator;
