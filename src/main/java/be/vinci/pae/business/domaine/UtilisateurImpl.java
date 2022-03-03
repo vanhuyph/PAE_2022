@@ -23,12 +23,16 @@ class UtilisateurImpl implements Utilisateur {
   private String gsm;
   @JsonView(Vues.Public.class)
   private boolean estAdmin;
+  @JsonView(Vues.Public.class)
+  private String etatInscription;
+  @JsonView(Vues.Public.class)
+  private String commentaire;
 
   public UtilisateurImpl() {
   }
 
   public UtilisateurImpl(int idUtilisateur, String pseudo, String nom, String prenom,
-      String mdp, String gsm, boolean estAdmin) {
+      String mdp, String gsm, boolean estAdmin, String etatInscription, String commentaire) {
     this.idUtilisateur = idUtilisateur;
     this.pseudo = pseudo;
     this.nom = nom;
@@ -36,6 +40,8 @@ class UtilisateurImpl implements Utilisateur {
     this.mdp = mdp;
     this.gsm = gsm;
     this.estAdmin = estAdmin;
+    this.etatInscription = etatInscription;
+    this.commentaire = commentaire;
   }
 
   @Override
@@ -106,6 +112,26 @@ class UtilisateurImpl implements Utilisateur {
   @Override
   public void setEstAdmin(boolean estAdmin) {
     this.estAdmin = estAdmin;
+  }
+
+  @Override
+  public String getEtatInscription() {
+    return etatInscription;
+  }
+
+  @Override
+  public void setEtatInscription(String etatInscription) {
+    this.etatInscription = etatInscription;
+  }
+
+  @Override
+  public String getCommentaire() {
+    return commentaire;
+  }
+
+  @Override
+  public void setCommentaire(String commentaire) {
+    this.commentaire = commentaire;
   }
 
   @Override

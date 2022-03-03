@@ -32,4 +32,12 @@ public interface UtilisateurDTO {
   boolean isEstAdmin();
 
   void setEstAdmin(boolean estAdmin);
+
+  String getEtatInscription();
+
+  void setEtatInscription(String etatInscription);
+
+  String getCommentaire();
+
+  void setCommentaire(String commentaire);
 }
