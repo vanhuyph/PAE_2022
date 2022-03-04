@@ -9,12 +9,7 @@
 
 }
 body{
-
-    /* background-color: #cecff4; */
     background-color: #e1e9f3;
-    /* background-color: #d8dbed; */
-    /* background-color: #f3ebff; */
-    /* background-color: #d0c6df; */
 }
 
 /* Modification UI */
@@ -24,11 +19,15 @@ body{
     margin: 5px 0 !important;
 }
 
-
 .field input{
     background: #dbe3ec !important;
     border-radius: 10px !important;
 }
+
+.modal,.modal .header, .modal .content{
+    background-color: #e1e9f3 !important;
+}
+
 /* Modification UI */
 
 /* Début style navbar */
@@ -76,7 +75,7 @@ body{
 }
 
 /* Media navbar */
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 575px) {
     .conteneur-navbar ul{
         display: none;
     }
@@ -107,16 +106,12 @@ body{
 
 .page-connexion h2{
     margin: 25px 0;
-    padding: 10px;
+    padding: 10px 0;
 }
 
 .formulaire-connexion{
     margin: auto;
     width: 90%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 }
 
 .formulaire-connexion label{
@@ -125,74 +120,15 @@ body{
     min-width: 150px;
 }
 
-.pseudo-conteneur, .mdp-conteneur{
-    width: 100%;
-}
-
 .page-connexion input{
-    margin: 20px 0;
-    margin-bottom: 15px;
-    width: 100%;
     height: 35px;
-    padding: 9px;
-    font-size: small;
-
-    border-radius: 10px;
-    text-decoration: none;
-    outline: none;
     border: 1px solid #d7dee7;
-    background-color: #dbe3ec;
-    
-    transition: border-color 0.5s ease;
-
 }
 
-.page-connexion input:hover{
-    border-color: #ccd6db;
-    
-}
-.page-connexion input:focus{
-    outline: none;
-    border: 1px solid #c8d0d6;
-    
-}
 .page-connexion .formulaire-connexion .se-souvenir{
     align-self: flex-start;
     display: flex;
 }
-.page-connexion .formulaire-connexion .se-souvenir input{
-    width: 15px;
-    height: 23px;
-    margin: 0;
-    margin-right: 10px;
-}
-
-.page-connexion .formulaire-connexion .se-souvenir label{
-    font-size: 15px;
-}
-
-.formulaire-connexion button{
-    cursor: pointer;
-    width: 100%;
-    height: 35px;
-    margin: 20px 0;
-    border-radius: 10px;
-    border: 1px solid black;
-   
-    background-color: transparent;
-
-    color: black;
-    font-size: small;
-    transition: background-color 0.5s ease;
-    
-}
-
-.formulaire-connexion button:hover{
-    background-color: black;
-    color: white;
-    
-}
-
 
 .separateur-ou {
     display: flex;
@@ -211,7 +147,6 @@ body{
     margin: 0 8px;
     background-color: #bfc6ce;
 }
-
 
 /* Message erreur*/
 .message-erreur{
@@ -249,12 +184,9 @@ body{
 }
 
 .modal{
-    width: 95%;
     max-width: 500px;
     min-width: 300px;
     padding: 30px;
-    background-color: #e1e9f3;
-    border-radius: 10px;
     position: absolute;
     top: 40%;
     left: 50%;
@@ -275,12 +207,34 @@ body{
     color: #fff;
 }
 
-.modal h2{
-    margin: 10px 0;
-}
-
 .modal p{
     margin: 20px 0;
 }
 
 /*Fin modal*/
+
+/*Offres*/
+.offres{
+    margin: auto;
+    margin-top: 20px;
+    width: 60%;
+}
+/*Fin offres*/
+
+/* Message de bienvenue
+.bienvenue-popup{
+    background-color: black;
+    color: greenyellow;
+    height: 30px;
+    width: auto;
+    padding: 4px 5px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 25px -2px #000000 ;
+    position: absolute;
+    right: 40px;
+    top: 80px;
+    display: none;
+    opacity: 0.6;
+    transition: opacity 2.5s ease;
+}
+Fin Message de bienvenue*/

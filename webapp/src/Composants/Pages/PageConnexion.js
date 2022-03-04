@@ -103,7 +103,7 @@ const surErreur = (err) => {
   if (err.message.includes(
       "401") || err.message.includes(
       "500")) {
-    erreurMessage = "Pseudo ou mot de passe incorrect.";
+    erreurMessage = "Pseudo ou mot de passe incorrect";
   } else {
     erreurMessage = err.message;
   }
