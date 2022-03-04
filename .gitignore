@@ -103,3 +103,12 @@ target/
 
 # End of https://www.toptal.com/developers/gitignore/api/java,eclipse,java-web
 
+### Java script ###
+webapp/node_modules
+webapp/.vscode
+webapp/package-lock.json
+webapp/.env
+webapp/dist/*
+
+*/.DS_Store
+*.properties
