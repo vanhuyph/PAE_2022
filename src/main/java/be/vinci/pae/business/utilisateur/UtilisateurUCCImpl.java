@@ -22,7 +22,8 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   public UtilisateurDTO connexion(String pseudo, String mdp) {
     Utilisateur utilisateur = (Utilisateur) utilisateurDAO.rechercheParPseudo(pseudo);
 
-    if (utilisateur.getIdUtilisateur() < 1 || !utilisateur.verifierMdp(mdp)) {
+    if (utilisateur == null || utilisateur.getIdUtilisateur() < 1 || !utilisateur.verifierMdp(
+        mdp)) {
       throw new ExceptionBusiness("Pseudo ou mot de passe incorrect.",
           Status.UNAUTHORIZED);
     }
@@ -38,7 +39,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   @Override
   public UtilisateurDTO rechercheParId(int id) {
     UtilisateurDTO utilisateur = utilisateurDAO.rechercheParId(id);
-    if (utilisateur.getIdUtilisateur() < 1) {
+    if (utilisateur == null || utilisateur.getIdUtilisateur() < 1) {
       throw new ExceptionBusiness("L'utilisateur n'existe pas.", Status.BAD_REQUEST);
     }
     return utilisateur;
@@ -53,7 +54,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   @Override
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateur = utilisateurDAO.rechercheParPseudo(pseudo);
-    if (utilisateur.getIdUtilisateur() < 1) {
+    if (utilisateur == null || utilisateur.getIdUtilisateur() < 1) {
       throw new ExceptionBusiness("L'utilisateur n'existe pas.", Status.BAD_REQUEST);
     }
     return utilisateur;
