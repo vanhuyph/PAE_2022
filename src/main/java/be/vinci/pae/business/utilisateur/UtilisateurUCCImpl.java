@@ -44,7 +44,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   }
 
   /**
-   * Vérifie si l'utilisateur a bien été ajouté et hash le mot de passe
+   * Vérifie si l'utilisateur a bien été ajouté et hash le mot de passe.
    *
    * @param pseudo  : le pseudo de l'utilisateur
    * @param nom     : le nom de l'utilisateur

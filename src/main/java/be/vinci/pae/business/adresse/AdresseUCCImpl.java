@@ -12,7 +12,7 @@ public class AdresseUCCImpl implements AdresseUCC {
   AdresseDAO adresseDAO;
 
   /**
-   * Vérifie si l'adresse a bien été ajoutée
+   * Vérifie si l'adresse a bien été ajoutée.
    *
    * @param rue        : la rue de l'adresse
    * @param numero     : le numero de l'adresse

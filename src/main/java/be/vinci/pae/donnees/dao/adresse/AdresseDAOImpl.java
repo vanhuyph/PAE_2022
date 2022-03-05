@@ -60,7 +60,7 @@ public class AdresseDAOImpl implements AdresseDAO {
 
 
   /**
-   * Recupere le prochain id dans la table adresses
+   * Recupere le prochain id dans la table adresses.
    *
    * @return prochainId + 1: le prochain id
    */

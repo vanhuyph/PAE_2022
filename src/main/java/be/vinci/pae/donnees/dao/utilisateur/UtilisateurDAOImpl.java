@@ -63,7 +63,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 
 
   /**
-   * Ajoute un utilisateur dans la base de données
+   * Ajoute un utilisateur dans la base de données.
    *
    * @param utilisateur : l'utilisateur que l'on va ajouter
    * @return utilisateur : l'utilisateur qui a été ajouté
@@ -115,24 +115,24 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
-   * Recupere le prochain id dans la table utilisateurs
+   * Recupere le prochain id dans la table utilisateurs.
    *
    * @return prochainId + 1: le prochain id
-   */
-  private int prochainIdUtilisateur() {
-    int prochainId = 0;
-    PreparedStatement ps = serviceDAL.getPs(
-        "SELECT MAX(id_utilisateur) FROM projet.utilisateurs");
-    try (ResultSet rs = ps.executeQuery()) {
-      while (rs.next()) {
-        prochainId = rs.getInt(1);
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
 
-    return prochainId + 1;
+  private int prochainIdUtilisateur() {
+  int prochainId = 0;
+  PreparedStatement ps = serviceDAL.getPs(
+  "SELECT MAX(id_utilisateur) FROM projet.utilisateurs");
+  try (ResultSet rs = ps.executeQuery()) {
+  while (rs.next()) {
+  prochainId = rs.getInt(1);
   }
+  } catch (SQLException e) {
+  e.printStackTrace();
+  }
+
+  return prochainId + 1;
+  }*/
 
 
 }
