@@ -114,10 +114,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     return utilisateurDTO;
   }
 
-  /**
-   * Recupere le prochain id dans la table utilisateurs.
-   *
-   * @return prochainId + 1: le prochain id
+  /*
+   Recupere le prochain id dans la table utilisateurs.
+
+   @return prochainId + 1: le prochain id
 
   private int prochainIdUtilisateur() {
   int prochainId = 0;
