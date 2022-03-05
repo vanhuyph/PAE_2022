@@ -60,6 +60,28 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     return utilisateurDTO;
   }
 
+
+  @Override
+  public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
+    utilisateur.setIdUtilisateur(prochainIdUtilisateur());
+    PreparedStatement ps = serviceDAL.getPs(
+        "INSERT INTO projet.utilisateurs "
+            + "VALUES (?, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL);");
+    try {
+      ps.setInt(1, utilisateur.getIdUtilisateur());
+      ps.setString(2, utilisateur.getPseudo());
+      ps.setString(3, utilisateur.getNom());
+      ps.setString(4, utilisateur.getPrenom());
+      ps.setString(5, utilisateur.getMdp());
+      ps.setInt(6, utilisateur.getAdresse());
+      ps.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return utilisateur;
+  }
+
   /**
    * Rempli les données de l'utilisateur depuis un ResultSet.
    *
@@ -85,6 +107,22 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     }
     return utilisateurDTO;
   }
+
+  private int prochainIdUtilisateur() {
+    int prochainId = 0;
+    PreparedStatement ps = serviceDAL.getPs(
+        "SELECT MAX(id_utilisateur) FROM projet.utilisateurs");
+    try (ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        prochainId = rs.getInt(1);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return prochainId + 1;
+  }
+
 
 }
 

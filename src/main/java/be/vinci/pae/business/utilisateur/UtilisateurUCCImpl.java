@@ -16,7 +16,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @param pseudo : le pseudo de l'utilisateur
    * @param mdp    : le mot de passe de l'utilisateur
    * @return : l'utilisateur si le mot de passe est bon
-   * @throws IllegalStateException : est lancée si le mot de passe est incorrect
+   * @throws ExceptionBusiness : est lancée si le mot de passe est incorrect
    */
   @Override
   public UtilisateurDTO connexion(String pseudo, String mdp) {
@@ -41,5 +41,34 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     }
     return utilisateur;
   }
+
+  /**
+   * Vérifie si l'utilisateur a bien été ajouté et hash le mot de passe
+   *
+   * @param pseudo
+   * @param nom
+   * @param prenom
+   * @param mdp
+   * @return
+   */
+  @Override
+  public UtilisateurDTO inscription(String pseudo, String nom, String prenom, String mdp,
+      int adresse) {
+
+    Utilisateur utilisateur = new UtilisateurImpl();
+    utilisateur.setPseudo(pseudo);
+    utilisateur.setNom(nom);
+    utilisateur.setPrenom(prenom);
+    utilisateur.setMdp(utilisateur.hashMdp(mdp));
+    utilisateur.setAdresse(adresse);
+
+    utilisateur = (Utilisateur) utilisateurDAO.ajouterUtilisateur(utilisateur);
+    if (utilisateur == null) {
+      throw new ExceptionBusiness("L'utilisateur n'a pas pu être ajouté",
+          Status.BAD_REQUEST);
+    }
+    return utilisateur;
+  }
+
 
 }
