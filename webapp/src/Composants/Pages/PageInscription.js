@@ -103,35 +103,51 @@ const PageInscription = () => {
 
 const surInscription = (e) => {
   e.preventDefault()
+  let pseudo = document.querySelector("#pseudo").value
+  let nom = document.querySelector("#nom").value
+  let prenom = document.querySelector("#prenom").value
+  let mdp = document.querySelector("#mdp").value
+  let rue = document.querySelector("#rue").value
+  let numero = document.querySelector("#numero").value
+  let codePostal = document.querySelector("#code-postal").value
+  let commune = document.querySelector("#commune").value
 
-  let nouvelUtilisateur = {
-    pseudo: document.querySelector("#pseudo").value,
-    nom: document.querySelector("#nom").value,
-    prenom: document.querySelector("#prenom").value,
-    mdp: document.querySelector("#mdp").value,
-    rue: document.querySelector("#rue").value,
-    numero: document.querySelector("#numero").value,
-    boite: document.querySelector("#boite").value,
-    code_postal: document.querySelector("#code-postal").value,
-    commune: document.querySelector("#commune").value
+  if(pseudo===""|| nom ===""|| prenom===""|| mdp===""|| rue===""|| numero===""|| codePostal===""|| commune===""){
+
+    document.querySelector("#messageErreur").innerHTML = "Des champs sont manquants";
+
+  }else {
+
+    let nouvelUtilisateur = {
+      pseudo: pseudo,
+      nom: nom,
+      prenom: prenom,
+      mdp: mdp,
+      rue: rue,
+      numero: numero,
+      boite: document.querySelector("#boite").value,
+      code_postal: codePostal,
+      commune: commune
+    }
+
+    fetch("/api/utilisateurs/inscription", {
+      method: "POST",
+      body: JSON.stringify(nouvelUtilisateur),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+            "Error code : " + response.status + " : " + response.statusText + " : " + response.text())
+      }
+      console.log(response)
+      return response.json()
+    })
+    .then((donnee) => surInscrUtilisateur(donnee))
+    .catch(err => surErreur(err))
   }
-
-  fetch("/api/utilisateurs/inscription", {
-    method: "POST",
-    body: JSON.stringify(nouvelUtilisateur),
-    headers: {
-      "Content-Type": "application/json",
-    }
-  })
-  .then((response) => {
-    if(!response.ok){
-      throw new Error("Error code : " + response.status + " : " + response.statusText)
-    }
-    console.log(response)
-    return response.json()
-  })
-  .then((donnee) => surInscrUtilisateur(donnee))
-  .catch(err => surErreur(err))
 
 }
 
@@ -145,13 +161,11 @@ const surErreur = (err) => {
   let messageErreur = document.querySelector("#messageErreur");
   let erreurMessage = "";
   console.log(err)
-  /*if (err.message.includes(
-      "401") || err.message.includes(
-      "500")) {
-    erreurMessage = "(Faut vérifier les status d'erreur)";
-  } else {*/
+  if (err.message.includes("409")) {
+    document.querySelector(".erreur-pseudo").innerHTML = "Ce pseudo existe déjà";
+  } else {
     erreurMessage = err.message;
-  //}
+  }
   messageErreur.innerText = erreurMessage;
 }
 

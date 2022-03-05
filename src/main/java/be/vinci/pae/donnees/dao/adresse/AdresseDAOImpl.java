@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 public class AdresseDAOImpl implements AdresseDAO {
 
@@ -39,6 +40,7 @@ public class AdresseDAOImpl implements AdresseDAO {
     adresseDTO.setIdAdresse(prochaineIdAdresse());
     adresseDTO.setRue(rue);
     adresseDTO.setNumero(numero);
+
     adresseDTO.setBoite(boite);
     adresseDTO.setCodePostal(codePostal);
     adresseDTO.setCommune(commune);
@@ -47,7 +49,11 @@ public class AdresseDAOImpl implements AdresseDAO {
       ps.setInt(1, adresseDTO.getIdAdresse());
       ps.setString(2, adresseDTO.getRue());
       ps.setInt(3, adresseDTO.getNumero());
-      ps.setInt(4, adresseDTO.getBoite());
+      if (boite == 0) {
+        ps.setNull(4, Types.INTEGER);
+      } else {
+        ps.setInt(4, adresseDTO.getBoite());
+      }
       ps.setInt(5, adresseDTO.getCodePostal());
       ps.setString(6, adresseDTO.getCommune());
       ps.execute();

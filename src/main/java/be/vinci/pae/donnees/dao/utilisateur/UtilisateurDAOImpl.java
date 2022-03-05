@@ -70,21 +70,23 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    */
   @Override
   public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
+    utilisateur.setIdUtilisateur(prochainIdUtilisateur());
     PreparedStatement ps = serviceDAL.getPs(
         "INSERT INTO projet.utilisateurs "
-            + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL);");
+            + "VALUES (?, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL);");
     try {
-      ps.setString(1, utilisateur.getPseudo());
-      ps.setString(2, utilisateur.getNom());
-      ps.setString(3, utilisateur.getPrenom());
-      ps.setString(4, utilisateur.getMdp());
-      ps.setInt(5, utilisateur.getAdresse());
+      ps.setInt(1, utilisateur.getIdUtilisateur());
+      ps.setString(2, utilisateur.getPseudo());
+      ps.setString(3, utilisateur.getNom());
+      ps.setString(4, utilisateur.getPrenom());
+      ps.setString(5, utilisateur.getMdp());
+      ps.setInt(6, utilisateur.getAdresse());
       ps.execute();
     } catch (SQLException e) {
       e.printStackTrace();
     }
 
-    return rechercheParPseudo(utilisateur.getPseudo());
+    return utilisateur;
   }
 
   /**
@@ -114,25 +116,25 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     return utilisateurDTO;
   }
 
-  /*
-   Recupere le prochain id dans la table utilisateurs.
-
-   @return prochainId + 1: le prochain id
-
+  /**
+   * Recupere le prochain id dans la table utilisateurs.
+   *
+   * @return prochainId + 1: le prochain id
+   */
   private int prochainIdUtilisateur() {
-  int prochainId = 0;
-  PreparedStatement ps = serviceDAL.getPs(
-  "SELECT MAX(id_utilisateur) FROM projet.utilisateurs");
-  try (ResultSet rs = ps.executeQuery()) {
-  while (rs.next()) {
-  prochainId = rs.getInt(1);
-  }
-  } catch (SQLException e) {
-  e.printStackTrace();
-  }
+    int prochainId = 0;
+    PreparedStatement ps = serviceDAL.getPs(
+        "SELECT MAX(id_utilisateur) FROM projet.utilisateurs");
+    try (ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        prochainId = rs.getInt(1);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
 
-  return prochainId + 1;
-  }*/
+    return prochainId + 1;
+  }
 
 
 }

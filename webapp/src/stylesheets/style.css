@@ -237,5 +237,8 @@ Fin Message de bienvenue*/
 .page-inscription form label span, .obligatoire{
     color: crimson;
 }
+.obligatoire{
+    font-size: 11px;
+}
 
 /* Inscription */

@@ -81,7 +81,6 @@ public class RessourceUtilisateur {
           .entity("Des champs sont manquants").type("text/plain").build());
     }
 
-    System.out.println("Dans inscription");
     String pseudo = json.get("pseudo").asText();
     String nom = json.get("nom").asText();
     String prenom = json.get("prenom").asText();
@@ -93,6 +92,11 @@ public class RessourceUtilisateur {
     int codePostal = json.get("code_postal").asInt();
     String commune = json.get("commune").asText();
 
+    if (utilisateurUCC.rechercheParPseudo(pseudo).getIdUtilisateur() > 0) {
+      throw new WebApplicationException(Response.status(Status.CONFLICT)
+          .entity("Le pseudo existe déjà").type("text/plain").build());
+    }
+
     AdresseDTO adresse = adresseUCC.ajouterAdresse(rue, numero, boite, codePostal, commune);
     if (adresse == null) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
@@ -103,13 +107,12 @@ public class RessourceUtilisateur {
         adresse.getIdAdresse());
 
     if (utilisateur == null) {
-      throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
           .entity("L'utilisateur n'a pas pu être ajouté").type(MediaType.TEXT_PLAIN)
           .build());
     }
 
     ObjectNode noeud = creationToken(utilisateur);
-    System.out.println(noeud);
     return noeud;
 
   }

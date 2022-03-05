@@ -44,6 +44,21 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   }
 
   /**
+   * Renvoie un utilisateur en fonction de son pseudo.
+   *
+   * @param pseudo : l'id de l'utilisateur
+   * @return : l'utilisateur possèdant l'id passé en paramètre
+   */
+  @Override
+  public UtilisateurDTO rechercheParPseudo(String pseudo) {
+    UtilisateurDTO utilisateur = utilisateurDAO.rechercheParPseudo(pseudo);
+    if (utilisateur == null) {
+      throw new ExceptionBusiness("L'utilisateur n'existe pas.", Status.BAD_REQUEST);
+    }
+    return utilisateur;
+  }
+
+  /**
    * Vérifie si l'utilisateur a bien été ajouté et hash le mot de passe.
    *
    * @param pseudo  : le pseudo de l'utilisateur
@@ -56,6 +71,11 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   @Override
   public UtilisateurDTO inscription(String pseudo, String nom, String prenom, String mdp,
       int adresse) {
+
+    if (utilisateurDAO.rechercheParPseudo(pseudo).getIdUtilisateur() > 0) {
+      throw new ExceptionBusiness("Pseudo déjà utilisé",
+          Status.CONFLICT);
+    }
 
     Utilisateur utilisateur = new UtilisateurImpl();
     utilisateur.setPseudo(pseudo);
