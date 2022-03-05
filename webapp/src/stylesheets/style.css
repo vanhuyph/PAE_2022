@@ -109,17 +109,6 @@ body{
     padding: 10px 0;
 }
 
-.formulaire-connexion{
-    margin: auto;
-    width: 90%;
-}
-
-.formulaire-connexion label{
-    align-self: flex-start;
-    width: 60%;
-    min-width: 150px;
-}
-
 .page-connexion input{
     height: 35px;
     border: 1px solid #d7dee7;
@@ -238,3 +227,15 @@ body{
     transition: opacity 2.5s ease;
 }
 Fin Message de bienvenue*/
+
+/* Inscription */
+.page-inscription{
+    margin: auto;
+    margin-top: 20px;
+    width: 30%;
+}
+.page-inscription form label span, .obligatoire{
+    color: crimson;
+}
+
+/* Inscription */

@@ -61,6 +61,8 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     utilisateur.setPrenom(prenom);
     utilisateur.setMdp(utilisateur.hashMdp(mdp));
     utilisateur.setAdresse(adresse);
+    utilisateur.setEtatInscription("en attente");
+    utilisateur.setCommentaire(null);
 
     utilisateur = (Utilisateur) utilisateurDAO.ajouterUtilisateur(utilisateur);
     if (utilisateur == null) {
