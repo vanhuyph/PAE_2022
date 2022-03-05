@@ -67,6 +67,7 @@ public class RessourceUtilisateur {
    *
    * @param json : json reçu du formulaire d'inscription
    * @return noeud : l'objet json contenant le token et l'utilisateur
+   * @throws WebApplicationException : lancé si il y a un problème lors de l'inscription
    */
   @POST
   @Path("inscription")
@@ -92,28 +93,33 @@ public class RessourceUtilisateur {
     int codePostal = json.get("code_postal").asInt();
     String commune = json.get("commune").asText();
 
-    if (utilisateurUCC.rechercheParPseudo(pseudo).getIdUtilisateur() > 0) {
-      throw new WebApplicationException(Response.status(Status.CONFLICT)
-          .entity("Le pseudo existe déjà").type("text/plain").build());
+    try {
+      if (utilisateurUCC.rechercheParPseudo(pseudo) != null) {
+        throw new WebApplicationException(Response.status(Status.CONFLICT)
+            .entity("Le pseudo existe déjà").type("text/plain").build());
+      }
+    } catch (WebApplicationException w) {
+      AdresseDTO adresse = adresseUCC.ajouterAdresse(rue, numero, boite, codePostal, commune);
+      if (adresse == null) {
+        throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+            .entity("L'adresse n'a pas pu être ajoutée").type("text/plain").build());
+      }
+
+      UtilisateurDTO utilisateur = utilisateurUCC.inscription(pseudo, nom, prenom, mdp,
+          adresse.getIdAdresse());
+
+      if (utilisateur == null) {
+        throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+            .entity("L'utilisateur n'a pas pu être ajouté").type(MediaType.TEXT_PLAIN)
+            .build());
+      }
+
+      ObjectNode noeud = creationToken(utilisateur);
+      return noeud;
     }
 
-    AdresseDTO adresse = adresseUCC.ajouterAdresse(rue, numero, boite, codePostal, commune);
-    if (adresse == null) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("L'adresse n'a pas pu être ajoutée").type("text/plain").build());
-    }
-
-    UtilisateurDTO utilisateur = utilisateurUCC.inscription(pseudo, nom, prenom, mdp,
-        adresse.getIdAdresse());
-
-    if (utilisateur == null) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("L'utilisateur n'a pas pu être ajouté").type(MediaType.TEXT_PLAIN)
-          .build());
-    }
-
-    ObjectNode noeud = creationToken(utilisateur);
-    return noeud;
+    throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+        .entity("Erreur lors de l'inscription").type("text/plain").build());
 
   }
 
