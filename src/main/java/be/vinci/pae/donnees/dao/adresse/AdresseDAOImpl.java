@@ -59,6 +59,11 @@ public class AdresseDAOImpl implements AdresseDAO {
   }
 
 
+  /**
+   * Recupere le prochain id dans la table adresses
+   *
+   * @return prochainId + 1: le prochain id
+   */
   private int prochaineIdAdresse() {
     int prochainId = 0;
     PreparedStatement ps = serviceDAL.getPs(

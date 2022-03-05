@@ -80,6 +80,7 @@ public class RessourceUtilisateur {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
           .entity("Des champs sont manquants").type("text/plain").build());
     }
+
     System.out.println("Dans inscription");
     String pseudo = json.get("pseudo").asText();
     String nom = json.get("nom").asText();

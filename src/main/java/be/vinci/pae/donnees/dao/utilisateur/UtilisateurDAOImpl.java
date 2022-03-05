@@ -27,7 +27,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire FROM projet.utilisateurs u WHERE u.pseudo = ?;");
+            + "u.etat_inscription, u.commentaire, u.adresse"
+            + " FROM projet.utilisateurs u WHERE u.pseudo = ?;");
     try {
       ps.setString(1, pseudo);
       utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
@@ -49,7 +50,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire"
+            + "u.etat_inscription, u.commentaire, u.adresse"
             + "FROM projet.utilisateurs u WHERE u.id_utilisateur = ?;");
     try {
       ps.setInt(1, id);
@@ -61,25 +62,29 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
 
+  /**
+   * Ajoute un utilisateur dans la base de données
+   *
+   * @param utilisateur : l'utilisateur que l'on va ajouter
+   * @return utilisateur : l'utilisateur qui a été ajouté
+   */
   @Override
   public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
-    utilisateur.setIdUtilisateur(prochainIdUtilisateur());
     PreparedStatement ps = serviceDAL.getPs(
         "INSERT INTO projet.utilisateurs "
-            + "VALUES (?, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL);");
+            + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL);");
     try {
-      ps.setInt(1, utilisateur.getIdUtilisateur());
-      ps.setString(2, utilisateur.getPseudo());
-      ps.setString(3, utilisateur.getNom());
-      ps.setString(4, utilisateur.getPrenom());
-      ps.setString(5, utilisateur.getMdp());
-      ps.setInt(6, utilisateur.getAdresse());
+      ps.setString(1, utilisateur.getPseudo());
+      ps.setString(2, utilisateur.getNom());
+      ps.setString(3, utilisateur.getPrenom());
+      ps.setString(4, utilisateur.getMdp());
+      ps.setInt(5, utilisateur.getAdresse());
       ps.execute();
     } catch (SQLException e) {
       e.printStackTrace();
     }
 
-    return utilisateur;
+    return rechercheParPseudo(utilisateur.getPseudo());
   }
 
   /**
@@ -103,11 +108,17 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         utilisateurDTO.setEstAdmin(rs.getBoolean(7));
         utilisateurDTO.setEtatInscription(rs.getString(8));
         utilisateurDTO.setCommentaire(rs.getString(9));
+        utilisateurDTO.setAdresse(rs.getInt(10));
       }
     }
     return utilisateurDTO;
   }
 
+  /**
+   * Recupere le prochain id dans la table utilisateurs
+   *
+   * @return prochainId + 1: le prochain id
+   */
   private int prochainIdUtilisateur() {
     int prochainId = 0;
     PreparedStatement ps = serviceDAL.getPs(

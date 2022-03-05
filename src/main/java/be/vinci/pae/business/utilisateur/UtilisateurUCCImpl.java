@@ -22,7 +22,8 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   public UtilisateurDTO connexion(String pseudo, String mdp) {
     Utilisateur utilisateur = (Utilisateur) utilisateurDAO.rechercheParPseudo(pseudo);
     if (utilisateur == null || !utilisateur.verifierMdp(mdp)) {
-      throw new ExceptionBusiness("Pseudo ou mot de passe incorrect.", Status.UNAUTHORIZED);
+      throw new ExceptionBusiness("Pseudo ou mot de passe incorrect.",
+          Status.UNAUTHORIZED);
     }
     return utilisateur;
   }
@@ -45,10 +46,11 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   /**
    * Vérifie si l'utilisateur a bien été ajouté et hash le mot de passe
    *
-   * @param pseudo
-   * @param nom
-   * @param prenom
-   * @param mdp
+   * @param pseudo  : le pseudo de l'utilisateur
+   * @param nom     : le nom de l'utilisateur
+   * @param prenom  : de l'utilisateur
+   * @param mdp     : le mot de passe de l'utilisateur
+   * @param adresse : l'id de l'adresse de l'utilisateur
    * @return
    */
   @Override
