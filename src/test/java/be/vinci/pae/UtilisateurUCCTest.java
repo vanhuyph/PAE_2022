@@ -75,6 +75,7 @@ public class UtilisateurUCCTest {
   @Test
   @DisplayName("Test réussi : méthode rechercheParId renvoie un utilisateur existant.")
   public void testRecherchePardIdV1() {
+    utilisateurDTO.setIdUtilisateur(1);
     int id = utilisateurDTO.getIdUtilisateur();
     Mockito.when(utilisateurDAO.rechercheParId(id)).thenReturn(utilisateurDTO);
     assertEquals(utilisateurDTO, utilisateurUCC.rechercheParId(id));

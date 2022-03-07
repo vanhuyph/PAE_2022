@@ -27,6 +27,9 @@ public class UtilisateurImpl implements Utilisateur {
   private String etatInscription;
   @JsonView(Vues.Public.class)
   private String commentaire;
+  @JsonView(Vues.Public.class)
+  private int adresse;
+
 
   @Override
   public int getIdUtilisateur() {
@@ -116,6 +119,16 @@ public class UtilisateurImpl implements Utilisateur {
   @Override
   public void setCommentaire(String commentaire) {
     this.commentaire = commentaire;
+  }
+
+  @Override
+  public int getAdresse() {
+    return adresse;
+  }
+
+  @Override
+  public void setAdresse(int adresse) {
+    this.adresse = adresse;
   }
 
   @Override

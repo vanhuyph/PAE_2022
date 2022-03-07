@@ -7,4 +7,6 @@ public interface UtilisateurDAO {
   UtilisateurDTO rechercheParPseudo(String pseudo);
 
   UtilisateurDTO rechercheParId(int id);
+
+  UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur);
 }
