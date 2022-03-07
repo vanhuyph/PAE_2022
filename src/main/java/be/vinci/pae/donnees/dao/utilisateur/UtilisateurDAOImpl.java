@@ -31,6 +31,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     try {
       ps.setString(1, pseudo);
       utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
+      ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -54,6 +55,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     try {
       ps.setInt(1, id);
       utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
+      ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
     }
