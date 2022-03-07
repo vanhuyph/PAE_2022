@@ -13,10 +13,8 @@ public class AdresseDAOImpl implements AdresseDAO {
 
   @Inject
   private DomaineFactory factory;
-
   @Inject
   private ServiceDAL serviceDAL;
-
 
   /**
    * Ajoute une adresse dans la base de donnée.
@@ -32,13 +30,10 @@ public class AdresseDAOImpl implements AdresseDAO {
   @Override
   public AdresseDTO ajouterAdresse(String rue, int numero, int boite, int codePostal,
       String commune) {
-
     AdresseDTO adresseDTO = factory.getAdresse();
-
     PreparedStatement ps = serviceDAL.getPs(
         "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?)  RETURNING id_adresse, "
             + "rue, numero, boite, code_postal, commune;");
-
     try {
       ps.setString(1, rue);
       ps.setInt(2, numero);
@@ -49,15 +44,13 @@ public class AdresseDAOImpl implements AdresseDAO {
       }
       ps.setInt(4, codePostal);
       ps.setString(5, commune);
-
       adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, ps);
-
+      ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
     }
     return adresseDTO;
   }
-
 
   private AdresseDTO remplirAdresseDepuisResultSet(AdresseDTO adresse, PreparedStatement ps)
       throws SQLException {
@@ -73,6 +66,5 @@ public class AdresseDAOImpl implements AdresseDAO {
     }
     return adresse;
   }
-  
 
 }
