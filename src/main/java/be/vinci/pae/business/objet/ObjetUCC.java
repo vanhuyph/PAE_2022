@@ -2,7 +2,8 @@ package be.vinci.pae.business.objet;
 
 public interface ObjetUCC {
 
-  public ObjetDTO creerUnObjet(String type_objet, String description, int offreur, String photo);
+  public ObjetDTO creerUnObjet(int id_offreur, String type_objet, String description, int offreur,
+      String photo);
 
 
 }

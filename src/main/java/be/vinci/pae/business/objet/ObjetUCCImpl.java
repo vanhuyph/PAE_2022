@@ -1,12 +1,14 @@
 package be.vinci.pae.business.objet;
 
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
+import be.vinci.pae.utilitaires.exceptions.ExceptionBusiness;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Response.Status;
 
 public class ObjetUCCImpl implements ObjetUCC {
 
   @Inject
-  ObjetDAO objetDAO;
+  ObjetDAO objetDAO; // vérifier injection de dépendances
 
 
   /**
@@ -17,8 +19,15 @@ public class ObjetUCCImpl implements ObjetUCC {
    * @return l'objet créé
    */
   @Override
-  public ObjetDTO creerUnObjet(String type_objet, String description, int offreur, String photo) {
+  public ObjetDTO creerUnObjet(int id_offreur, String type_objet, String description, int offreur,
+      String photo) {
 
-    return null;
+    ObjetDTO nObjet = objetDAO.creerObjet();
+    if (nObjet == null) {
+      throw new ExceptionBusiness("objet n'a pas pu être créé.",
+          Status.INTERNAL_SERVER_ERROR); // vérifier statut de réponse
+    }
+
+    return nObjet;
   }
 }
