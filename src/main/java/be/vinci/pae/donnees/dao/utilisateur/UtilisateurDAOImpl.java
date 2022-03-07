@@ -70,18 +70,20 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    */
   @Override
   public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
-    utilisateur.setIdUtilisateur(prochainIdUtilisateur());
     PreparedStatement ps = serviceDAL.getPs(
         "INSERT INTO projet.utilisateurs "
-            + "VALUES (?, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL);");
+            + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL) RETURNING id_utilisateur;");
     try {
-      ps.setInt(1, utilisateur.getIdUtilisateur());
-      ps.setString(2, utilisateur.getPseudo());
-      ps.setString(3, utilisateur.getNom());
-      ps.setString(4, utilisateur.getPrenom());
-      ps.setString(5, utilisateur.getMdp());
-      ps.setInt(6, utilisateur.getAdresse());
-      ps.execute();
+      ps.setString(1, utilisateur.getPseudo());
+      ps.setString(2, utilisateur.getNom());
+      ps.setString(3, utilisateur.getPrenom());
+      ps.setString(4, utilisateur.getMdp());
+      ps.setInt(5, utilisateur.getAdresse());
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          utilisateur.setIdUtilisateur(rs.getInt(1));
+        }
+      }
     } catch (SQLException e) {
       e.printStackTrace();
     }

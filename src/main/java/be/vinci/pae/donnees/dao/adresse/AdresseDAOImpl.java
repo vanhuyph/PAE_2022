@@ -36,27 +36,21 @@ public class AdresseDAOImpl implements AdresseDAO {
     AdresseDTO adresseDTO = factory.getAdresse();
 
     PreparedStatement ps = serviceDAL.getPs(
-        "INSERT INTO projet.adresses VALUES (?, ?, ?, ?, ?, ?);");
-    adresseDTO.setIdAdresse(prochaineIdAdresse());
-    adresseDTO.setRue(rue);
-    adresseDTO.setNumero(numero);
-
-    adresseDTO.setBoite(boite);
-    adresseDTO.setCodePostal(codePostal);
-    adresseDTO.setCommune(commune);
+        "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?)  RETURNING id_adresse, "
+            + "rue, numero, boite, code_postal, commune;");
 
     try {
-      ps.setInt(1, adresseDTO.getIdAdresse());
-      ps.setString(2, adresseDTO.getRue());
-      ps.setInt(3, adresseDTO.getNumero());
+      ps.setString(1, rue);
+      ps.setInt(2, numero);
       if (boite == 0) {
-        ps.setNull(4, Types.INTEGER);
+        ps.setNull(3, Types.INTEGER);
       } else {
-        ps.setInt(4, adresseDTO.getBoite());
+        ps.setInt(3, boite);
       }
-      ps.setInt(5, adresseDTO.getCodePostal());
-      ps.setString(6, adresseDTO.getCommune());
-      ps.execute();
+      ps.setInt(4, codePostal);
+      ps.setString(5, commune);
+
+      adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, ps);
 
     } catch (SQLException e) {
       e.printStackTrace();
@@ -65,24 +59,20 @@ public class AdresseDAOImpl implements AdresseDAO {
   }
 
 
-  /**
-   * Recupere le prochain id dans la table adresses.
-   *
-   * @return prochainId + 1: le prochain id
-   */
-  private int prochaineIdAdresse() {
-    int prochainId = 0;
-    PreparedStatement ps = serviceDAL.getPs(
-        "SELECT MAX(id_adresse) FROM projet.adresses");
+  private AdresseDTO remplirAdresseDepuisResultSet(AdresseDTO adresse, PreparedStatement ps)
+      throws SQLException {
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
-        prochainId = rs.getInt(1);
+        adresse.setIdAdresse(rs.getInt(1));
+        adresse.setRue(rs.getString(2));
+        adresse.setNumero(rs.getInt(3));
+        adresse.setBoite(rs.getInt(4));
+        adresse.setCodePostal(rs.getInt(5));
+        adresse.setCommune(rs.getString(6));
       }
-    } catch (SQLException e) {
-      e.printStackTrace();
     }
-
-    return prochainId + 1;
+    return adresse;
   }
+  
 
 }
