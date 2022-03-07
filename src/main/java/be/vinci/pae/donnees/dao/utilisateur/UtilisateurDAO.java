@@ -9,4 +9,6 @@ public interface UtilisateurDAO {
   UtilisateurDTO rechercheParId(int id);
 
   UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur);
+
+  UtilisateurDTO confirmerInscription(int id);
 }

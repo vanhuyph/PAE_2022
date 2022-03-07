@@ -63,7 +63,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     return utilisateurDTO;
   }
 
-
   /**
    * Ajoute un utilisateur dans la base de données.
    *
@@ -90,8 +89,32 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     } catch (SQLException e) {
       e.printStackTrace();
     }
-
     return utilisateur;
+  }
+
+  /**
+   * Met à jour l'état de l'inscription d'un utilisateur à "confirmé".
+   *
+   * @param id : l'id de l'utilisateur
+   * @return utilisateurDTO : l'utilisateur avec l'état de son inscription à "confirmé"
+   * @throws SQLException : est lancée s'il y a eu un problème
+   */
+  @Override
+  public UtilisateurDTO confirmerInscription(int id) {
+    UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
+    PreparedStatement ps = serviceDAL.getPs(
+        "UPDATE projet.utilisateurs SET etat_inscription = ? WHERE id_utilisateur = ? "
+            + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
+            + "etat_inscription, commentaire, adresse;");
+    try {
+      ps.setString(1, "confirmé");
+      ps.setInt(2, id);
+      utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
+      ps.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return utilisateurDTO;
   }
 
   /**
@@ -100,7 +123,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @param utilisateurDTO : l'utilisateur vide, qui va être rempli
    * @param ps             : le PreparedStatement déjà mis en place
    * @return utilisateurDTO : l'utilisateur rempli
-   * @throws SQLException : est lancée si il y a un problème
+   * @throws SQLException : est lancée s'il y a un problème
    */
   private UtilisateurDTO remplirUtilisateurDepuisResulSet(UtilisateurDTO utilisateurDTO,
       PreparedStatement ps) throws SQLException {

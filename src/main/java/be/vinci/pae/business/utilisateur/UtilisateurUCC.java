@@ -10,4 +10,6 @@ public interface UtilisateurUCC {
 
   UtilisateurDTO inscription(String pseudo, String nom, String prenom, String mdp,
       int adresse);
+
+  UtilisateurDTO confirmerInscription(int id);
 }

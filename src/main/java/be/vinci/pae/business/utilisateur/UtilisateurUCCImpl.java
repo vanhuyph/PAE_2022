@@ -96,5 +96,10 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     return utilisateur;
   }
 
+  @Override
+  public UtilisateurDTO confirmerInscription(int id) {
+    return null;
+  }
+
 
 }
