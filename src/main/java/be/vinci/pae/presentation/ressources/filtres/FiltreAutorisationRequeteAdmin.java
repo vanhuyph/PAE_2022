@@ -19,8 +19,8 @@ import java.io.IOException;
 
 @Singleton
 @Provider
-@Autorisation
-public class FiltreAutorisationRequete implements ContainerRequestFilter {
+@AutorisationAdmin
+public class FiltreAutorisationRequeteAdmin implements ContainerRequestFilter {
 
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getPropriete("JWTSecret"));
   private final JWTVerifier jwtVerifier = JWT.require(this.jwtAlgorithm).withIssuer("auth0")
@@ -44,12 +44,11 @@ public class FiltreAutorisationRequete implements ContainerRequestFilter {
       }
       UtilisateurDTO authenticatedUser = utilisateurUCC.rechercheParId(
           tokenDecode.getClaim("user").asInt());
-      if (authenticatedUser == null) {
+      if (authenticatedUser == null || !authenticatedUser.isEstAdmin()) {
         requestContext.abortWith(Response.status(Status.FORBIDDEN)
             .entity("Vous ne pouvez pas accéder a cette ressource").build());
       }
       requestContext.setProperty("user", authenticatedUser);
     }
   }
-
 }
