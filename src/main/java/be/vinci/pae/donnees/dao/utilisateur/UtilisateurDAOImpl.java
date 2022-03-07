@@ -72,7 +72,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
     PreparedStatement ps = serviceDAL.getPs(
         "INSERT INTO projet.utilisateurs "
-            + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL) RETURNING id_utilisateur;");
+            + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL) RETURNING "
+            + "id_utilisateur;");
     try {
       ps.setString(1, utilisateur.getPseudo());
       ps.setString(2, utilisateur.getNom());
