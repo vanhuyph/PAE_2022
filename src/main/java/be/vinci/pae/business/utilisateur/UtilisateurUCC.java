@@ -8,6 +8,8 @@ public interface UtilisateurUCC {
 
   UtilisateurDTO rechercheParPseudo(String pseudo);
 
+  UtilisateurDTO rechercheParPseudoInscription(String pseudo);
+
   UtilisateurDTO inscription(String pseudo, String nom, String prenom, String mdp,
       int adresse);
 }
