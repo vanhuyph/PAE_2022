@@ -17,12 +17,12 @@ public class FiltreAutorisationRequeteAdmin extends AutorisationAbstraite implem
 
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
-    UtilisateurDTO authenticatedUser = tokenDecode(requestContext);
-    if (authenticatedUser == null || !authenticatedUser.isEstAdmin()) {
+    UtilisateurDTO utilisateurAuthentifie = tokenDecode(requestContext);
+    if (utilisateurAuthentifie == null || !utilisateurAuthentifie.isEstAdmin()) {
       requestContext.abortWith(Response.status(Status.FORBIDDEN)
           .entity("Vous ne pouvez pas accéder a cette ressource").build());
     }
-    requestContext.setProperty("user", authenticatedUser);
+    requestContext.setProperty("utilisateur", utilisateurAuthentifie);
 
   }
 }

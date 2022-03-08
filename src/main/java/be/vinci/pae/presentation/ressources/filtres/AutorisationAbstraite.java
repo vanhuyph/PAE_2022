@@ -22,10 +22,16 @@ public abstract class AutorisationAbstraite {
   @Inject
   private UtilisateurUCC utilisateurUCC;
 
-  public UtilisateurDTO tokenDecode(ContainerRequestContext requestContext) {
-    String token = requestContext.getHeaderString("Authorization");
+  /**
+   * Récupère un utilisateur depuis un token ou annule la requête en cas d'erreur.
+   *
+   * @param contexteRequete : contient dans le header le token en tant que "Authorization"
+   * @return un utilisateur ou null si le token n'est pas présent
+   */
+  public UtilisateurDTO tokenDecode(ContainerRequestContext contexteRequete) {
+    String token = contexteRequete.getHeaderString("Authorization");
     if (token == null) {
-      requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+      contexteRequete.abortWith(Response.status(Response.Status.UNAUTHORIZED)
           .entity("Un token est nécessaire pour accéder à cette ressource").build());
       return null;
     } else {
@@ -33,19 +39,25 @@ public abstract class AutorisationAbstraite {
     }
   }
 
-
+  /**
+   * Récupère un utilisateur depuis un token.
+   *
+   * @param token : contient l'ID de l'utilisateur
+   * @return un utilisateur ou null si l'utilisateur n'existe pas
+   * @throws WebApplicationException : est lancée si expiration ou malformation du token
+   */
   public UtilisateurDTO siTokenDecode(String token) {
     DecodedJWT tokenDecode = null;
     try {
       tokenDecode = this.jwtVerifier.verify(token);
     } catch (TokenExpiredException e) {
       throw new WebApplicationException(Response.status(Status.UNAUTHORIZED)
-          .entity("Token expiré: " + e.getMessage()).type("text/plain").build());
+          .entity("Token expiré : " + e.getMessage()).type("text/plain").build());
     } catch (Exception e) {
       throw new WebApplicationException(Response.status(Status.UNAUTHORIZED)
-          .entity("Token malformé: " + e.getMessage()).type("text/plain").build());
+          .entity("Token malformé : " + e.getMessage()).type("text/plain").build());
     }
-    return utilisateurUCC.rechercheParId(tokenDecode.getClaim("user").asInt());
+    return utilisateurUCC.rechercheParId(tokenDecode.getClaim("utilisateur").asInt());
   }
 
 }

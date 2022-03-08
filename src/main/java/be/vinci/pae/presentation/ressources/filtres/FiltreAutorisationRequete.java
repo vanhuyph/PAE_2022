@@ -14,16 +14,16 @@ import java.io.IOException;
 @Autorisation
 public class FiltreAutorisationRequete extends AutorisationAbstraite implements
     ContainerRequestFilter {
-  
+
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
 
-    UtilisateurDTO authenticatedUser = tokenDecode(requestContext);
-    if (authenticatedUser == null) {
+    UtilisateurDTO utilisateurAuthentifie = tokenDecode(requestContext);
+    if (utilisateurAuthentifie == null) {
       requestContext.abortWith(Response.status(Status.FORBIDDEN)
           .entity("Vous ne pouvez pas accéder a cette ressource").build());
     }
-    requestContext.setProperty("user", authenticatedUser);
+    requestContext.setProperty("utilisateur", utilisateurAuthentifie);
   }
 
 }
