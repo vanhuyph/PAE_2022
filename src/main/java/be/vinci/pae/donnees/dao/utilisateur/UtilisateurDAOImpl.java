@@ -95,20 +95,22 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   /**
    * Met à jour l'état de l'inscription d'un utilisateur à "confirmé".
    *
-   * @param id : l'id de l'utilisateur
+   * @param id       : l'id de l'utilisateur
+   * @param estAdmin : si l'utilisateur est admin
    * @return utilisateurDTO : l'utilisateur avec l'état de son inscription à "confirmé"
    * @throws SQLException : est lancée s'il y a eu un problème
    */
   @Override
-  public UtilisateurDTO confirmerInscription(int id) {
+  public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
-        "UPDATE projet.utilisateurs SET etat_inscription = ? WHERE id_utilisateur = ? "
+        "UPDATE projet.utilisateurs SET etat_inscription = ?, est_admin = ? WHERE id_utilisateur = ? "
             + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
             + "etat_inscription, commentaire, adresse;");
     try {
       ps.setString(1, "confirmé");
-      ps.setInt(2, id);
+      ps.setBoolean(2, estAdmin);
+      ps.setInt(3, id);
       utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
       ps.close();
     } catch (SQLException e) {

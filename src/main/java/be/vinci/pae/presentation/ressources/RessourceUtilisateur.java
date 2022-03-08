@@ -15,7 +15,9 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
@@ -121,6 +123,39 @@ public class RessourceUtilisateur {
     throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
         .entity("Erreur lors de l'inscription").type("text/plain").build());
 
+  }
+
+
+  /**
+   * Confirme l'inscription d'un utilisateur et précise s'il est admin ou pas.
+   *
+   * @param json : json contenant l'information s'il est admin ou pas
+   * @param id   : l'id de l'utilisateur que l'on veut confirmer
+   * @return
+   */
+  @PUT
+  @Path("confirme/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public UtilisateurDTO confirmerUtilisateur(JsonNode json, @PathParam("id") int id) {
+    if (!json.hasNonNull("estAdmin")) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("Information si l'utilisateur est admin ou non").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+    if (id == 0) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("L'utilisateur n'existe pas").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+    boolean estAdmin = json.get("estAdmin").asBoolean();
+    UtilisateurDTO utilisateurDTO = utilisateurUCC.confirmerInscription(id, estAdmin);
+    if (utilisateurDTO == null) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("L'utilisateur n'a pas pu être confimé").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+    return utilisateurDTO;
   }
 
   /**

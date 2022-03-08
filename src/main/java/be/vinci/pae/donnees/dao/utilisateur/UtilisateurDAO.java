@@ -10,5 +10,5 @@ public interface UtilisateurDAO {
 
   UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur);
 
-  UtilisateurDTO confirmerInscription(int id);
+  UtilisateurDTO confirmerInscription(int id, boolean estAdmin);
 }
