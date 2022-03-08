@@ -11,4 +11,6 @@ public interface UtilisateurDAO {
   UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur);
 
   UtilisateurDTO confirmerInscription(int id, boolean estAdmin);
+
+  UtilisateurDTO refuserInscription(int id, String commentaire);
 }

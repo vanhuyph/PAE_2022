@@ -153,12 +153,53 @@ public class RessourceUtilisateur {
           .build());
     }
     boolean estAdmin = json.get("estAdmin").asBoolean();
-    UtilisateurDTO utilisateurDTO = utilisateurUCC.confirmerInscription(id, estAdmin);
-    if (utilisateurDTO == null) {
+    UtilisateurDTO utilisateurDTO = null;
+    try {
+      utilisateurDTO = utilisateurUCC.confirmerInscription(id, estAdmin);
+      if (utilisateurDTO == null) {
+        throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+            .entity("L'utilisateur n'a pas pu être confimé").type(MediaType.TEXT_PLAIN)
+            .build());
+      }
+    } catch (Exception e) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
           .entity("L'utilisateur n'a pas pu être confimé").type(MediaType.TEXT_PLAIN)
           .build());
     }
+    return utilisateurDTO;
+  }
+
+  @PUT
+  @Path("refuse/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AutorisationAdmin
+  public UtilisateurDTO refuseUtilisateur(JsonNode json, @PathParam("id") int id) {
+    String commentaire = json.get("commentaire").asText();
+    if (commentaire.equals("")) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("Commentaire manquant").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+    if (id < 1) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("L'utilisateur n'existe pas").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+    UtilisateurDTO utilisateurDTO = null;
+    try {
+      utilisateurDTO = utilisateurUCC.refuserInscription(id, commentaire);
+      if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
+        throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+            .entity("L'utilisateur n'a pas pu être refusé").type(MediaType.TEXT_PLAIN)
+            .build());
+      }
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("L'utilisateur n'a pas pu être refusé").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+
     return utilisateurDTO;
   }
 

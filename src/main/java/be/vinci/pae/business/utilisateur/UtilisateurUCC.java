@@ -12,4 +12,6 @@ public interface UtilisateurUCC {
       int adresse);
 
   UtilisateurDTO confirmerInscription(int id, boolean estAdmin);
+
+  UtilisateurDTO refuserInscription(int id, String commentaire);
 }

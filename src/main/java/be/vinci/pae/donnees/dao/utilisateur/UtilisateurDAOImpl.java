@@ -120,6 +120,26 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     return utilisateurDTO;
   }
 
+  @Override
+  public UtilisateurDTO refuserInscription(int id, String commentaire) {
+    UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
+    PreparedStatement ps = serviceDAL.getPs(
+        "UPDATE projet.utilisateurs SET etat_inscription = ?, commentaire = ? "
+            + "WHERE id_utilisateur = ? "
+            + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
+            + "etat_inscription, commentaire, adresse;");
+    try {
+      ps.setString(1, "refusé");
+      ps.setString(2, commentaire);
+      ps.setInt(3, id);
+      utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
+      ps.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return utilisateurDTO;
+  }
+
   /**
    * Rempli les données de l'utilisateur depuis un ResultSet.
    *
