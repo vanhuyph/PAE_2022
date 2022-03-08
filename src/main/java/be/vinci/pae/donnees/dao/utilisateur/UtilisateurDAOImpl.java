@@ -120,6 +120,13 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     return utilisateurDTO;
   }
 
+  /**
+   * Met à jour le commentaire et l'état de l'inscription d'un utilisateur à "refusé".
+   *
+   * @param id          : l'id de l'utilisateur
+   * @param commentaire : le commentaire que l'on va ajouter
+   * @return utilisateurDTO :l'utilisateur mis à jour
+   */
   @Override
   public UtilisateurDTO refuserInscription(int id, String commentaire) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();

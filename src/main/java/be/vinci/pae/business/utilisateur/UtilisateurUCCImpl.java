@@ -96,7 +96,13 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     return utilisateur;
   }
 
-
+  /**
+   * Vérifie si l'utilisateur a été confirmé.
+   *
+   * @param id       :       l'id de l'utilisateur
+   * @param estAdmin : si l'utilisateur est admin
+   * @return utilisateurDTO : l'utilisateur confirmé
+   */
   @Override
   public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
     UtilisateurDTO utilisateurDTO = utilisateurDAO.confirmerInscription(id, estAdmin);
@@ -107,6 +113,13 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   }
 
 
+  /**
+   * Vérifie si l'utilisateur a été refusé.
+   *
+   * @param id          : l'id de l'utilisateur
+   * @param commentaire : le commentaire du refus
+   * @return utilisateurDTO : l'utilisateur refusé
+   */
   @Override
   public UtilisateurDTO refuserInscription(int id, String commentaire) {
     UtilisateurDTO utilisateurDTO = utilisateurDAO.refuserInscription(id, commentaire);

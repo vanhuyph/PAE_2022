@@ -134,7 +134,8 @@ public class RessourceUtilisateur {
    *
    * @param json : json contenant l'information s'il est admin ou pas
    * @param id   : l'id de l'utilisateur que l'on veut confirmer
-   * @return
+   * @return utilisateurDTO : l'utilisateur confirmé
+   * @throws WebApplicationException : lancé s'il y a un problème dans la confirmation
    */
   @PUT
   @Path("confirme/{id}")
@@ -169,6 +170,14 @@ public class RessourceUtilisateur {
     return utilisateurDTO;
   }
 
+  /**
+   * Refuse l'inscription de l'utilisateur et ajoute un commentaire.
+   *
+   * @param json : json contenant le commentaire du refus
+   * @param id   : l'id de l'utilisateur
+   * @return utilisateurDTO : l'utilisateur refusé
+   * @throws WebApplicationException : lancé s'il y a un problème lors du refus
+   */
   @PUT
   @Path("refuse/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
