@@ -104,7 +104,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
-        "UPDATE projet.utilisateurs SET etat_inscription = ?, est_admin = ? WHERE id_utilisateur = ? "
+        "UPDATE projet.utilisateurs SET etat_inscription = ?, est_admin = ? "
+            + "WHERE id_utilisateur = ? "
             + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
             + "etat_inscription, commentaire, adresse;");
     try {

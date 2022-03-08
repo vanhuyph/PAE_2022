@@ -4,6 +4,7 @@ import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.adresse.AdresseUCC;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
+import be.vinci.pae.presentation.ressources.filtres.AutorisationAdmin;
 import be.vinci.pae.presentation.ressources.utilitaires.Json;
 import be.vinci.pae.utilitaires.Config;
 import com.auth0.jwt.JWT;
@@ -23,11 +24,13 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.util.Date;
 
 @Singleton
 @Path("/utilisateurs")
 public class RessourceUtilisateur {
 
+  private static final long EXPIRATION_TIME = 86400 * 1000;
   private static final ObjectMapper jsonMapper = new ObjectMapper();
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getPropriete("JWTSecret"));
   @Inject
@@ -137,6 +140,7 @@ public class RessourceUtilisateur {
   @Path("confirme/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @AutorisationAdmin
   public UtilisateurDTO confirmerUtilisateur(JsonNode json, @PathParam("id") int id) {
     if (!json.hasNonNull("estAdmin")) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
@@ -159,7 +163,7 @@ public class RessourceUtilisateur {
   }
 
   /**
-   * Méthode permettant de créer le token de l'utilisateur.
+   * Méthode permettant de créer le token de l'utilisateur avec une durée de validité 1 jour.
    *
    * @param utilisateur : l'utilisateur qui aura le token
    * @return noeud : l'objet json contenant le token et l'utilisateur
@@ -167,14 +171,15 @@ public class RessourceUtilisateur {
   private ObjectNode creationToken(UtilisateurDTO utilisateur) {
     String token;
     try {
-      token = JWT.create().withIssuer("auth0")
+      token = JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+          .withIssuer("auth0")
           .withClaim("utilisateur", utilisateur.getIdUtilisateur())
           .withClaim("auth", utilisateur.isEstAdmin()).sign(jwtAlgorithm);
     } catch (Exception e) {
       throw new WebApplicationException("Erreur lors de la création du token", e,
           Status.INTERNAL_SERVER_ERROR);
     }
-    UtilisateurDTO utilisateurDTO = Json.filtrePublicJsonVue((UtilisateurDTO) utilisateur,
+    UtilisateurDTO utilisateurDTO = Json.filtrePublicJsonVue(utilisateur,
         UtilisateurDTO.class);
     ObjectNode noeud = jsonMapper.createObjectNode().put("token", token)
         .putPOJO("utilisateur", utilisateurDTO);
