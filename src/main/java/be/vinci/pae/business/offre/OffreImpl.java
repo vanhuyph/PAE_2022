@@ -59,8 +59,13 @@ public class OffreImpl implements Offre {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    OffreImpl that = (OffreImpl) o;
-    return id_offre == that.id_offre && Objects.equals(date_offre, that.date_offre);
+    OffreImpl offre = (OffreImpl) o;
+    return id_offre == offre.id_offre && date_offre.equals(offre.date_offre);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id_offre, date_offre);
   }
 
   @Override

@@ -3,7 +3,6 @@ package be.vinci.pae.donnees.dao.offre;
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.offre.OffreDTO;
-import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -16,10 +15,12 @@ public class OffreDAOImpl implements OffreDAO {
   private DomaineFactory factory;
   @Inject
   private ServiceDAL serviceDAL;
-  @Inject
-  private ObjetDAO objetDAO;
+  //@Inject
+  //private ObjetDAO objetDAO;
 
   /**
+   * Methode qui créé une offre
+   *
    * @param id_objet      : l'id de l'objet correspondant à l'offre
    * @param plage_horaire : plage horaire des disponibilité de l'offreur
    * @return
@@ -65,3 +66,4 @@ public class OffreDAOImpl implements OffreDAO {
     return offreDTO;
   }
 }
+// Ne pas oublier de fermer le preparedStatement quand on aura décidé où le faire

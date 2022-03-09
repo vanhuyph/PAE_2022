@@ -88,9 +88,14 @@ public class ObjetImpl implements Objet {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ObjetImpl that = (ObjetImpl) o;
-    return id_objet == that.id_objet && Objects.equals(etat_objet, that.etat_objet)
-        && Objects.equals(description, that.description);
+    ObjetImpl objet = (ObjetImpl) o;
+    return id_objet == objet.id_objet && type_objet.equals(objet.type_objet) && offreur.equals(
+        objet.offreur);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id_objet, type_objet, offreur);
   }
 
   @Override
