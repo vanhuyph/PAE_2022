@@ -49,7 +49,7 @@ public class OffreDAOImpl implements OffreDAO {
   /**
    * Rempli une liste d'offre.
    *
-   * @return List<OffreDTO> : l
+   * @return List : liste d'offre
    * @throws SQLException : est lancé si il y a un problème"
    */
   public List<OffreDTO> listOffres() {
@@ -95,7 +95,7 @@ public class OffreDAOImpl implements OffreDAO {
    *
    * @param offreDTO : l'offre vide, qui va être rempli
    * @param ps       : le PreparedStatement déjà mis en place
-   * @return List<OffreDTO> : liste remplie
+   * @return List : liste remplie
    * @throws SQLException : est lancée si il y a un problème
    */
   private List<OffreDTO> remplirListOffresDepuisResulSet(OffreDTO offreDTO,
