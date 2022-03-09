@@ -4,6 +4,7 @@ import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.utilitaires.exceptions.ExceptionBusiness;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
+import java.util.List;
 
 public class OffreUCCImpl implements OffreUCC {
 
@@ -26,4 +27,20 @@ public class OffreUCCImpl implements OffreUCC {
 
     return offre;
   }
+
+  /**
+   * Lister les offres.
+   *
+   * @return Liste offre
+   */
+  public List<OffreDTO> listOffres() {
+    List<OffreDTO> listOffres = offreDAO.listOffres();
+    if (listOffres == null) {
+      throw new ExceptionBusiness("Il n'y a pas d'offre.",
+          Status.INTERNAL_SERVER_ERROR); // vérifier statut de réponse
+    }
+    System.out.println(listOffres.get(0).toString());
+    return listOffres;
+  }
+
 }

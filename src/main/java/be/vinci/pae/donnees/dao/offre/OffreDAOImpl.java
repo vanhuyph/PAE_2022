@@ -8,6 +8,8 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OffreDAOImpl implements OffreDAO {
 
@@ -45,6 +47,28 @@ public class OffreDAOImpl implements OffreDAO {
   }
 
   /**
+   * Rempli une liste d'offre.
+   *
+   * @return List<OffreDTO> : l
+   * @throws SQLException : est lancé si il y a un problème"
+   */
+  public List<OffreDTO> listOffres() {
+    OffreDTO offreDTO = factory.getOffre();
+    PreparedStatement ps = serviceDAL.getPs(
+        "SELECT of.id_offre, of.id_objet, of.date_offre, of.plage_horaire"
+            + " FROM projet.objets o, projet.offres of WHERE o.id_objet == of.id_objet AND"
+            + " (o.etat_objet == 'offert' OR o.etat_objet == 'interrese') ;");
+    List<OffreDTO> listOffres = null;
+    try {
+      listOffres = remplirListOffresDepuisResulSet(offreDTO, ps);
+      ps.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return listOffres;
+  }
+
+  /**
    * Rempli les données de l'offre depuis un ResultSet.
    *
    * @param offreDTO : l'offre vide, qui va être rempli
@@ -64,6 +88,29 @@ public class OffreDAOImpl implements OffreDAO {
       }
     }
     return offreDTO;
+  }
+
+  /**
+   * Rempli une liste d'offre depuis un ResultSet.
+   *
+   * @param offreDTO : l'offre vide, qui va être rempli
+   * @param ps       : le PreparedStatement déjà mis en place
+   * @return List<OffreDTO> : liste remplie
+   * @throws SQLException : est lancée si il y a un problème
+   */
+  private List<OffreDTO> remplirListOffresDepuisResulSet(OffreDTO offreDTO,
+      PreparedStatement ps) throws SQLException {
+    List<OffreDTO> listOffres = new ArrayList<>();
+    try (ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        offreDTO.setIdOffre(rs.getInt(1));
+        offreDTO.setDateOffre(rs.getDate(2));
+        offreDTO.setObjet((ObjetDTO) rs.getObject(3));
+        offreDTO.setPlageHoraire(rs.getString(4));
+        listOffres.add(offreDTO);
+      }
+    }
+    return listOffres;
   }
 }
 // Ne pas oublier de fermer le preparedStatement quand on aura décidé où le faire

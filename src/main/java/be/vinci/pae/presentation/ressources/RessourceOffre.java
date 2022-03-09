@@ -15,6 +15,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.util.List;
 
 
 @Singleton
@@ -38,7 +39,7 @@ public class RessourceOffre {
   @Path("creerOffre")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode creerObjet(JsonNode json) {
+  public ObjectNode creerOffre(JsonNode json) {
     if (!json.hasNonNull("idObjet") || !json.hasNonNull("plageHoraire")
     ) {
       throw new WebApplicationException(
@@ -59,5 +60,25 @@ public class RessourceOffre {
     ObjectNode noeud = jsonMapper.createObjectNode().putPOJO("offreDTO", offreDTO);
     return noeud;
   }
+
+  /**
+   * Liste les offres.
+   *
+   * @return noeud : la liste des offres
+   */
+  @POST
+  @Path("listOffres")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<OffreDTO> listOffres() {
+    List<OffreDTO> offreDTO = offreUCC.listOffres();
+    if (offreDTO == null) {
+      throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity("Liste des offres a echoué").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+    return offreDTO;
+  }
+
 
 }

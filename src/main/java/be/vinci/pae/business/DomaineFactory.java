@@ -9,7 +9,6 @@ public interface DomaineFactory {
 
   UtilisateurDTO getUtilisateur();
 
-
   OffreDTO getOffre();
 
   ObjetDTO getObjet();
