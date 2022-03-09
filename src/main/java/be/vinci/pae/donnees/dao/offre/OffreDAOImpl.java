@@ -19,7 +19,7 @@ public class OffreDAOImpl implements OffreDAO {
   //private ObjetDAO objetDAO;
 
   /**
-   * Creer une offre
+   * Creer une offre.
    *
    * @param idObjet      : l'id de l'objet correspondant à l'offre
    * @param plageHoraire : plage horaire des disponibilité de l'offreur

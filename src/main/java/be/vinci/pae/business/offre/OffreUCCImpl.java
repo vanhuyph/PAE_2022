@@ -11,7 +11,7 @@ public class OffreUCCImpl implements OffreUCC {
   OffreDAO offreDAO; // vérifier injection de dépendances
 
   /**
-   * Creer une offre
+   * Creer une offre.
    *
    * @param plageHoraire : disponibilité de l'offreur
    * @return l'offre créée
