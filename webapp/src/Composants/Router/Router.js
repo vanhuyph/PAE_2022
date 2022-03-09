@@ -2,6 +2,7 @@ import PageAccueil from "../Pages/PageAccueil";
 import PageConnexion from "../Pages/PageConnexion";
 import PageDeconnexion from "../Pages/PageDeconnexion";
 import PageInscription from "../Pages/PageInscription";
+import pageAdmin from "../Pages/PageAdmin";
 
 // Configure your routes here
 const routes = {
@@ -9,6 +10,7 @@ const routes = {
   "/connexion": PageConnexion,
   "/deconnexion": PageDeconnexion,
   "/inscription": PageInscription,
+  "/admin" : pageAdmin,
 };
 
 /**
