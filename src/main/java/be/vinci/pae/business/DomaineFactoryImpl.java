@@ -17,4 +17,8 @@ public class DomaineFactoryImpl implements DomaineFactory {
     return new AdresseImpl();
   }
 
+  public Object getObjet(){
+    return new Object();
+  }
+
 }

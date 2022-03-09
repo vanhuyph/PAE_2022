@@ -57,15 +57,11 @@ CREATE TABLE projet.evaluations(
 
 CREATE TABLE projet.offres(
     id_offre SERIAL PRIMARY KEY,
+    id_objet INTEGER REFERENCES projet.objets(id_objet) NOT NULL,
     date_offre DATE NOT NULL,
     plage_horaire VARCHAR(500) NOT NULL
 );
 
-CREATE TABLE projet.offres_precedentes(
-    id_offre_precedente SERIAL PRIMARY KEY,
-    date_precedente DATE NOT NULL,
-    offre INTEGER REFERENCES projet.offres(id_offre) NOT NULL
-);
 
 INSERT INTO projet.adresses VALUES (DEFAULT, 'Rue1', 21, NULL, 1420, 'Ophain');
 INSERT INTO projet.adresses VALUES (DEFAULT, 'Rue2', 15, NULL, 1500, 'Hal');
@@ -75,3 +71,14 @@ INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'pseudo1', 'nom1', 'prenom1', '
 INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'pseudo2', 'nom2', 'prenom2', '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2' , NULL, false, 2, 'en attente',NULL);
 INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'pseudo3', 'nom3', 'prenom3', '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', '0475858535', false, 3, 'refusé','Seuls les amis proches ont accès au site.');
 INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'pseudo4', 'nom4', 'prenom4', '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, true, 1, 'confirmé',NULL);
+
+INSERT INTO projet.types_objets VALUES (DEFAULT, 'machine');
+
+INSERT INTO projet.objets VALUES (DEFAULT,'correct', 1, 'machine à laver', 1, null, 'photo machine à laver' );
+INSERT INTO projet.offres VALUES (DEFAULT, 1, )
+
+INSERT INTO projet.objets VALUES (DEFAULT,'bien', 1, 'machine à cuisiner', 2, null, 'photo machine à cuisiner' );
+INSERT INTO projet.offres VALUES (DEFAULT, 2, )
+
+INSERT INTO projet.objets VALUES (DEFAULT,'moyen', 1, 'machine à nettoyer', 1, 2, 'photo machine à nettoyer' );
+INSERT INTO projet.offres VALUES (DEFAULT, 1, )

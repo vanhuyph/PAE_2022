@@ -8,4 +8,6 @@ public interface DomaineFactory {
   UtilisateurDTO getUtilisateur();
 
   AdresseDTO getAdresse();
+
+  Object getObjet();
 }
