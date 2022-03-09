@@ -56,11 +56,11 @@ public class OffreDAOImpl implements OffreDAO {
       PreparedStatement ps) throws SQLException {
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
-        offreDTO.setId_offre(rs.getInt(1));
-        offreDTO.setDate_offre(rs.getDate(2));
+        offreDTO.setIdOffre(rs.getInt(1));
+        offreDTO.setDateOffre(rs.getDate(2));
         ObjetDTO objetDTO = null; //implémenter la méthode pour rechercher l'objet
         offreDTO.setObjet(objetDTO);
-        offreDTO.setPlage_horaire(rs.getString(4));
+        offreDTO.setPlageHoraire(rs.getString(4));
       }
     }
     return offreDTO;

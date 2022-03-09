@@ -61,9 +61,9 @@ public class ObjetDAOImpl implements ObjetDAO {
   private ObjetDTO remplirObjetDepuisResultSet(ObjetDTO objetDTO, PreparedStatement ps) {
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
-        objetDTO.setId_objet(rs.getInt(1));
-        objetDTO.setEtat_objet(rs.getString(2));
-        objetDTO.setType_objet(rs.getString(3));
+        objetDTO.setIdObjet(rs.getInt(1));
+        objetDTO.setEtatObjet(rs.getString(2));
+        objetDTO.setTypeObjet(rs.getString(3));
         objetDTO.setDescription(rs.getString(4));
         UtilisateurDTO offreur = utilisateurDAO.rechercheParId(
             rs.getInt(5)); //vérifier le resultat ?

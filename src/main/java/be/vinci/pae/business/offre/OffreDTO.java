@@ -7,19 +7,19 @@ import java.util.Date;
 @JsonDeserialize(as = OffreImpl.class)
 public interface OffreDTO {
 
-  int getId_offre();
+  int getIdOffre();
 
-  void setId_offre(int id_offre);
+  void setIdOffre(int idOffre);
 
-  Date getDate_offre();
+  Date getDateOffre();
 
-  void setDate_offre(Date date_offre);
+  void setDateOffre(Date dateOffre);
 
   ObjetDTO getObjet();
 
   void setObjet(ObjetDTO objet);
 
-  String getPlage_horaire();
+  String getPlageHoraire();
 
-  void setPlage_horaire(String plage_horaire);
+  void setPlageHoraire(String plageHoraire);
 }

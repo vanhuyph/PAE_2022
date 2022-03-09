@@ -11,28 +11,28 @@ import java.util.Objects;
 public class OffreImpl implements Offre {
 
   @JsonView(Vues.Public.class)
-  private int id_offre;
+  private int idOffre;
   @JsonView(Vues.Public.class)
-  private Date date_offre;
+  private Date dateOffre;
   @JsonView(Vues.Public.class)
   private ObjetDTO objet;
   @JsonView(Vues.Public.class)
-  private String plage_horaire;
+  private String plageHoraire;
 
-  public int getId_offre() {
-    return id_offre;
+  public int getIdOffre() {
+    return idOffre;
   }
 
-  public void setId_offre(int id_offre) {
-    this.id_offre = id_offre;
+  public void setIdOffre(int idOffre) {
+    this.idOffre = idOffre;
   }
 
-  public Date getDate_offre() {
-    return date_offre;
+  public Date getDateOffre() {
+    return dateOffre;
   }
 
-  public void setDate_offre(Date date_offre) {
-    this.date_offre = date_offre;
+  public void setDateOffre(Date dateOffre) {
+    this.dateOffre = dateOffre;
   }
 
   public ObjetDTO getObjet() {
@@ -43,12 +43,12 @@ public class OffreImpl implements Offre {
     this.objet = objet;
   }
 
-  public String getPlage_horaire() {
-    return plage_horaire;
+  public String getPlageHoraire() {
+    return plageHoraire;
   }
 
-  public void setPlage_horaire(String plage_horaire) {
-    this.plage_horaire = plage_horaire;
+  public void setPlageHoraire(String plageHoraire) {
+    this.plageHoraire = plageHoraire;
   }
 
   @Override
@@ -60,21 +60,21 @@ public class OffreImpl implements Offre {
       return false;
     }
     OffreImpl offre = (OffreImpl) o;
-    return id_offre == offre.id_offre && date_offre.equals(offre.date_offre);
+    return idOffre == offre.idOffre && dateOffre.equals(offre.dateOffre);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id_offre, date_offre);
+    return Objects.hash(idOffre, dateOffre);
   }
 
   @Override
   public String toString() {
     return "Offre{"
-        + "id offre= " + id_offre
-        + ", date offre= " + date_offre
+        + "id offre= " + idOffre
+        + ", date offre= " + dateOffre
         + ", objet= " + objet.toString()
-        + ", plage horaire= " + plage_horaire
+        + ", plage horaire= " + plageHoraire
         + '}';
   }
 }

@@ -10,11 +10,11 @@ import java.util.Objects;
 public class ObjetImpl implements Objet {
 
   @JsonView(Vues.Public.class)
-  private int id_objet;
+  private int idObjet;
   @JsonView(Vues.Public.class)
-  private String etat_objet;
+  private String etatObjet;
   @JsonView(Vues.Public.class)
-  private String type_objet;
+  private String typeObjet;
   @JsonView(Vues.Public.class)
   private String description;
   @JsonView(Vues.Public.class)
@@ -24,28 +24,28 @@ public class ObjetImpl implements Objet {
   private String photo;
 
 
-  public int getId_objet() {
-    return id_objet;
+  public int getIdObjet() {
+    return idObjet;
   }
 
-  public void setId_objet(int id_objet) {
-    this.id_objet = id_objet;
+  public void setIdObjet(int idObjet) {
+    this.idObjet = idObjet;
   }
 
-  public String getEtat_objet() {
-    return etat_objet;
+  public String getEtatObjet() {
+    return etatObjet;
   }
 
-  public void setEtat_objet(String etat_objet) {
-    this.etat_objet = etat_objet;
+  public void setEtatObjet(String etatObjet) {
+    this.etatObjet = etatObjet;
   }
 
-  public String getType_objet() {
-    return type_objet;
+  public String getTypeObjet() {
+    return typeObjet;
   }
 
-  public void setType_objet(String type_objet) {
-    this.type_objet = type_objet;
+  public void setTypeObjet(String typeObjet) {
+    this.typeObjet = typeObjet;
   }
 
   public String getDescription() {
@@ -89,21 +89,21 @@ public class ObjetImpl implements Objet {
       return false;
     }
     ObjetImpl objet = (ObjetImpl) o;
-    return id_objet == objet.id_objet && type_objet.equals(objet.type_objet) && offreur.equals(
+    return idObjet == objet.idObjet && typeObjet.equals(objet.typeObjet) && offreur.equals(
         objet.offreur);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id_objet, type_objet, offreur);
+    return Objects.hash(idObjet, typeObjet, offreur);
   }
 
   @Override
   public String toString() {
     return "Objet{"
-        + "id objet= " + id_objet
-        + ", etat objet= " + etat_objet
-        + ", type objet= " + type_objet
+        + "id objet= " + idObjet
+        + ", etat objet= " + etatObjet
+        + ", type objet= " + typeObjet
         + ", description= " + description
         + ", offreur= " + offreur.toString()
         + ", receveur= " + receveur.toString()

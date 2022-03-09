@@ -8,17 +8,17 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public interface ObjetDTO {
 
 
-  int getId_objet();
+  int getIdObjet();
 
-  void setId_objet(int id_objet);
+  void setIdObjet(int idObjet);
 
-  String getEtat_objet();
+  String getEtatObjet();
 
-  void setEtat_objet(String etat_objet);
+  void setEtatObjet(String etatObjet);
 
-  String getType_objet();
+  String getTypeObjet();
 
-  void setType_objet(String type_objet);
+  void setTypeObjet(String typeObjet);
 
   String getDescription();
 
