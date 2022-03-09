@@ -29,7 +29,7 @@ public class RessourceObjet {
   //ajouter l'authorize une fois que l'uc fonctionne complètement sans
 
   /**
-   * Créé un objet
+   * Creer un objet
    *
    * @param json : json reçu du formulaire de connexion *
    * @return noeud : l'objet json contenant le token et l'utilisateur *

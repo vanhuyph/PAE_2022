@@ -27,7 +27,7 @@ public class RessourceOffre {
   private OffreUCC offreUCC;
 
   /**
-   * Créée une offre
+   * Creer une offre
    *
    * @param json : json reçu du formulaire de connexion *
    * @return noeud : l'objet json contenant le token et l'utilisateur *

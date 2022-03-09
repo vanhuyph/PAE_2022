@@ -139,6 +139,7 @@ const surOffrirObjet = (e) => {
         // console.log("juste avant second fetch");
         console.log("id objet du premier fetch :" + reponseObjet.id_objet);
         // let offre = {
+        //
         //     id_objet: reponseObjet.id_objet,
         //     plage_horaire: plageHoraire.value
         // }

@@ -12,7 +12,7 @@ public class ObjetUCCImpl implements ObjetUCC {
 
 
   /**
-   * Methode qui créé un objet
+   * Creer un objet
    *
    * @param typeObjet   : le type de l'objet
    * @param description : description de l'objet

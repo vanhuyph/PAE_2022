@@ -21,7 +21,7 @@ public class ObjetDAOImpl implements ObjetDAO {
 
 
   /**
-   * Créé un objet
+   * Creer un objet
    *
    * @param etatObjet   : l'état de l'objet
    * @param typeObjet   : le type de l'objet
