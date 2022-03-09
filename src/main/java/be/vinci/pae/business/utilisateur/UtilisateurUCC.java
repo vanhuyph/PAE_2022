@@ -1,5 +1,7 @@
 package be.vinci.pae.business.utilisateur;
 
+import java.util.List;
+
 public interface UtilisateurUCC {
 
   UtilisateurDTO connexion(String pseudo, String mdp);
@@ -12,4 +14,6 @@ public interface UtilisateurUCC {
       int adresse);
 
   UtilisateurDTO confirmerInscription(int id, boolean estAdmin);
+
+  List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription);
 }

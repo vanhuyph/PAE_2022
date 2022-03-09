@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -25,6 +26,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.Date;
+import java.util.List;
 
 @Singleton
 @Path("/utilisateurs")
@@ -128,7 +130,6 @@ public class RessourceUtilisateur {
 
   }
 
-
   /**
    * Confirme l'inscription d'un utilisateur et précise s'il est admin ou pas.
    *
@@ -184,6 +185,38 @@ public class RessourceUtilisateur {
     ObjectNode noeud = jsonMapper.createObjectNode().put("token", token)
         .putPOJO("utilisateur", utilisateurDTO);
     return noeud;
+  }
+
+  /**
+   * Liste tous les utilisateurs avec une inscription à l'état "refusé".
+   *
+   * @return liste : la liste des utilisateurs avec une inscription refusée
+   */
+  @GET
+  @Path("refuse")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AutorisationAdmin
+  public List<UtilisateurDTO> listerInscriptionsRefusees() {
+    List<UtilisateurDTO> liste;
+    liste = utilisateurUCC.listerUtilisateursEtatsInscriptions("refusé");
+    return liste;
+  }
+
+  /**
+   * Liste tous les utilisateurs avec une inscription à l'état "en attente".
+   *
+   * @return liste : la liste des utilisateurs avec une inscription en attente
+   */
+  @GET
+  @Path("attente")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AutorisationAdmin
+  public List<UtilisateurDTO> listerInscriptionsEnAttente() {
+    List<UtilisateurDTO> liste;
+    liste = utilisateurUCC.listerUtilisateursEtatsInscriptions("en attente");
+    return liste;
   }
 
 }

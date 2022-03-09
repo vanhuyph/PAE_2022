@@ -7,6 +7,8 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UtilisateurDAOImpl implements UtilisateurDAO {
 
@@ -121,12 +123,42 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
+   * Récupère tous les utilisateurs avec un certain état d'inscription et les placent dans une
+   * liste.
+   *
+   * @param etatInscription : l'état de l'inscription
+   * @return liste : la liste des utilisateurs avec l'état d'inscription passé en paramètre
+   * @throws SQLException : est lancée s'il y a eu un problème
+   */
+  public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
+    PreparedStatement ps = serviceDAL.getPs(
+        "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+            + "u.etat_inscription, u.commentaire, u.adresse "
+            + "FROM projet.utilisateurs u WHERE u.etat_inscription = ? "
+            + "ORDER BY u.id_utilisateur");
+    List<UtilisateurDTO> liste = new ArrayList<>();
+    try {
+      ps.setString(1, etatInscription);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
+        remplirListeUtilisateurs(rs, utilisateurDTO);
+        liste.add(utilisateurDTO);
+      }
+      ps.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return liste;
+  }
+
+  /**
    * Rempli les données de l'utilisateur depuis un ResultSet.
    *
    * @param utilisateurDTO : l'utilisateur vide, qui va être rempli
    * @param ps             : le PreparedStatement déjà mis en place
    * @return utilisateurDTO : l'utilisateur rempli
-   * @throws SQLException : est lancée s'il y a un problème
+   * @throws SQLException : est lancée s'il y a eu un problème
    */
   private UtilisateurDTO remplirUtilisateurDepuisResulSet(UtilisateurDTO utilisateurDTO,
       PreparedStatement ps) throws SQLException {
@@ -143,6 +175,32 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         utilisateurDTO.setCommentaire(rs.getString(9));
         utilisateurDTO.setAdresse(rs.getInt(10));
       }
+    }
+    return utilisateurDTO;
+  }
+
+  /**
+   * Rempli les données de l'utilisateur depuis un ResultSet.
+   *
+   * @param rs             : le ResultSet
+   * @param utilisateurDTO : l'utilisateur vide, qui va être rempli
+   * @return utilisateurDTO : l'utilisateur rempli
+   * @throws SQLException : est lancée s'il y a un problème
+   */
+  private UtilisateurDTO remplirListeUtilisateurs(ResultSet rs, UtilisateurDTO utilisateurDTO) {
+    try {
+      utilisateurDTO.setIdUtilisateur(rs.getInt(1));
+      utilisateurDTO.setPseudo(rs.getString(2));
+      utilisateurDTO.setNom(rs.getString(3));
+      utilisateurDTO.setPrenom(rs.getString(4));
+      utilisateurDTO.setMdp(rs.getString(5));
+      utilisateurDTO.setGsm(rs.getString(6));
+      utilisateurDTO.setEstAdmin(rs.getBoolean(7));
+      utilisateurDTO.setEtatInscription(rs.getString(8));
+      utilisateurDTO.setCommentaire(rs.getString(9));
+      utilisateurDTO.setAdresse(rs.getInt(10));
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
     return utilisateurDTO;
   }

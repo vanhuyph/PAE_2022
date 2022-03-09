@@ -1,10 +1,10 @@
 package be.vinci.pae.business.utilisateur;
 
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
-import be.vinci.pae.presentation.ressources.filtres.AutorisationAdmin;
 import be.vinci.pae.utilitaires.exceptions.ExceptionBusiness;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
+import java.util.List;
 
 public class UtilisateurUCCImpl implements UtilisateurUCC {
 
@@ -22,7 +22,6 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   @Override
   public UtilisateurDTO connexion(String pseudo, String mdp) {
     Utilisateur utilisateur = (Utilisateur) utilisateurDAO.rechercheParPseudo(pseudo);
-
     if (utilisateur == null || utilisateur.getIdUtilisateur() < 1 || !utilisateur.verifierMdp(
         mdp)) {
       throw new ExceptionBusiness("Pseudo ou mot de passe incorrect.",
@@ -97,7 +96,6 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     return utilisateur;
   }
 
-  @AutorisationAdmin
   @Override
   public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
     UtilisateurDTO utilisateurDTO = utilisateurDAO.confirmerInscription(id, estAdmin);
@@ -107,5 +105,17 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     return utilisateurDTO;
   }
 
+  /**
+   * Liste les utilisateurs en fonction de l'état de leur inscription.
+   *
+   * @param etatInscription : l'état de l'inscription
+   * @return liste : la liste des utilisateurs avec l'état d'inscription passé en paramètre
+   */
+  @Override
+  public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
+    List<UtilisateurDTO> liste = utilisateurDAO.listerUtilisateursEtatsInscriptions(
+        etatInscription);
+    return liste;
+  }
 
 }
