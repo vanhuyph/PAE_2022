@@ -1,9 +1,10 @@
 package be.vinci.pae.business.objet;
 
-import be.vinci.pae.business.utilisateur.Utilisateur;
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.vue.Vues;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ObjetImpl implements Objet {
@@ -17,8 +18,8 @@ public class ObjetImpl implements Objet {
   @JsonView(Vues.Public.class)
   private String description;
   @JsonView(Vues.Public.class)
-  private Utilisateur offreur;
-  private Utilisateur receveur;
+  private UtilisateurDTO offreur;
+  private UtilisateurDTO receveur;
   @JsonView(Vues.Public.class)//vérifier type d'objet
   private String photo;
 
@@ -55,19 +56,19 @@ public class ObjetImpl implements Objet {
     this.description = decsription;
   }
 
-  public Utilisateur getOffreur() {
+  public UtilisateurDTO getOffreur() {
     return offreur;
   }
 
-  public void setOffreur(Utilisateur offreur) {
+  public void setOffreur(UtilisateurDTO offreur) {
     this.offreur = offreur;
   }
 
-  public Utilisateur getReceveur() {
+  public UtilisateurDTO getReceveur() {
     return receveur;
   }
 
-  public void setReceveur(Utilisateur receveur) {
+  public void setReceveur(UtilisateurDTO receveur) {
     this.receveur = receveur;
   }
 
@@ -77,5 +78,31 @@ public class ObjetImpl implements Objet {
 
   public void setPhoto(String photo) {
     this.photo = photo;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ObjetImpl that = (ObjetImpl) o;
+    return id_objet == that.id_objet && Objects.equals(etat_objet, that.etat_objet)
+        && Objects.equals(description, that.description);
+  }
+
+  @Override
+  public String toString() {
+    return "Objet{"
+        + "id objet= " + id_objet
+        + ", etat objet= " + etat_objet
+        + ", type objet= " + type_objet
+        + ", description= " + description
+        + ", offreur= " + offreur.toString()
+        + ", receveur= " + receveur.toString()
+        + ", photo= " + photo
+        + '}';
   }
 }

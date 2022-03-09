@@ -22,7 +22,7 @@ public class ObjetUCCImpl implements ObjetUCC {
   public ObjetDTO creerUnObjet(int id_offreur, String type_objet, String description, int offreur,
       String photo) {
 
-    ObjetDTO nObjet = objetDAO.creerObjet();
+    ObjetDTO nObjet = objetDAO.creerObjet("offert", type_objet, description, offreur, photo);
     if (nObjet == null) {
       throw new ExceptionBusiness("objet n'a pas pu être créé.",
           Status.INTERNAL_SERVER_ERROR); // vérifier statut de réponse

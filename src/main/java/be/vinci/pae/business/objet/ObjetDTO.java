@@ -1,8 +1,16 @@
 package be.vinci.pae.business.objet;
 
-import be.vinci.pae.business.utilisateur.Utilisateur;
 
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(as = ObjetImpl.class)
 public interface ObjetDTO {
+
+
+  int getId_objet();
+
+  void setId_objet(int id_objet);
 
   String getEtat_objet();
 
@@ -16,13 +24,13 @@ public interface ObjetDTO {
 
   void setDescription(String decsription);
 
-  Utilisateur getOffreur();
+  UtilisateurDTO getOffreur();
 
-  void setOffreur(Utilisateur offreur);
+  void setOffreur(UtilisateurDTO offreur);
 
-  Utilisateur getReceveur();
+  UtilisateurDTO getReceveur();
 
-  void setReceveur(Utilisateur receveur);
+  void setReceveur(UtilisateurDTO receveur);
 
   String getPhoto();
 

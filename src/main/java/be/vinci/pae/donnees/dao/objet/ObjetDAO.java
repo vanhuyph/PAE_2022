@@ -4,6 +4,7 @@ import be.vinci.pae.business.objet.ObjetDTO;
 
 public interface ObjetDAO {
 
-  public ObjetDTO creerObjet();
 
+  ObjetDTO creerObjet(String etat_objet, String type_objet, String description,
+      Integer offreur, String photo);
 }
