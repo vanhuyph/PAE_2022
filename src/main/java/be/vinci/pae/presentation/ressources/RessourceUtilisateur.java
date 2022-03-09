@@ -94,28 +94,31 @@ public class RessourceUtilisateur {
     String commune = json.get("commune").asText();
 
     try {
-      if (utilisateurUCC.rechercheParPseudo(pseudo) != null) {
-        throw new WebApplicationException(Response.status(Status.CONFLICT)
-            .entity("Le pseudo existe déjà").type("text/plain").build());
-      }
-    } catch (WebApplicationException w) {
-      AdresseDTO adresse = adresseUCC.ajouterAdresse(rue, numero, boite, codePostal, commune);
-      if (adresse == null) {
-        throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-            .entity("L'adresse n'a pas pu être ajoutée").type("text/plain").build());
-      }
 
-      UtilisateurDTO utilisateur = utilisateurUCC.inscription(pseudo, nom, prenom, mdp,
-          adresse.getIdAdresse());
+      if (utilisateurUCC.rechercheParPseudoInscription(pseudo).getIdUtilisateur() < 1) {
+        AdresseDTO adresse = adresseUCC.ajouterAdresse(rue, numero, boite, codePostal, commune);
 
-      if (utilisateur == null) {
-        throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-            .entity("L'utilisateur n'a pas pu être ajouté").type(MediaType.TEXT_PLAIN)
-            .build());
+        if (adresse == null) {
+          throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+              .entity("L'adresse n'a pas pu être ajoutée").type("text/plain").build());
+        }
+
+        UtilisateurDTO utilisateur = utilisateurUCC.inscription(pseudo, nom, prenom, mdp,
+            adresse.getIdAdresse());
+
+        if (utilisateur == null) {
+          throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+              .entity("L'utilisateur n'a pas pu être ajouté").type(MediaType.TEXT_PLAIN)
+              .build());
+        }
+
+        ObjectNode noeud = creationToken(utilisateur);
+        return noeud;
       }
+    } catch (Exception e) {
 
-      ObjectNode noeud = creationToken(utilisateur);
-      return noeud;
+      throw new WebApplicationException(Response.status(Status.CONFLICT)
+          .entity("Le pseudo existe déjà").type("text/plain").build());
     }
 
     throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
