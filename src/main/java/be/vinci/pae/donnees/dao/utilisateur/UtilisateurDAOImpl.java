@@ -27,7 +27,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire FROM projet.utilisateurs u WHERE u.pseudo = ?;");
+            + "u.etat_inscription, u.commentaire, u.adresse"
+            + " FROM projet.utilisateurs u WHERE u.pseudo = ?;");
     try {
       ps.setString(1, pseudo);
       utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
@@ -49,7 +50,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire"
+            + "u.etat_inscription, u.commentaire, u.adresse"
             + "FROM projet.utilisateurs u WHERE u.id_utilisateur = ?;");
     try {
       ps.setInt(1, id);
@@ -58,6 +59,37 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       e.printStackTrace();
     }
     return utilisateurDTO;
+  }
+
+
+  /**
+   * Ajoute un utilisateur dans la base de données.
+   *
+   * @param utilisateur : l'utilisateur que l'on va ajouter
+   * @return utilisateur : l'utilisateur qui a été ajouté
+   */
+  @Override
+  public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
+    PreparedStatement ps = serviceDAL.getPs(
+        "INSERT INTO projet.utilisateurs "
+            + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL) RETURNING "
+            + "id_utilisateur;");
+    try {
+      ps.setString(1, utilisateur.getPseudo());
+      ps.setString(2, utilisateur.getNom());
+      ps.setString(3, utilisateur.getPrenom());
+      ps.setString(4, utilisateur.getMdp());
+      ps.setInt(5, utilisateur.getAdresse());
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          utilisateur.setIdUtilisateur(rs.getInt(1));
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return utilisateur;
   }
 
   /**
@@ -81,6 +113,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         utilisateurDTO.setEstAdmin(rs.getBoolean(7));
         utilisateurDTO.setEtatInscription(rs.getString(8));
         utilisateurDTO.setCommentaire(rs.getString(9));
+        utilisateurDTO.setAdresse(rs.getInt(10));
       }
     }
     return utilisateurDTO;

@@ -40,4 +40,8 @@ public interface UtilisateurDTO {
   String getCommentaire();
 
   void setCommentaire(String commentaire);
+
+  int getAdresse();
+
+  void setAdresse(int adresse);
 }

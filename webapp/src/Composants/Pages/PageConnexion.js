@@ -33,7 +33,7 @@ let pageCon = `
             
         </form>
         <p class="separateur-ou">ou</p>
-        <button class="ui secondary inverted button">S'inscrire</button>
+        <a href="/inscription"><button class="ui secondary inverted button">S'inscrire</button></a>
     </div>
   `;
 
