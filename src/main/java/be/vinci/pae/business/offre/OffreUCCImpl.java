@@ -11,17 +11,19 @@ public class OffreUCCImpl implements OffreUCC {
   OffreDAO offreDAO; // vérifier injection de dépendances
 
   /**
+   * Methode qui crée une offre
+   *
    * @param plageHoraire : disponibilité de l'offreur
    * @return l'offre créée
    */
   @Override
   public OffreDTO creerUneOffre(int idObjet, String plageHoraire) {
-    OffreDTO nOffre = offreDAO.creerOffre(idObjet, plageHoraire);
-    if (nOffre == null) {
+    OffreDTO offre = offreDAO.creerOffre(idObjet, plageHoraire);
+    if (offre == null) {
       throw new ExceptionBusiness("l'offre n'a pas pu être créé.",
           Status.INTERNAL_SERVER_ERROR); // vérifier statut de réponse
     }
 
-    return nOffre;
+    return offre;
   }
 }

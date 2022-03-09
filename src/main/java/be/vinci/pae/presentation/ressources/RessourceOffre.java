@@ -27,7 +27,7 @@ public class RessourceOffre {
   private OffreUCC offreUCC;
 
   /**
-   * Methode qui créé une offre
+   * Créée une offre
    *
    * @param json : json reçu du formulaire de connexion *
    * @return noeud : l'objet json contenant le token et l'utilisateur *
@@ -39,17 +39,17 @@ public class RessourceOffre {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode creerObjet(JsonNode json) {
-    if (!json.hasNonNull("id_objet") || !json.hasNonNull("plage_horaire")
+    if (!json.hasNonNull("idObjet") || !json.hasNonNull("plageHoraire")
     ) {
       throw new WebApplicationException(
           Response.status(Response.Status.BAD_REQUEST)
               .entity("type de l'objet ou description manquant").type("text/plain").build());
     }
 
-    Integer id_objet = json.get("id_objet").asInt();
-    String plage_horaire = json.get("plage_horaire").asText();
+    Integer idObjet = json.get("idObjet").asInt();
+    String plageHoraire = json.get("plageHoraire").asText();
 
-    OffreDTO offreDTO = offreUCC.creerUneOffre(id_objet, plage_horaire);
+    OffreDTO offreDTO = offreUCC.creerUneOffre(idObjet, plageHoraire);
     if (offreDTO == null) {
       throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
           .entity("L'ajout de l'offre a échoué").type(MediaType.TEXT_PLAIN)

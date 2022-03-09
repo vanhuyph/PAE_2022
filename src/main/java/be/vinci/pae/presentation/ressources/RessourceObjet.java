@@ -29,7 +29,7 @@ public class RessourceObjet {
   //ajouter l'authorize une fois que l'uc fonctionne complètement sans
 
   /**
-   * Methode qui créé un objet
+   * Créé un objet
    *
    * @param json : json reçu du formulaire de connexion *
    * @return noeud : l'objet json contenant le token et l'utilisateur *
@@ -40,8 +40,8 @@ public class RessourceObjet {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode creerObjet(JsonNode json) {
-    if (!json.hasNonNull("id_offreur")
-        || !json.hasNonNull("type_objet")
+    if (!json.hasNonNull("idOffreur")
+        || !json.hasNonNull("typeObjet")
         || !json.hasNonNull("description")
     ) {
       throw new WebApplicationException(
@@ -50,15 +50,17 @@ public class RessourceObjet {
     }
 
     System.out.println("la methode a passee la web App exception");
-    Integer id_offreur = json.get("id_offreur").asInt();
-    String type_objet = json.get("type_objet").asText();
+    Integer idOffreur = json.get("idOffreur").asInt();
+    String typeObjet = json.get("typeObjet").asText();
     String description = json.get("description").asText();
-    // String photo = json.get("photo").asText(); // pour l'instant je hardcore une string "photo" dans l'appele à l'ucc
+    // String photo = json.get("photo").asText();
+    // pour l'instant je hardcore une string "photo" dans l'appele à l'ucc
 
     System.out.println("elements du JSON récupérés dans attribut ");
-    //peut etre que c'est mieux de test si la photo est null dans le json avant d'essayer de la convertir inutiliement
+    //peut etre que c'est mieux de test si la photo est null
+    // dans le json avant d'essayer de la convertir inutiliement
 
-    ObjetDTO objetDTO = objetUCC.creerUnObjet(id_offreur, type_objet, description, 1, "photo");
+    ObjetDTO objetDTO = objetUCC.creerUnObjet(idOffreur, typeObjet, description, 1, "photo");
     if (objetDTO == null) {
       throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
           .entity("L'ajout de l'objet a échoué").type(MediaType.TEXT_PLAIN)

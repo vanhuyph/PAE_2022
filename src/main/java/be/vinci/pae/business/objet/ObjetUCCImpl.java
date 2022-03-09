@@ -12,6 +12,8 @@ public class ObjetUCCImpl implements ObjetUCC {
 
 
   /**
+   * Methode qui créé un objet
+   *
    * @param typeObjet   : le type de l'objet
    * @param description : description de l'objet
    * @param offreur     : id de l'utilisateur offrant l'objet
@@ -22,12 +24,12 @@ public class ObjetUCCImpl implements ObjetUCC {
   public ObjetDTO creerUnObjet(int idOffreur, String typeObjet, String description, int offreur,
       String photo) {
 
-    ObjetDTO nObjet = objetDAO.creerObjet("offert", typeObjet, description, offreur, photo);
-    if (nObjet == null) {
+    ObjetDTO objet = objetDAO.creerObjet("offert", typeObjet, description, offreur, photo);
+    if (objet == null) {
       throw new ExceptionBusiness("objet n'a pas pu être créé.",
           Status.INTERNAL_SERVER_ERROR); // vérifier statut de réponse
     }
 
-    return nObjet;
+    return objet;
   }
 }

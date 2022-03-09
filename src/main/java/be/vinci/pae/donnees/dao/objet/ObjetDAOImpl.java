@@ -21,16 +21,18 @@ public class ObjetDAOImpl implements ObjetDAO {
 
 
   /**
-   * @param etat_objet  : l'état de l'objet
-   * @param type_objet  : le type de l'objet
+   * Créé un objet
+   *
+   * @param etatObjet   : l'état de l'objet
+   * @param typeObjet   : le type de l'objet
    * @param description : la description de l'objet
    * @param offreur     : l'id de l'offeur de l'objet
    * @param photo       : chemin de la photo
-   * @return
+   * @return l'objet créé
    * @throws SQLException : est lancé si il ne sait pas insérer l'objet dans la db
    */
   @Override
-  public ObjetDTO creerObjet(String etat_objet, String type_objet, String description,
+  public ObjetDTO creerObjet(String etatObjet, String typeObjet, String description,
       Integer offreur, String photo) {
     {
       ObjetDTO objetDTO = factory.getObjet();
@@ -38,8 +40,8 @@ public class ObjetDAOImpl implements ObjetDAO {
           "INSERT INTO projet.objets VALUES (DEFAULT, ?, ?, ?, ?, null, ?);");
 
       try {
-        ps.setString(1, etat_objet);
-        ps.setString(2, type_objet);
+        ps.setString(1, etatObjet);
+        ps.setString(2, typeObjet);
         ps.setString(3, description);
         ps.setInt(4, offreur);
         ps.setString(5, photo);
@@ -53,10 +55,12 @@ public class ObjetDAOImpl implements ObjetDAO {
   }
 
   /**
+   * Rempli les données de l'objet depuis un ResultSet.
+   *
    * @param objetDTO : l'objet vide
    * @param ps       : le PreparedStatement déjà mis en place
    * @return objetDTO : l'objet rempli
-   * @throws SQLException
+   * @throws SQLException : est lancé si il y a un problème"
    */
   private ObjetDTO remplirObjetDepuisResultSet(ObjetDTO objetDTO, PreparedStatement ps) {
     try (ResultSet rs = ps.executeQuery()) {
