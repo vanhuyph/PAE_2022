@@ -90,7 +90,7 @@ public class UtilisateurUCCTest {
     assertThrows(ExceptionBusiness.class, () -> utilisateurUCC.rechercheParId(id));
   }
 
-  @Test
+  /*@Test
   @DisplayName("test réussi : méthode inscription renvoie l'utilisateur inscrit.")
   public void testInscriptionV1() {
     utilisateurUCC.inscription("test1", "nom1", "prenom1", "mdp", 1);
@@ -106,6 +106,8 @@ public class UtilisateurUCCTest {
     assertThrows(ExceptionBusiness.class,
         () -> utilisateurUCC.inscription("pseudo1", "nom1", "prenom1", "mdp"
             , 1));
-  }
+  }*/
+
+  //test Inscription
 
 }
