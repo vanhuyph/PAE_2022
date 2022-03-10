@@ -88,34 +88,31 @@ body{
         border-radius: 50px;
         cursor: pointer;
     }
-
-    #bar-vertical{
-        width: 0 !important;
-    }
-
-    #bar-vertical .fermer-bar{
-        display: block !important;
-    }
-
     #principal{
-        width: 100%;
-        margin: auto !important;
+        width: 100% !important;
+        margin: 0 !important;
+        text-align: center !important;
+    }
+    #bar-vertical{
+        display: none;
+    }
+    #choix-demande{
+        margin: 0 !important;
     }
 
-    #principal .burger{
-        display: inline !important;
-    }
-    #choix-page button{
+    #choix-demande button{
+
         width: 150px;
     }
 
 }
-
-@media screen and (min-width: 575px) {
-    #bar-vertical{
-        display: block;
+@media screen and (max-width: 340px) {
+    #choix-demande button{
+        width: 120px;
     }
 }
+
+
 
 /* Fin media navbar */
 
@@ -271,22 +268,18 @@ Fin Message de bienvenue*/
 /* Inscription */
 
 /* Admin */
+.page-admin{
+    height: 100vh;
+}
 /* bar vertical */
 
 #bar-vertical{
+    display: block;
     height: 100%;
     top: 70px;
     background-color: #e1e9f3;
     text-align: center;
     width: 15%;
-}
-
-#bar-vertical .fermer-bar{
-    display: none;
-    color: black;
-    text-align: right;
-    margin: 20px;
-    font-size: large;
 }
 
 #bar-vertical h2{
@@ -299,17 +292,36 @@ Fin Message de bienvenue*/
 #principal {
     width: 85%;
     margin-left: auto;
+    height: 100%;
 }
-#principal .burger{
-    display: none;
-    font-size: 25px;
-    border: 0;
-    background-color: transparent;
-}
-#choix-page{
+#choix-demande{
     margin-top: 20px;
     margin-left: 4%;
 }
 
+#bar-hori{
+    text-align: center;
+}
+
+#bar-hori h2{
+    margin: 0;
+}
+
+#choix-page{
+    margin: auto;
+}
+
+#choix-page button{
+    width: 120px;
+}
 /* Fin bar vertical */
+
+/* Contenu */
+#contenu{
+    height: 100%;
+    padding: 30px;
+}
+
+/* Fin contenu */
+
 /* Fin Admin*/
