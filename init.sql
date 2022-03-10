@@ -92,12 +92,12 @@ INSERT INTO projet.types_objets
 VALUES (DEFAULT, 'machine');
 
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'offert', 1, 'machine à laver', 1, null, 'photo machine à laver');
+VALUES (DEFAULT, 'offert', 1, 'machine à laver', 1, NULL, 'photo machine à laver');
 INSERT INTO projet.offres
 VALUES (DEFAULT, 1, now(), ' ');
 
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'interrese', 1, 'machine à cuisiner', 2, null, 'photo machine à cuisiner');
+VALUES (DEFAULT, 'interrese', 1, 'machine à cuisiner', 2, NULL, 'photo machine à cuisiner');
 INSERT INTO projet.offres
 VALUES (DEFAULT, 2, now(), ' ');
 

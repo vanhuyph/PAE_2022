@@ -1,5 +1,6 @@
 package be.vinci.pae.business.offre;
 
+import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.vue.Vues;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -14,7 +15,7 @@ public class OffreImpl implements Offre {
   @JsonView(Vues.Public.class)
   private Date dateOffre;
   @JsonView(Vues.Public.class)
-  private int idObjet;
+  private ObjetDTO objetDTO;
   @JsonView(Vues.Public.class)
   private String plageHoraire;
 
@@ -34,12 +35,12 @@ public class OffreImpl implements Offre {
     this.dateOffre = dateOffre;
   }
 
-  public int getIdObjet() {
-    return idObjet;
+  public ObjetDTO getObjetDTO() {
+    return objetDTO;
   }
 
-  public void setIdObjet(int idObjet) {
-    this.idObjet = idObjet;
+  public void setObjetDTO(ObjetDTO objetDTO) {
+    this.objetDTO = objetDTO;
   }
 
   public String getPlageHoraire() {
@@ -72,7 +73,7 @@ public class OffreImpl implements Offre {
     return "Offre{"
         + "id offre= " + idOffre
         + ", date offre= " + dateOffre
-        + ", idObjet= " + idObjet
+        + ", objetDTO= " + objetDTO.toString()
         + ", plage horaire= " + plageHoraire
         + '}';
   }

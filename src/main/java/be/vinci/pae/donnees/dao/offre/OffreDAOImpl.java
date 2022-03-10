@@ -1,8 +1,8 @@
 package be.vinci.pae.donnees.dao.offre;
 
 import be.vinci.pae.business.DomaineFactory;
-import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.offre.OffreDTO;
+import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -17,8 +17,8 @@ public class OffreDAOImpl implements OffreDAO {
   private DomaineFactory factory;
   @Inject
   private ServiceDAL serviceDAL;
-  //@Inject
-  //private ObjetDAO objetDAO;
+  @Inject
+  private ObjetDAO objetDAO;
 
   /**
    * Creer une offre.
@@ -35,8 +35,8 @@ public class OffreDAOImpl implements OffreDAO {
     try {
       java.util.Date date = new java.util.Date();
       java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-      ps.setDate(1, sqlDate);
-      ps.setInt(2, idObjet);
+      ps.setInt(1, idObjet);
+      ps.setDate(2, sqlDate);
       ps.setString(3, plageHoraire);
 
       offreDTO = remplirOffreDepuisResultSet(offreDTO, ps);
@@ -81,9 +81,8 @@ public class OffreDAOImpl implements OffreDAO {
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
         offreDTO.setIdOffre(rs.getInt(1));
-        offreDTO.setDateOffre(rs.getDate(2));
-        ObjetDTO objetDTO = null; //implémenter la méthode pour rechercher l'objet
-        //offreDTO.setObjet(objetDTO);
+        offreDTO.setObjetDTO(objetDAO.rechercheParId(rs.getInt(2)));
+        offreDTO.setDateOffre(rs.getDate(3));
         offreDTO.setPlageHoraire(rs.getString(4));
       }
     }
@@ -104,10 +103,11 @@ public class OffreDAOImpl implements OffreDAO {
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
         offreDTO.setIdOffre(rs.getInt(1));
-        offreDTO.setIdObjet( rs.getInt(2));
+        offreDTO.setObjetDTO(objetDAO.rechercheParId(rs.getInt(2)));
         offreDTO.setDateOffre(rs.getDate(3));
         offreDTO.setPlageHoraire(rs.getString(4));
         listOffres.add(offreDTO);
+        offreDTO = factory.getOffre();
       }
     }
     return listOffres;

@@ -50,7 +50,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.adresse"
+            + "u.etat_inscription, u.commentaire, u.adresse "
             + "FROM projet.utilisateurs u WHERE u.id_utilisateur = ?;");
     try {
       ps.setInt(1, id);

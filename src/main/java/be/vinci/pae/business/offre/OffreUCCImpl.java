@@ -39,7 +39,6 @@ public class OffreUCCImpl implements OffreUCC {
       throw new ExceptionBusiness("Il n'y a pas d'offre.",
           Status.INTERNAL_SERVER_ERROR); // vérifier statut de réponse
     }
-    System.out.println(listOffres.get(0).toString());
     return listOffres;
   }
 

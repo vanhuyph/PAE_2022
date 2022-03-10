@@ -69,7 +69,6 @@ public class RessourceOffre {
    */
   @GET
   @Path("listOffres")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public List<OffreDTO> listOffres() {
     List<OffreDTO> offreDTO = offreUCC.listOffres();
