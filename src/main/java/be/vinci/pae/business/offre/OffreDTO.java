@@ -15,9 +15,9 @@ public interface OffreDTO {
 
   void setDateOffre(Date dateOffre);
 
-  ObjetDTO getObjet();
+  int getIdObjet();
 
-  void setObjet(ObjetDTO objet);
+  void setIdObjet(int idObjet);
 
   String getPlageHoraire();
 

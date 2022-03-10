@@ -56,8 +56,8 @@ public class OffreDAOImpl implements OffreDAO {
     OffreDTO offreDTO = factory.getOffre();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT of.id_offre, of.id_objet, of.date_offre, of.plage_horaire"
-            + " FROM projet.objets o, projet.offres of WHERE o.id_objet == of.id_objet AND"
-            + " (o.etat_objet == 'offert' OR o.etat_objet == 'interrese') ;");
+            + " FROM projet.objets o, projet.offres of WHERE o.id_objet = of.id_objet AND"
+            + " (o.etat_objet = 'offert' OR o.etat_objet = 'interrese');");
     List<OffreDTO> listOffres = null;
     try {
       listOffres = remplirListOffresDepuisResulSet(offreDTO, ps);
@@ -83,7 +83,7 @@ public class OffreDAOImpl implements OffreDAO {
         offreDTO.setIdOffre(rs.getInt(1));
         offreDTO.setDateOffre(rs.getDate(2));
         ObjetDTO objetDTO = null; //implémenter la méthode pour rechercher l'objet
-        offreDTO.setObjet(objetDTO);
+        //offreDTO.setObjet(objetDTO);
         offreDTO.setPlageHoraire(rs.getString(4));
       }
     }
@@ -104,8 +104,8 @@ public class OffreDAOImpl implements OffreDAO {
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
         offreDTO.setIdOffre(rs.getInt(1));
-        offreDTO.setDateOffre(rs.getDate(2));
-        offreDTO.setObjet((ObjetDTO) rs.getObject(3));
+        offreDTO.setIdObjet( rs.getInt(2));
+        offreDTO.setDateOffre(rs.getDate(3));
         offreDTO.setPlageHoraire(rs.getString(4));
         listOffres.add(offreDTO);
       }
