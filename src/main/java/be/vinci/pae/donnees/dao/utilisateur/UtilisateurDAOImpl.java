@@ -33,7 +33,11 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
             + " FROM projet.utilisateurs u WHERE u.pseudo = ?;");
     try {
       ps.setString(1, pseudo);
-      utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          utilisateurDTO = remplirListeUtilisateurs(rs, utilisateurDTO);
+        }
+      }
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -54,10 +58,14 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, u.adresse"
-            + "FROM projet.utilisateurs u WHERE u.id_utilisateur = ?;");
+            + " FROM projet.utilisateurs u WHERE u.id_utilisateur = ?;");
     try {
       ps.setInt(1, id);
-      utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          utilisateurDTO = remplirListeUtilisateurs(rs, utilisateurDTO);
+        }
+      }
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -114,7 +122,11 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setString(1, "confirmé");
       ps.setBoolean(2, estAdmin);
       ps.setInt(3, id);
-      utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          utilisateurDTO = remplirListeUtilisateurs(rs, utilisateurDTO);
+        }
+      }
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -150,33 +162,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       e.printStackTrace();
     }
     return liste;
-  }
-
-  /**
-   * Rempli les données de l'utilisateur depuis un ResultSet.
-   *
-   * @param utilisateurDTO : l'utilisateur vide, qui va être rempli
-   * @param ps             : le PreparedStatement déjà mis en place
-   * @return utilisateurDTO : l'utilisateur rempli
-   * @throws SQLException : est lancée s'il y a eu un problème
-   */
-  private UtilisateurDTO remplirUtilisateurDepuisResulSet(UtilisateurDTO utilisateurDTO,
-      PreparedStatement ps) throws SQLException {
-    try (ResultSet rs = ps.executeQuery()) {
-      while (rs.next()) {
-        utilisateurDTO.setIdUtilisateur(rs.getInt(1));
-        utilisateurDTO.setPseudo(rs.getString(2));
-        utilisateurDTO.setNom(rs.getString(3));
-        utilisateurDTO.setPrenom(rs.getString(4));
-        utilisateurDTO.setMdp(rs.getString(5));
-        utilisateurDTO.setGsm(rs.getString(6));
-        utilisateurDTO.setEstAdmin(rs.getBoolean(7));
-        utilisateurDTO.setEtatInscription(rs.getString(8));
-        utilisateurDTO.setCommentaire(rs.getString(9));
-        utilisateurDTO.setAdresse(rs.getInt(10));
-      }
-    }
-    return utilisateurDTO;
   }
 
   /**
