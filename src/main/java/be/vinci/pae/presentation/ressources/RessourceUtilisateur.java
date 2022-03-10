@@ -137,7 +137,8 @@ public class RessourceUtilisateur {
    *
    * @param json : json contenant l'information s'il est admin ou pas
    * @param id   : l'id de l'utilisateur que l'on veut confirmer
-   * @return
+   * @return utilisateurDTO : l'utilisateur confirmé
+   * @throws WebApplicationException : lancé s'il y a un problème dans la confirmation
    */
   @PUT
   @Path("confirme/{id}")
@@ -156,12 +157,61 @@ public class RessourceUtilisateur {
           .build());
     }
     boolean estAdmin = json.get("estAdmin").asBoolean();
-    UtilisateurDTO utilisateurDTO = utilisateurUCC.confirmerInscription(id, estAdmin);
-    if (utilisateurDTO == null) {
+    UtilisateurDTO utilisateurDTO = null;
+    try {
+      utilisateurDTO = utilisateurUCC.confirmerInscription(id, estAdmin);
+      if (utilisateurDTO == null) {
+        throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+            .entity("L'utilisateur n'a pas pu être confimé").type(MediaType.TEXT_PLAIN)
+            .build());
+      }
+    } catch (Exception e) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
           .entity("L'utilisateur n'a pas pu être confimé").type(MediaType.TEXT_PLAIN)
           .build());
     }
+    return utilisateurDTO;
+  }
+
+  /**
+   * Refuse l'inscription de l'utilisateur et ajoute un commentaire.
+   *
+   * @param json : json contenant le commentaire du refus
+   * @param id   : l'id de l'utilisateur
+   * @return utilisateurDTO : l'utilisateur refusé
+   * @throws WebApplicationException : lancé s'il y a un problème lors du refus
+   */
+  @PUT
+  @Path("refuse/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AutorisationAdmin
+  public UtilisateurDTO refuseUtilisateur(JsonNode json, @PathParam("id") int id) {
+    String commentaire = json.get("commentaire").asText();
+    if (commentaire.equals("")) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("Commentaire manquant").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+    if (id < 1) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("L'utilisateur n'existe pas").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+    UtilisateurDTO utilisateurDTO = null;
+    try {
+      utilisateurDTO = utilisateurUCC.refuserInscription(id, commentaire);
+      if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
+        throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+            .entity("L'utilisateur n'a pas pu être refusé").type(MediaType.TEXT_PLAIN)
+            .build());
+      }
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("L'utilisateur n'a pas pu être refusé").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+
     return utilisateurDTO;
   }
 

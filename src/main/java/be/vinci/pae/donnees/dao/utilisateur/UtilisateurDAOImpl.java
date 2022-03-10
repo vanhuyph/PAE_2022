@@ -121,6 +121,33 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
+   * Met à jour le commentaire et l'état de l'inscription d'un utilisateur à "refusé".
+   *
+   * @param id          : l'id de l'utilisateur
+   * @param commentaire : le commentaire que l'on va ajouter
+   * @return utilisateurDTO :l'utilisateur mis à jour
+   */
+  @Override
+  public UtilisateurDTO refuserInscription(int id, String commentaire) {
+    UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
+    PreparedStatement ps = serviceDAL.getPs(
+        "UPDATE projet.utilisateurs SET etat_inscription = ?, commentaire = ? "
+            + "WHERE id_utilisateur = ? "
+            + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
+            + "etat_inscription, commentaire, adresse;");
+    try {
+      ps.setString(1, "refusé");
+      ps.setString(2, commentaire);
+      ps.setInt(3, id);
+      utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
+      ps.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return utilisateurDTO;
+  }
+
+  /**
    * Rempli les données de l'utilisateur depuis un ResultSet.
    *
    * @param utilisateurDTO : l'utilisateur vide, qui va être rempli

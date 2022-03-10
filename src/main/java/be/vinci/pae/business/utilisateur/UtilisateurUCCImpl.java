@@ -1,7 +1,6 @@
 package be.vinci.pae.business.utilisateur;
 
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
-import be.vinci.pae.presentation.ressources.filtres.AutorisationAdmin;
 import be.vinci.pae.utilitaires.exceptions.ExceptionBusiness;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
@@ -113,12 +112,35 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     return utilisateur;
   }
 
-  @AutorisationAdmin
+  /**
+   * Vérifie si l'utilisateur a été confirmé.
+   *
+   * @param id       :       l'id de l'utilisateur
+   * @param estAdmin : si l'utilisateur est admin
+   * @return utilisateurDTO : l'utilisateur confirmé
+   */
   @Override
   public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
     UtilisateurDTO utilisateurDTO = utilisateurDAO.confirmerInscription(id, estAdmin);
     if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
       throw new ExceptionBusiness("L'utilisateur n'a pas pu être confirmé", Status.BAD_REQUEST);
+    }
+    return utilisateurDTO;
+  }
+
+
+  /**
+   * Vérifie si l'utilisateur a été refusé.
+   *
+   * @param id          : l'id de l'utilisateur
+   * @param commentaire : le commentaire du refus
+   * @return utilisateurDTO : l'utilisateur refusé
+   */
+  @Override
+  public UtilisateurDTO refuserInscription(int id, String commentaire) {
+    UtilisateurDTO utilisateurDTO = utilisateurDAO.refuserInscription(id, commentaire);
+    if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
+      throw new ExceptionBusiness("L'utilisateur n'a pas pu être refusé", Status.BAD_REQUEST);
     }
     return utilisateurDTO;
   }

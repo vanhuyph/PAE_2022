@@ -31,7 +31,7 @@ const Navbar = () => {
             <ul class="nav-list">
                 <li><a href="#" data-uri="/">Accueil</a></li>
                 <li><a href="#" data-uri="/">Créer une offre</a></li>
-                <li><a href="#" data-uri="/">Admin</a></li>
+                <li><a href="#" data-uri="/admin">Admin</a></li>
                 <li><a href="#" data-uri="/deconnexion">Se déconnecter</a></li>
             </ul>
             <div class="menu"></div>
