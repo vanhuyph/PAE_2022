@@ -1,8 +1,6 @@
 import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import {Redirect} from "../Router/Router";
 
-const utilisateur = recupUtilisateurDonneesSession();
-
 const barVertical = `
 <div id="bar-vertical" class="ui left sidebar visible vertical menu">
 <h2 class="ui large header">Admin</h2>
@@ -44,8 +42,9 @@ ${pricipal}
 `
 
 const PageAdmin = () => {
-  if (!utilisateur) {
-    return Redirect("/connexion");
+  const utilisateur = recupUtilisateurDonneesSession();
+  if (!utilisateur || !utilisateur.utilisateur.estAdmin) {
+    return Redirect("/");
   }
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = page;
@@ -87,6 +86,7 @@ const PageAdmin = () => {
 }
 
 const recupEnAttente = () => {
+  const utilisateur = recupUtilisateurDonneesSession();
   fetch("/api/utilisateurs/attente", {
     method: "GET",
     headers: {
@@ -106,6 +106,7 @@ const recupEnAttente = () => {
 }
 
 const recupRefuse = () => {
+  const utilisateur = recupUtilisateurDonneesSession();
   fetch("/api/utilisateurs/refuse", {
     method: "GET",
     headers: {
@@ -126,6 +127,7 @@ const recupRefuse = () => {
 
 //Affichage de la liste des inscriptions en attente
 const surListeAttente = (data) => {
+  const utilisateur = recupUtilisateurDonneesSession();
   let contenu = document.querySelector("#contenu");
   if (data.length === 0 || !data) {
     let listeVide = `<div><h2>Liste des demandes d'inscriptions</h2>Il n'y a aucune inscription en attente pour l'instant`;
@@ -137,14 +139,14 @@ const surListeAttente = (data) => {
   `;
 
   //Affichage individuel des utilisateurs
-  data.forEach((utilisateur) => {
+  data.forEach((element) => {
     liste += `
     <div class="utilisateur">
         <form id="formulaire-confirme">
-            <input id="id-utilisateur" type="hidden" value=${utilisateur.idUtilisateur}>
-            <p>${utilisateur.pseudo}</p>
-            <p>${utilisateur.nom}</p>
-            <p>${utilisateur.prenom}</p>
+            <input id="id-utilisateur" type="hidden" value=${element.idUtilisateur}>
+            <p>${element.pseudo}</p>
+            <p>${element.nom}</p>
+            <p>${element.prenom}</p>
             <div class="est-admin">
               <label>Est admin </label>
               <input id="check" type="checkbox">
@@ -156,8 +158,8 @@ const surListeAttente = (data) => {
         </form>
         <div class="raison-refus">
           <form id="refus-form" class="ui form">
-            <input id="id-utilisateur-refus" type="hidden" value=${utilisateur.idUtilisateur}>
-            <label for="commentaire">Raison du refus: </label>
+            <input id="id-utilisateur-refus" type="hidden" value=${element.idUtilisateur}>
+            <label for="commentaire">Raison du refus : </label>
             <textarea id="raison" cols="3" rows="1"></textarea>
             <div>
               <button type="submit" class="ui button red">Soumettre</button>
@@ -170,34 +172,35 @@ const surListeAttente = (data) => {
   liste += `</div>`;
   contenu.innerHTML = liste;
 
-
   document.querySelectorAll(".utilisateur").forEach((item) => {
+    const utilisateur = recupUtilisateurDonneesSession();
     //Confirmation de l'utilisateur
-    item.querySelector("#formulaire-confirme").addEventListener("submit", (e) => {
-      e.preventDefault()
-      const admin = item.querySelector("#check").checked
-      const id = item.querySelector("#id-utilisateur").value
+    item.querySelector("#formulaire-confirme").addEventListener("submit",
+        (e) => {
+          e.preventDefault()
+          const admin = item.querySelector("#check").checked
+          const id = item.querySelector("#id-utilisateur").value
 
-      let confirmation = {
-        estAdmin : admin
-      }
-      fetch("/api/utilisateurs/confirme/"+id, {
-        method: "PUT",
-        body: JSON.stringify(confirmation),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: utilisateur.token
-        }
-      })
-      .then((reponse) => {
-        if (!reponse.ok) {
-          throw new Error(
-              "Error code : " + reponse.status + " : " + reponse.statusText)
-        }
-        return reponse.json();
-      })
-      .then(() => recupEnAttente())
-    });
+          let confirmation = {
+            estAdmin: admin
+          }
+          fetch("/api/utilisateurs/confirme/" + id, {
+            method: "PUT",
+            body: JSON.stringify(confirmation),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: utilisateur.token
+            }
+          })
+          .then((reponse) => {
+            if (!reponse.ok) {
+              throw new Error(
+                  "Error code : " + reponse.status + " : " + reponse.statusText)
+            }
+            return reponse.json();
+          })
+          .then(() => recupEnAttente())
+        });
 
     //Refus de l'utilisateur
     item.querySelector("#refuser").addEventListener("click", (e) => {
@@ -215,7 +218,7 @@ const surListeAttente = (data) => {
         const refus = {
           commentaire: commentaire
         }
-        fetch("/api/utilisateurs/refuse/"+id, {
+        fetch("/api/utilisateurs/refuse/" + id, {
           method: "PUT",
           body: JSON.stringify(refus),
           headers: {
@@ -238,7 +241,7 @@ const surListeAttente = (data) => {
 }
 //Affichage de la liste des inscriptions refusées
 const surListeRefus = (data) => {
-
+  const utilisateur = recupUtilisateurDonneesSession();
   let contenu = document.querySelector("#contenu");
   if (data.length === 0 || !data) {
     let listeVide = `<div><h2>Liste des inscriptions refusées</h2>Il n'y a aucune inscription refusée pour l'instant`;
@@ -248,14 +251,14 @@ const surListeRefus = (data) => {
   let liste = `<div><h2>Liste des inscriptions refusées</h2>`;
 
   //Affichage individuel des utilisateurs
-  data.forEach((utilisateur) => {
+  data.forEach((element) => {
     liste += `
     <div class="utilisateur">
         <form id="formulaire-confirme">
-            <input id="id-utilisateur" type="hidden" value=${utilisateur.idUtilisateur}>
-            <p>${utilisateur.pseudo}</p>
-            <p>${utilisateur.nom}</p>
-            <p>${utilisateur.prenom}</p>
+            <input id="id-utilisateur" type="hidden" value=${element.idUtilisateur}>
+            <p>${element.pseudo}</p>
+            <p>${element.nom}</p>
+            <p>${element.prenom}</p>
             <div class="est-admin">
               <label>Est admin </label>
               <input id="check" type="checkbox">
@@ -265,8 +268,8 @@ const surListeRefus = (data) => {
             </div>
         </form>
         <div class="refus-raison">
-            <label for="commentaire">Raison du refus: </label>
-            <p class="commentaire-refus">${utilisateur.commentaire}</p>
+            <label for="commentaire">Raison du refus : </label>
+            <p class="commentaire-refus">${element.commentaire}</p>
         </div>
     </div>
     
