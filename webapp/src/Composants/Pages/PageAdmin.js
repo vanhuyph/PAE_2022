@@ -124,6 +124,7 @@ const recupRefuse = () => {
   .then((data) => surListeRefus(data))
 }
 
+//Affichage de la liste des inscriptions en attente
 const surListeAttente = (data) => {
   let contenu = document.querySelector("#contenu");
   if (data.length === 0 || !data) {
@@ -132,9 +133,10 @@ const surListeAttente = (data) => {
     return;
   }
   let liste = `<div class="liste-utilisateurs">
-<h2>Liste des demandes d'inscriptions</h2>
-`;
+  <h2>Liste des demandes d'inscriptions</h2>
+  `;
 
+  //Affichage individuel des utilisateurs
   data.forEach((utilisateur) => {
     liste += `
     <div class="utilisateur">
@@ -153,7 +155,8 @@ const surListeAttente = (data) => {
             </div>
         </form>
         <div class="raison-refus">
-          <form class="ui form">
+          <form id="refus-form" class="ui form">
+            <input id="id-utilisateur-refus" type="hidden" value=${utilisateur.idUtilisateur}>
             <label for="commentaire">Raison du refus: </label>
             <textarea id="raison" cols="3" rows="1"></textarea>
             <div>
@@ -167,7 +170,9 @@ const surListeAttente = (data) => {
   liste += `</div>`;
   contenu.innerHTML = liste;
 
+
   document.querySelectorAll(".utilisateur").forEach((item) => {
+    //Confirmation de l'utilisateur
     item.querySelector("#formulaire-confirme").addEventListener("submit", (e) => {
       e.preventDefault()
       const admin = item.querySelector("#check").checked
@@ -193,18 +198,46 @@ const surListeAttente = (data) => {
       })
       .then(() => recupEnAttente())
     });
+
+    //Refus de l'utilisateur
     item.querySelector("#refuser").addEventListener("click", (e) => {
       e.preventDefault()
-      item.querySelector(".raison-refus").classList.toggle("montrer-block")
+
+      //Afficher la div de refus
+      const refus = item.querySelector(".raison-refus")
+      refus.classList.toggle("montrer-block")
+
+      const refusForm = refus.querySelector("#refus-form")
+      refusForm.addEventListener("submit", (e) => {
+        e.preventDefault()
+        const commentaire = refusForm.querySelector("#raison").value
+        const id = item.querySelector("#id-utilisateur-refus").value
+        const refus = {
+          commentaire: commentaire
+        }
+        fetch("/api/utilisateurs/refuse/"+id, {
+          method: "PUT",
+          body: JSON.stringify(refus),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: utilisateur.token
+          }
+        })
+        .then((reponse) => {
+          if (!reponse.ok) {
+            throw new Error(
+                "Error code : " + reponse.status + " : " + reponse.statusText)
+          }
+          return reponse.json();
+        })
+        .then(() => recupEnAttente())
+      })
 
     });
   });
-
 }
-
+//Affichage de la liste des inscriptions refusées
 const surListeRefus = (data) => {
-
-  //Faut enlever la table et faire un bail perso avec un formulaire
 
   let contenu = document.querySelector("#contenu");
   if (data.length === 0 || !data) {
@@ -214,22 +247,62 @@ const surListeRefus = (data) => {
   }
   let liste = `<div><h2>Liste des inscriptions refusées</h2>`;
 
+  //Affichage individuel des utilisateurs
   data.forEach((utilisateur) => {
     liste += `
-    <div class="ui fluid container">
-      <p>${utilisateur.pseudo}</p>
-      <p>${utilisateur.nom}</p>
-      <p>${utilisateur.prenom}</p>
-      <input type="checkbox" class="ui checkbox">
-      <div class="ui buttons">
-        <button class="ui button green">Confirmer</button>
-      </div>
+    <div class="utilisateur">
+        <form id="formulaire-confirme">
+            <input id="id-utilisateur" type="hidden" value=${utilisateur.idUtilisateur}>
+            <p>${utilisateur.pseudo}</p>
+            <p>${utilisateur.nom}</p>
+            <p>${utilisateur.prenom}</p>
+            <div class="est-admin">
+              <label>Est admin </label>
+              <input id="check" type="checkbox">
+            </div>
+            <div class="">
+                <button id="confirmer" type="submit" class="ui green button">Confirmer</button>
+            </div>
+        </form>
+        <div class="refus-raison">
+            <label for="commentaire">Raison du refus: </label>
+            <p class="commentaire-refus">${utilisateur.commentaire}</p>
+        </div>
     </div>
     
     `;
   });
   liste += `</div>`;
   contenu.innerHTML = liste;
+  document.querySelectorAll(".utilisateur").forEach((item) => {
+    //Confirmation de l'utilisateur
+    item.querySelector("#formulaire-confirme").addEventListener("submit",
+        (e) => {
+          e.preventDefault()
+          const admin = item.querySelector("#check").checked
+          const id = item.querySelector("#id-utilisateur").value
+
+          let confirmation = {
+            estAdmin: admin
+          }
+          fetch("/api/utilisateurs/confirme/" + id, {
+            method: "PUT",
+            body: JSON.stringify(confirmation),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: utilisateur.token
+            }
+          })
+          .then((reponse) => {
+            if (!reponse.ok) {
+              throw new Error(
+                  "Error code : " + reponse.status + " : " + reponse.statusText)
+            }
+            return reponse.json();
+          })
+          .then(() => recupRefuse())
+        });
+  });
 }
 
 export default PageAdmin;

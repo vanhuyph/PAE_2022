@@ -19,7 +19,7 @@ const PageAccueil = () => {
       }
     }
   }
-  Navbar()
+
 
   let pageAccueil = `
   <div class="conteneur-modal">
@@ -38,6 +38,7 @@ const PageAccueil = () => {
   `
 
   pageDiv.innerHTML = pageAccueil;
+  Navbar()
   const conteneurModal = document.querySelector(".conteneur-modal")
   const declencheurModal = document.querySelectorAll(".declencheur-modal")
 

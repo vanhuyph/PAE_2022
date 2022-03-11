@@ -363,5 +363,13 @@ Fin Message de bienvenue*/
 .est-admin label{
     margin-right: 5px;
 }
-
+.refus-raison{
+    text-align: center;
+    margin-top: 5px;
+    padding: 10px 0;
+}
+.commentaire-refus{
+    display: inline;
+    margin-left: 10px;
+}
 /* Fin Admin*/
