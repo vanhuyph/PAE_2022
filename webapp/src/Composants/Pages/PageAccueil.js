@@ -19,6 +19,7 @@ const PageAccueil = () => {
       }
     }
   }
+  Navbar()
 
   let pageAccueil = `
   <div class="conteneur-modal">

@@ -1,6 +1,8 @@
 import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import {Redirect} from "../Router/Router";
 
+const utilisateur = recupUtilisateurDonneesSession();
+
 const barVertical = `
 <div id="bar-vertical" class="ui left sidebar visible vertical menu">
 <h2 class="ui large header">Admin</h2>
@@ -42,7 +44,6 @@ ${pricipal}
 `
 
 const PageAdmin = () => {
-  const utilisateur = recupUtilisateurDonneesSession();
   if (!utilisateur) {
     return Redirect("/connexion");
   }
@@ -64,6 +65,8 @@ const PageAdmin = () => {
     }
   };
 
+  recupEnAttente()
+
   const demandesPage = document.querySelector("#demandes")
   const refusPage = document.querySelector("#refus")
   const contenu = document.querySelector("#contenu")
@@ -73,44 +76,52 @@ const PageAdmin = () => {
   demandesPage.addEventListener("click", () => {
     refusPage.classList.remove("positive")
     demandesPage.classList.add("positive")
-    fetch("/api/utilisateurs/attente", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: utilisateur.token,
-      },
-    })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(
-            "Error code : " + response.status + " : " + response.statusText
-        );
-      }
-      return response.json();
-    })
-    .then((data) => surListeAttente(data))
+    recupEnAttente()
   })
 
   refusPage.addEventListener("click", () => {
     demandesPage.classList.remove("positive")
     refusPage.classList.add("positive")
-    fetch("/api/utilisateurs/refuse", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: utilisateur.token,
-      },
-    })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(
-            "Error code : " + response.status + " : " + response.statusText
-        );
-      }
-      return response.json();
-    })
-    .then((data) => surListeRefus(data))
+    recupRefuse()
   })
+}
+
+const recupEnAttente = () => {
+  fetch("/api/utilisateurs/attente", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: utilisateur.token,
+    },
+  })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(
+          "Error code : " + response.status + " : " + response.statusText
+      );
+    }
+    return response.json();
+  })
+  .then((data) => surListeAttente(data))
+}
+
+const recupRefuse = () => {
+  fetch("/api/utilisateurs/refuse", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: utilisateur.token,
+    },
+  })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(
+          "Error code : " + response.status + " : " + response.statusText
+      );
+    }
+    return response.json();
+  })
+  .then((data) => surListeRefus(data))
 }
 
 const surListeAttente = (data) => {
@@ -120,20 +131,81 @@ const surListeAttente = (data) => {
     contenu.innerHTML = listeVide;
     return;
   }
-  let liste = `<div><h2>Liste des demandes d'inscriptions</h2>`;
+  let liste = `<div class="liste-utilisateurs">
+<h2>Liste des demandes d'inscriptions</h2>
+`;
 
   data.forEach((utilisateur) => {
     liste += `
-    <div>${utilisateur.pseudo}</div>
-    <div>${utilisateur.nom}</div>
-    <div>${utilisateur.prenom}</div>
+    <div class="utilisateur">
+        <form id="formulaire-confirme">
+            <input id="id-utilisateur" type="hidden" value=${utilisateur.idUtilisateur}>
+            <p>${utilisateur.pseudo}</p>
+            <p>${utilisateur.nom}</p>
+            <p>${utilisateur.prenom}</p>
+            <div class="est-admin">
+              <label>Est admin </label>
+              <input id="check" type="checkbox">
+            </div>
+            <div class="boutons">
+                <button id="confirmer" type="submit" class="ui green button">Confirmer</button>
+                <button id="refuser" class="ui red button">Refuser</button>
+            </div>
+        </form>
+        <div class="raison-refus">
+          <form class="ui form">
+            <label for="commentaire">Raison du refus: </label>
+            <textarea id="raison" cols="3" rows="1"></textarea>
+            <div>
+              <button type="submit" class="ui button red">Soumettre</button>
+            </div>
+          </form>
+        </div>
+    </div>
     `;
   });
   liste += `</div>`;
   contenu.innerHTML = liste;
+
+  document.querySelectorAll(".utilisateur").forEach((item) => {
+    item.querySelector("#formulaire-confirme").addEventListener("submit", (e) => {
+      e.preventDefault()
+      const admin = item.querySelector("#check").checked
+      const id = item.querySelector("#id-utilisateur").value
+
+      let confirmation = {
+        estAdmin : admin
+      }
+      fetch("/api/utilisateurs/confirme/"+id, {
+        method: "PUT",
+        body: JSON.stringify(confirmation),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: utilisateur.token
+        }
+      })
+      .then((reponse) => {
+        if (!reponse.ok) {
+          throw new Error(
+              "Error code : " + reponse.status + " : " + reponse.statusText)
+        }
+        return reponse.json();
+      })
+      .then(() => recupEnAttente())
+    });
+    item.querySelector("#refuser").addEventListener("click", (e) => {
+      e.preventDefault()
+      item.querySelector(".raison-refus").classList.toggle("montrer-block")
+
+    });
+  });
+
 }
 
 const surListeRefus = (data) => {
+
+  //Faut enlever la table et faire un bail perso avec un formulaire
+
   let contenu = document.querySelector("#contenu");
   if (data.length === 0 || !data) {
     let listeVide = `<div><h2>Liste des inscriptions refusées</h2>Il n'y a aucune inscription refusée pour l'instant`;
@@ -144,9 +216,16 @@ const surListeRefus = (data) => {
 
   data.forEach((utilisateur) => {
     liste += `
-    <div>${utilisateur.pseudo}</div>
-    <div>${utilisateur.nom}</div>
-    <div>${utilisateur.prenom}</div>
+    <div class="ui fluid container">
+      <p>${utilisateur.pseudo}</p>
+      <p>${utilisateur.nom}</p>
+      <p>${utilisateur.prenom}</p>
+      <input type="checkbox" class="ui checkbox">
+      <div class="ui buttons">
+        <button class="ui button green">Confirmer</button>
+      </div>
+    </div>
+    
     `;
   });
   liste += `</div>`;
