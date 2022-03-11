@@ -7,4 +7,6 @@ public interface ObjetDAO {
 
   ObjetDTO creerObjet(String etatObjet, String typeObjet, String description,
       Integer offreur, String photo);
+
+  ObjetDTO rechercheParId(int id);
 }

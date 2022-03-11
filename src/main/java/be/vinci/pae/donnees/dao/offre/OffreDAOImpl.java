@@ -3,6 +3,7 @@ package be.vinci.pae.donnees.dao.offre;
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.offre.OffreDTO;
+import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -15,8 +16,8 @@ public class OffreDAOImpl implements OffreDAO {
   private DomaineFactory factory;
   @Inject
   private ServiceDAL serviceDAL;
-  //@Inject
-  //private ObjetDAO objetDAO;
+  @Inject
+  private ObjetDAO objetDAO;
 
   /**
    * Creer une offre.
@@ -58,7 +59,7 @@ public class OffreDAOImpl implements OffreDAO {
       while (rs.next()) {
         offreDTO.setIdOffre(rs.getInt(1));
         offreDTO.setDateOffre(rs.getDate(2));
-        ObjetDTO objetDTO = null; //implémenter la méthode pour rechercher l'objet
+        ObjetDTO objetDTO = objetDAO.rechercheParId(rs.getInt(3));
         offreDTO.setObjet(objetDTO);
         offreDTO.setPlageHoraire(rs.getString(4));
       }

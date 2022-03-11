@@ -55,6 +55,30 @@ public class ObjetDAOImpl implements ObjetDAO {
   }
 
   /**
+   * Recherche un objet via un id dans la base de donnée.
+   *
+   * @param id : l'id de l'objet
+   * @return ObjetDTO : l'objet, s'il trouve un objet qui possède ce id
+   * @throws SQLException : est lancée s'il ne trouve pas l'objet
+   */
+  @Override
+  public ObjetDTO rechercheParId(int id) {
+    ObjetDTO objetDTO = factory.getObjet();
+    PreparedStatement ps = serviceDAL.getPs(
+        "SELECT o.id_objet, o.etat_objet, o.type_objet, o.description,"
+            + " o.offreur, o.receveur, o.photo"
+            + " FROM projet.objets o WHERE o.id_objet = ?;");
+    try {
+      ps.setInt(1, id);
+      objetDTO = remplirObjetDepuisResultSet(objetDTO, ps);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return objetDTO;
+  }
+
+
+  /**
    * Rempli les données de l'objet depuis un ResultSet.
    *
    * @param objetDTO : l'objet vide
