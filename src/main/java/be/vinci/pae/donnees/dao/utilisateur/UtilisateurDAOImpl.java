@@ -23,10 +23,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    *
    * @param pseudo : le pseudo de l'utilisateur
    * @return utilisateurDTO : l'utilisateur, s'il trouve un utilisateur qui possède ce pseudo
-   * @throws SQLException : est lancée s'il y a eu un problème côté serveur
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public UtilisateurDTO rechercheParPseudo(String pseudo) {
+  public UtilisateurDTO rechercheParPseudo(String pseudo) throws FatalException {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
@@ -52,10 +52,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    *
    * @param id : l'id de l'utilisateur
    * @return utilisateurDTO : l'utilisateur, s'il trouve un utilisateur qui possède ce id
-   * @throws SQLException : est lancée s'il y a eu un problème côté serveur
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public UtilisateurDTO rechercheParId(int id) {
+  public UtilisateurDTO rechercheParId(int id) throws FatalException {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
@@ -81,10 +81,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    *
    * @param utilisateur : l'utilisateur que l'on va ajouter
    * @return utilisateur : l'utilisateur qui a été ajouté
-   * @throws SQLException : est lancée s'il y a eu un problème côté serveur
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
+  public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) throws FatalException {
     PreparedStatement ps = serviceDAL.getPs(
         "INSERT INTO projet.utilisateurs "
             + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL) RETURNING "
@@ -114,10 +114,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @param id       : l'id de l'utilisateur
    * @param estAdmin : si l'utilisateur est admin
    * @return utilisateurDTO : l'utilisateur avec l'état de son inscription à "confirmé"
-   * @throws SQLException : est lancée s'il y a eu un problème côté serveur
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
+  public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) throws FatalException {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "UPDATE projet.utilisateurs SET etat_inscription = ?, est_admin = ? "
@@ -147,10 +147,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @param id          : l'id de l'utilisateur
    * @param commentaire : le commentaire que l'on va ajouter
    * @return utilisateurDTO : l'utilisateur mis à jour
-   * @throws SQLException : est lancée s'il y a eu un problème côté serveur
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public UtilisateurDTO refuserInscription(int id, String commentaire) {
+  public UtilisateurDTO refuserInscription(int id, String commentaire) throws FatalException {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "UPDATE projet.utilisateurs SET etat_inscription = ?, commentaire = ? "
@@ -180,9 +180,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    *
    * @param etatInscription : l'état de l'inscription
    * @return liste : la liste des utilisateurs avec l'état d'inscription passé en paramètre
-   * @throws SQLException : est lancée s'il y a eu un problème côté serveur
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
-  public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
+  public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription)
+      throws FatalException {
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, u.adresse "
@@ -211,9 +212,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @param rs             : le ResultSet
    * @param utilisateurDTO : l'utilisateur vide, qui va être rempli
    * @return utilisateurDTO : l'utilisateur rempli
-   * @throws SQLException : est lancée s'il y a un problème côté serveur
+   * @throws FatalException : est lancée s'il y a un problème côté serveur
    */
-  private UtilisateurDTO remplirUtilisateursDepuisRS(ResultSet rs, UtilisateurDTO utilisateurDTO) {
+  private UtilisateurDTO remplirUtilisateursDepuisRS(ResultSet rs, UtilisateurDTO utilisateurDTO)
+      throws FatalException {
     try {
       utilisateurDTO.setIdUtilisateur(rs.getInt(1));
       utilisateurDTO.setPseudo(rs.getString(2));

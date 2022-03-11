@@ -7,6 +7,8 @@ import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.presentation.ressources.filtres.AutorisationAdmin;
 import be.vinci.pae.presentation.ressources.utilitaires.Json;
 import be.vinci.pae.utilitaires.Config;
+import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.FatalException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -46,12 +48,13 @@ public class RessourceUtilisateur {
    * @param json : json reçu du formulaire de connexion
    * @return noeud : l'objet json contenant le token et l'utilisateur
    * @throws WebApplicationException : est lancée si pseudo ou mot de passe incorrect ou manquant
+   * @throws FatalException          : est lancée si il y a un problème côté serveur
    */
   @POST
   @Path("connexion")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode connexion(JsonNode json) {
+  public ObjectNode connexion(JsonNode json) throws FatalException {
     if (!json.hasNonNull("pseudo") || !json.hasNonNull("mdp")) {
       throw new WebApplicationException(
           Response.status(Response.Status.BAD_REQUEST)
@@ -59,8 +62,10 @@ public class RessourceUtilisateur {
     }
     String pseudo = json.get("pseudo").asText();
     String mdp = json.get("mdp").asText();
-    UtilisateurDTO utilisateurDTO = utilisateurUCC.connexion(pseudo, mdp);
-    if (utilisateurDTO == null) {
+    UtilisateurDTO utilisateurDTO = null;
+    try {
+      utilisateurDTO = utilisateurUCC.connexion(pseudo, mdp);
+    } catch (BusinessException b) {
       throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
           .entity("Pseudo ou mot de passe incorrect").type(MediaType.TEXT_PLAIN)
           .build());
@@ -75,12 +80,13 @@ public class RessourceUtilisateur {
    * @param json : json reçu du formulaire d'inscription
    * @return noeud : l'objet json contenant le token et l'utilisateur
    * @throws WebApplicationException : est lancée s'il y a eu un problème lors de l'inscription
+   * @throws FatalException          : est lancée si il y a un problème côté serveur
    */
   @POST
   @Path("inscription")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode inscription(JsonNode json) {
+  public ObjectNode inscription(JsonNode json) throws FatalException {
     if (!json.hasNonNull("pseudo") || !json.hasNonNull("nom")
         || !json.hasNonNull("prenom") || !json.hasNonNull("mdp")
         || !json.hasNonNull("rue") || !json.hasNonNull("numero")
@@ -97,29 +103,24 @@ public class RessourceUtilisateur {
     int boite = json.get("boite").asInt();
     int codePostal = json.get("code_postal").asInt();
     String commune = json.get("commune").asText();
+    UtilisateurDTO utilisateur = null;
     try {
-      if (utilisateurUCC.rechercheParPseudoInscription(pseudo).getIdUtilisateur() < 1) {
-        AdresseDTO adresse = adresseUCC.ajouterAdresse(rue, numero, boite, codePostal, commune);
-        if (adresse == null) {
-          throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-              .entity("L'adresse n'a pas pu être ajoutée").type("text/plain").build());
-        }
-        UtilisateurDTO utilisateur = utilisateurUCC.inscription(pseudo, nom, prenom, mdp,
-            adresse.getIdAdresse());
-        if (utilisateur == null) {
-          throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-              .entity("L'utilisateur n'a pas pu être ajouté").type(MediaType.TEXT_PLAIN)
-              .build());
-        }
-        ObjectNode noeud = creationToken(utilisateur);
-        return noeud;
-      }
-    } catch (Exception e) {
+      utilisateurUCC.rechercheParPseudoInscription(pseudo);
+    } catch (BusinessException e) {
       throw new WebApplicationException(Response.status(Status.CONFLICT)
-          .entity("Le pseudo existe déjà").type("text/plain").build());
+          .entity(e.getMessage()).type("text/plain").build());
     }
-    throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
-        .entity("Erreur lors de l'inscription").type("text/plain").build());
+    try {
+      AdresseDTO adresse = adresseUCC.ajouterAdresse(rue, numero, boite, codePostal, commune);
+      utilisateur = utilisateurUCC.inscription(pseudo, nom, prenom, mdp,
+          adresse.getIdAdresse());
+
+    } catch (BusinessException e) {
+      throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+          .entity(e.getMessage()).type("text/plain").build());
+    }
+    ObjectNode noeud = creationToken(utilisateur);
+    return noeud;
   }
 
   /**
@@ -129,13 +130,15 @@ public class RessourceUtilisateur {
    * @param id   : l'id de l'utilisateur que l'on veut confirmer
    * @return utilisateurDTO : l'utilisateur confirmé
    * @throws WebApplicationException : est lancée s'il y a eu un problème dans la confirmation
+   * @throws FatalException          : est lancée si il y a un problème côté serveur
    */
   @PUT
   @Path("confirme/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AutorisationAdmin
-  public UtilisateurDTO confirmerUtilisateur(JsonNode json, @PathParam("id") int id) {
+  public UtilisateurDTO confirmerUtilisateur(JsonNode json, @PathParam("id") int id)
+      throws FatalException {
     if (!json.hasNonNull("estAdmin")) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
           .entity("Information si l'utilisateur est admin ou non").type(MediaType.TEXT_PLAIN)
@@ -150,14 +153,9 @@ public class RessourceUtilisateur {
     UtilisateurDTO utilisateurDTO = null;
     try {
       utilisateurDTO = utilisateurUCC.confirmerInscription(id, estAdmin);
-      if (utilisateurDTO == null) {
-        throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-            .entity("L'utilisateur n'a pas pu être confimé").type(MediaType.TEXT_PLAIN)
-            .build());
-      }
-    } catch (Exception e) {
+    } catch (BusinessException e) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("L'utilisateur n'a pas pu être confimé").type(MediaType.TEXT_PLAIN)
+          .entity(e.getMessage()).type(MediaType.TEXT_PLAIN)
           .build());
     }
     return utilisateurDTO;
@@ -170,13 +168,15 @@ public class RessourceUtilisateur {
    * @param id   : l'id de l'utilisateur
    * @return utilisateurDTO : l'utilisateur refusé
    * @throws WebApplicationException : est lancée s'il y a eu un problème lors du refus
+   * @throws FatalException          : est lancée si il y a un problème côté serveur
    */
   @PUT
   @Path("refuse/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AutorisationAdmin
-  public UtilisateurDTO refuserUtilisateur(JsonNode json, @PathParam("id") int id) {
+  public UtilisateurDTO refuserUtilisateur(JsonNode json, @PathParam("id") int id)
+      throws FatalException {
     String commentaire = json.get("commentaire").asText();
     if (commentaire.equals("")) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
@@ -191,14 +191,9 @@ public class RessourceUtilisateur {
     UtilisateurDTO utilisateurDTO = null;
     try {
       utilisateurDTO = utilisateurUCC.refuserInscription(id, commentaire);
-      if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
-        throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-            .entity("L'utilisateur n'a pas pu être refusé").type(MediaType.TEXT_PLAIN)
-            .build());
-      }
-    } catch (Exception e) {
+    } catch (BusinessException e) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("L'utilisateur n'a pas pu être refusé").type(MediaType.TEXT_PLAIN)
+          .entity(e.getMessage()).type(MediaType.TEXT_PLAIN)
           .build());
     }
     return utilisateurDTO;
@@ -240,7 +235,7 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AutorisationAdmin
-  public List<UtilisateurDTO> listerInscriptionsRefusees() {
+  public List<UtilisateurDTO> listerInscriptionsRefusees() throws FatalException {
     List<UtilisateurDTO> liste;
     liste = utilisateurUCC.listerUtilisateursEtatsInscriptions("refusé");
     return liste;
@@ -256,7 +251,7 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AutorisationAdmin
-  public List<UtilisateurDTO> listerInscriptionsEnAttente() {
+  public List<UtilisateurDTO> listerInscriptionsEnAttente() throws FatalException {
     List<UtilisateurDTO> liste;
     liste = utilisateurUCC.listerUtilisateursEtatsInscriptions("en attente");
     return liste;

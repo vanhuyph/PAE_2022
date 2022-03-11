@@ -26,11 +26,11 @@ public class AdresseDAOImpl implements AdresseDAO {
    * @param codePostal : le code postal de l'adresse
    * @param commune    : la commune de l'adresse
    * @return adresseDTO : l'adresse ajoutée
-   * @throws SQLException : est lancée s'il y a eu un problème côté serveur
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public AdresseDTO ajouterAdresse(String rue, int numero, int boite, int codePostal,
-      String commune) {
+      String commune) throws FatalException {
     AdresseDTO adresseDTO = factory.getAdresse();
     PreparedStatement ps = serviceDAL.getPs(
         "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?)  RETURNING id_adresse, "
@@ -60,9 +60,10 @@ public class AdresseDAOImpl implements AdresseDAO {
    * @param ps      : le PreparedStatement
    * @param adresse : l'adresse vide, qui va être rempli
    * @return adresse : l'adresse rempli
-   * @throws SQLException : est lancée s'il y a un problème côté serveur
+   * @throws FatalException : est lancée s'il y a un problème côté serveur
    */
-  private AdresseDTO remplirAdresseDepuisResultSet(AdresseDTO adresse, PreparedStatement ps) {
+  private AdresseDTO remplirAdresseDepuisResultSet(AdresseDTO adresse, PreparedStatement ps)
+      throws FatalException {
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
         adresse.setIdAdresse(rs.getInt(1));

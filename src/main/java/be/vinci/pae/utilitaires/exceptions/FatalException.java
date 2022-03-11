@@ -1,8 +1,6 @@
 package be.vinci.pae.utilitaires.exceptions;
 
-import jakarta.ws.rs.WebApplicationException;
-
-public class FatalException extends WebApplicationException {
+public class FatalException extends Exception {
 
   public FatalException(String message, Throwable cause) {
     super(message, cause);

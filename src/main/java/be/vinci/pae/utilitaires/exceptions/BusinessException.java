@@ -1,12 +1,9 @@
 package be.vinci.pae.utilitaires.exceptions;
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response.Status;
+public class BusinessException extends Exception {
 
-public class BusinessException extends WebApplicationException {
-
-  public BusinessException(String message, Status statut) {
-    super(message, statut);
+  public BusinessException(String message) {
+    super(message);
   }
 
 }
