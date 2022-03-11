@@ -1,7 +1,7 @@
 package be.vinci.pae.business.utilisateur;
 
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
-import be.vinci.pae.utilitaires.exceptions.ExceptionBusiness;
+import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.List;
@@ -16,15 +16,15 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    *
    * @param pseudo : le pseudo de l'utilisateur
    * @param mdp    : le mot de passe de l'utilisateur
-   * @return : l'utilisateur si le mot de passe est bon
-   * @throws ExceptionBusiness : est lancée si le mot de passe est incorrect
+   * @return utilisateur : l'utilisateur si le mot de passe est bon
+   * @throws BusinessException : est lancée si le pseudo ou le mot de passe est incorrect
    */
   @Override
   public UtilisateurDTO connexion(String pseudo, String mdp) {
     Utilisateur utilisateur = (Utilisateur) utilisateurDAO.rechercheParPseudo(pseudo);
     if (utilisateur == null || utilisateur.getIdUtilisateur() < 1 || !utilisateur.verifierMdp(
         mdp)) {
-      throw new ExceptionBusiness("Pseudo ou mot de passe incorrect.",
+      throw new BusinessException("Pseudo ou mot de passe incorrect",
           Status.UNAUTHORIZED);
     }
     return utilisateur;
@@ -34,13 +34,15 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * Renvoie un utilisateur en fonction de son id.
    *
    * @param id : l'id de l'utilisateur
-   * @return : l'utilisateur possèdant l'id passé en paramètre
+   * @return utilisateur : l'utilisateur possèdant l'id passé en paramètre
+   * @throws BusinessException : est lancée si l'utilisateur avec l'id passé en paramètre n'est pas
+   *                           trouvé
    */
   @Override
   public UtilisateurDTO rechercheParId(int id) {
     UtilisateurDTO utilisateur = utilisateurDAO.rechercheParId(id);
     if (utilisateur == null || utilisateur.getIdUtilisateur() < 1) {
-      throw new ExceptionBusiness("L'utilisateur n'existe pas.", Status.BAD_REQUEST);
+      throw new BusinessException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
     return utilisateur;
   }
@@ -49,29 +51,32 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * Renvoie un utilisateur en fonction de son pseudo.
    *
    * @param pseudo : le pseudo de l'utilisateur
-   * @return : l'utilisateur possèdant l'id passé en paramètre
+   * @return utilisateur : l'utilisateur possèdant l'id passé en paramètre
+   * @throws BusinessException : est lancée si l'utilisateur avec le pseudo passé en paramètre n'est
+   *                           pas trouvé
    */
   @Override
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateur = utilisateurDAO.rechercheParPseudo(pseudo);
     if (utilisateur == null || utilisateur.getIdUtilisateur() < 1) {
-      throw new ExceptionBusiness("L'utilisateur n'existe pas.", Status.BAD_REQUEST);
+      throw new BusinessException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
     return utilisateur;
   }
 
   /**
-   * Verifie si un utilisateur avec ce pseudo existe.
+   * Verifie si un utilisateur avec le pseudo passé en paramètre existe déjà lors de l'inscription.
    *
    * @param pseudo : le pseudo de l'utilisateur
-   * @return : l'utilisateur vide si aucun utilisateur correspond au pseudo
-   * @throws ExceptionBusiness : lancé si un utilisateur possede ce pseudo
+   * @return utilisateur : l'utilisateur vide si aucun utilisateur correspond au pseudo
+   * @throws BusinessException : est lancée si un utilisateur possède déjà le pseudo passé en
+   *                           paramètre
    */
   @Override
   public UtilisateurDTO rechercheParPseudoInscription(String pseudo) {
     UtilisateurDTO utilisateur = utilisateurDAO.rechercheParPseudo(pseudo);
     if (utilisateur == null || utilisateur.getIdUtilisateur() > 0) {
-      throw new ExceptionBusiness("L'utilisateur existe déjà.", Status.BAD_REQUEST);
+      throw new BusinessException("L'utilisateur avec ce pseudo existe déjà", Status.BAD_REQUEST);
     }
     return utilisateur;
   }
@@ -84,17 +89,17 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @param prenom  : de l'utilisateur
    * @param mdp     : le mot de passe de l'utilisateur
    * @param adresse : l'id de l'adresse de l'utilisateur
-   * @return
+   * @return utilisateur : l'utilisateur inscrit
+   * @throws BusinessException : est lancée si un utilisateur possède déjà le pseudo
+   * @throws BusinessException : est lancée si l'utilisateur n'a pas pu être ajouté
    */
   @Override
   public UtilisateurDTO inscription(String pseudo, String nom, String prenom, String mdp,
       int adresse) {
-
     if (utilisateurDAO.rechercheParPseudo(pseudo).getIdUtilisateur() > 0) {
-      throw new ExceptionBusiness("Pseudo déjà utilisé",
+      throw new BusinessException("Pseudo déjà utilisé",
           Status.CONFLICT);
     }
-
     Utilisateur utilisateur = new UtilisateurImpl();
     utilisateur.setPseudo(pseudo);
     utilisateur.setNom(nom);
@@ -103,43 +108,49 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     utilisateur.setAdresse(adresse);
     utilisateur.setEtatInscription("en attente");
     utilisateur.setCommentaire(null);
-
     utilisateur = (Utilisateur) utilisateurDAO.ajouterUtilisateur(utilisateur);
     if (utilisateur == null) {
-      throw new ExceptionBusiness("L'utilisateur n'a pas pu être ajouté",
+      throw new BusinessException("L'utilisateur n'a pas pu être ajouté",
           Status.BAD_REQUEST);
     }
     return utilisateur;
   }
 
   /**
-   * Vérifie si l'utilisateur a été confirmé.
+   * Confirme l'inscription d'un utilisateur et met son statut en Admin si l'information a été
+   * renseigné
    *
    * @param id       :       l'id de l'utilisateur
    * @param estAdmin : si l'utilisateur est admin
-   * @return utilisateurDTO : l'utilisateur confirmé
+   * @return utilisateurDTO : l'utilisateur avec son état d'inscription passé à "confirmé"
+   * @throws BusinessException : est lancée si l'état d'inscription de l'utilisateur n'a pas pu être
+   *                           confirmé
    */
   @Override
   public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
     UtilisateurDTO utilisateurDTO = utilisateurDAO.confirmerInscription(id, estAdmin);
     if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
-      throw new ExceptionBusiness("L'utilisateur n'a pas pu être confirmé", Status.BAD_REQUEST);
+      throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être confirmé",
+          Status.BAD_REQUEST);
     }
     return utilisateurDTO;
   }
 
   /**
-   * Vérifie si l'utilisateur a été refusé.
+   * Refuse l'inscription d'un utilisateur accompagné d'un commentaire justifiant ce refus.
    *
    * @param id          : l'id de l'utilisateur
    * @param commentaire : le commentaire du refus
-   * @return utilisateurDTO : l'utilisateur refusé
+   * @return utilisateurDTO : l'utilisateur avec l'inscription refusée
+   * @throws BusinessException : est lancée si l'état d'inscription de l'utilisateur n'a pas pu être
+   *                           refusé
    */
   @Override
   public UtilisateurDTO refuserInscription(int id, String commentaire) {
     UtilisateurDTO utilisateurDTO = utilisateurDAO.refuserInscription(id, commentaire);
     if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
-      throw new ExceptionBusiness("L'utilisateur n'a pas pu être refusé", Status.BAD_REQUEST);
+      throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être refusé",
+          Status.BAD_REQUEST);
     }
     return utilisateurDTO;
   }

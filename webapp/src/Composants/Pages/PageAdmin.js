@@ -127,7 +127,6 @@ const recupRefuse = () => {
 
 //Affichage de la liste des inscriptions en attente
 const surListeAttente = (data) => {
-  const utilisateur = recupUtilisateurDonneesSession();
   let contenu = document.querySelector("#contenu");
   if (data.length === 0 || !data) {
     let listeVide = `<div><h2>Liste des demandes d'inscriptions</h2>Il n'y a aucune inscription en attente pour l'instant`;

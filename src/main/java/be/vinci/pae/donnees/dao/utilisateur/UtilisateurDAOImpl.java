@@ -3,6 +3,7 @@ package be.vinci.pae.donnees.dao.utilisateur;
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.services.ServiceDAL;
+import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,11 +19,11 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   private ServiceDAL serviceDAL;
 
   /**
-   * Recherche un utilisateur via un pseudo unique dans la base de donnée.
+   * Recherche un utilisateur via un pseudo unique dans la base de données.
    *
    * @param pseudo : le pseudo de l'utilisateur
    * @return utilisateurDTO : l'utilisateur, s'il trouve un utilisateur qui possède ce pseudo
-   * @throws SQLException : est lancée s'il ne trouve pas l'utilisateur
+   * @throws SQLException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
@@ -35,22 +36,23 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setString(1, pseudo);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          utilisateurDTO = remplirListeUtilisateurs(rs, utilisateurDTO);
+          utilisateurDTO = remplirUtilisateursDepuisRS(rs, utilisateurDTO);
         }
       }
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
     }
     return utilisateurDTO;
   }
 
   /**
-   * Recherche un utilisateur via un id dans la base de donnée.
+   * Recherche un utilisateur via un id dans la base de données.
    *
    * @param id : l'id de l'utilisateur
    * @return utilisateurDTO : l'utilisateur, s'il trouve un utilisateur qui possède ce id
-   * @throws SQLException : est lancée s'il ne trouve pas l'utilisateur
+   * @throws SQLException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public UtilisateurDTO rechercheParId(int id) {
@@ -63,12 +65,13 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setInt(1, id);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          utilisateurDTO = remplirListeUtilisateurs(rs, utilisateurDTO);
+          utilisateurDTO = remplirUtilisateursDepuisRS(rs, utilisateurDTO);
         }
       }
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
     }
     return utilisateurDTO;
   }
@@ -78,6 +81,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    *
    * @param utilisateur : l'utilisateur que l'on va ajouter
    * @return utilisateur : l'utilisateur qui a été ajouté
+   * @throws SQLException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
@@ -96,8 +100,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
           utilisateur.setIdUtilisateur(rs.getInt(1));
         }
       }
+      ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
     }
     return utilisateur;
   }
@@ -108,7 +114,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @param id       : l'id de l'utilisateur
    * @param estAdmin : si l'utilisateur est admin
    * @return utilisateurDTO : l'utilisateur avec l'état de son inscription à "confirmé"
-   * @throws SQLException : est lancée s'il y a eu un problème
+   * @throws SQLException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
@@ -124,12 +130,13 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setInt(3, id);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          utilisateurDTO = remplirListeUtilisateurs(rs, utilisateurDTO);
+          utilisateurDTO = remplirUtilisateursDepuisRS(rs, utilisateurDTO);
         }
       }
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
     }
     return utilisateurDTO;
   }
@@ -139,7 +146,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    *
    * @param id          : l'id de l'utilisateur
    * @param commentaire : le commentaire que l'on va ajouter
-   * @return utilisateurDTO :l'utilisateur mis à jour
+   * @return utilisateurDTO : l'utilisateur mis à jour
+   * @throws SQLException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public UtilisateurDTO refuserInscription(int id, String commentaire) {
@@ -155,12 +163,13 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setInt(3, id);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          utilisateurDTO = remplirListeUtilisateurs(rs, utilisateurDTO);
+          utilisateurDTO = remplirUtilisateursDepuisRS(rs, utilisateurDTO);
         }
       }
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
     }
     return utilisateurDTO;
   }
@@ -171,7 +180,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    *
    * @param etatInscription : l'état de l'inscription
    * @return liste : la liste des utilisateurs avec l'état d'inscription passé en paramètre
-   * @throws SQLException : est lancée s'il y a eu un problème
+   * @throws SQLException : est lancée s'il y a eu un problème côté serveur
    */
   public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
     PreparedStatement ps = serviceDAL.getPs(
@@ -185,12 +194,13 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
         UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-        remplirListeUtilisateurs(rs, utilisateurDTO);
+        remplirUtilisateursDepuisRS(rs, utilisateurDTO);
         liste.add(utilisateurDTO);
       }
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
     }
     return liste;
   }
@@ -201,9 +211,9 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @param rs             : le ResultSet
    * @param utilisateurDTO : l'utilisateur vide, qui va être rempli
    * @return utilisateurDTO : l'utilisateur rempli
-   * @throws SQLException : est lancée s'il y a un problème
+   * @throws SQLException : est lancée s'il y a un problème côté serveur
    */
-  private UtilisateurDTO remplirListeUtilisateurs(ResultSet rs, UtilisateurDTO utilisateurDTO) {
+  private UtilisateurDTO remplirUtilisateursDepuisRS(ResultSet rs, UtilisateurDTO utilisateurDTO) {
     try {
       utilisateurDTO.setIdUtilisateur(rs.getInt(1));
       utilisateurDTO.setPseudo(rs.getString(2));
@@ -217,6 +227,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       utilisateurDTO.setAdresse(rs.getInt(10));
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
     }
     return utilisateurDTO;
   }

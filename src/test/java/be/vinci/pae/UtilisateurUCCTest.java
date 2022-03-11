@@ -8,7 +8,7 @@ import be.vinci.pae.business.utilisateur.Utilisateur;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
-import be.vinci.pae.utilitaires.exceptions.ExceptionBusiness;
+import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeAll;
@@ -45,7 +45,7 @@ public class UtilisateurUCCTest {
     utilisateur = (Utilisateur) utilisateurDTO;
     utilisateur.setMdp(utilisateur.hashMdp("test123"));
     Mockito.when(utilisateurDAO.rechercheParPseudo("test")).thenReturn(null);
-    assertThrows(ExceptionBusiness.class, () -> utilisateurUCC.connexion("test", "test123"));
+    assertThrows(BusinessException.class, () -> utilisateurUCC.connexion("test", "test123"));
   }
 
   @Test
@@ -57,7 +57,7 @@ public class UtilisateurUCCTest {
     utilisateur.setMdp(utilisateur.hashMdp("test123"));
     Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()))
         .thenReturn(utilisateurDTO);
-    assertThrows(ExceptionBusiness.class, () -> utilisateurUCC.connexion("test1", "test1234"));
+    assertThrows(BusinessException.class, () -> utilisateurUCC.connexion("test1", "test1234"));
   }
 
   @Test
@@ -87,7 +87,7 @@ public class UtilisateurUCCTest {
   public void testRecherchePardIdV2() {
     int id = -1;
     Mockito.when(utilisateurDAO.rechercheParId(id)).thenReturn(null);
-    assertThrows(ExceptionBusiness.class, () -> utilisateurUCC.rechercheParId(id));
+    assertThrows(BusinessException.class, () -> utilisateurUCC.rechercheParId(id));
   }
 
 }
