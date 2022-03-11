@@ -229,6 +229,7 @@ public class RessourceUtilisateur {
    * Liste tous les utilisateurs avec une inscription à l'état "refusé".
    *
    * @return liste : la liste des utilisateurs avec une inscription refusée
+   * @throws FatalException : est lancée si il y a un problème côté serveur
    */
   @GET
   @Path("refuse")
@@ -245,6 +246,7 @@ public class RessourceUtilisateur {
    * Liste tous les utilisateurs avec une inscription à l'état "en attente".
    *
    * @return liste : la liste des utilisateurs avec une inscription en attente
+   * @throws FatalException : est lancée si il y a un problème côté serveur
    */
   @GET
   @Path("attente")

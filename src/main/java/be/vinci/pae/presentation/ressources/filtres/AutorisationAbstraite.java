@@ -29,6 +29,8 @@ public abstract class AutorisationAbstraite {
    *
    * @param contexteRequete : contient dans le header le token en tant que "Authorization"
    * @return un utilisateur ou null si le token n'est pas présent
+   * @throws BusinessException : lancée si il y a un problème lors de la recherche de l'utilisateur
+   * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   public UtilisateurDTO tokenDecode(ContainerRequestContext contexteRequete)
       throws BusinessException, FatalException {
@@ -47,7 +49,8 @@ public abstract class AutorisationAbstraite {
    *
    * @param token : contient l'ID de l'utilisateur
    * @return un utilisateur ou null si l'utilisateur n'existe pas
-   * @throws WebApplicationException : est lancée si expiration ou malformation du token
+   * @throws BusinessException : lancée si il y a un problème lors de la recherche de l'utilisateur
+   * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   public UtilisateurDTO siTokenDecode(String token) throws BusinessException, FatalException {
     DecodedJWT tokenDecode = null;
