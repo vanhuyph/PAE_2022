@@ -1,10 +1,12 @@
 import PageAccueil from "../Pages/PageAccueil";
 import PageConnexion from "../Pages/PageConnexion";
 import PageDeconnexion from "../Pages/PageDeconnexion";
+import PageOffrirObjet from "../Pages/PageOffrirObjet";
 
 // Configure your routes here
 const routes = {
   "/": PageAccueil,
+  "/offrirObjet":PageOffrirObjet,
   "/connexion": PageConnexion,
   "/deconnexion": PageDeconnexion,
 };

@@ -2,6 +2,7 @@ import {
     recupUtilisateurDonneesSession
 } from "../../utilitaires/session";
 import Navbar from "../Navbar/Navbar";
+import {Redirect} from "../Router/Router";
 
 //pour l'instant la navbar ne rederige pas vers la bonne page (le bouton se clique pas)
 
@@ -65,6 +66,7 @@ const PageOffrirObjet = () => {
 
         formOffrirObjet.addEventListener("submit", surOffrirObjet);
     } else {
+        Redirect("/");
         //rediriger vers l'accueil avec un message d'erreur (on ne peut pas accéder à offrir un objet si pas connecté)
     }
 
