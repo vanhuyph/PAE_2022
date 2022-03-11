@@ -45,7 +45,7 @@ public class RessourceUtilisateur {
    *
    * @param json : json reçu du formulaire de connexion
    * @return noeud : l'objet json contenant le token et l'utilisateur
-   * @throws WebApplicationException si pseudo ou mot de passe incorrect ou manquant
+   * @throws WebApplicationException : est lancée si pseudo ou mot de passe incorrect ou manquant
    */
   @POST
   @Path("connexion")
@@ -74,7 +74,7 @@ public class RessourceUtilisateur {
    *
    * @param json : json reçu du formulaire d'inscription
    * @return noeud : l'objet json contenant le token et l'utilisateur
-   * @throws WebApplicationException : lancé si il y a un problème lors de l'inscription
+   * @throws WebApplicationException : est lancée s'il y a eu un problème lors de l'inscription
    */
   @POST
   @Path("inscription")
@@ -88,49 +88,38 @@ public class RessourceUtilisateur {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
           .entity("Des champs sont manquants").type("text/plain").build());
     }
-
     String pseudo = json.get("pseudo").asText();
     String nom = json.get("nom").asText();
     String prenom = json.get("prenom").asText();
     String mdp = json.get("mdp").asText();
-
     String rue = json.get("rue").asText();
     int numero = json.get("numero").asInt();
     int boite = json.get("boite").asInt();
     int codePostal = json.get("code_postal").asInt();
     String commune = json.get("commune").asText();
-
     try {
-
       if (utilisateurUCC.rechercheParPseudoInscription(pseudo).getIdUtilisateur() < 1) {
         AdresseDTO adresse = adresseUCC.ajouterAdresse(rue, numero, boite, codePostal, commune);
-
         if (adresse == null) {
           throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
               .entity("L'adresse n'a pas pu être ajoutée").type("text/plain").build());
         }
-
         UtilisateurDTO utilisateur = utilisateurUCC.inscription(pseudo, nom, prenom, mdp,
             adresse.getIdAdresse());
-
         if (utilisateur == null) {
           throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
               .entity("L'utilisateur n'a pas pu être ajouté").type(MediaType.TEXT_PLAIN)
               .build());
         }
-
         ObjectNode noeud = creationToken(utilisateur);
         return noeud;
       }
     } catch (Exception e) {
-
       throw new WebApplicationException(Response.status(Status.CONFLICT)
           .entity("Le pseudo existe déjà").type("text/plain").build());
     }
-
     throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
         .entity("Erreur lors de l'inscription").type("text/plain").build());
-
   }
 
   /**
@@ -139,7 +128,7 @@ public class RessourceUtilisateur {
    * @param json : json contenant l'information s'il est admin ou pas
    * @param id   : l'id de l'utilisateur que l'on veut confirmer
    * @return utilisateurDTO : l'utilisateur confirmé
-   * @throws WebApplicationException : lancé s'il y a un problème dans la confirmation
+   * @throws WebApplicationException : est lancée s'il y a eu un problème dans la confirmation
    */
   @PUT
   @Path("confirme/{id}")
@@ -180,14 +169,14 @@ public class RessourceUtilisateur {
    * @param json : json contenant le commentaire du refus
    * @param id   : l'id de l'utilisateur
    * @return utilisateurDTO : l'utilisateur refusé
-   * @throws WebApplicationException : lancé s'il y a un problème lors du refus
+   * @throws WebApplicationException : est lancée s'il y a eu un problème lors du refus
    */
   @PUT
   @Path("refuse/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AutorisationAdmin
-  public UtilisateurDTO refuseUtilisateur(JsonNode json, @PathParam("id") int id) {
+  public UtilisateurDTO refuserUtilisateur(JsonNode json, @PathParam("id") int id) {
     String commentaire = json.get("commentaire").asText();
     if (commentaire.equals("")) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
@@ -212,15 +201,16 @@ public class RessourceUtilisateur {
           .entity("L'utilisateur n'a pas pu être refusé").type(MediaType.TEXT_PLAIN)
           .build());
     }
-
     return utilisateurDTO;
   }
 
   /**
-   * Méthode permettant de créer le token de l'utilisateur avec une durée de validité 1 jour.
+   * Méthode permettant de créer le token de l'utilisateur avec une durée de validité de 1 jour.
    *
    * @param utilisateur : l'utilisateur qui aura le token
    * @return noeud : l'objet json contenant le token et l'utilisateur
+   * @throws WebApplicationException : est lancée s'il y a eu un problème lors de la création du
+   *                                 token
    */
   private ObjectNode creationToken(UtilisateurDTO utilisateur) {
     String token;
