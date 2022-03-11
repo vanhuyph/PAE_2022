@@ -118,7 +118,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
 
   /**
    * Confirme l'inscription d'un utilisateur et met son statut en Admin si l'information a été
-   * renseigné
+   * renseigné.
    *
    * @param id       :       l'id de l'utilisateur
    * @param estAdmin : si l'utilisateur est admin
