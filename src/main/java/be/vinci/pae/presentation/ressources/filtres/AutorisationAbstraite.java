@@ -3,6 +3,8 @@ package be.vinci.pae.presentation.ressources.filtres;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.utilitaires.Config;
+import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.FatalException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
@@ -27,8 +29,11 @@ public abstract class AutorisationAbstraite {
    *
    * @param contexteRequete : contient dans le header le token en tant que "Authorization"
    * @return un utilisateur ou null si le token n'est pas présent
+   * @throws BusinessException : lancée si il y a un problème lors de la recherche de l'utilisateur
+   * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
-  public UtilisateurDTO tokenDecode(ContainerRequestContext contexteRequete) {
+  public UtilisateurDTO tokenDecode(ContainerRequestContext contexteRequete)
+      throws BusinessException, FatalException {
     String token = contexteRequete.getHeaderString("Authorization");
     if (token == null) {
       contexteRequete.abortWith(Response.status(Response.Status.UNAUTHORIZED)
@@ -44,9 +49,10 @@ public abstract class AutorisationAbstraite {
    *
    * @param token : contient l'ID de l'utilisateur
    * @return un utilisateur ou null si l'utilisateur n'existe pas
-   * @throws WebApplicationException : est lancée si expiration ou malformation du token
+   * @throws BusinessException : lancée si il y a un problème lors de la recherche de l'utilisateur
+   * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
-  public UtilisateurDTO siTokenDecode(String token) {
+  public UtilisateurDTO siTokenDecode(String token) throws BusinessException, FatalException {
     DecodedJWT tokenDecode = null;
     try {
       tokenDecode = this.jwtVerifier.verify(token);

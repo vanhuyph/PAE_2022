@@ -2,8 +2,8 @@ package be.vinci.pae.business.adresse;
 
 import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.core.Response.Status;
 
 public class AdresseUCCImpl implements AdresseUCC {
 
@@ -21,15 +21,16 @@ public class AdresseUCCImpl implements AdresseUCC {
    * @param commune    : la commune de l'adresse
    * @return : l'adresse ajoutée
    * @throws BusinessException : est lancé si l'adresse n'a pas pu être ajoutée
+   * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   @Override
   public AdresseDTO ajouterAdresse(String rue, int numero, int boite, int codePostal,
-      String commune) {
+      String commune) throws FatalException, BusinessException {
 
     AdresseDTO adresseDTO = adresseDAO.ajouterAdresse(rue, numero, boite, codePostal, commune);
 
     if (adresseDTO == null) {
-      throw new BusinessException("L'adresse n'a pas pu être ajoutée.", Status.BAD_REQUEST);
+      throw new BusinessException("L'adresse n'a pas pu être ajoutée.");
     }
     return adresseDTO;
   }

@@ -9,6 +9,7 @@ import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.FatalException;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,7 +41,7 @@ public class UtilisateurUCCTest {
   @Test
   @DisplayName("Test raté : méthode connexion avec mauvais pseudo et bon mdp. "
       + "Identifiants corrects : pseudo = test1, mdp = test123")
-  public void testConnexionV1() {
+  public void testConnexionV1() throws FatalException {
     utilisateurDTO.setPseudo("test1");
     utilisateur = (Utilisateur) utilisateurDTO;
     utilisateur.setMdp(utilisateur.hashMdp("test123"));
@@ -51,7 +52,7 @@ public class UtilisateurUCCTest {
   @Test
   @DisplayName("Test raté : méthode connexion avec bon pseudo et mauvais mdp. "
       + "Identifiants corrects : pseudo = test1, mdp = test123")
-  public void testConnexionV2() {
+  public void testConnexionV2() throws FatalException {
     utilisateurDTO.setPseudo("test1");
     utilisateur = (Utilisateur) utilisateurDTO;
     utilisateur.setMdp(utilisateur.hashMdp("test123"));
@@ -63,7 +64,7 @@ public class UtilisateurUCCTest {
   @Test
   @DisplayName("Test réussi : méthode connexion avec les bons identifiants. "
       + "Identifiants corrects : pseudo = test1, mdp = test123")
-  public void testConnexionV3() {
+  public void testConnexionV3() throws FatalException, BusinessException {
     utilisateurDTO.setPseudo("test1");
     utilisateur = (Utilisateur) utilisateurDTO;
     utilisateur.setMdp(utilisateur.hashMdp("test123"));
@@ -74,7 +75,7 @@ public class UtilisateurUCCTest {
 
   @Test
   @DisplayName("Test réussi : méthode rechercheParId renvoie un utilisateur existant.")
-  public void testRecherchePardIdV1() {
+  public void testRecherchePardIdV1() throws BusinessException, FatalException {
     utilisateurDTO.setIdUtilisateur(1);
     int id = utilisateurDTO.getIdUtilisateur();
     Mockito.when(utilisateurDAO.rechercheParId(id)).thenReturn(utilisateurDTO);
@@ -84,7 +85,7 @@ public class UtilisateurUCCTest {
   @Test
   @DisplayName("Test raté : méthode rechercheParId renvoie null car l'utilisateur "
       + "n'est pas trouvable.")
-  public void testRecherchePardIdV2() {
+  public void testRecherchePardIdV2() throws FatalException {
     int id = -1;
     Mockito.when(utilisateurDAO.rechercheParId(id)).thenReturn(null);
     assertThrows(BusinessException.class, () -> utilisateurUCC.rechercheParId(id));

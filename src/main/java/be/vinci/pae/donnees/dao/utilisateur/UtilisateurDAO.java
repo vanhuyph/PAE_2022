@@ -1,19 +1,21 @@
 package be.vinci.pae.donnees.dao.utilisateur;
 
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
+import be.vinci.pae.utilitaires.exceptions.FatalException;
 import java.util.List;
 
 public interface UtilisateurDAO {
 
-  UtilisateurDTO rechercheParPseudo(String pseudo);
+  UtilisateurDTO rechercheParPseudo(String pseudo) throws FatalException;
 
-  UtilisateurDTO rechercheParId(int id);
+  UtilisateurDTO rechercheParId(int id) throws FatalException;
 
-  UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur);
+  UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) throws FatalException;
 
-  UtilisateurDTO confirmerInscription(int id, boolean estAdmin);
+  UtilisateurDTO confirmerInscription(int id, boolean estAdmin) throws FatalException;
 
-  List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription);
+  List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription)
+      throws FatalException;
 
-  UtilisateurDTO refuserInscription(int id, String commentaire);
+  UtilisateurDTO refuserInscription(int id, String commentaire) throws FatalException;
 }
