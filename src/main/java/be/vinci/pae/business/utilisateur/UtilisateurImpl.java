@@ -11,15 +11,15 @@ public class UtilisateurImpl implements Utilisateur {
 
   @JsonView(Vues.Public.class)
   private int idUtilisateur;
-  @JsonView(Vues.Public.class)
+  @JsonView(Vues.Internal.class)
   private String pseudo;
-  @JsonView(Vues.Public.class)
+  @JsonView(Vues.Internal.class)
   private String nom;
-  @JsonView(Vues.Public.class)
+  @JsonView(Vues.Internal.class)
   private String prenom;
   @JsonView(Vues.Internal.class)
   private String mdp;
-  @JsonView(Vues.Public.class)
+  @JsonView(Vues.Internal.class)
   private String gsm;
   @JsonView(Vues.Public.class)
   private boolean estAdmin;
@@ -27,7 +27,7 @@ public class UtilisateurImpl implements Utilisateur {
   private String etatInscription;
   @JsonView(Vues.Public.class)
   private String commentaire;
-  @JsonView(Vues.Public.class)
+  @JsonView(Vues.Internal.class)
   private int adresse;
 
 
