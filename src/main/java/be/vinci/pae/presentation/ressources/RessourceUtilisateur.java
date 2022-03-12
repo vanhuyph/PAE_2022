@@ -4,6 +4,7 @@ import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.adresse.AdresseUCC;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
+import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.presentation.ressources.filtres.AutorisationAdmin;
 import be.vinci.pae.presentation.ressources.utilitaires.Json;
 import be.vinci.pae.utilitaires.Config;
@@ -24,11 +25,13 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.Date;
 import java.util.List;
+import org.glassfish.jersey.server.ContainerRequest;
 
 @Singleton
 @Path("/utilisateurs")
@@ -118,6 +121,27 @@ public class RessourceUtilisateur {
     } catch (BusinessException e) {
       throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
           .entity(e.getMessage()).type("text/plain").build());
+    }
+    ObjectNode noeud = creationToken(utilisateur);
+    return noeud;
+  }
+
+  /**
+   * Récupère un utilisateur depuis un  id dans un token se trouvant dans le header.
+   *
+   * @param request : header avec le token
+   * @return noeud : un nouveau token avec l'utilisateur
+   */
+  @PUT
+  @Path("moi")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public ObjectNode recupererUtilisateur(@Context ContainerRequest request) {
+    UtilisateurDTO utilisateur = (UtilisateurDTO) request.getProperty("utilisateur");
+    if (utilisateur == null) {
+      throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+          .entity("L'utilisateur n'a pas été retrouvé").type("text/plain").build());
     }
     ObjectNode noeud = creationToken(utilisateur);
     return noeud;

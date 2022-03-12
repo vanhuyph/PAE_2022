@@ -22,8 +22,22 @@ const enleverDonneeSession = () => {
   sessionStorage.removeItem(STORE_NAME);
 };
 
+const verifierTokenAuChargement = () => {
+  let tokenRecupere = localStorage.getItem(STORE_NAME)
+  let tokenLocal = true
+
+  if(!tokenRecupere){
+    tokenRecupere = sessionStorage.getItem(STORE_NAME)
+    tokenLocal = false
+  }
+  if(!tokenRecupere) return;
+
+
+}
+
 export {
   recupUtilisateurDonneesSession,
   creationDonneeSessionUtilisateur,
   enleverDonneeSession,
+  verifierTokenAuChargement,
 };
