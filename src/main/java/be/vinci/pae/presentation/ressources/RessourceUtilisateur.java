@@ -137,11 +137,18 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public ObjectNode recupererUtilisateur(@Context ContainerRequest request) {
+  public ObjectNode recupererUtilisateur(@Context ContainerRequest request)
+      throws FatalException {
     UtilisateurDTO utilisateur = (UtilisateurDTO) request.getProperty("utilisateur");
     if (utilisateur == null) {
       throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
           .entity("L'utilisateur n'a pas été retrouvé").type("text/plain").build());
+    }
+    try {
+      utilisateur = utilisateurUCC.rechercheParPseudo(utilisateur.getPseudo());
+    } catch (BusinessException b) {
+      throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+          .entity(b.getMessage()).type("text/plain").build());
     }
     ObjectNode noeud = creationToken(utilisateur);
     return noeud;

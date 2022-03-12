@@ -1,6 +1,10 @@
 import Navbar from "../Composants/Navbar/Navbar";
 import {API_URL} from "./serveur";
-import {recupUtilisateurDonneesSession, enleverDonneeSession} from "./session";
+import {
+  recupUtilisateurDonneesSession,
+  enleverDonneeSession,
+  creationDonneeSessionUtilisateur
+} from "./session";
 
 let tokenLocal = null
 
@@ -28,7 +32,7 @@ const VerifierTokenUtilisateur = (token, itemLocal) => {
 }
 const surUtilisateurTrouve = (donneeUtilisateur) => {
   const utilisateur = {...donneeUtilisateur, isAutenticated:true}
-  recupUtilisateurDonneesSession(utilisateur, tokenLocal)
+  creationDonneeSessionUtilisateur(utilisateur, tokenLocal)
   Navbar()
 }
 
