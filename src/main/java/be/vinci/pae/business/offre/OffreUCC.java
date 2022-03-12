@@ -8,4 +8,6 @@ public interface OffreUCC {
 
   List<OffreDTO> listOffres();
 
+  List<OffreDTO> listOffresRecent();
+
 }

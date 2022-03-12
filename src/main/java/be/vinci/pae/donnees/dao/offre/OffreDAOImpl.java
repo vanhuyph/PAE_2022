@@ -57,7 +57,8 @@ public class OffreDAOImpl implements OffreDAO {
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT of.id_offre, of.id_objet, of.date_offre, of.plage_horaire"
             + " FROM projet.objets o, projet.offres of WHERE o.id_objet = of.id_objet AND"
-            + " (o.etat_objet = 'offert' OR o.etat_objet = 'interrese');");
+            + " (o.etat_objet = 'offert' OR o.etat_objet = 'interrese')"
+            + " ORDER BY of.date_offre DESC;");
     List<OffreDTO> listOffres = null;
     try {
       listOffres = remplirListOffresDepuisResulSet(offreDTO, ps);

@@ -94,7 +94,7 @@ VALUES (DEFAULT, 'machine');
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'offert', 1, 'machine à laver', 1, NULL, 'photo machine à laver');
 INSERT INTO projet.offres
-VALUES (DEFAULT, 1, now(), ' ');
+VALUES (DEFAULT, 1, '2016-02-05', ' ');
 
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'interrese', 1, 'machine à cuisiner', 2, NULL, 'photo machine à cuisiner');
@@ -102,6 +102,6 @@ INSERT INTO projet.offres
 VALUES (DEFAULT, 2, now(), ' ');
 
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'annule', 1, 'machine à nettoyer', 1, 2, 'photo machine');
+VALUES (DEFAULT, 'interrese', 1, 'machine à nettoyer', 1, 2, 'photo machine');
 INSERT INTO projet.offres
-VALUES (DEFAULT, 3, now(), ' ')
+VALUES (DEFAULT, 3, '2017-02-05', ' ')

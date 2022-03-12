@@ -81,4 +81,23 @@ public class RessourceOffre {
   }
 
 
+  /**
+   * Liste les offres recentes.
+   *
+   * @return noeud : la liste des offres recentes
+   */
+  @GET
+  @Path("listOffresRecent")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<OffreDTO> listOffresRecent() {
+    List<OffreDTO> offreDTO = offreUCC.listOffresRecent();
+    if (offreDTO == null) {
+      throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity("Liste des offres a echoué").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+    return offreDTO;
+  }
+
+
 }
