@@ -10,7 +10,7 @@ public class WebExceptionMapper implements ExceptionMapper<Throwable> {
 
   @Override
   public Response toResponse(Throwable exception) {
-    // exception.printStackTrace();
+    LoggerFichier.log((Exception) exception);
     if (exception instanceof BusinessException) {
       return Response.status(((BusinessException) exception).getResponse().getStatus())
           .entity(exception.getMessage()).build();
