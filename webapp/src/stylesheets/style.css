@@ -346,6 +346,9 @@ Fin Message de bienvenue*/
 .utilisateur form .boutons button{
     width: 49% !important;
 }
+.utilisateur form .boutons button#confirmer {
+    padding: 11px 15px;
+}
 
 .raison-refus{
     display: none;

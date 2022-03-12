@@ -11,7 +11,7 @@ public class UtilisateurImpl implements Utilisateur {
 
   @JsonView(Vues.Public.class)
   private int idUtilisateur;
-  @JsonView(Vues.Internal.class)
+  @JsonView(Vues.Public.class)
   private String pseudo;
   @JsonView(Vues.Internal.class)
   private String nom;

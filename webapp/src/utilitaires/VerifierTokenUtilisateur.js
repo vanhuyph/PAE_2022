@@ -4,14 +4,14 @@ import {recupUtilisateurDonneesSession, enleverDonneeSession} from "./session";
 
 let tokenLocal = null
 
-const VerifierTokenUtilisateur = (id, itemLocal) => {
+const VerifierTokenUtilisateur = (token, itemLocal) => {
 
   tokenLocal = itemLocal
   fetch(API_URL+"utilisateurs/moi",{
     method:"GET",
     headers : {
       "Content-Type":"application/json",
-      Authorization:id
+      "Authorization": token.token
     }
   })
   .then((reponse) => {

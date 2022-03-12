@@ -132,7 +132,7 @@ public class RessourceUtilisateur {
    * @param request : header avec le token
    * @return noeud : un nouveau token avec l'utilisateur
    */
-  @PUT
+  @GET
   @Path("moi")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)

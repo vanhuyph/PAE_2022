@@ -1,3 +1,5 @@
+import VerifierTokenUtilisateur from "./VerifierTokenUtilisateur";
+
 const STORE_NAME = "utilisateur";
 
 const recupUtilisateurDonneesSession = () => {
@@ -25,13 +27,12 @@ const enleverDonneeSession = () => {
 const verifierTokenAuChargement = () => {
   let tokenRecupere = localStorage.getItem(STORE_NAME)
   let tokenLocal = true
-
   if(!tokenRecupere){
     tokenRecupere = sessionStorage.getItem(STORE_NAME)
     tokenLocal = false
   }
-  if(!tokenRecupere) return;
-
+  if(!tokenRecupere)return;
+  VerifierTokenUtilisateur(JSON.parse(tokenRecupere), tokenLocal)
 
 }
 
