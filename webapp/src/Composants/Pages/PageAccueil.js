@@ -34,12 +34,20 @@ const PageAccueil = () => {
   <div class="offres">
     <h2>Offres récentes</h2>
   </div>
-  `
+  <div id="offreListRecent"></div>
+  <br>
+  <div id ="offreList"></div>
+  `;
 
+
+
+
+ 
   pageDiv.innerHTML = pageAccueil;
   const conteneurModal = document.querySelector(".conteneur-modal")
   const declencheurModal = document.querySelectorAll(".declencheur-modal")
-
+  
+  
   if (utilisateur) {
     if (utilisateur.utilisateur.etatInscription !== "confirmé") {
       conteneurModal.classList.add('active')
@@ -51,6 +59,67 @@ const PageAccueil = () => {
   declencheurModal.forEach(decl => decl.addEventListener("click", () => {
     conteneurModal.classList.toggle("active")
   }))
+
+  fetch("/api/offres/listOffresRecent", {
+    method: "GET",
+    headers:{
+      "Content-Type": "application/json",
+    },
+  }).then((response)=>{
+    if (!response.ok)
+    throw new Error(
+      "Error code : " + response.status + " : " + response.statusText
+    );
+    return response.json();
+  }).then((data)=>onOffreRecentListpage(data))
+    .catch((err) => onError(err));
+  
+  if(utilisateur){
+    fetch("/api/offres/listOffres", {
+      method: "GET",
+      headers:{
+        "Content-Type": "application/json",
+      },
+    }).then((response)=>{
+      if (!response.ok)
+      throw new Error(
+        "Error code : " + response.status + " : " + response.statusText
+      );
+      return response.json();
+    }).then((data)=>onOffreListpage(data))
+      .catch((err) => onError(err));
+  }
+};
+
+const onOffreRecentListpage = (data) =>{
+  const listOffreRecent = document.getElementById("offreListRecent");
+  
+  let listRecent = data.forEach((offre)=>{
+    console.log(offre.idOffre);
+    console.log(offre.dateOffre);
+    listRecent+= `<article>
+      <h4>${offre.idOffre}</h4>
+      Date de création : ${offre.dateOffre}
+      </article>
+      `;
+  })
+
+  listOffreRecent.innerHTML = listRecent;
+};
+
+const onOffreListpage=(data)=>{
+  const listOffre = document.getElementById("offreList");
+
+  let list = data.forEach((offre)=>{
+    console.log(offre.idOffre);
+    console.log(offre.dateOffre);
+    list+= `<article>
+      <h4>${offre.idOffre}</h4>
+      Date de création : ${offre.dateOffre}
+      </article>
+      `;
+  })
+  listOffre.innerHTML = list;
 };
 
 export default PageAccueil;
