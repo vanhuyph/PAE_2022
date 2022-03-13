@@ -27,9 +27,11 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
     List<TypeObjetDTO> typesObjet = new ArrayList<TypeObjetDTO>();
     TypeObjetDTO typeObjetCourrant = factory.getTypeObjet();
     PreparedStatement ps = serviceDAL.getPs(
-        "SELECT u.id_type, u.nom FROM projet.types_Objet_ u ;");
+        "SELECT * FROM projet.types_Objets  ;");
     try {
       ResultSet rs = ps.executeQuery();
+      System.out.println(rs.getFetchSize());
+      //erreur de rs fermé a catch ( next() ferme automatiquement le rs ?)
       while (rs.next()) {
 
         typeObjetCourrant = remplirTypeObjetDepuisResulSet(typeObjetCourrant, ps);

@@ -4,28 +4,22 @@ import {
 import Navbar from "../Navbar/Navbar";
 import {Redirect} from "../Router/Router";
 
-
-
-
 // style pas travailler
 
 
 // pas encore de possibilité d'ajout de photo à voir le cours d'architecture => cfr mail Leleux
 const typesObjet =
-    <div>
-        <div id="choixTypeObjet">
-        </div>
-    </div>
+    `
+        <select type="text" id="choixTypeObjet" className="type">
+        </select>
+    `
 
 const pageOffrirObjet = `
     <div class="page-offrirObjet">
     <h2>Offrir un objet</h2>
     <form id="formulaire-offrirObjet" class="ui form">
     
-        <div class="field">
-          <label for="type">Type</label>
-          ${typesObjet}
-        </div>
+        
         
         <div class="field">
           <label for="description">Description</label>
@@ -42,7 +36,11 @@ const pageOffrirObjet = `
               <p class="message-erreur erreur-horaire"></p>
           </div>
         </div>
-          
+         <div class="field">
+          <label for="type">Type</label>
+           
+            ${typesObjet}
+        </div>
         <button class="ui secondary inverted button" type="submit">Offrir l'objet</button>
         
     </form>    
@@ -53,39 +51,41 @@ const PageOffrirObjet = () => {
     pageDiv.innerHTML = pageOffrirObjet;
 
 
-    let formOffrirObjet = document.querySelector("#formulaire-offrirObjet");
+    const formOffrirObjet = document.querySelector("#formulaire-offrirObjet");
 
     if (utilisateur) {
         Navbar();
 
+        fetch("/api/typesObjet/liste", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                //Authorization: utilisateur.token,
+            },
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(
+                    "Error code : " + response.status + " : " + response.statusText
+                );
+            }
+            console.log(response);
+            return response.json();
+        })
+        .then((data) => choixTypeObjet(data));
+
         formOffrirObjet.addEventListener("submit", surOffrirObjet);
+
+
     } else {
-        Redirect("/");
-        //rediriger vers l'accueil avec un message d'erreur (on ne peut pas accéder à offrir un objet si pas connecté)
+        Redirect("/connexion");
+
     }
 
 
 }
-const choixTypeObjet = () => {
-    fetch("/api/typesObjet/liste", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            //Authorization: utilisateur.token,
-        },
-    })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error(
-                "Error code : " + response.status + " : " + response.statusText
-            );
-        }
-        return response.json();
-    })
-    .then((data) => surListeTypeObjet(data))
 
-}
-const surListeTypeObjet = (data) => {
+const choixTypeObjet = (data) => {
 
     let choixTypeObjet = document.querySelector("#choixTypeObjet");
     if (data.length === 0 || !data) {
@@ -93,20 +93,18 @@ const surListeTypeObjet = (data) => {
         choixTypeObjet.innerHTML = listeVide;
         return;
     }
-    let liste = `<select type="text" id="type" className="type">
-                  <option value="empty" selected hidden=true>Selectionnez le type</option>`;
-
+    let liste = `<option value="empty" selected hidden=true>Selectionnez le type</option>`;
     data.forEach((typeObjet) => {
         liste += `
     <option value=${typeObjet.idType}>${typeObjet.nom}</option>
     `;
     });
-    liste += `</select> <p className="message-erreur erreur-type"></p>`;
+    liste += ` <p className="message-erreur erreur-type"></p>`;
     choixTypeObjet.innerHTML = liste;
 
 }
 
-//Méthode beaucoup trop longue a découper en deux Méthodes, créationObjet et une offrirObjet par exemple
+//Méthode  a découper en deux Méthodes, créationObjet et une offrirObjet par exemple
 const surOffrirObjet = (e) => {
     e.preventDefault();
     console.log("debutListenerOffriObjet");
@@ -172,13 +170,15 @@ const surOffrirObjet = (e) => {
             }
             console.log(reponse)
             return reponse.json()
+        }).then((data) => {
+            console.log(data.idObjet);
         })
 
 
 
 
         console.log("juste avant second fetch");
-        console.log(objet.objetDTO.idObjet);
+
         // let offre = {
         //
         //     idObjet: reponseObjet.idObjet,
