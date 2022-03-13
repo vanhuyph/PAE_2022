@@ -104,7 +104,7 @@ const choixTypeObjet = (data) => {
 
 }
 
-//Méthode  a découper en deux Méthodes, créationObjet et une offrirObjet par exemple
+
 const surOffrirObjet = (e) => {
     e.preventDefault();
     console.log("debutListenerOffriObjet");

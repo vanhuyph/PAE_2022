@@ -1,5 +1,7 @@
 package be.vinci.pae.presentation.ressources;
 
+import be.vinci.pae.business.adresse.AdresseDTO;
+import be.vinci.pae.business.adresse.AdresseUCC;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.presentation.ressources.utilitaires.Json;
@@ -28,6 +30,8 @@ public class RessourceUtilisateur {
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getPropriete("JWTSecret"));
   @Inject
   private UtilisateurUCC utilisateurUCC;
+  @Inject
+  private AdresseUCC adresseUCC;
 
   /**
    * Méthode qui connecte l'utilisateur à l'application.
@@ -56,6 +60,70 @@ public class RessourceUtilisateur {
     }
     ObjectNode noeud = creationToken(utilisateurDTO);
     return noeud;
+  }
+
+  /**
+   * Méthode qui inscrit l'utilisateur dans l'application.
+   *
+   * @param json : json reçu du formulaire d'inscription
+   * @return noeud : l'objet json contenant le token et l'utilisateur
+   * @throws WebApplicationException : lancé si il y a un problème lors de l'inscription
+   */
+  @POST
+  @Path("inscription")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public ObjectNode inscription(JsonNode json) {
+    if (!json.hasNonNull("pseudo") || !json.hasNonNull("nom")
+        || !json.hasNonNull("prenom") || !json.hasNonNull("mdp")
+        || !json.hasNonNull("rue") || !json.hasNonNull("numero")
+        || !json.hasNonNull("code_postal") || !json.hasNonNull("commune")) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("Des champs sont manquants").type("text/plain").build());
+    }
+
+    String pseudo = json.get("pseudo").asText();
+    String nom = json.get("nom").asText();
+    String prenom = json.get("prenom").asText();
+    String mdp = json.get("mdp").asText();
+
+    String rue = json.get("rue").asText();
+    int numero = json.get("numero").asInt();
+    int boite = json.get("boite").asInt();
+    int codePostal = json.get("code_postal").asInt();
+    String commune = json.get("commune").asText();
+
+    try {
+
+      if (utilisateurUCC.rechercheParPseudoInscription(pseudo).getIdUtilisateur() < 1) {
+        AdresseDTO adresse = adresseUCC.ajouterAdresse(rue, numero, boite, codePostal, commune);
+
+        if (adresse == null) {
+          throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+              .entity("L'adresse n'a pas pu être ajoutée").type("text/plain").build());
+        }
+
+        UtilisateurDTO utilisateur = utilisateurUCC.inscription(pseudo, nom, prenom, mdp,
+            adresse.getIdAdresse());
+
+        if (utilisateur == null) {
+          throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+              .entity("L'utilisateur n'a pas pu être ajouté").type(MediaType.TEXT_PLAIN)
+              .build());
+        }
+
+        ObjectNode noeud = creationToken(utilisateur);
+        return noeud;
+      }
+    } catch (Exception e) {
+
+      throw new WebApplicationException(Response.status(Status.CONFLICT)
+          .entity("Le pseudo existe déjà").type("text/plain").build());
+    }
+
+    throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+        .entity("Erreur lors de l'inscription").type("text/plain").build());
+
   }
 
   /**
