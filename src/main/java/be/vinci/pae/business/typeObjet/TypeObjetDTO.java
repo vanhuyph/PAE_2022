@@ -7,6 +7,8 @@ public interface TypeObjetDTO {
 
   int getIdType();
 
+  void setIdType(int idType);
+
   String getNom();
 
   void setNom(String nom);
