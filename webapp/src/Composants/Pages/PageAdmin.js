@@ -135,6 +135,18 @@ const surListeAttente = (data) => {
   }
   let liste = `<div class="liste-utilisateurs">
   <h2>Liste des demandes d'inscriptions</h2>
+  <div class="tete-form">
+        <div class="tete">
+            <p>Pseudo</p>
+            <p>Nom</p>
+            <p>Prenom</p>
+            <p>Est admin</p>
+            <div class="boutons-tete">
+                <div class="btn1"></div>
+                <div class="btn2"></div>
+            </div>
+        </div>
+    </div>
   `;
 
   //Affichage individuel des utilisateurs
@@ -147,7 +159,6 @@ const surListeAttente = (data) => {
             <p>${element.nom}</p>
             <p>${element.prenom}</p>
             <div class="est-admin">
-              <label>Est admin </label>
               <input id="check" type="checkbox">
             </div>
             <div class="boutons">
@@ -247,7 +258,18 @@ const surListeRefus = (data) => {
     contenu.innerHTML = listeVide;
     return;
   }
-  let liste = `<div><h2>Liste des inscriptions refusées</h2>`;
+  let liste = `<div><h2>Liste des inscriptions refusées</h2>
+<div class="tete-form">
+        <div class="tete">
+            <p>Pseudo</p>
+            <p>Nom</p>
+            <p>Prenom</p>
+            <p>Est admin</p>
+            
+            <div class="btn-refus"></div>
+            
+        </div>
+    </div>`;
 
   //Affichage individuel des utilisateurs
   data.forEach((element) => {
@@ -259,7 +281,6 @@ const surListeRefus = (data) => {
             <p>${element.nom}</p>
             <p>${element.prenom}</p>
             <div class="est-admin">
-              <label>Est admin </label>
               <input id="check" type="checkbox">
             </div>
             <div class="">

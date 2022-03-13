@@ -74,47 +74,11 @@ body{
     background-color: #dbe3ec;
 }
 
-/* Media navbar */
-@media screen and (max-width: 575px) {
-    .conteneur-navbar ul{
-        display: none;
-    }
-
-    .menu{
-        display: inline-block;
-        width: 41px;
-        height: 41px;
-        border: 1px solid black;
-        border-radius: 50px;
-        cursor: pointer;
-    }
-    #principal{
-        width: 100% !important;
-        margin: 0 !important;
-        text-align: center !important;
-    }
-    #bar-vertical{
-        display: none;
-    }
-    #choix-demande{
-        margin: 0 !important;
-    }
-
-    #choix-demande button{
-
-        width: 150px;
-    }
-
-}
-@media screen and (max-width: 340px) {
-    #choix-demande button{
-        width: 120px;
-    }
-}
 
 
 
-/* Fin media navbar */
+
+/* Fin media */
 
 /* Fin style navbar */
 
@@ -280,6 +244,7 @@ Fin Message de bienvenue*/
     background-color: #e1e9f3;
     text-align: center;
     width: 15%;
+    position: absolute;
 }
 
 #bar-vertical h2{
@@ -324,6 +289,44 @@ Fin Message de bienvenue*/
 
 /* Fin contenu */
 
+/* Entete utilisateur*/
+.tete-form{
+    text-align: center;
+    padding: 15px;
+    margin: auto;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+.tete{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 36px;
+    line-height: 36px;
+
+}
+.tete-form .btn-refus{
+    width: 106.5px;
+}
+.boutons-tete{
+    width: 189px;
+}
+.boutons-tete .btn1{
+    width: 106.5px;
+    height: 36px;
+    display: inline-block;
+    padding: 0.78571429em 1.5em 0.78571429em;
+}
+.boutons-tete .btn2{
+    width: 91px;
+    height: 36px;
+    display: inline-block;
+    padding: 0.78571429em 1.5em 0.78571429em;
+}
+/* Fin entete utilisateur*/
+/* Utilisateur */
+
 .utilisateur{
     border: 1px solid rgba(0,0,0,0.3);
     box-shadow: 0px 5px 13px 5px #d8e0ea ;
@@ -363,16 +366,56 @@ Fin Message de bienvenue*/
     display: block;
 }
 
-.est-admin label{
-    margin-right: 5px;
+.est-admin {
+    width: 71.45px;
+    text-align: center;
 }
 .refus-raison{
     text-align: center;
-    margin-top: 5px;
+    margin-top: 10px;
     padding: 10px 0;
 }
 .commentaire-refus{
     display: inline;
     margin-left: 10px;
 }
+/* Fin utilisateur */
 /* Fin Admin*/
+
+/* Media */
+@media screen and (max-width: 575px) {
+    .conteneur-navbar ul{
+        display: none;
+    }
+
+    .menu{
+        display: inline-block;
+        width: 41px;
+        height: 41px;
+        border: 1px solid black;
+        border-radius: 50px;
+        cursor: pointer;
+    }
+    #principal{
+        width: 100% !important;
+        margin: 0 !important;
+        text-align: center !important;
+    }
+    #bar-vertical{
+        display: none;
+    }
+    #choix-demande{
+        margin: 0 !important;
+    }
+
+    #choix-demande button{
+
+        width: 150px;
+    }
+
+}
+@media screen and (max-width: 340px) {
+    #choix-demande button{
+        width: 120px;
+    }
+}
