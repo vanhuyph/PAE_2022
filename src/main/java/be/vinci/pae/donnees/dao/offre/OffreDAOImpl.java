@@ -1,7 +1,6 @@
 package be.vinci.pae.donnees.dao.offre;
 
 import be.vinci.pae.business.DomaineFactory;
-import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
@@ -58,9 +57,8 @@ public class OffreDAOImpl implements OffreDAO {
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
         offreDTO.setIdOffre(rs.getInt(1));
-        offreDTO.setDateOffre(rs.getDate(2));
-        ObjetDTO objetDTO = objetDAO.rechercheParId(rs.getInt(3));
-        offreDTO.setObjet(objetDTO);
+        offreDTO.setObjet(objetDAO.rechercheParId(rs.getInt(2))); // vérifier index
+        offreDTO.setDateOffre(rs.getDate(3));
         offreDTO.setPlageHoraire(rs.getString(4));
       }
     }

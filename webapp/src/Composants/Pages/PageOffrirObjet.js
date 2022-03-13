@@ -107,42 +107,46 @@ const surOffrirObjet = (e) => {
     //copie collé de code avec la recuperation déjà effectuée au dessus, mais j'arrivais pas à transférer les données
     // peut etre faire par un paramètre à la méthode?
     const utilisateur = recupUtilisateurDonneesSession();
-    const idOffreur = utilisateur.utilisateur.idUtilisateur;
+    const offreur = utilisateur.utilisateur.idUtilisateur;
     
 
-    console.log("id offreur : " + idOffreur);
+    console.log("id offreur : " + offreur);
     if (description.value !== ""
         && plageHoraire.value !== ""
         && typeObjet.value !== "empty") {
 
         console.log("avant création json objet");
-        let objet = {
-            id_offreur: idOffreur,
-            type_objet: typeObjet.value,
-            description: description.value,
-            photo: "photoTest"
+        let nouvelObjet = {
+            offreur: offreur,
+            typeObjet: typeObjet,
+            description: description,
+            //photo: "photoTest"
         }
         console.log("juste avant premier fetch");
-        const reponseObjet = fetch("/api/objets/creerObjet", {
+        const objet = fetch("/api/objets/creerObjet", {
             method: "POST",
-            body: JSON.stringify(objet),
+            body: JSON.stringify(nouvelObjet),
             headers: {
                 "Content-Type": "application/json",
             }
         })
-            .then((reponse) => {
-                if (!reponse.ok) {
-                    throw new Error(
-                        "Error code : " + reponse.status + " : " + reponse.statusText)
-                }
-                return reponse.json();
-            })
+        .then((reponse) => {
+            if (!reponse.ok) {
+                throw new Error(
+                    "Error code : " + reponse.status + " : " + reponse.statusText + " : " + reponse.text())
+            }
+            console.log(reponse)
+            return reponse.json()
+        })
 
-        // console.log("juste avant second fetch");
-        console.log("id objet du premier fetch :" + reponseObjet.id_objet);
+
+
+
+        console.log("juste avant second fetch");
+        console.log(objet.objetDTO.idObjet);
         // let offre = {
         //
-        //     id_objet: reponseObjet.id_objet,
+        //     idObjet: reponseObjet.idObjet,
         //     plage_horaire: plageHoraire.value
         // }
 

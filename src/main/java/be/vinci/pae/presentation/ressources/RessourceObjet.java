@@ -2,6 +2,7 @@ package be.vinci.pae.presentation.ressources;
 
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.objet.ObjetUCC;
+import be.vinci.pae.presentation.ressources.utilitaires.Json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -40,17 +41,18 @@ public class RessourceObjet {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode creerObjet(JsonNode json) {
-    if (!json.hasNonNull("idOffreur")
+
+    if (!json.hasNonNull("offreur")
         || !json.hasNonNull("typeObjet")
         || !json.hasNonNull("description")
     ) {
+
       throw new WebApplicationException(
           Response.status(Response.Status.BAD_REQUEST)
               .entity("type de l'objet ou description manquant").type("text/plain").build());
     }
 
-    System.out.println("la methode a passee la web App exception");
-    Integer idOffreur = json.get("idOffreur").asInt();
+    Integer idOffreur = json.get("offreur").asInt();
     String typeObjet = json.get("typeObjet").asText();
     String description = json.get("description").asText();
     // String photo = json.get("photo").asText();
@@ -60,12 +62,14 @@ public class RessourceObjet {
     //peut etre que c'est mieux de test si la photo est null
     // dans le json avant d'essayer de la convertir inutiliement
 
-    ObjetDTO objetDTO = objetUCC.creerUnObjet(idOffreur, typeObjet, description, 1, "photo");
-    if (objetDTO == null) {
+    ObjetDTO objet = objetUCC.creerUnObjet(idOffreur, typeObjet, description, 1, "photo");
+    if (objet == null) {
       throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
           .entity("L'ajout de l'objet a échoué").type(MediaType.TEXT_PLAIN)
           .build());
     }
+    ObjetDTO objetDTO = Json.filtrePublicJsonVue((ObjetDTO) objet,
+        ObjetDTO.class);
 
     ObjectNode noeud = jsonMapper.createObjectNode().putPOJO("objetDTO", objetDTO);
     return noeud;

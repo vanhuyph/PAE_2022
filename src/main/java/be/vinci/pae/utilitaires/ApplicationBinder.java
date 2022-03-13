@@ -6,12 +6,16 @@ import be.vinci.pae.business.objet.ObjetUCC;
 import be.vinci.pae.business.objet.ObjetUCCImpl;
 import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.business.offre.OffreUCCImpl;
+import be.vinci.pae.business.typeObjet.TypeObjetUCC;
+import be.vinci.pae.business.typeObjet.TypeObjetUCCImpl;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.business.utilisateur.UtilisateurUCCImpl;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAOImpl;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAOImpl;
+import be.vinci.pae.donnees.dao.typeObjet.TypeObjetDAO;
+import be.vinci.pae.donnees.dao.typeObjet.TypeObjetDAOImpl;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAOImpl;
 import be.vinci.pae.donnees.services.ServiceDAL;
@@ -33,6 +37,8 @@ public class ApplicationBinder extends AbstractBinder {
     bind(OffreUCCImpl.class).to(OffreUCC.class).in(Singleton.class);
     bind(ObjetDAOImpl.class).to(ObjetDAO.class).in(Singleton.class);
     bind(ObjetUCCImpl.class).to(ObjetUCC.class).in(Singleton.class);
+    bind(TypeObjetUCCImpl.class).to(TypeObjetUCC.class).in(Singleton.class);
+    bind(TypeObjetDAOImpl.class).to(TypeObjetDAO.class).in(Singleton.class);
 
   }
 

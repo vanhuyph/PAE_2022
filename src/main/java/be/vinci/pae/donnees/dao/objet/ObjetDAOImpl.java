@@ -37,7 +37,8 @@ public class ObjetDAOImpl implements ObjetDAO {
     {
       ObjetDTO objetDTO = factory.getObjet();
       PreparedStatement ps = serviceDAL.getPs(
-          "INSERT INTO projet.objets VALUES (DEFAULT, ?, ?, ?, ?, null, ?);");
+          "INSERT INTO projet.objets VALUES (DEFAULT, ?, ?, ?, ?, null, ?)RETURNING "
+              + "id_objet;");
 
       try {
         ps.setString(1, etatObjet);
