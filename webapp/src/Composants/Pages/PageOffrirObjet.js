@@ -4,33 +4,27 @@ import {
 import Navbar from "../Navbar/Navbar";
 import {Redirect} from "../Router/Router";
 
-//pour l'instant la navbar ne rederige pas vers la bonne page (le bouton se clique pas)
 
 
-// à regarder pour le framework je me souvenais plus c'était lequel
+
+// style pas travailler
 
 
-// pas encore de possibilité d'ajout de photo à voir le cours d'architecture
+// pas encore de possibilité d'ajout de photo à voir le cours d'architecture => cfr mail Leleux
+const typesObjet =
+    <div>
+        <div id="choixTypeObjet">
+        </div>
+    </div>
 
-//différent type hardcodé pour l'instant
-let pageOffrirObjet = `
+const pageOffrirObjet = `
     <div class="page-offrirObjet">
     <h2>Offrir un objet</h2>
     <form id="formulaire-offrirObjet" class="ui form">
     
         <div class="field">
           <label for="type">Type</label>
-          <div class="type-conteneur">
-              <select type="text" id="type" class="type">
-                <option value="empty" selected hidden=true>Selectionnez le type</option>
-                <option value="accessoire">Accessoire</option>
-                <option value="decoration">Decoration</option>
-                <option value="plante">Plante</option>
-                <option value="jouet">Jouet</option>
-                <option value="vetement">Vêtement</option>
-              </select>
-              <p class="message-erreur erreur-type"></p>
-          </div>
+          ${typesObjet}
         </div>
         
         <div class="field">
@@ -72,12 +66,51 @@ const PageOffrirObjet = () => {
 
 
 }
+const choixTypeObjet = () => {
+    fetch("/api/typesObjet/liste", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            //Authorization: utilisateur.token,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(
+                "Error code : " + response.status + " : " + response.statusText
+            );
+        }
+        return response.json();
+    })
+    .then((data) => surListeTypeObjet(data))
+
+}
+const surListeTypeObjet = (data) => {
+
+    let choixTypeObjet = document.querySelector("#choixTypeObjet");
+    if (data.length === 0 || !data) {
+        let listeVide = `Il n'y aucun type d'objet`;
+        choixTypeObjet.innerHTML = listeVide;
+        return;
+    }
+    let liste = `<select type="text" id="type" className="type">
+                  <option value="empty" selected hidden=true>Selectionnez le type</option>`;
+
+    data.forEach((typeObjet) => {
+        liste += `
+    <option value=${typeObjet.idType}>${typeObjet.nom}</option>
+    `;
+    });
+    liste += `</select> <p className="message-erreur erreur-type"></p>`;
+    choixTypeObjet.innerHTML = liste;
+
+}
 
 //Méthode beaucoup trop longue a découper en deux Méthodes, créationObjet et une offrirObjet par exemple
 const surOffrirObjet = (e) => {
     e.preventDefault();
     console.log("debutListenerOffriObjet");
-    let typeObjet = document.querySelector("#type");
+    let typeObjet = document.querySelector("#choixTypeObjet");
     let description = document.querySelector("#description");
     let plageHoraire = document.querySelector("#horaire");
 
@@ -129,6 +162,7 @@ const surOffrirObjet = (e) => {
             body: JSON.stringify(nouvelObjet),
             headers: {
                 "Content-Type": "application/json",
+                //Authorization: utilisateur.token,
             }
         })
         .then((reponse) => {

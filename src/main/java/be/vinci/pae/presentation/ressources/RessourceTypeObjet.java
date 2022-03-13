@@ -24,7 +24,7 @@ public class RessourceTypeObjet {
    * @return la liste des types d'objet
    */
   @GET
-  @Path("typesObjet")
+  @Path("liste")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public List<TypeObjetDTO> listerTypeObjet() {
