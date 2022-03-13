@@ -1,9 +1,13 @@
 package be.vinci.pae.business.typeObjet;
 
+import be.vinci.pae.donnees.dao.typeObjet.TypeObjetDAO;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class TypeObjetUCCImpl implements TypeObjetUCC {
 
+  @Inject
+  private TypeObjetDAO typeObjetDAO;
 
   /**
    * Liste les types d'objet.
@@ -12,6 +16,6 @@ public class TypeObjetUCCImpl implements TypeObjetUCC {
    */
   @Override
   public List<TypeObjetDTO> listerTypeObjet() {
-    return null;
+    return typeObjetDAO.listerTypeObjet();
   }
 }

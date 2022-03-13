@@ -44,7 +44,7 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
   /**
    * Rempli les données du type d'objet depuis un ResultSet.
    *
-   * @param TypeObjetDTO : le type d'objet vide, qui va être rempli
+   * @param typeObjetDTO : le type d'objet vide, qui va être rempli
    * @param ps           : le PreparedStatement déjà mis en place
    * @return TypeObjetDTO : le type d'objet rempli rempli
    * @throws SQLException : est lancée si il y a un problème

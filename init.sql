@@ -75,3 +75,11 @@ INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'pseudo1', 'nom1', 'prenom1', '
 INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'pseudo2', 'nom2', 'prenom2', '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2' , NULL, false, 2, 'en attente',NULL);
 INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'pseudo3', 'nom3', 'prenom3', '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', '0475858535', false, 3, 'refusé','Seuls les amis proches ont accès au site.');
 INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'pseudo4', 'nom4', 'prenom4', '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, true, 1, 'confirmé',NULL);
+
+INSERT INTO projet.types_objets VALUES (DEFAULT,'Décoration');
+INSERT INTO projet.types_objets VALUES (DEFAULT,'Meuble');
+INSERT INTO projet.types_objets VALUES (DEFAULT,'Plante');
+INSERT INTO projet.types_objets VALUES (DEFAULT,'Jouet');
+INSERT INTO projet.types_objets VALUES (DEFAULT,'Vêtement');
+
+
