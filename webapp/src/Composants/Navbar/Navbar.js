@@ -1,4 +1,4 @@
-import logo from "../../img/logo.png";
+import logo from "../../img/donnamis.png";
 import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 
 const Navbar = () => {
