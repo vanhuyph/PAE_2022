@@ -97,7 +97,6 @@ public class UtilisateurUCCTest {
       + "avec son état d'inscription à confirmé mais ne le passe pas en admin")
   public void testConfirmerInscriptionV1() {
     int id = utilisateurDTO.getIdUtilisateur();
-    System.out.println(utilisateurDTO.getEtatInscription());
     Mockito.when(utilisateurDAO.confirmerInscription(id, false)).thenReturn(utilisateurDTO);
     assertEquals(utilisateurDTO, utilisateurUCC.confirmerInscription(id, false));
   }

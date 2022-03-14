@@ -87,16 +87,12 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   }
 
   /**
-   * Vérifie si l'utilisateur a bien été ajouté et hash le mot de passe.
+   * Permet l'inscription d'un utilisateur.
    *
-   * @param pseudo  : le pseudo de l'utilisateur
-   * @param nom     : le nom de l'utilisateur
-   * @param prenom  : de l'utilisateur
-   * @param mdp     : le mot de passe de l'utilisateur
-   * @param adresse : l'id de l'adresse de l'utilisateur
+   * @param utilisateurDTO : l'utilisateur à inscrire
    * @return utilisateur : l'utilisateur inscrit
    * @throws ConflitException  : est lancée si un utilisateur possède déjà le pseudo
-   * @throws BusinessException : est lancée si l'utilisateur n'a pas pu être ajouté
+   * @throws BusinessException : est lancée si l'utilisateur/adresse n'a pas pu être ajouté
    */
   @Override
   public UtilisateurDTO inscription(UtilisateurDTO utilisateurDTO) {
