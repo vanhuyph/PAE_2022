@@ -4,6 +4,8 @@ import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.vue.Vues;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -13,7 +15,7 @@ public class OffreImpl implements Offre {
   @JsonView(Vues.Public.class)
   private int idOffre;
   @JsonView(Vues.Public.class)
-  private Date dateOffre;
+  private LocalDateTime dateOffre;
   @JsonView(Vues.Public.class)
   private ObjetDTO objetDTO;
   @JsonView(Vues.Public.class)
@@ -27,11 +29,11 @@ public class OffreImpl implements Offre {
     this.idOffre = idOffre;
   }
 
-  public Date getDateOffre() {
+  public LocalDateTime getDateOffre() {
     return dateOffre;
   }
 
-  public void setDateOffre(Date dateOffre) {
+  public void setDateOffre(LocalDateTime dateOffre) {
     this.dateOffre = dateOffre;
   }
 

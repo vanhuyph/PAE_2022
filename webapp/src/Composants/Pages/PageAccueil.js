@@ -93,13 +93,16 @@ const PageAccueil = () => {
 
 const onOffreRecentListpage = (data) =>{
   const listOffreRecent = document.getElementById("offreListRecent");
-  
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   let listRecent = data.forEach((offre)=>{
     console.log(offre.idOffre);
-    console.log(offre.dateOffre);
+    console.log(offre.photo);
+    console.log(offre.objetDTO.description);
+    console.log(offre.dateOffre.toLocaleTimeString());
     listRecent+= `<article>
-      <h4>${offre.idOffre}</h4>
-      Date de création : ${offre.dateOffre}
+      <h4>${offre.objetDTO.photo}</h4>
+      Description : ${offre.objetDTO.description}
+      Date de création : ${offre.dateOffre.toLocaleTimeString()}
       </article>
       `;
   })
@@ -109,13 +112,17 @@ const onOffreRecentListpage = (data) =>{
 
 const onOffreListpage=(data)=>{
   const listOffre = document.getElementById("offreList");
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
   let list = data.forEach((offre)=>{
     console.log(offre.idOffre);
-    console.log(offre.dateOffre);
+    console.log(offre.photo);
+    console.log(offre.objetDTO.description);
+    console.log(offre.dateOffre.toLocaleTimeString());
     list+= `<article>
-      <h4>${offre.idOffre}</h4>
-      Date de création : ${offre.dateOffre}
+      <h4>${offre.objetDTO.photo}</h4>
+      Description : ${offre.objetDTO.description}
+      Date de création : ${offre.dateOffre.toLocaleTimeString()}
       </article>
       `;
   })

@@ -17,6 +17,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.List;
+import javax.management.MalformedObjectNameException;
 
 
 @Singleton
@@ -96,6 +97,10 @@ public class RessourceOffre {
           .entity("Liste des offres a echoué").type(MediaType.TEXT_PLAIN)
           .build());
     }
+
+      /*for (int i = 0; i<offreDTO.size(); i++){
+        System.out.println(offreDTO.get(i));
+      }*/
     return offreDTO;
   }
 

@@ -5,11 +5,15 @@ import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import jakarta.inject.Inject;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import net.bytebuddy.asm.Advice.Local;
 
 public class OffreDAOImpl implements OffreDAO {
 
@@ -19,6 +23,7 @@ public class OffreDAOImpl implements OffreDAO {
   private ServiceDAL serviceDAL;
   @Inject
   private ObjetDAO objetDAO;
+
 
   /**
    * Creer une offre.
@@ -61,6 +66,7 @@ public class OffreDAOImpl implements OffreDAO {
             + " ORDER BY of.date_offre DESC;");
     List<OffreDTO> listOffres = null;
     try {
+
       listOffres = remplirListOffresDepuisResulSet(offreDTO, ps);
       ps.close();
     } catch (SQLException e) {
@@ -83,7 +89,7 @@ public class OffreDAOImpl implements OffreDAO {
       while (rs.next()) {
         offreDTO.setIdOffre(rs.getInt(1));
         offreDTO.setObjetDTO(objetDAO.rechercheParId(rs.getInt(2)));
-        offreDTO.setDateOffre(rs.getDate(3));
+        offreDTO.setDateOffre(convertToLocalDateTimeViaInstant(rs.getDate(3)));
         offreDTO.setPlageHoraire(rs.getString(4));
       }
     }
@@ -103,15 +109,28 @@ public class OffreDAOImpl implements OffreDAO {
     List<OffreDTO> listOffres = new ArrayList<>();
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
+
         offreDTO.setIdOffre(rs.getInt(1));
         offreDTO.setObjetDTO(objetDAO.rechercheParId(rs.getInt(2)));
-        offreDTO.setDateOffre(rs.getDate(3));
+        System.out.println("liste offres");
+        LocalDateTime tt = convertToLocalDateTimeViaInstant(rs.getDate(3));
+        System.out.println(tt);
+        offreDTO.setDateOffre(convertToLocalDateTimeViaInstant(rs.getDate(3)));
         offreDTO.setPlageHoraire(rs.getString(4));
         listOffres.add(offreDTO);
         offreDTO = factory.getOffre();
       }
     }
     return listOffres;
+  }
+
+  public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
+    System.out.println("date");
+    LocalDateTime tt = dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    System.out.println(tt);
+    return dateToConvert.toInstant()
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime();
   }
 }
 // Ne pas oublier de fermer le preparedStatement quand on aura décidé où le faire
