@@ -20,31 +20,25 @@ public class AdresseDAOImpl implements AdresseDAO {
   /**
    * Ajoute une adresse dans la base de données.
    *
-   * @param rue        : la rue de l'adresse
-   * @param numero     : le numero de l'adresse
-   * @param boite      : la boite de l'adresse
-   * @param codePostal : le code postal de l'adresse
-   * @param commune    : la commune de l'adresse
+   * @param adresseDTO : l'adresse a ajouter
    * @return adresseDTO : l'adresse ajoutée
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public AdresseDTO ajouterAdresse(String rue, int numero, int boite, int codePostal,
-      String commune) {
-    AdresseDTO adresseDTO = factory.getAdresse();
+  public AdresseDTO ajouterAdresse(AdresseDTO adresseDTO) {
     PreparedStatement ps = serviceDAL.getPs(
         "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?)  RETURNING id_adresse, "
             + "rue, numero, boite, code_postal, commune;");
     try {
-      ps.setString(1, rue);
-      ps.setInt(2, numero);
-      if (boite == 0) {
+      ps.setString(1, adresseDTO.getRue());
+      ps.setInt(2, adresseDTO.getNumero());
+      if (adresseDTO.getBoite() == 0) {
         ps.setNull(3, Types.INTEGER);
       } else {
-        ps.setInt(3, boite);
+        ps.setInt(3, adresseDTO.getBoite());
       }
-      ps.setInt(4, codePostal);
-      ps.setString(5, commune);
+      ps.setInt(4, adresseDTO.getCodePostal());
+      ps.setString(5, adresseDTO.getCommune());
       adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, ps);
       ps.close();
     } catch (SQLException e) {

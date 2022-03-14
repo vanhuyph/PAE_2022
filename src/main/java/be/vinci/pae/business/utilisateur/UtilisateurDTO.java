@@ -1,5 +1,6 @@
 package be.vinci.pae.business.utilisateur;
 
+import be.vinci.pae.business.adresse.AdresseDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = UtilisateurImpl.class)
@@ -41,7 +42,7 @@ public interface UtilisateurDTO {
 
   void setCommentaire(String commentaire);
 
-  int getAdresse();
+  AdresseDTO getAdresse();
 
-  void setAdresse(int adresse);
+  void setAdresse(AdresseDTO adresse);
 }

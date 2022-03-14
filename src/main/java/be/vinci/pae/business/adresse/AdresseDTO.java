@@ -1,5 +1,8 @@
 package be.vinci.pae.business.adresse;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(as = AdresseImpl.class)
 public interface AdresseDTO {
 
   int getIdAdresse();

@@ -1,6 +1,7 @@
 package be.vinci.pae.donnees.dao.utilisateur;
 
 import be.vinci.pae.business.DomaineFactory;
+import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
@@ -30,8 +31,11 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.adresse"
-            + " FROM projet.utilisateurs u WHERE u.pseudo = ?;");
+            + "u.etat_inscription, u.commentaire, a.id_adresse, a.rue, a.numero, a.boite, "
+            + "a.code_postal, a.commune FROM projet.utilisateurs u "
+            + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+            + "WHERE u.pseudo = ?;");
+
     try {
       ps.setString(1, pseudo);
       try (ResultSet rs = ps.executeQuery()) {
@@ -59,8 +63,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.adresse"
-            + " FROM projet.utilisateurs u WHERE u.id_utilisateur = ?;");
+            + "u.etat_inscription, u.commentaire,  a.id_adresse, a.rue, a.numero, a.boite, "
+            + "a.code_postal, a.commune FROM projet.utilisateurs u "
+            + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+            + "WHERE u.id_utilisateur = ?;");
     try {
       ps.setInt(1, id);
       try (ResultSet rs = ps.executeQuery()) {
@@ -88,16 +94,18 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     PreparedStatement ps = serviceDAL.getPs(
         "INSERT INTO projet.utilisateurs "
             + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL) RETURNING "
-            + "id_utilisateur;");
+            + "id_utilisateur, etat_inscription, commentaire;");
     try {
       ps.setString(1, utilisateur.getPseudo());
       ps.setString(2, utilisateur.getNom());
       ps.setString(3, utilisateur.getPrenom());
       ps.setString(4, utilisateur.getMdp());
-      ps.setInt(5, utilisateur.getAdresse());
+      ps.setInt(5, utilisateur.getAdresse().getIdAdresse());
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           utilisateur.setIdUtilisateur(rs.getInt(1));
+          utilisateur.setEtatInscription(rs.getString(2));
+          utilisateur.setCommentaire(rs.getString(3));
         }
       }
       ps.close();
@@ -130,7 +138,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setInt(3, id);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          utilisateurDTO = remplirUtilisateursDepuisRS(rs, utilisateurDTO);
+          utilisateurDTO = remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
         }
       }
       ps.close();
@@ -163,7 +171,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setInt(3, id);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          utilisateurDTO = remplirUtilisateursDepuisRS(rs, utilisateurDTO);
+          utilisateurDTO = remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
         }
       }
       ps.close();
@@ -185,9 +193,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.adresse "
-            + "FROM projet.utilisateurs u WHERE u.etat_inscription = ? "
-            + "ORDER BY u.id_utilisateur");
+            + "u.etat_inscription, u.commentaire, a.id_adresse, a.rue, a.numero, a.boite, "
+            + "a.code_postal, a.commune FROM projet.utilisateurs u "
+            + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+            + "WHERE u.etat_inscription = ? ORDER BY u.pseudo;");
     List<UtilisateurDTO> liste = new ArrayList<>();
     try {
       ps.setString(1, etatInscription);
@@ -224,12 +233,86 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       utilisateurDTO.setEstAdmin(rs.getBoolean(7));
       utilisateurDTO.setEtatInscription(rs.getString(8));
       utilisateurDTO.setCommentaire(rs.getString(9));
-      utilisateurDTO.setAdresse(rs.getInt(10));
+      AdresseDTO adresseDTO = factory.getAdresse();
+      adresseDTO.setIdAdresse(rs.getInt(10));
+      adresseDTO.setRue(rs.getString(11));
+      adresseDTO.setNumero(rs.getInt(12));
+      adresseDTO.setBoite(rs.getInt(13));
+      adresseDTO.setCodePostal(rs.getInt(14));
+      adresseDTO.setCommune(rs.getString(15));
+      utilisateurDTO.setAdresse(adresseDTO);
     } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
     return utilisateurDTO;
+  }
+
+  /**
+   * Rempli les données de l'utilisateur depuis un ResultSet.
+   *
+   * @param rs             : le ResultSet
+   * @param utilisateurDTO : l'utilisateur vide, qui va être rempli
+   * @return utilisateurDTO : l'utilisateur rempli
+   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   */
+  private UtilisateurDTO remplirUtilisateursDepuisRSSansAdresse(ResultSet rs,
+      UtilisateurDTO utilisateurDTO) {
+    try {
+      utilisateurDTO.setIdUtilisateur(rs.getInt(1));
+      utilisateurDTO.setPseudo(rs.getString(2));
+      utilisateurDTO.setNom(rs.getString(3));
+      utilisateurDTO.setPrenom(rs.getString(4));
+      utilisateurDTO.setMdp(rs.getString(5));
+      utilisateurDTO.setGsm(rs.getString(6));
+      utilisateurDTO.setEstAdmin(rs.getBoolean(7));
+      utilisateurDTO.setEtatInscription(rs.getString(8));
+      utilisateurDTO.setCommentaire(rs.getString(9));
+      AdresseDTO adresseDTO = factory.getAdresse();
+      PreparedStatement ps = serviceDAL.getPs(
+          "SELECT id_adresse, rue, numero, boite, code_postal, commune "
+              + "FROM projet.adresses WHERE id_adresse = ?;");
+      try {
+        ps.setInt(1, rs.getInt(10));
+        try (ResultSet rs1 = ps.executeQuery()) {
+          while (rs1.next()) {
+            adresseDTO = remplirAdresseDepuisRS(rs1, adresseDTO);
+          }
+        }
+        ps.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+        throw new FatalException(e.getMessage(), e);
+      }
+      utilisateurDTO.setAdresse(adresseDTO);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return utilisateurDTO;
+  }
+
+  /**
+   * Rempli les données de l'utilisateur depuis un ResultSet.
+   *
+   * @param rs         : le ResultSet
+   * @param adresseDTO : l'utilisateur vide, qui va être rempli
+   * @return utilisateurDTO : l'utilisateur rempli
+   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   */
+  private AdresseDTO remplirAdresseDepuisRS(ResultSet rs, AdresseDTO adresseDTO) {
+    try {
+      adresseDTO.setIdAdresse(rs.getInt(1));
+      adresseDTO.setRue(rs.getString(2));
+      adresseDTO.setNumero(rs.getInt(3));
+      adresseDTO.setBoite(rs.getInt(4));
+      adresseDTO.setCodePostal(rs.getInt(5));
+      adresseDTO.setCommune(rs.getString(6));
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return adresseDTO;
   }
 
 }

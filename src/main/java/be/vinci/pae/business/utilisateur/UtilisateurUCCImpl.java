@@ -1,5 +1,7 @@
 package be.vinci.pae.business.utilisateur;
 
+import be.vinci.pae.business.adresse.AdresseDTO;
+import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.ConflitException;
@@ -11,6 +13,9 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
 
   @Inject
   UtilisateurDAO utilisateurDAO;
+
+  @Inject
+  AdresseDAO adresseDAO;
 
   /**
    * Vérifie si le mot de passe de l'utilisateur est correct à sa connexion.
@@ -94,20 +99,15 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @throws BusinessException : est lancée si l'utilisateur n'a pas pu être ajouté
    */
   @Override
-  public UtilisateurDTO inscription(String pseudo, String nom, String prenom, String mdp,
-      int adresse) {
-    if (utilisateurDAO.rechercheParPseudo(pseudo).getIdUtilisateur() > 0) {
+  public UtilisateurDTO inscription(UtilisateurDTO utilisateurDTO) {
+    if (utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()).getIdUtilisateur() > 0) {
       throw new ConflitException("Ce pseudo déjà utilisé");
     }
-    Utilisateur utilisateur = new UtilisateurImpl();
-    utilisateur.setPseudo(pseudo);
-    utilisateur.setNom(nom);
-    utilisateur.setPrenom(prenom);
-    utilisateur.setMdp(utilisateur.hashMdp(mdp));
-    utilisateur.setAdresse(adresse);
-    utilisateur.setEtatInscription("en attente");
-    utilisateur.setCommentaire(null);
-    utilisateur = (Utilisateur) utilisateurDAO.ajouterUtilisateur(utilisateur);
+    AdresseDTO adresseDTO = adresseDAO.ajouterAdresse(utilisateurDTO.getAdresse());
+    if (adresseDTO == null) {
+      throw new BusinessException("L'adresse n'a pas pu être ajoutée.");
+    }
+    UtilisateurDTO utilisateur = utilisateurDAO.ajouterUtilisateur(utilisateurDTO);
     if (utilisateur == null) {
       throw new BusinessException("L'utilisateur n'a pas pu être ajouté");
     }

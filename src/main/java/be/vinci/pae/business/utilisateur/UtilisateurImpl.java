@@ -1,5 +1,6 @@
 package be.vinci.pae.business.utilisateur;
 
+import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.vue.Vues;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -28,7 +29,7 @@ public class UtilisateurImpl implements Utilisateur {
   @JsonView(Vues.Public.class)
   private String commentaire;
   @JsonView(Vues.Internal.class)
-  private int adresse;
+  private AdresseDTO adresse;
 
 
   @Override
@@ -122,12 +123,12 @@ public class UtilisateurImpl implements Utilisateur {
   }
 
   @Override
-  public int getAdresse() {
+  public AdresseDTO getAdresse() {
     return adresse;
   }
 
   @Override
-  public void setAdresse(int adresse) {
+  public void setAdresse(AdresseDTO adresse) {
     this.adresse = adresse;
   }
 
