@@ -8,7 +8,6 @@ import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.presentation.ressources.filtres.AutorisationAdmin;
 import be.vinci.pae.presentation.ressources.utilitaires.Json;
 import be.vinci.pae.utilitaires.Config;
-import be.vinci.pae.utilitaires.exceptions.FatalException;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -50,8 +49,7 @@ public class RessourceUtilisateur {
    *
    * @param json : json reçu du formulaire de connexion
    * @return noeud : l'objet json contenant le token et l'utilisateur
-   * @throws WebApplicationException : est lancée si pseudo ou mot de passe incorrect ou manquant
-   * @throws FatalException          : est lancée si il y a un problème côté serveur
+   * @throws PresentationException : est lancée si pseudo ou mot de passe incorrect ou manquant
    */
   @POST
   @Path("connexion")
@@ -59,9 +57,7 @@ public class RessourceUtilisateur {
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode connexion(JsonNode json) {
     if (!json.hasNonNull("pseudo") || !json.hasNonNull("mdp")) {
-      throw new WebApplicationException(
-          Response.status(Response.Status.BAD_REQUEST)
-              .entity("Pseudo ou mot de passe manquant").type("text/plain").build());
+      throw new PresentationException("Pseudo ou mot de passe manquant", Status.BAD_REQUEST);
     }
     String pseudo = json.get("pseudo").asText();
     String mdp = json.get("mdp").asText();
@@ -77,8 +73,7 @@ public class RessourceUtilisateur {
    *
    * @param json : json reçu du formulaire d'inscription
    * @return noeud : l'objet json contenant le token et l'utilisateur
-   * @throws WebApplicationException : est lancée s'il y a eu un problème lors de l'inscription
-   * @throws FatalException          : est lancée si il y a un problème côté serveur
+   * @throws PresentationException : est lancée s'il y a eu un problème lors de l'inscription
    */
   @POST
   @Path("inscription")
@@ -118,6 +113,7 @@ public class RessourceUtilisateur {
    *
    * @param request : header avec le token
    * @return noeud : un nouveau token avec l'utilisateur
+   * @throws PresentationException : est lancée si l'utilisateur n'a pas été trouvé
    */
   @GET
   @Path("moi")
@@ -143,8 +139,7 @@ public class RessourceUtilisateur {
    * @param json : json contenant l'information s'il est admin ou pas
    * @param id   : l'id de l'utilisateur que l'on veut confirmer
    * @return utilisateurDTO : l'utilisateur confirmé
-   * @throws WebApplicationException : est lancée s'il y a eu un problème dans la confirmation
-   * @throws FatalException          : est lancée si il y a un problème côté serveur
+   * @throws PresentationException : est lancée s'il y a eu un problème dans la confirmation
    */
   @PUT
   @Path("confirme/{id}")
@@ -172,8 +167,7 @@ public class RessourceUtilisateur {
    * @param json : json contenant le commentaire du refus
    * @param id   : l'id de l'utilisateur
    * @return utilisateurDTO : l'utilisateur refusé
-   * @throws WebApplicationException : est lancée s'il y a eu un problème lors du refus
-   * @throws FatalException          : est lancée si il y a un problème côté serveur
+   * @throws PresentationException : est lancée s'il y a eu un problème lors du refus
    */
   @PUT
   @Path("refuse/{id}")
@@ -199,8 +193,8 @@ public class RessourceUtilisateur {
    *
    * @param utilisateur : l'utilisateur qui aura le token
    * @return noeud : l'objet json contenant le token et l'utilisateur
-   * @throws WebApplicationException : est lancée s'il y a eu un problème lors de la création du
-   *                                 token
+   * @throws PresentationException : est lancée s'il y a eu un problème lors de la création du
+   *                               token
    */
   private ObjectNode creationToken(UtilisateurDTO utilisateur) {
     String token;
@@ -224,7 +218,6 @@ public class RessourceUtilisateur {
    * Liste tous les utilisateurs avec une inscription à l'état "refusé".
    *
    * @return liste : la liste des utilisateurs avec une inscription refusée
-   * @throws FatalException : est lancée si il y a un problème côté serveur
    */
   @GET
   @Path("refuse")
@@ -241,7 +234,6 @@ public class RessourceUtilisateur {
    * Liste tous les utilisateurs avec une inscription à l'état "en attente".
    *
    * @return liste : la liste des utilisateurs avec une inscription en attente
-   * @throws FatalException : est lancée si il y a un problème côté serveur
    */
   @GET
   @Path("attente")

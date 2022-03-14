@@ -3,7 +3,6 @@ package be.vinci.pae.business.utilisateur;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.ConflitException;
-import be.vinci.pae.utilitaires.exceptions.FatalException;
 import be.vinci.pae.utilitaires.exceptions.NonAutoriseException;
 import jakarta.inject.Inject;
 import java.util.List;
@@ -19,8 +18,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @param pseudo : le pseudo de l'utilisateur
    * @param mdp    : le mot de passe de l'utilisateur
    * @return utilisateur : l'utilisateur si le mot de passe est bon
-   * @throws BusinessException : est lancée si le pseudo ou le mot de passe est incorrect
-   * @throws FatalException    : est lancée si il y a un problème côté serveur
+   * @throws NonAutoriseException : est lancée si le pseudo ou le mot de passe est incorrect
    */
   @Override
   public UtilisateurDTO connexion(String pseudo, String mdp) {
@@ -39,7 +37,6 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @return utilisateur : l'utilisateur possèdant l'id passé en paramètre
    * @throws BusinessException : est lancée si l'utilisateur avec l'id passé en paramètre n'est pas
    *                           trouvé
-   * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   @Override
   public UtilisateurDTO rechercheParId(int id) {
@@ -57,7 +54,6 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @return utilisateur : l'utilisateur possèdant l'id passé en paramètre
    * @throws BusinessException : est lancée si l'utilisateur avec le pseudo passé en paramètre n'est
    *                           pas trouvé
-   * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   @Override
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
@@ -73,9 +69,8 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    *
    * @param pseudo : le pseudo de l'utilisateur
    * @return utilisateur : l'utilisateur vide si aucun utilisateur correspond au pseudo
-   * @throws BusinessException : est lancée si un utilisateur possède déjà le pseudo passé en
-   *                           paramètre
-   * @throws FatalException    : est lancée si il y a un problème côté serveur
+   * @throws ConflitException : est lancée si un utilisateur possède déjà le pseudo passé en
+   *                          paramètre
    */
   @Override
   public UtilisateurDTO rechercheParPseudoInscription(String pseudo) {
@@ -95,15 +90,14 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @param mdp     : le mot de passe de l'utilisateur
    * @param adresse : l'id de l'adresse de l'utilisateur
    * @return utilisateur : l'utilisateur inscrit
-   * @throws BusinessException : est lancée si un utilisateur possède déjà le pseudo
+   * @throws ConflitException  : est lancée si un utilisateur possède déjà le pseudo
    * @throws BusinessException : est lancée si l'utilisateur n'a pas pu être ajouté
-   * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   @Override
   public UtilisateurDTO inscription(String pseudo, String nom, String prenom, String mdp,
       int adresse) {
     if (utilisateurDAO.rechercheParPseudo(pseudo).getIdUtilisateur() > 0) {
-      throw new ConflitException("Pseudo déjà utilisé");
+      throw new ConflitException("Ce pseudo déjà utilisé");
     }
     Utilisateur utilisateur = new UtilisateurImpl();
     utilisateur.setPseudo(pseudo);
@@ -129,7 +123,6 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @return utilisateurDTO : l'utilisateur avec son état d'inscription passé à "confirmé"
    * @throws BusinessException : est lancée si l'état d'inscription de l'utilisateur n'a pas pu être
    *                           confirmé
-   * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   @Override
   public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
@@ -148,7 +141,6 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @return utilisateurDTO : l'utilisateur avec l'inscription refusée
    * @throws BusinessException : est lancée si l'état d'inscription de l'utilisateur n'a pas pu être
    *                           refusé
-   * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   @Override
   public UtilisateurDTO refuserInscription(int id, String commentaire) {
@@ -164,7 +156,6 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    *
    * @param etatInscription : l'état de l'inscription
    * @return liste : la liste des utilisateurs avec l'état d'inscription passé en paramètre
-   * @throws FatalException : est lancée si il y a un problème côté serveur
    */
   @Override
   public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
