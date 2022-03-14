@@ -11,10 +11,10 @@ module.exports = {
   },
   devtool: "eval-source-map",
   devServer: {
-    contentBase: path.join(__dirname, "dist"),
+    //contentBase: path.join(__dirname, "dist"),
     port: 8081,
-    host: '0.0.0.0', // server to be accessible externally
-    public: "localhost:8081", // force to open localhost instead of 0.0.0.0
+    host: 'localhost', // server to be accessible externally
+    //public: "http://localhost:8081", // force to open localhost instead of 0.0.0.0
     open: true, // open the default browser
     historyApiFallback: true, // serve index.html instead of routes leading to no specific ressource
     proxy: {
