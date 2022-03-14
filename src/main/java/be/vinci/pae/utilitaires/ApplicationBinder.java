@@ -2,8 +2,6 @@ package be.vinci.pae.utilitaires;
 
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.DomaineFactoryImpl;
-import be.vinci.pae.business.adresse.AdresseUCC;
-import be.vinci.pae.business.adresse.AdresseUCCImpl;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.business.utilisateur.UtilisateurUCCImpl;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
@@ -26,7 +24,6 @@ public class ApplicationBinder extends AbstractBinder {
     bind(ServiceDALImpl.class).to(ServiceDAL.class).in(Singleton.class);
     bind(UtilisateurUCCImpl.class).to(UtilisateurUCC.class).in(Singleton.class);
     bind(AdresseDAOImpl.class).to(AdresseDAO.class).in(Singleton.class);
-    bind(AdresseUCCImpl.class).to(AdresseUCC.class).in(Singleton.class);
   }
 
 }

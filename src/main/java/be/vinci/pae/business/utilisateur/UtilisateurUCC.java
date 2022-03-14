@@ -12,8 +12,7 @@ public interface UtilisateurUCC {
 
   UtilisateurDTO rechercheParPseudoInscription(String pseudo);
 
-  UtilisateurDTO inscription(String pseudo, String nom, String prenom, String mdp,
-      int adresse);
+  UtilisateurDTO inscription(UtilisateurDTO utilisateurDTO);
 
   UtilisateurDTO confirmerInscription(int id, boolean estAdmin);
 
