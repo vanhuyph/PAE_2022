@@ -1,4 +1,4 @@
-package be.vinci.pae.donnees.dao.adresse.objet;
+package be.vinci.pae.donnees.dao.objet;
 
 import be.vinci.pae.business.objet.ObjetDTO;
 

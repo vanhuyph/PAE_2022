@@ -1,6 +1,6 @@
 package be.vinci.pae.business.objet;
 
-import be.vinci.pae.donnees.dao.adresse.objet.ObjetDAO;
+import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.utilitaires.exceptions.ExceptionBusiness;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;

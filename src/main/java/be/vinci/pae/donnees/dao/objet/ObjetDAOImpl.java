@@ -1,8 +1,7 @@
-package be.vinci.pae.donnees.dao.adresse.objet;
+package be.vinci.pae.donnees.dao.objet;
 
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.objet.ObjetDTO;
-import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -15,8 +14,6 @@ public class ObjetDAOImpl implements ObjetDAO {
   private DomaineFactory factory;
   @Inject
   private ServiceDAL serviceDAL;
-  @Inject
-  private UtilisateurDAO utilisateurDAO;
 
 
   /**

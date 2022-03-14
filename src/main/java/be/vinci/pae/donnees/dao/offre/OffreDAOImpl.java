@@ -2,7 +2,7 @@ package be.vinci.pae.donnees.dao.offre;
 
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.offre.OffreDTO;
-import be.vinci.pae.donnees.dao.adresse.objet.ObjetDAO;
+import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;

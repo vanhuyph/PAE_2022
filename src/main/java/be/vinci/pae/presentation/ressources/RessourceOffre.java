@@ -3,7 +3,6 @@ package be.vinci.pae.presentation.ressources;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -21,7 +20,6 @@ import jakarta.ws.rs.core.Response.Status;
 public class RessourceOffre {
 
 
-  private static final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private OffreUCC offreUCC;
 
