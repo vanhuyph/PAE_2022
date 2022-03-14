@@ -224,15 +224,11 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    */
   private UtilisateurDTO remplirUtilisateursDepuisRS(ResultSet rs, UtilisateurDTO utilisateurDTO) {
     try {
-      utilisateurDTO.setIdUtilisateur(rs.getInt(1));
-      utilisateurDTO.setPseudo(rs.getString(2));
-      utilisateurDTO.setNom(rs.getString(3));
-      utilisateurDTO.setPrenom(rs.getString(4));
-      utilisateurDTO.setMdp(rs.getString(5));
-      utilisateurDTO.setGsm(rs.getString(6));
-      utilisateurDTO.setEstAdmin(rs.getBoolean(7));
-      utilisateurDTO.setEtatInscription(rs.getString(8));
-      utilisateurDTO.setCommentaire(rs.getString(9));
+      utilisateurDTO = remplirUtilisateurSansAdresse(utilisateurDTO, rs.getInt(1),
+          rs.getString(2), rs.getString(3), rs.getString(4),
+          rs.getString(5), rs.getString(6), rs.getBoolean(7),
+          rs.getString(8), rs.getString(9));
+
       AdresseDTO adresseDTO = factory.getAdresse();
       adresseDTO.setIdAdresse(rs.getInt(10));
       adresseDTO.setRue(rs.getString(11));
@@ -259,15 +255,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   private UtilisateurDTO remplirUtilisateursDepuisRSSansAdresse(ResultSet rs,
       UtilisateurDTO utilisateurDTO) {
     try {
-      utilisateurDTO.setIdUtilisateur(rs.getInt(1));
-      utilisateurDTO.setPseudo(rs.getString(2));
-      utilisateurDTO.setNom(rs.getString(3));
-      utilisateurDTO.setPrenom(rs.getString(4));
-      utilisateurDTO.setMdp(rs.getString(5));
-      utilisateurDTO.setGsm(rs.getString(6));
-      utilisateurDTO.setEstAdmin(rs.getBoolean(7));
-      utilisateurDTO.setEtatInscription(rs.getString(8));
-      utilisateurDTO.setCommentaire(rs.getString(9));
+      utilisateurDTO = remplirUtilisateurSansAdresse(utilisateurDTO, rs.getInt(1),
+          rs.getString(2), rs.getString(3), rs.getString(4),
+          rs.getString(5), rs.getString(6), rs.getBoolean(7),
+          rs.getString(8), rs.getString(9));
       AdresseDTO adresseDTO = factory.getAdresse();
       PreparedStatement ps = serviceDAL.getPs(
           "SELECT id_adresse, rue, numero, boite, code_postal, commune "
@@ -293,7 +284,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
-   * Rempli les données de l'utilisateur depuis un ResultSet.
+   * Rempli les données de l'adresse depuis un ResultSet.
    *
    * @param rs         : le ResultSet
    * @param adresseDTO : l'utilisateur vide, qui va être rempli
@@ -313,6 +304,34 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       throw new FatalException(e.getMessage(), e);
     }
     return adresseDTO;
+  }
+
+  /**
+   * @param utilisateurDTO  : l'utilisateur que l'on va remplir
+   * @param id              : l'id de l'utilisateur
+   * @param pseudo          : le pseudo de l'utilisateur
+   * @param nom             : le nom de l'utilisateur
+   * @param prenom          : le prenom de l'utilisateur
+   * @param mdp             : le mot de passe de l'utilisateur
+   * @param gsm             : le gsm de l'utilisateur
+   * @param estAdmin        : si l'utilisateur est admin ou non
+   * @param etatInscription : l'etat d'inscription l'utilisateur
+   * @param commentaire     : le commentaire de l'inscription de l'utilisateur
+   * @return utilisateurDTO  : l'utilisateur remplis
+   */
+  private UtilisateurDTO remplirUtilisateurSansAdresse(UtilisateurDTO utilisateurDTO, int id,
+      String pseudo, String nom, String prenom, String mdp, String gsm, boolean estAdmin,
+      String etatInscription, String commentaire) {
+    utilisateurDTO.setIdUtilisateur(id);
+    utilisateurDTO.setPseudo(pseudo);
+    utilisateurDTO.setNom(nom);
+    utilisateurDTO.setPrenom(prenom);
+    utilisateurDTO.setMdp(mdp);
+    utilisateurDTO.setGsm(gsm);
+    utilisateurDTO.setEstAdmin(estAdmin);
+    utilisateurDTO.setEtatInscription(etatInscription);
+    utilisateurDTO.setCommentaire(commentaire);
+    return utilisateurDTO;
   }
 
 }
