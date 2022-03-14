@@ -23,7 +23,6 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -84,8 +83,7 @@ public class RessourceUtilisateur {
         || !json.hasNonNull("prenom") || !json.hasNonNull("mdp")
         || !json.hasNonNull("rue") || !json.hasNonNull("numero")
         || !json.hasNonNull("code_postal") || !json.hasNonNull("commune")) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("Des champs sont manquants").type("text/plain").build());
+      throw new PresentationException("Des champs sont manquants", Response.Status.BAD_REQUEST);
     }
     String pseudo = json.get("pseudo").asText();
     String nom = json.get("nom").asText();

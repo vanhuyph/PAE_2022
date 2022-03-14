@@ -30,7 +30,6 @@ public class UtilisateurImpl implements Utilisateur {
   @JsonView(Vues.Internal.class)
   private int adresse;
 
-
   @Override
   public int getIdUtilisateur() {
     return idUtilisateur;
