@@ -1,6 +1,6 @@
 package be.vinci.pae.business.objet;
 
-import be.vinci.pae.donnees.dao.objet.ObjetDAO;
+import be.vinci.pae.donnees.dao.adresse.objet.ObjetDAO;
 import be.vinci.pae.utilitaires.exceptions.ExceptionBusiness;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
@@ -21,7 +21,7 @@ public class ObjetUCCImpl implements ObjetUCC {
    * @return l'objet créé
    */
   @Override
-  public ObjetDTO creerUnObjet(int idOffreur, String typeObjet, String description, int offreur,
+  public ObjetDTO creerUnObjet(int idOffreur, int typeObjet, String description, int offreur,
       String photo) {
 
     ObjetDTO objet = objetDAO.creerObjet("offert", typeObjet, description, offreur, photo);

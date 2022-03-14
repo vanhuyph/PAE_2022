@@ -2,7 +2,7 @@ package be.vinci.pae.donnees.dao.offre;
 
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.offre.OffreDTO;
-import be.vinci.pae.donnees.dao.objet.ObjetDAO;
+import be.vinci.pae.donnees.dao.adresse.objet.ObjetDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -28,13 +28,15 @@ public class OffreDAOImpl implements OffreDAO {
   @Override
   public OffreDTO creerOffre(Integer idObjet, String plageHoraire) {
     OffreDTO offreDTO = factory.getOffre();
-    PreparedStatement ps = serviceDAL.getPs("INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?);");
+    PreparedStatement ps = serviceDAL.getPs(
+        "INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?) RETURNING *;");
 
     try {
       java.util.Date date = new java.util.Date();
       java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-      ps.setDate(1, sqlDate);
-      ps.setInt(2, idObjet);
+
+      ps.setInt(1, idObjet);
+      ps.setDate(2, sqlDate);
       ps.setString(3, plageHoraire);
 
       offreDTO = remplirOffreDepuisResultSet(offreDTO, ps);
@@ -57,7 +59,8 @@ public class OffreDAOImpl implements OffreDAO {
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
         offreDTO.setIdOffre(rs.getInt(1));
-        offreDTO.setObjet(objetDAO.rechercheParId(rs.getInt(2))); // vérifier index
+        offreDTO.setObjet(
+            objetDAO.rechercheParId(rs.getInt(2))); // vérifier index //voir si possible en sql
         offreDTO.setDateOffre(rs.getDate(3));
         offreDTO.setPlageHoraire(rs.getString(4));
       }

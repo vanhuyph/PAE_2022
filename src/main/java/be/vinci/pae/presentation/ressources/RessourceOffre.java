@@ -4,7 +4,6 @@ import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -38,9 +37,10 @@ public class RessourceOffre {
   @Path("creerOffre")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode creerObjet(JsonNode json) {
-    if (!json.hasNonNull("idObjet") || !json.hasNonNull("plageHoraire")
-    ) {
+  public OffreDTO creerOffre(JsonNode json) {
+
+    if (!json.hasNonNull("idObjet") ||
+        !json.hasNonNull("plageHoraire")) {
       throw new WebApplicationException(
           Response.status(Response.Status.BAD_REQUEST)
               .entity("type de l'objet ou description manquant").type("text/plain").build());
@@ -56,8 +56,7 @@ public class RessourceOffre {
           .build());
     }
 
-    ObjectNode noeud = jsonMapper.createObjectNode().putPOJO("offreDTO", offreDTO);
-    return noeud;
+    return offreDTO;
   }
 
 }

@@ -25,17 +25,18 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
   @Override
   public List<TypeObjetDTO> listerTypeObjet() {
     List<TypeObjetDTO> typesObjet = new ArrayList<TypeObjetDTO>();
-    TypeObjetDTO typeObjetCourrant = factory.getTypeObjet();
+
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT * FROM projet.types_Objets  ;");
     try {
       ResultSet rs = ps.executeQuery();
-      System.out.println(rs.getFetchSize());
-      //erreur de rs fermé a catch ( next() ferme automatiquement le rs ?)
-      while (rs.next()) {
 
-        typeObjetCourrant = remplirTypeObjetDepuisResulSet(typeObjetCourrant, ps);
+      while (rs.next()) {
+        TypeObjetDTO typeObjetCourrant = factory.getTypeObjet();
+        typeObjetCourrant = remplirTypeObjetDepuisResulSet(typeObjetCourrant, rs);
+        System.out.println(typeObjetCourrant);
         typesObjet.add(typeObjetCourrant);
+        System.out.println(typesObjet.size());
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -52,13 +53,17 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
    * @throws SQLException : est lancée si il y a un problème
    */
   private TypeObjetDTO remplirTypeObjetDepuisResulSet(TypeObjetDTO typeObjetDTO,
-      PreparedStatement ps) throws SQLException {
-    try (ResultSet rs = ps.executeQuery()) {
-      while (rs.next()) {
-        typeObjetDTO.setIdType(rs.getInt(1));
-        typeObjetDTO.setNom(rs.getString(2));
-      }
+      ResultSet rs) throws SQLException {
+
+    try {
+      typeObjetDTO.setIdType(rs.getInt(1));
+      typeObjetDTO.setNom(rs.getString(2));
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+
     }
+
     return typeObjetDTO;
   }
 }

@@ -1,6 +1,5 @@
 package be.vinci.pae.business.objet;
 
-import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.vue.Vues;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -14,12 +13,13 @@ public class ObjetImpl implements Objet {
   @JsonView(Vues.Public.class)
   private String etatObjet;
   @JsonView(Vues.Public.class)
-  private String typeObjet;
+  private int typeObjet;
   @JsonView(Vues.Public.class)
   private String description;
   @JsonView(Vues.Public.class)
-  private UtilisateurDTO offreur;
-  private UtilisateurDTO receveur;
+  private int offreur;
+  @JsonView(Vues.Public.class)
+  private int receveur;
   @JsonView(Vues.Public.class)//vérifier type d'objet
   private String photo;
 
@@ -40,11 +40,11 @@ public class ObjetImpl implements Objet {
     this.etatObjet = etatObjet;
   }
 
-  public String getTypeObjet() {
+  public int getTypeObjet() {
     return typeObjet;
   }
 
-  public void setTypeObjet(String typeObjet) {
+  public void setTypeObjet(int typeObjet) {
     this.typeObjet = typeObjet;
   }
 
@@ -56,19 +56,19 @@ public class ObjetImpl implements Objet {
     this.description = decsription;
   }
 
-  public UtilisateurDTO getOffreur() {
+  public int getOffreur() {
     return offreur;
   }
 
-  public void setOffreur(UtilisateurDTO offreur) {
+  public void setOffreur(int offreur) {
     this.offreur = offreur;
   }
 
-  public UtilisateurDTO getReceveur() {
+  public int getReceveur() {
     return receveur;
   }
 
-  public void setReceveur(UtilisateurDTO receveur) {
+  public void setReceveur(int receveur) {
     this.receveur = receveur;
   }
 
@@ -89,8 +89,7 @@ public class ObjetImpl implements Objet {
       return false;
     }
     ObjetImpl objet = (ObjetImpl) o;
-    return idObjet == objet.idObjet && typeObjet.equals(objet.typeObjet) && offreur.equals(
-        objet.offreur);
+    return idObjet == objet.idObjet && offreur == objet.offreur;
   }
 
   @Override
@@ -105,8 +104,8 @@ public class ObjetImpl implements Objet {
         + ", etat objet= " + etatObjet
         + ", type objet= " + typeObjet
         + ", description= " + description
-        + ", offreur= " + offreur.toString()
-        + ", receveur= " + receveur.toString()
+        + ", offreur= " + offreur
+        + ", receveur= " + receveur
         + ", photo= " + photo
         + '}';
   }

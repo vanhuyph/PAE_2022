@@ -1,8 +1,7 @@
-package be.vinci.pae.donnees.dao.objet;
+package be.vinci.pae.donnees.dao.adresse.objet;
 
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.objet.ObjetDTO;
-import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import jakarta.inject.Inject;
@@ -32,17 +31,16 @@ public class ObjetDAOImpl implements ObjetDAO {
    * @throws SQLException : est lancé si il ne sait pas insérer l'objet dans la db
    */
   @Override
-  public ObjetDTO creerObjet(String etatObjet, String typeObjet, String description,
-      Integer offreur, String photo) {
+  public ObjetDTO creerObjet(String etatObjet, int typeObjet, String description,
+      int offreur, String photo) {
     {
       ObjetDTO objetDTO = factory.getObjet();
       PreparedStatement ps = serviceDAL.getPs(
-          "INSERT INTO projet.objets VALUES (DEFAULT, ?, ?, ?, ?, null, ?)RETURNING "
-              + "id_objet;");
+          "INSERT INTO projet.objets VALUES (DEFAULT, ?, ?, ?, ?, null, ?)RETURNING *;");
 
       try {
         ps.setString(1, etatObjet);
-        ps.setString(2, typeObjet);
+        ps.setInt(2, typeObjet);
         ps.setString(3, description);
         ps.setInt(4, offreur);
         ps.setString(5, photo);
@@ -71,6 +69,7 @@ public class ObjetDAOImpl implements ObjetDAO {
             + " FROM projet.objets o WHERE o.id_objet = ?;");
     try {
       ps.setInt(1, id);
+
       objetDTO = remplirObjetDepuisResultSet(objetDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
@@ -92,15 +91,12 @@ public class ObjetDAOImpl implements ObjetDAO {
       while (rs.next()) {
         objetDTO.setIdObjet(rs.getInt(1));
         objetDTO.setEtatObjet(rs.getString(2));
-        objetDTO.setTypeObjet(rs.getString(3));
+        objetDTO.setTypeObjet(rs.getInt(3));
         objetDTO.setDescription(rs.getString(4));
-        UtilisateurDTO offreur = utilisateurDAO.rechercheParId(
-            rs.getInt(5)); //vérifier le resultat ?
-        objetDTO.setOffreur(offreur);
+        objetDTO.setOffreur(rs.getInt(5));
         if (rs.getInt(6) != 0) {
-          UtilisateurDTO receveur = utilisateurDAO.rechercheParId(
-              rs.getInt(6));//vérifier le resultat ?
-          objetDTO.setReceveur(receveur);
+
+          objetDTO.setReceveur(rs.getInt(6));
         }
         if (rs.getString(7) != null) {
           objetDTO.setPhoto(rs.getString(7));

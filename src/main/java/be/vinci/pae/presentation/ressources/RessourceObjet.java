@@ -2,10 +2,8 @@ package be.vinci.pae.presentation.ressources;
 
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.objet.ObjetUCC;
-import be.vinci.pae.presentation.ressources.utilitaires.Json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -40,7 +38,7 @@ public class RessourceObjet {
   @Path("creerObjet")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode creerObjet(JsonNode json) {
+  public ObjetDTO creerObjet(JsonNode json) {
 
     if (!json.hasNonNull("offreur")
         || !json.hasNonNull("typeObjet")
@@ -52,8 +50,8 @@ public class RessourceObjet {
               .entity("type de l'objet ou description manquant").type("text/plain").build());
     }
 
-    Integer idOffreur = json.get("offreur").asInt();
-    String typeObjet = json.get("typeObjet").asText();
+    int idOffreur = json.get("offreur").asInt();
+    int typeObjet = json.get("typeObjet").asInt();
     String description = json.get("description").asText();
     // String photo = json.get("photo").asText();
     // pour l'instant je hardcore une string "photo" dans l'appele à l'ucc
@@ -68,11 +66,11 @@ public class RessourceObjet {
           .entity("L'ajout de l'objet a échoué").type(MediaType.TEXT_PLAIN)
           .build());
     }
-    ObjetDTO objetDTO = Json.filtrePublicJsonVue((ObjetDTO) objet,
-        ObjetDTO.class);
+    //ObjetDTO objetDTO = Json.filtrePublicJsonVue((ObjetDTO) objet,
+    //  ObjetDTO.class);
 
-    ObjectNode noeud = jsonMapper.createObjectNode().putPOJO("objetDTO", objetDTO);
-    return noeud;
+    //ObjectNode noeud = jsonMapper.createObjectNode().putPOJO("objetDTO", objetDTO);
+    return objet;
   }
 
 }

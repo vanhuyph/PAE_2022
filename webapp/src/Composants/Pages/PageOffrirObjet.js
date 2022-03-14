@@ -12,6 +12,7 @@ const typesObjet =
     `
         <select type="text" id="choixTypeObjet" className="type">
         </select>
+        <p class="message-erreur erreur-type"></p>
     `
 
 const pageOffrirObjet = `
@@ -95,11 +96,10 @@ const choixTypeObjet = (data) => {
     }
     let liste = `<option value="empty" selected hidden=true>Selectionnez le type</option>`;
     data.forEach((typeObjet) => {
-        liste += `
-    <option value=${typeObjet.idType}>${typeObjet.nom}</option>
-    `;
+        console.log(typeObjet)
+        liste += `<option value=${typeObjet.idType}>${typeObjet.nom}</option>`;
     });
-    liste += ` <p className="message-erreur erreur-type"></p>`;
+
     choixTypeObjet.innerHTML = liste;
 
 }
@@ -150,12 +150,13 @@ const surOffrirObjet = (e) => {
         console.log("avant création json objet");
         let nouvelObjet = {
             offreur: offreur,
-            typeObjet: typeObjet,
-            description: description,
+            typeObjet: typeObjet.value,
+            description: description.value,
             //photo: "photoTest"
         }
+
         console.log("juste avant premier fetch");
-        const objet = fetch("/api/objets/creerObjet", {
+        fetch("/api/objets/creerObjet", {
             method: "POST",
             body: JSON.stringify(nouvelObjet),
             headers: {
@@ -170,35 +171,34 @@ const surOffrirObjet = (e) => {
             }
             console.log(reponse)
             return reponse.json()
-        }).then((data) => {
-            console.log(data.idObjet);
-        })
+        }).then((data) =>surCreerOffre(data))
 
-
-
-
+    }
+    const surCreerOffre = (data) =>{
         console.log("juste avant second fetch");
+        console.log(data);
+        console.log("plageHoraire "+plageHoraire.value);
+        console.log(data.idObjet);
+        let offre = {
+            idObjet: data.idObjet,
+            plageHoraire: plageHoraire.value,
+        }
 
-        // let offre = {
-        //
-        //     idObjet: reponseObjet.idObjet,
-        //     plage_horaire: plageHoraire.value
-        // }
+        fetch("/api/offres/creerOffre", {
+            method: "POST",
+            body: JSON.stringify(offre),
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then((reponseOffre) => {
 
-        // fetch("/api/offres/creerOffre", {
-        //     method: "POST",
-        //     body: JSON.stringify(offre),
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     }
-        // })
-        //     .then((reponseOffre) => {
-        //         if (!reponseOffre.ok) {
-        //             throw new Error(
-        //                 "Error code : " + reponseOffre.status + " : " + reponseOffre.statusText)
-        //         }
-        //         return reponseOffre.json();
-        //     })
+            if (!reponseOffre.ok) {
+                throw new Error(
+                    "Error code : " + reponseOffre.status + " : " + reponseOffre.statusText)
+            }
+            return reponseOffre.json();
+        }).then((data) =>{ console.log(data)})
     }
 
 }
