@@ -245,7 +245,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
-   * Rempli les données de l'utilisateur depuis un ResultSet.
+   * Rempli les données de l'utilisateur depuis un ResultSet qui ne possède pas d'adresse.
    *
    * @param rs             : le ResultSet
    * @param utilisateurDTO : l'utilisateur vide, qui va être rempli
@@ -307,6 +307,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
+   * Rempli les données de l'utilisateur sans adresse.
+   *
    * @param utilisateurDTO  : l'utilisateur que l'on va remplir
    * @param id              : l'id de l'utilisateur
    * @param pseudo          : le pseudo de l'utilisateur
