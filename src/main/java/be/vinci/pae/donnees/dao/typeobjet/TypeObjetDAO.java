@@ -1,4 +1,4 @@
-package be.vinci.pae.donnees.dao.typeObjet;
+package be.vinci.pae.donnees.dao.typeobjet;
 
 import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import java.util.List;

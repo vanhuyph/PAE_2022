@@ -1,6 +1,6 @@
 package be.vinci.pae.business.typeobjet;
 
-import be.vinci.pae.donnees.dao.typeObjet.TypeObjetDAO;
+import be.vinci.pae.donnees.dao.typeobjet.TypeObjetDAO;
 import jakarta.inject.Inject;
 import java.util.List;
 
