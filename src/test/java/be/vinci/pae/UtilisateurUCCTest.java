@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import be.vinci.pae.business.DomaineFactory;
-import be.vinci.pae.business.utilisateur.Utilisateur;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
@@ -26,7 +25,6 @@ public class UtilisateurUCCTest {
   private DomaineFactory domaineFactory;
   private UtilisateurDTO utilisateurDTO;
   private UtilisateurDAO utilisateurDAO;
-  private Utilisateur utilisateur;
 
   @BeforeAll
   void initTout() {
@@ -36,15 +34,15 @@ public class UtilisateurUCCTest {
     this.utilisateurUCC = locator.getService(UtilisateurUCC.class);
     this.utilisateurDAO = locator.getService(UtilisateurDAO.class);
     utilisateurDTO = domaineFactory.getUtilisateur();
+    utilisateurDTO.setIdUtilisateur(1);
+    utilisateurDTO.setPseudo("test1");
+    utilisateurDTO.setMdp("$2a$10$6sYdHXd.tocTOh3LsHFGsOlrsygxA0T4HsVJkLnrV4Im5R5whHqT6");
   }
 
   @Test
   @DisplayName("Test raté : méthode connexion avec mauvais pseudo et bon mdp. "
       + "Identifiants corrects : pseudo = test1, mdp = test123")
   public void testConnexionV1() throws FatalException {
-    utilisateurDTO.setPseudo("test1");
-    utilisateur = (Utilisateur) utilisateurDTO;
-    utilisateur.setMdp(utilisateur.hashMdp("test123"));
     Mockito.when(utilisateurDAO.rechercheParPseudo("test")).thenReturn(null);
     assertThrows(BusinessException.class, () -> utilisateurUCC.connexion("test", "test123"));
   }
@@ -53,9 +51,6 @@ public class UtilisateurUCCTest {
   @DisplayName("Test raté : méthode connexion avec bon pseudo et mauvais mdp. "
       + "Identifiants corrects : pseudo = test1, mdp = test123")
   public void testConnexionV2() throws FatalException {
-    utilisateurDTO.setPseudo("test1");
-    utilisateur = (Utilisateur) utilisateurDTO;
-    utilisateur.setMdp(utilisateur.hashMdp("test123"));
     Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()))
         .thenReturn(utilisateurDTO);
     assertThrows(BusinessException.class, () -> utilisateurUCC.connexion("test1", "test1234"));
@@ -65,9 +60,6 @@ public class UtilisateurUCCTest {
   @DisplayName("Test réussi : méthode connexion avec les bons identifiants. "
       + "Identifiants corrects : pseudo = test1, mdp = test123")
   public void testConnexionV3() throws FatalException, BusinessException {
-    utilisateurDTO.setPseudo("test1");
-    utilisateur = (Utilisateur) utilisateurDTO;
-    utilisateur.setMdp(utilisateur.hashMdp("test123"));
     Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()))
         .thenReturn(utilisateurDTO);
     assertEquals(utilisateurDTO, utilisateurUCC.connexion("test1", "test123"));
@@ -76,7 +68,6 @@ public class UtilisateurUCCTest {
   @Test
   @DisplayName("Test réussi : méthode rechercheParId renvoie un utilisateur existant.")
   public void testRecherchePardIdV1() throws BusinessException, FatalException {
-    utilisateurDTO.setIdUtilisateur(1);
     int id = utilisateurDTO.getIdUtilisateur();
     Mockito.when(utilisateurDAO.rechercheParId(id)).thenReturn(utilisateurDTO);
     assertEquals(utilisateurDTO, utilisateurUCC.rechercheParId(id));
