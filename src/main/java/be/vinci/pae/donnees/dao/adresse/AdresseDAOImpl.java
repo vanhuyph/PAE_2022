@@ -1,6 +1,5 @@
 package be.vinci.pae.donnees.dao.adresse;
 
-import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
@@ -12,8 +11,6 @@ import java.sql.Types;
 
 public class AdresseDAOImpl implements AdresseDAO {
 
-  @Inject
-  private DomaineFactory factory;
   @Inject
   private ServiceDAL serviceDAL;
 
