@@ -2,7 +2,9 @@ package be.vinci.pae.business.utilisateur;
 
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.ConflitException;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
+import be.vinci.pae.utilitaires.exceptions.NonAutoriseException;
 import jakarta.inject.Inject;
 import java.util.List;
 
@@ -21,12 +23,11 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   @Override
-  public UtilisateurDTO connexion(String pseudo, String mdp)
-      throws FatalException, BusinessException {
+  public UtilisateurDTO connexion(String pseudo, String mdp) {
     Utilisateur utilisateur = (Utilisateur) utilisateurDAO.rechercheParPseudo(pseudo);
     if (utilisateur == null || utilisateur.getIdUtilisateur() < 1 || !utilisateur.verifierMdp(
         mdp)) {
-      throw new BusinessException("Pseudo ou mot de passe incorrect");
+      throw new NonAutoriseException("Pseudo ou mot de passe incorrect");
     }
     return utilisateur;
   }
@@ -41,7 +42,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   @Override
-  public UtilisateurDTO rechercheParId(int id) throws FatalException, BusinessException {
+  public UtilisateurDTO rechercheParId(int id) {
     UtilisateurDTO utilisateur = utilisateurDAO.rechercheParId(id);
     if (utilisateur == null || utilisateur.getIdUtilisateur() < 1) {
       throw new BusinessException("L'utilisateur n'existe pas");
@@ -59,7 +60,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   @Override
-  public UtilisateurDTO rechercheParPseudo(String pseudo) throws FatalException, BusinessException {
+  public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateur = utilisateurDAO.rechercheParPseudo(pseudo);
     if (utilisateur == null || utilisateur.getIdUtilisateur() < 1) {
       throw new BusinessException("L'utilisateur n'existe pas");
@@ -77,11 +78,10 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   @Override
-  public UtilisateurDTO rechercheParPseudoInscription(String pseudo)
-      throws FatalException, BusinessException {
+  public UtilisateurDTO rechercheParPseudoInscription(String pseudo) {
     UtilisateurDTO utilisateur = utilisateurDAO.rechercheParPseudo(pseudo);
     if (utilisateur == null || utilisateur.getIdUtilisateur() > 0) {
-      throw new BusinessException("Ce pseudo existe déjà");
+      throw new ConflitException("Ce pseudo existe déjà");
     }
     return utilisateur;
   }
@@ -101,9 +101,9 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    */
   @Override
   public UtilisateurDTO inscription(String pseudo, String nom, String prenom, String mdp,
-      int adresse) throws FatalException, BusinessException {
+      int adresse) {
     if (utilisateurDAO.rechercheParPseudo(pseudo).getIdUtilisateur() > 0) {
-      throw new BusinessException("Pseudo déjà utilisé");
+      throw new ConflitException("Pseudo déjà utilisé");
     }
     Utilisateur utilisateur = new UtilisateurImpl();
     utilisateur.setPseudo(pseudo);
@@ -132,8 +132,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   @Override
-  public UtilisateurDTO confirmerInscription(int id, boolean estAdmin)
-      throws FatalException, BusinessException {
+  public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
     UtilisateurDTO utilisateurDTO = utilisateurDAO.confirmerInscription(id, estAdmin);
     if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
       throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être confirmé");
@@ -152,8 +151,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
   @Override
-  public UtilisateurDTO refuserInscription(int id, String commentaire)
-      throws FatalException, BusinessException {
+  public UtilisateurDTO refuserInscription(int id, String commentaire) {
     UtilisateurDTO utilisateurDTO = utilisateurDAO.refuserInscription(id, commentaire);
     if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
       throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être refusé");
@@ -169,8 +167,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @throws FatalException : est lancée si il y a un problème côté serveur
    */
   @Override
-  public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription)
-      throws FatalException {
+  public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
     List<UtilisateurDTO> liste = utilisateurDAO.listerUtilisateursEtatsInscriptions(
         etatInscription);
     return liste;

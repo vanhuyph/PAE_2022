@@ -8,8 +8,8 @@ import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.presentation.ressources.filtres.AutorisationAdmin;
 import be.vinci.pae.presentation.ressources.utilitaires.Json;
 import be.vinci.pae.utilitaires.Config;
-import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
+import be.vinci.pae.utilitaires.exceptions.PresentationException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -57,7 +57,7 @@ public class RessourceUtilisateur {
   @Path("connexion")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode connexion(JsonNode json) throws FatalException {
+  public ObjectNode connexion(JsonNode json) {
     if (!json.hasNonNull("pseudo") || !json.hasNonNull("mdp")) {
       throw new WebApplicationException(
           Response.status(Response.Status.BAD_REQUEST)
@@ -65,14 +65,9 @@ public class RessourceUtilisateur {
     }
     String pseudo = json.get("pseudo").asText();
     String mdp = json.get("mdp").asText();
-    UtilisateurDTO utilisateurDTO = null;
-    try {
-      utilisateurDTO = utilisateurUCC.connexion(pseudo, mdp);
-    } catch (BusinessException b) {
-      throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
-          .entity("Pseudo ou mot de passe incorrect").type(MediaType.TEXT_PLAIN)
-          .build());
-    }
+
+    UtilisateurDTO utilisateurDTO = utilisateurUCC.connexion(pseudo, mdp);
+
     ObjectNode noeud = creationToken(utilisateurDTO);
     return noeud;
   }
@@ -89,7 +84,7 @@ public class RessourceUtilisateur {
   @Path("inscription")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode inscription(JsonNode json) throws FatalException {
+  public ObjectNode inscription(JsonNode json) {
     if (!json.hasNonNull("pseudo") || !json.hasNonNull("nom")
         || !json.hasNonNull("prenom") || !json.hasNonNull("mdp")
         || !json.hasNonNull("rue") || !json.hasNonNull("numero")
@@ -107,21 +102,13 @@ public class RessourceUtilisateur {
     int codePostal = json.get("code_postal").asInt();
     String commune = json.get("commune").asText();
     UtilisateurDTO utilisateur = null;
-    try {
-      utilisateurUCC.rechercheParPseudoInscription(pseudo);
-    } catch (BusinessException e) {
-      throw new WebApplicationException(Response.status(Status.CONFLICT)
-          .entity(e.getMessage()).type("text/plain").build());
-    }
-    try {
-      AdresseDTO adresse = adresseUCC.ajouterAdresse(rue, numero, boite, codePostal, commune);
-      utilisateur = utilisateurUCC.inscription(pseudo, nom, prenom, mdp,
-          adresse.getIdAdresse());
 
-    } catch (BusinessException e) {
-      throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
-          .entity(e.getMessage()).type("text/plain").build());
-    }
+    utilisateurUCC.rechercheParPseudoInscription(pseudo);
+
+    AdresseDTO adresse = adresseUCC.ajouterAdresse(rue, numero, boite, codePostal, commune);
+    utilisateur = utilisateurUCC.inscription(pseudo, nom, prenom, mdp,
+        adresse.getIdAdresse());
+
     ObjectNode noeud = creationToken(utilisateur);
     return noeud;
   }
@@ -137,19 +124,15 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public ObjectNode recupererUtilisateur(@Context ContainerRequest request)
-      throws FatalException {
+  public ObjectNode recupererUtilisateur(@Context ContainerRequest request) {
     UtilisateurDTO utilisateur = (UtilisateurDTO) request.getProperty("utilisateur");
     if (utilisateur == null) {
-      throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
-          .entity("L'utilisateur n'a pas été retrouvé").type("text/plain").build());
+      throw new PresentationException("L'utilisateur n'a pas été retrouvé",
+          Status.BAD_REQUEST);
     }
-    try {
-      utilisateur = utilisateurUCC.rechercheParPseudo(utilisateur.getPseudo());
-    } catch (BusinessException b) {
-      throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
-          .entity(b.getMessage()).type("text/plain").build());
-    }
+
+    utilisateur = utilisateurUCC.rechercheParPseudo(utilisateur.getPseudo());
+
     ObjectNode noeud = creationToken(utilisateur);
     return noeud;
   }
@@ -168,27 +151,18 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AutorisationAdmin
-  public UtilisateurDTO confirmerUtilisateur(JsonNode json, @PathParam("id") int id)
-      throws FatalException {
+  public UtilisateurDTO confirmerUtilisateur(JsonNode json, @PathParam("id") int id) {
     if (!json.hasNonNull("estAdmin")) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("Information si l'utilisateur est admin ou non").type(MediaType.TEXT_PLAIN)
-          .build());
+      throw new PresentationException("Information si l'utilisateur est admin ou non",
+          Status.BAD_REQUEST);
     }
-    if (id == 0) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("L'utilisateur n'existe pas").type(MediaType.TEXT_PLAIN)
-          .build());
+    if (id < 1) {
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
     boolean estAdmin = json.get("estAdmin").asBoolean();
-    UtilisateurDTO utilisateurDTO = null;
-    try {
-      utilisateurDTO = utilisateurUCC.confirmerInscription(id, estAdmin);
-    } catch (BusinessException e) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity(e.getMessage()).type(MediaType.TEXT_PLAIN)
-          .build());
-    }
+
+    UtilisateurDTO utilisateurDTO = utilisateurUCC.confirmerInscription(id, estAdmin);
+
     return utilisateurDTO;
   }
 
@@ -206,27 +180,17 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AutorisationAdmin
-  public UtilisateurDTO refuserUtilisateur(JsonNode json, @PathParam("id") int id)
-      throws FatalException {
+  public UtilisateurDTO refuserUtilisateur(JsonNode json, @PathParam("id") int id) {
     String commentaire = json.get("commentaire").asText();
     if (commentaire.equals("")) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("Commentaire manquant").type(MediaType.TEXT_PLAIN)
-          .build());
+      throw new PresentationException("Commentaire manquant", Status.BAD_REQUEST);
     }
     if (id < 1) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("L'utilisateur n'existe pas").type(MediaType.TEXT_PLAIN)
-          .build());
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
-    UtilisateurDTO utilisateurDTO = null;
-    try {
-      utilisateurDTO = utilisateurUCC.refuserInscription(id, commentaire);
-    } catch (BusinessException e) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity(e.getMessage()).type(MediaType.TEXT_PLAIN)
-          .build());
-    }
+
+    UtilisateurDTO utilisateurDTO = utilisateurUCC.refuserInscription(id, commentaire);
+
     return utilisateurDTO;
   }
 
@@ -246,7 +210,7 @@ public class RessourceUtilisateur {
           .withClaim("utilisateur", utilisateur.getIdUtilisateur())
           .withClaim("auth", utilisateur.isEstAdmin()).sign(jwtAlgorithm);
     } catch (Exception e) {
-      throw new WebApplicationException("Erreur lors de la création du token", e,
+      throw new PresentationException("Erreur lors de la création du token",
           Status.INTERNAL_SERVER_ERROR);
     }
     UtilisateurDTO utilisateurDTO = Json.filtrePublicJsonVue(utilisateur,
@@ -267,7 +231,7 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AutorisationAdmin
-  public List<UtilisateurDTO> listerInscriptionsRefusees() throws FatalException {
+  public List<UtilisateurDTO> listerInscriptionsRefusees() {
     List<UtilisateurDTO> liste;
     liste = utilisateurUCC.listerUtilisateursEtatsInscriptions("refusé");
     return liste;
@@ -284,7 +248,7 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AutorisationAdmin
-  public List<UtilisateurDTO> listerInscriptionsEnAttente() throws FatalException {
+  public List<UtilisateurDTO> listerInscriptionsEnAttente() {
     List<UtilisateurDTO> liste;
     liste = utilisateurUCC.listerUtilisateursEtatsInscriptions("en attente");
     return liste;

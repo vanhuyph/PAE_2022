@@ -25,7 +25,7 @@ public class AdresseUCCImpl implements AdresseUCC {
    */
   @Override
   public AdresseDTO ajouterAdresse(String rue, int numero, int boite, int codePostal,
-      String commune) throws FatalException, BusinessException {
+      String commune) {
 
     AdresseDTO adresseDTO = adresseDAO.ajouterAdresse(rue, numero, boite, codePostal, commune);
 

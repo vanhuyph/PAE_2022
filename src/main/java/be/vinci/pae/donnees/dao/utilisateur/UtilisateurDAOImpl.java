@@ -26,7 +26,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public UtilisateurDTO rechercheParPseudo(String pseudo) throws FatalException {
+  public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
@@ -55,7 +55,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public UtilisateurDTO rechercheParId(int id) throws FatalException {
+  public UtilisateurDTO rechercheParId(int id) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
@@ -84,7 +84,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) throws FatalException {
+  public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
     PreparedStatement ps = serviceDAL.getPs(
         "INSERT INTO projet.utilisateurs "
             + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL) RETURNING "
@@ -117,7 +117,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) throws FatalException {
+  public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "UPDATE projet.utilisateurs SET etat_inscription = ?, est_admin = ? "
@@ -150,7 +150,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public UtilisateurDTO refuserInscription(int id, String commentaire) throws FatalException {
+  public UtilisateurDTO refuserInscription(int id, String commentaire) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
         "UPDATE projet.utilisateurs SET etat_inscription = ?, commentaire = ? "
@@ -182,8 +182,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @return liste : la liste des utilisateurs avec l'état d'inscription passé en paramètre
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
-  public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription)
-      throws FatalException {
+  public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
     PreparedStatement ps = serviceDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, u.adresse "
@@ -214,8 +213,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @return utilisateurDTO : l'utilisateur rempli
    * @throws FatalException : est lancée s'il y a un problème côté serveur
    */
-  private UtilisateurDTO remplirUtilisateursDepuisRS(ResultSet rs, UtilisateurDTO utilisateurDTO)
-      throws FatalException {
+  private UtilisateurDTO remplirUtilisateursDepuisRS(ResultSet rs, UtilisateurDTO utilisateurDTO) {
     try {
       utilisateurDTO.setIdUtilisateur(rs.getInt(1));
       utilisateurDTO.setPseudo(rs.getString(2));
