@@ -1,7 +1,7 @@
 package be.vinci.pae.donnees.dao.typeObjet;
 
 import be.vinci.pae.business.DomaineFactory;
-import be.vinci.pae.business.typeObjet.TypeObjetDTO;
+import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;

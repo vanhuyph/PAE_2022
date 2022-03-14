@@ -1,4 +1,4 @@
-package be.vinci.pae.business.typeObjet;
+package be.vinci.pae.business.typeobjet;
 
 import be.vinci.pae.vue.Vues;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -1,4 +1,4 @@
-package be.vinci.pae.business.typeObjet;
+package be.vinci.pae.business.typeobjet;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package be.vinci.pae.presentation.ressources;
 
-import be.vinci.pae.business.typeObjet.TypeObjetDTO;
-import be.vinci.pae.business.typeObjet.TypeObjetUCC;
+import be.vinci.pae.business.typeobjet.TypeObjetDTO;
+import be.vinci.pae.business.typeobjet.TypeObjetUCC;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
