@@ -35,7 +35,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
             + "a.code_postal, a.commune FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE u.pseudo = ?;");
-
     try {
       ps.setString(1, pseudo);
       try (ResultSet rs = ps.executeQuery()) {
@@ -220,7 +219,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @param rs             : le ResultSet
    * @param utilisateurDTO : l'utilisateur vide, qui va être rempli
    * @return utilisateurDTO : l'utilisateur rempli
-   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private UtilisateurDTO remplirUtilisateursDepuisRS(ResultSet rs, UtilisateurDTO utilisateurDTO) {
     try {
@@ -228,7 +227,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
           rs.getString(2), rs.getString(3), rs.getString(4),
           rs.getString(5), rs.getString(6), rs.getBoolean(7),
           rs.getString(8), rs.getString(9));
-
       AdresseDTO adresseDTO = factory.getAdresse();
       adresseDTO.setIdAdresse(rs.getInt(10));
       adresseDTO.setRue(rs.getString(11));
@@ -250,7 +248,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @param rs             : le ResultSet
    * @param utilisateurDTO : l'utilisateur vide, qui va être rempli
    * @return utilisateurDTO : l'utilisateur rempli
-   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private UtilisateurDTO remplirUtilisateursDepuisRSSansAdresse(ResultSet rs,
       UtilisateurDTO utilisateurDTO) {
@@ -287,9 +285,9 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * Rempli les données de l'adresse depuis un ResultSet.
    *
    * @param rs         : le ResultSet
-   * @param adresseDTO : l'utilisateur vide, qui va être rempli
-   * @return utilisateurDTO : l'utilisateur rempli
-   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   * @param adresseDTO : l'adresse vide, qui va être rempli
+   * @return adresseDTO : l'adresse rempli
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private AdresseDTO remplirAdresseDepuisRS(ResultSet rs, AdresseDTO adresseDTO) {
     try {
@@ -309,7 +307,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   /**
    * Rempli les données de l'utilisateur sans adresse.
    *
-   * @param utilisateurDTO  : l'utilisateur que l'on va remplir
+   * @param utilisateurDTO  : l'utilisateur vide, qui va être rempli
    * @param id              : l'id de l'utilisateur
    * @param pseudo          : le pseudo de l'utilisateur
    * @param nom             : le nom de l'utilisateur
@@ -317,9 +315,9 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @param mdp             : le mot de passe de l'utilisateur
    * @param gsm             : le gsm de l'utilisateur
    * @param estAdmin        : si l'utilisateur est admin ou non
-   * @param etatInscription : l'etat d'inscription l'utilisateur
-   * @param commentaire     : le commentaire de l'inscription de l'utilisateur
-   * @return utilisateurDTO  : l'utilisateur remplis
+   * @param etatInscription : l'etat d'inscription de l'utilisateur
+   * @param commentaire     : le commentaire de refus concernant l'inscription de l'utilisateur
+   * @return utilisateurDTO  : l'utilisateur rempli
    */
   private UtilisateurDTO remplirUtilisateurSansAdresse(UtilisateurDTO utilisateurDTO, int id,
       String pseudo, String nom, String prenom, String mdp, String gsm, boolean estAdmin,
