@@ -2,6 +2,7 @@ package be.vinci.pae.donnees.dao.adresse;
 
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
+import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -40,6 +41,7 @@ public class AdresseDAOImpl implements AdresseDAO {
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return adresseDTO;
@@ -65,6 +67,7 @@ public class AdresseDAOImpl implements AdresseDAO {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return adresse;

@@ -3,6 +3,7 @@ package be.vinci.pae.business.utilisateur;
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
+import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.ConflitException;
 import be.vinci.pae.utilitaires.exceptions.NonAutoriseException;
@@ -13,9 +14,10 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
 
   @Inject
   UtilisateurDAO utilisateurDAO;
-
   @Inject
   AdresseDAO adresseDAO;
+  @Inject
+  ServiceDAL serviceDAL;
 
   /**
    * Vérifie si le mot de passe de l'utilisateur est correct à sa connexion.
@@ -27,11 +29,14 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    */
   @Override
   public UtilisateurDTO connexion(String pseudo, String mdp) {
+    serviceDAL.commencerTransaction();
     Utilisateur utilisateur = (Utilisateur) utilisateurDAO.rechercheParPseudo(pseudo);
     if (utilisateur == null || utilisateur.getIdUtilisateur() < 1 || !utilisateur.verifierMdp(
         mdp)) {
+      serviceDAL.retourEnArriereTransaction();
       throw new NonAutoriseException("Pseudo ou mot de passe incorrect");
     }
+    serviceDAL.commettreTransaction();
     return utilisateur;
   }
 
@@ -45,10 +50,13 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    */
   @Override
   public UtilisateurDTO rechercheParId(int id) {
+    serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateur = utilisateurDAO.rechercheParId(id);
     if (utilisateur == null || utilisateur.getIdUtilisateur() < 1) {
+      serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("L'utilisateur n'existe pas");
     }
+    serviceDAL.commettreTransaction();
     return utilisateur;
   }
 
@@ -62,10 +70,13 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    */
   @Override
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
+    serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateur = utilisateurDAO.rechercheParPseudo(pseudo);
     if (utilisateur == null || utilisateur.getIdUtilisateur() < 1) {
+      serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("L'utilisateur n'existe pas");
     }
+    serviceDAL.commettreTransaction();
     return utilisateur;
   }
 
@@ -79,10 +90,13 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    */
   @Override
   public UtilisateurDTO rechercheParPseudoInscription(String pseudo) {
+    serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateur = utilisateurDAO.rechercheParPseudo(pseudo);
     if (utilisateur == null || utilisateur.getIdUtilisateur() > 0) {
+      serviceDAL.retourEnArriereTransaction();
       throw new ConflitException("Ce pseudo existe déjà");
     }
+    serviceDAL.commettreTransaction();
     return utilisateur;
   }
 
@@ -96,17 +110,22 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    */
   @Override
   public UtilisateurDTO inscription(UtilisateurDTO utilisateurDTO) {
+    serviceDAL.commencerTransaction();
     if (utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()).getIdUtilisateur() > 0) {
+      serviceDAL.retourEnArriereTransaction();
       throw new ConflitException("Ce pseudo déjà utilisé");
     }
     AdresseDTO adresseDTO = adresseDAO.ajouterAdresse(utilisateurDTO.getAdresse());
     if (adresseDTO == null) {
+      serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("L'adresse n'a pas pu être ajoutée.");
     }
     UtilisateurDTO utilisateur = utilisateurDAO.ajouterUtilisateur(utilisateurDTO);
     if (utilisateur == null) {
+      serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("L'utilisateur n'a pas pu être ajouté");
     }
+    serviceDAL.commettreTransaction();
     return utilisateur;
   }
 
@@ -122,10 +141,13 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    */
   @Override
   public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
+    serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateurDTO = utilisateurDAO.confirmerInscription(id, estAdmin);
     if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
+      serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être confirmé");
     }
+    serviceDAL.commettreTransaction();
     return utilisateurDTO;
   }
 
@@ -140,10 +162,13 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    */
   @Override
   public UtilisateurDTO refuserInscription(int id, String commentaire) {
+    serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateurDTO = utilisateurDAO.refuserInscription(id, commentaire);
     if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
+      serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être refusé");
     }
+    serviceDAL.commettreTransaction();
     return utilisateurDTO;
   }
 
@@ -155,8 +180,10 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    */
   @Override
   public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
+    serviceDAL.commencerTransaction();
     List<UtilisateurDTO> liste = utilisateurDAO.listerUtilisateursEtatsInscriptions(
         etatInscription);
+    serviceDAL.commettreTransaction();
     return liste;
   }
 

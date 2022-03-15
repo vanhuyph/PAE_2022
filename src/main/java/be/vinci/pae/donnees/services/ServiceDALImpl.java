@@ -108,7 +108,7 @@ public class ServiceDALImpl implements ServiceDAL, ServiceBackendDAL {
       threadConnexion.remove();
       c.close();
     } catch (SQLException e) {
-      throw new FatalException("Erreur de retour en arriere", e);
+      throw new FatalException("Erreur de retour en arrière", e);
     }
   }
 }
