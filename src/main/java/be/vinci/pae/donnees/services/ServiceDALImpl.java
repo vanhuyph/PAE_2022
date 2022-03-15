@@ -3,50 +3,45 @@ package be.vinci.pae.donnees.services;
 import be.vinci.pae.utilitaires.Config;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 public class ServiceDALImpl implements ServiceDAL, ServiceBackendDAL {
 
   private ThreadLocal<Connection> threadConnexion = new ThreadLocal<>();
-  private String url = null;
-  private Connection conn = null;
+  private BasicDataSource bds;
 
   /**
    * Le constructeur va nous servir à la connexion à la DB.
-   *
-   * @throws SQLException : est lancée si la connexion n'a pas pu aboutir
    */
   public ServiceDALImpl() {
-    url = Config.getPropriete("PostgresCheminDB");
-    try {
-      conn = DriverManager.getConnection(url, Config.getPropriete("PostgresUtilisateur"),
-          Config.getPropriete("PostgresMdp"));
-    } catch (SQLException e) {
-      e.printStackTrace();
-      System.out.println("Impossible de joindre le serveur !");
-      System.exit(1);
-    }
+    bds = new BasicDataSource();
+    bds.setUrl(Config.getPropriete("PostgresCheminDB"));
+    bds.setDriverClassName(Config.getPropriete("PostgresDriver"));
+    bds.setUsername(Config.getPropriete("PostgresUtilisateur"));
+    bds.setPassword(Config.getPropriete("PostgresMdp"));
   }
 
   /**
    * Précompile l'instruction SQL.
    *
    * @param requete : instruction SQL sous format String
-   * @return : une instruction SQL precompile
-   * @throws FatalException : est lancée si l'instruction SQL n'a pas su se precompile
+   * @return : une instruction SQL précompilée
+   * @throws FatalException : est lancée si l'instruction SQL n'a pas su se précompilé
    */
   @Override
   public PreparedStatement getPs(String requete) {
-    PreparedStatement preparedStatement = null;
-    try {
-      preparedStatement = conn.prepareStatement(requete);
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException("Erreur de ps", e);
+    if (threadConnexion.get() == null) {
+      throw new FatalException("Erreur connexion introuvable");
     }
-    return preparedStatement;
+    PreparedStatement ps = null;
+    try {
+      ps = threadConnexion.get().prepareStatement(requete);
+      return ps;
+    } catch (SQLException e) {
+      throw new FatalException("Erreur lors de la création du ps", e);
+    }
   }
 
   /**
@@ -61,8 +56,9 @@ public class ServiceDALImpl implements ServiceDAL, ServiceBackendDAL {
       throw new FatalException("Il y a déjà une transaction active");
     }
     try {
-      conn.setAutoCommit(false);
-      threadConnexion.set(conn);
+      bds.setDefaultAutoCommit(false);
+      Connection c = bds.getConnection();
+      threadConnexion.set(c);
     } catch (SQLException e) {
       throw new FatalException("Erreur de transaction", e);
     }
@@ -82,7 +78,7 @@ public class ServiceDALImpl implements ServiceDAL, ServiceBackendDAL {
     }
     try {
       c.commit();
-      conn.setAutoCommit(true);
+      bds.setDefaultAutoCommit(true);
       threadConnexion.remove();
       c.close();
     } catch (SQLException e) {
@@ -104,11 +100,12 @@ public class ServiceDALImpl implements ServiceDAL, ServiceBackendDAL {
     }
     try {
       c.rollback();
-      conn.setAutoCommit(true);
+      bds.setDefaultAutoCommit(true);
       threadConnexion.remove();
       c.close();
     } catch (SQLException e) {
       throw new FatalException("Erreur de retour en arrière", e);
     }
   }
+
 }

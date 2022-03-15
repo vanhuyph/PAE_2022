@@ -111,6 +111,8 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   @Override
   public UtilisateurDTO inscription(UtilisateurDTO utilisateurDTO) {
     serviceDAL.commencerTransaction();
+    Utilisateur utilisateur = (Utilisateur) utilisateurDTO;
+    utilisateur.setMdp(utilisateur.hashMdp(utilisateur.getMdp()));
     if (utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()).getIdUtilisateur() > 0) {
       serviceDAL.retourEnArriereTransaction();
       throw new ConflitException("Ce pseudo déjà utilisé");
@@ -120,13 +122,13 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
       serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("L'adresse n'a pas pu être ajoutée.");
     }
-    UtilisateurDTO utilisateur = utilisateurDAO.ajouterUtilisateur(utilisateurDTO);
-    if (utilisateur == null) {
+    UtilisateurDTO utilisateurARenvoyer = utilisateurDAO.ajouterUtilisateur(utilisateurDTO);
+    if (utilisateurARenvoyer == null) {
       serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("L'utilisateur n'a pas pu être ajouté");
     }
     serviceDAL.commettreTransaction();
-    return utilisateur;
+    return utilisateurARenvoyer;
   }
 
   /**
