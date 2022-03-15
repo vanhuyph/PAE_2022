@@ -3,7 +3,7 @@ package be.vinci.pae.donnees.dao.utilisateur;
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
-import be.vinci.pae.donnees.services.ServiceDAL;
+import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -17,7 +17,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Inject
   private DomaineFactory factory;
   @Inject
-  private ServiceDAL serviceDAL;
+  private ServiceBackendDAL serviceBackendDAL;
 
   /**
    * Recherche un utilisateur via un pseudo unique dans la base de données.
@@ -29,7 +29,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, a.id_adresse, a.rue, a.numero, a.boite, "
             + "a.code_postal, a.commune FROM projet.utilisateurs u "
@@ -60,7 +60,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO rechercheParId(int id) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire,  a.id_adresse, a.rue, a.numero, a.boite, "
             + "a.code_postal, a.commune FROM projet.utilisateurs u "
@@ -90,7 +90,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    */
   @Override
   public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "INSERT INTO projet.utilisateurs "
             + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL) RETURNING "
             + "id_utilisateur, etat_inscription, commentaire;");
@@ -126,7 +126,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "UPDATE projet.utilisateurs SET etat_inscription = ?, est_admin = ? "
             + "WHERE id_utilisateur = ? "
             + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
@@ -159,7 +159,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO refuserInscription(int id, String commentaire) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "UPDATE projet.utilisateurs SET etat_inscription = ?, commentaire = ? "
             + "WHERE id_utilisateur = ? "
             + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
@@ -190,7 +190,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, a.id_adresse, a.rue, a.numero, a.boite, "
             + "a.code_postal, a.commune FROM projet.utilisateurs u "
@@ -258,7 +258,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
           rs.getString(5), rs.getString(6), rs.getBoolean(7),
           rs.getString(8), rs.getString(9));
       AdresseDTO adresseDTO = factory.getAdresse();
-      PreparedStatement ps = serviceDAL.getPs(
+      PreparedStatement ps = serviceBackendDAL.getPs(
           "SELECT id_adresse, rue, numero, boite, code_postal, commune "
               + "FROM projet.adresses WHERE id_adresse = ?;");
       try {

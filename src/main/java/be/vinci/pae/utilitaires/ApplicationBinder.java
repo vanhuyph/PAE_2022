@@ -8,6 +8,7 @@ import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAOImpl;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAOImpl;
+import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.donnees.services.ServiceDALImpl;
 import jakarta.inject.Singleton;
@@ -21,7 +22,7 @@ public class ApplicationBinder extends AbstractBinder {
   protected void configure() {
     bind(DomaineFactoryImpl.class).to(DomaineFactory.class).in(Singleton.class);
     bind(UtilisateurDAOImpl.class).to(UtilisateurDAO.class).in(Singleton.class);
-    bind(ServiceDALImpl.class).to(ServiceDAL.class).in(Singleton.class);
+    bind(ServiceDALImpl.class).to(ServiceBackendDAL.class).to(ServiceDAL.class).in(Singleton.class);
     bind(UtilisateurUCCImpl.class).to(UtilisateurUCC.class).in(Singleton.class);
     bind(AdresseDAOImpl.class).to(AdresseDAO.class).in(Singleton.class);
   }
