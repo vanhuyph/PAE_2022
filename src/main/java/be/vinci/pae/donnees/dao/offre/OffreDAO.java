@@ -4,6 +4,5 @@ import be.vinci.pae.business.offre.OffreDTO;
 
 public interface OffreDAO {
 
-  OffreDTO creerOffre(Integer idObjet, String plageHoraire);
-
+  OffreDTO creerOffre(int idObjet, String plageHoraire);
 }

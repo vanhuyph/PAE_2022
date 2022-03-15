@@ -14,17 +14,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-
 @Singleton
 @Path("/offres")
 public class RessourceOffre {
-
 
   @Inject
   private OffreUCC offreUCC;
 
   /**
-   * Creer une offre.
+   * Créer une offre.
    *
    * @param json : json reçu du formulaire de connexion *
    * @return noeud : l'objet json contenant le token et l'utilisateur *
@@ -36,24 +34,20 @@ public class RessourceOffre {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public OffreDTO creerOffre(JsonNode json) {
-
     if (!json.hasNonNull("idObjet") ||
         !json.hasNonNull("plageHoraire")) {
       throw new WebApplicationException(
           Response.status(Response.Status.BAD_REQUEST)
-              .entity("type de l'objet ou description manquant").type("text/plain").build());
+              .entity("Type de l'objet ou description manquant").type("text/plain").build());
     }
-
-    Integer idObjet = json.get("idObjet").asInt();
+    int idObjet = json.get("idObjet").asInt();
     String plageHoraire = json.get("plageHoraire").asText();
-
     OffreDTO offreDTO = offreUCC.creerUneOffre(idObjet, plageHoraire);
     if (offreDTO == null) {
       throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
           .entity("L'ajout de l'offre a échoué").type(MediaType.TEXT_PLAIN)
           .build());
     }
-
     return offreDTO;
   }
 

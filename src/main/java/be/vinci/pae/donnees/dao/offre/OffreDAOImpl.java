@@ -19,26 +19,23 @@ public class OffreDAOImpl implements OffreDAO {
   private ObjetDAO objetDAO;
 
   /**
-   * Creer une offre.
+   * Créer une offre.
    *
    * @param idObjet      : l'id de l'objet correspondant à l'offre
    * @param plageHoraire : plage horaire des disponibilité de l'offreur
-   * @return
+   * @return offreDTO : l'offre
    */
   @Override
-  public OffreDTO creerOffre(Integer idObjet, String plageHoraire) {
+  public OffreDTO creerOffre(int idObjet, String plageHoraire) {
     OffreDTO offreDTO = factory.getOffre();
     PreparedStatement ps = serviceDAL.getPs(
         "INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?) RETURNING *;");
-
     try {
       java.util.Date date = new java.util.Date();
       java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-
       ps.setInt(1, idObjet);
       ps.setDate(2, sqlDate);
       ps.setString(3, plageHoraire);
-
       offreDTO = remplirOffreDepuisResultSet(offreDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
@@ -51,7 +48,7 @@ public class OffreDAOImpl implements OffreDAO {
    *
    * @param offreDTO : l'offre vide, qui va être rempli
    * @param ps       : le PreparedStatement déjà mis en place
-   * @return OffreDTO : l'offre rempli
+   * @return offreDTO : l'offre rempli
    * @throws SQLException : est lancée si il y a un problème
    */
   private OffreDTO remplirOffreDepuisResultSet(OffreDTO offreDTO,

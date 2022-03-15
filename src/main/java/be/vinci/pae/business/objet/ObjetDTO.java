@@ -1,11 +1,9 @@
 package be.vinci.pae.business.objet;
 
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = ObjetImpl.class)
 public interface ObjetDTO {
-
 
   int getIdObjet();
 

@@ -10,26 +10,23 @@ public class ObjetUCCImpl implements ObjetUCC {
   @Inject
   ObjetDAO objetDAO; // vérifier injection de dépendances
 
-
   /**
-   * Creer un objet.
+   * Créer un objet.
    *
    * @param typeObjet   : le type de l'objet
    * @param description : description de l'objet
    * @param offreur     : id de l'utilisateur offrant l'objet
-   * @param photo       : chemin de la photo , peut être null
-   * @return l'objet créé
+   * @param photo       : chemin de la photo, peut être null
+   * @return objet : l'objet créé
    */
   @Override
   public ObjetDTO creerUnObjet(int idOffreur, int typeObjet, String description, int offreur,
       String photo) {
-
     ObjetDTO objet = objetDAO.creerObjet("offert", typeObjet, description, offreur, photo);
     if (objet == null) {
-      throw new ExceptionBusiness("objet n'a pas pu être créé.",
+      throw new ExceptionBusiness("L'objet n'a pas pu être créé",
           Status.INTERNAL_SERVER_ERROR); // vérifier statut de réponse
     }
-
     return objet;
   }
 }

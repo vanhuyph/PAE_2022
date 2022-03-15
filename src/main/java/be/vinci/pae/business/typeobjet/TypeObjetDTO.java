@@ -12,5 +12,4 @@ public interface TypeObjetDTO {
   String getNom();
 
   void setNom(String nom);
-
 }

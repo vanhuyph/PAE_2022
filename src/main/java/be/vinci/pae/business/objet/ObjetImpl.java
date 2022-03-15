@@ -23,7 +23,6 @@ public class ObjetImpl implements Objet {
   @JsonView(Vues.Public.class)//vérifier type d'objet
   private String photo;
 
-
   public int getIdObjet() {
     return idObjet;
   }

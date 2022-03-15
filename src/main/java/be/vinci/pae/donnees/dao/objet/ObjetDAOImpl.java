@@ -15,46 +15,41 @@ public class ObjetDAOImpl implements ObjetDAO {
   @Inject
   private ServiceDAL serviceDAL;
 
-
   /**
-   * Creer un objet.
+   * Créer un objet.
    *
    * @param etatObjet   : l'état de l'objet
    * @param typeObjet   : le type de l'objet
    * @param description : la description de l'objet
    * @param offreur     : l'id de l'offeur de l'objet
    * @param photo       : chemin de la photo
-   * @return l'objet créé
+   * @return objetDTO : l'objet créé
    * @throws SQLException : est lancé si il ne sait pas insérer l'objet dans la db
    */
   @Override
   public ObjetDTO creerObjet(String etatObjet, int typeObjet, String description,
       int offreur, String photo) {
-    {
-      ObjetDTO objetDTO = factory.getObjet();
-      PreparedStatement ps = serviceDAL.getPs(
-          "INSERT INTO projet.objets VALUES (DEFAULT, ?, ?, ?, ?, null, ?)RETURNING *;");
-
-      try {
-        ps.setString(1, etatObjet);
-        ps.setInt(2, typeObjet);
-        ps.setString(3, description);
-        ps.setInt(4, offreur);
-        ps.setString(5, photo);
-
-        objetDTO = remplirObjetDepuisResultSet(objetDTO, ps);
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-      return objetDTO;
+    ObjetDTO objetDTO = factory.getObjet();
+    PreparedStatement ps = serviceDAL.getPs(
+        "INSERT INTO projet.objets VALUES (DEFAULT, ?, ?, ?, ?, null, ?) RETURNING *;");
+    try {
+      ps.setString(1, etatObjet);
+      ps.setInt(2, typeObjet);
+      ps.setString(3, description);
+      ps.setInt(4, offreur);
+      ps.setString(5, photo);
+      objetDTO = remplirObjetDepuisResultSet(objetDTO, ps);
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
+    return objetDTO;
   }
 
   /**
-   * Recherche un objet via un id dans la base de donnée.
+   * Recherche un objet via un id dans la base de données.
    *
    * @param id : l'id de l'objet
-   * @return ObjetDTO : l'objet, s'il trouve un objet qui possède ce id
+   * @return objetDTO : l'objet, s'il trouve un objet qui possède ce id
    * @throws SQLException : est lancée s'il ne trouve pas l'objet
    */
   @Override
@@ -66,14 +61,12 @@ public class ObjetDAOImpl implements ObjetDAO {
             + " FROM projet.objets o WHERE o.id_objet = ?;");
     try {
       ps.setInt(1, id);
-
       objetDTO = remplirObjetDepuisResultSet(objetDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
     }
     return objetDTO;
   }
-
 
   /**
    * Rempli les données de l'objet depuis un ResultSet.
@@ -92,17 +85,16 @@ public class ObjetDAOImpl implements ObjetDAO {
         objetDTO.setDescription(rs.getString(4));
         objetDTO.setOffreur(rs.getInt(5));
         if (rs.getInt(6) != 0) {
-
           objetDTO.setReceveur(rs.getInt(6));
         }
         if (rs.getString(7) != null) {
           objetDTO.setPhoto(rs.getString(7));
         }
-
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
     return objetDTO;
   }
+
 }
