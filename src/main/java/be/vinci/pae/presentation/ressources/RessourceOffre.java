@@ -34,8 +34,7 @@ public class RessourceOffre {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public OffreDTO creerOffre(JsonNode json) {
-    if (!json.hasNonNull("idObjet") ||
-        !json.hasNonNull("plageHoraire")) {
+    if (!json.hasNonNull("idObjet") || !json.hasNonNull("plageHoraire")) {
       throw new WebApplicationException(
           Response.status(Response.Status.BAD_REQUEST)
               .entity("Type de l'objet ou description manquant").type("text/plain").build());

@@ -19,7 +19,7 @@ public class RessourceTypeObjet {
   private TypeObjetUCC typeObjetUCC;
 
   /**
-   * liste les types d'objet
+   * Liste les types d'objet.
    *
    * @return la liste des types d'objet
    */
@@ -32,6 +32,5 @@ public class RessourceTypeObjet {
     typesObjet = typeObjetUCC.listerTypeObjet();
     return typesObjet;
   }
-
 
 }
