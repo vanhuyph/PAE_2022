@@ -4,10 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import be.vinci.pae.business.DomaineFactory;
+import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
+import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.ConflitException;
 import be.vinci.pae.utilitaires.exceptions.NonAutoriseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +28,12 @@ public class UtilisateurUCCTest {
 
   private UtilisateurUCC utilisateurUCC;
   private DomaineFactory domaineFactory;
-  private UtilisateurDTO utilisateurDTO;
+  private UtilisateurDTO utilisateurDTO1;
   private UtilisateurDTO utilisateurDTO2;
+  private UtilisateurDTO utilisateurDTO3;
   private UtilisateurDAO utilisateurDAO;
+  private AdresseDTO adresseDTO;
+  private AdresseDAO adresseDAO;
 
   @BeforeAll
   void initTout() {
@@ -36,17 +42,31 @@ public class UtilisateurUCCTest {
     this.domaineFactory = locator.getService(DomaineFactory.class);
     this.utilisateurUCC = locator.getService(UtilisateurUCC.class);
     this.utilisateurDAO = locator.getService(UtilisateurDAO.class);
-    utilisateurDTO = domaineFactory.getUtilisateur();
-    utilisateurDTO.setIdUtilisateur(1);
-    utilisateurDTO.setPseudo("test1");
-    utilisateurDTO.setMdp("$2a$10$6sYdHXd.tocTOh3LsHFGsOlrsygxA0T4HsVJkLnrV4Im5R5whHqT6");
-    utilisateurDTO.setEstAdmin(false);
-    utilisateurDTO.setEtatInscription("confirmé");
+    this.adresseDAO = locator.getService(AdresseDAO.class);
+
+    adresseDTO = domaineFactory.getAdresse();
+    adresseDTO.setIdAdresse(1);
+    adresseDTO.setRue("Rue");
+    adresseDTO.setNumero(1);
+    adresseDTO.setCodePostal(1040);
+    adresseDTO.setCommune("Etterbeek");
+
+    utilisateurDTO1 = domaineFactory.getUtilisateur();
+    utilisateurDTO1.setIdUtilisateur(1);
+    utilisateurDTO1.setPseudo("test1");
+    utilisateurDTO1.setMdp("$2a$10$jAXbw66kyec1S8RV/pnwo.kuEnAbmIsP5h7463ZkxGJocnx1WzLUy");
+    utilisateurDTO1.setEstAdmin(false);
+    utilisateurDTO1.setEtatInscription("confirmé");
+    utilisateurDTO1.setAdresse(adresseDTO);
 
     utilisateurDTO2 = domaineFactory.getUtilisateur();
     utilisateurDTO2.setIdUtilisateur(2);
     utilisateurDTO2.setEtatInscription("confirmé");
     utilisateurDTO2.setEstAdmin(true);
+
+    utilisateurDTO3 = domaineFactory.getUtilisateur();
+    utilisateurDTO3.setIdUtilisateur(0);
+
   }
 
   @Test
@@ -61,8 +81,8 @@ public class UtilisateurUCCTest {
   @DisplayName("Test raté : méthode connexion avec bon pseudo et mauvais mdp. "
       + "Identifiants corrects : pseudo = test1, mdp = test123")
   public void testConnexionV2() {
-    Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()))
-        .thenReturn(utilisateurDTO);
+    Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO1.getPseudo()))
+        .thenReturn(utilisateurDTO1);
     assertThrows(NonAutoriseException.class, () -> utilisateurUCC.connexion("test1", "test1234"));
   }
 
@@ -70,17 +90,38 @@ public class UtilisateurUCCTest {
   @DisplayName("Test réussi : méthode connexion avec les bons identifiants. "
       + "Identifiants corrects : pseudo = test1, mdp = test123")
   public void testConnexionV3() {
-    Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()))
-        .thenReturn(utilisateurDTO);
-    assertEquals(utilisateurDTO, utilisateurUCC.connexion("test1", "test123"));
+    Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO1.getPseudo()))
+        .thenReturn(utilisateurDTO1);
+    assertEquals(utilisateurDTO1, utilisateurUCC.connexion("test1", "test123"));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode d'inscription avec un pseudo déjà existant")
+  public void testInscriptionV1() {
+    Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO1.getPseudo()))
+        .thenReturn(utilisateurDTO1);
+
+    assertThrows(ConflitException.class, () -> utilisateurUCC.inscription(utilisateurDTO1));
+
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode d'inscription")
+  public void testInscriptionV2() {
+    utilisateurDTO1.setMdp("test123");
+    Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO1.getPseudo()))
+        .thenReturn(utilisateurDTO3);
+    Mockito.when(adresseDAO.ajouterAdresse(adresseDTO)).thenReturn(adresseDTO);
+    Mockito.when(utilisateurDAO.ajouterUtilisateur(utilisateurDTO1)).thenReturn(utilisateurDTO1);
+    assertEquals(utilisateurDTO1, utilisateurUCC.inscription(utilisateurDTO1));
   }
 
   @Test
   @DisplayName("Test réussi : méthode rechercheParId renvoie un utilisateur existant.")
   public void testRecherchePardIdV1() {
-    int id = utilisateurDTO.getIdUtilisateur();
-    Mockito.when(utilisateurDAO.rechercheParId(id)).thenReturn(utilisateurDTO);
-    assertEquals(utilisateurDTO, utilisateurUCC.rechercheParId(id));
+    int id = utilisateurDTO1.getIdUtilisateur();
+    Mockito.when(utilisateurDAO.rechercheParId(id)).thenReturn(utilisateurDTO1);
+    assertEquals(utilisateurDTO1, utilisateurUCC.rechercheParId(id));
   }
 
   @Test
@@ -96,9 +137,9 @@ public class UtilisateurUCCTest {
   @DisplayName("Test réussi : méthode confirmerInscription renvoie bien un utilisateur "
       + "avec son état d'inscription à confirmé mais ne le passe pas en admin")
   public void testConfirmerInscriptionV1() {
-    int id = utilisateurDTO.getIdUtilisateur();
-    Mockito.when(utilisateurDAO.confirmerInscription(id, false)).thenReturn(utilisateurDTO);
-    assertEquals(utilisateurDTO, utilisateurUCC.confirmerInscription(id, false));
+    int id = utilisateurDTO1.getIdUtilisateur();
+    Mockito.when(utilisateurDAO.confirmerInscription(id, false)).thenReturn(utilisateurDTO1);
+    assertEquals(utilisateurDTO1, utilisateurUCC.confirmerInscription(id, false));
   }
 
   @Test
@@ -127,5 +168,6 @@ public class UtilisateurUCCTest {
     Mockito.when(utilisateurDAO.listerUtilisateursEtatsInscriptions("refusé")).thenReturn(liste);
     assertEquals(liste, utilisateurUCC.listerUtilisateursEtatsInscriptions("refusé"));
   }
+
 
 }
