@@ -13,6 +13,12 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 
 @Singleton
@@ -55,6 +61,18 @@ public class RessourceOffre {
     }
 
     return offreDTO;
+  }
+
+  @POST
+  @Path("/telechargementPhoto")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.MULTIPART_FORM_DATA)
+  public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
+      @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
+    String nomFichier = fichierDisposition.getName(); //UUID
+    Files.copy(photo, Paths.get(nomFichier));
+    return Response.ok(nomFichier).header("Access-Control-Allow-Origin", "*").build();
+    //return Response.ok().build();
   }
 
 }

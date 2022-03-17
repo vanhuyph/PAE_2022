@@ -46,6 +46,7 @@ public class ApplicationBinder extends AbstractBinder {
     bind(TypeObjetUCCImpl.class).to(TypeObjetUCC.class).in(Singleton.class);
     bind(TypeObjetDAOImpl.class).to(TypeObjetDAO.class).in(Singleton.class);
 
+
   }
 
 }

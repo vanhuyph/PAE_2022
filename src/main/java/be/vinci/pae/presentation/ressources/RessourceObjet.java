@@ -20,6 +20,7 @@ import jakarta.ws.rs.core.Response.Status;
 public class RessourceObjet {
 
 
+
   @Inject
   private ObjetUCC objetUCC;
 

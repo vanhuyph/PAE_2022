@@ -6,11 +6,31 @@ import {Redirect} from "../Router/Router";
 
 // style pas travailler
 
-
-// pas encore de possibilité d'ajout de photo à voir le cours d'architecture => cfr mail Leleux
+const formPhoto =
+    `
+        <script>
+          const envoyerPhoto = (e) => {
+                  const fichierDEntree = document.querySelector('input[name=photo]');
+                const formDonnee = new FormData();
+               formDonnee.append('file', fichierDEntree.files[0]);
+                 const options = {
+                 method: 'POST',
+                 body: formDonnee
+               };
+             fetch('http://localhost:8080/telechargementPhoto', options);
+            return false;
+          }
+        </script>
+        <form >
+          <label>Selectionner une photo</label>
+          <input name="photo" type="file"/><br/><br/>
+          <button onclick={return envoyerPhoto()}>Envoyer la photo</button>
+        </form>
+        
+    `
 const typesObjet =
     `
-        <select type="text" id="choixTypeObjet" className="type">
+        <select type="text" id="choixTypeObjet" className="type" >
         </select>
         <p class="message-erreur erreur-type"></p>
     `
@@ -18,6 +38,10 @@ const typesObjet =
 const pageOffrirObjet = `
     <div class="page-offrirObjet">
     <h2>Offrir un objet</h2>
+    <div>
+    ${formPhoto}
+    </div>
+    
     <form id="formulaire-offrirObjet" class="ui form">
     
         
@@ -41,6 +65,9 @@ const pageOffrirObjet = `
           <label for="type">Type</label>
            
             ${typesObjet}
+        </div>
+        <div class="field">
+          
         </div>
         <button class="ui secondary inverted button" type="submit">Offrir l'objet</button>
         
