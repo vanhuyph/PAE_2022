@@ -2,6 +2,7 @@ package be.vinci.pae.presentation.ressources;
 
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.objet.ObjetUCC;
+import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -20,7 +21,6 @@ import jakarta.ws.rs.core.Response.Status;
 public class RessourceObjet {
 
 
-
   @Inject
   private ObjetUCC objetUCC;
 
@@ -37,6 +37,7 @@ public class RessourceObjet {
   @Path("creerObjet")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
   public ObjetDTO creerObjet(JsonNode json) {
 
     if (!json.hasNonNull("offreur")

@@ -8,6 +8,8 @@ import {Redirect} from "../Router/Router";
 
 const formPhoto =
     `
+        <div class="field">
+        <!--télechargement de la photo -->
         <script>
           const envoyerPhoto = (e) => {
                   const fichierDEntree = document.querySelector('input[name=photo]');
@@ -21,38 +23,53 @@ const formPhoto =
             return false;
           }
         </script>
-        <form >
+        <!--Prévisualisation de la photo-->
+        <script>
+  
+           var image = document.getElementById("image");
+           const previsualiserPhoto  =  (e) => {
+           const [picture] = e.files
+
+       
+            if (picture) {
+             // On change l'URL de l'image
+               image.src = URL.createObjectURL(picture)
+            }
+    } 
+</script>
+        <form class="ui form">
           <label>Selectionner une photo</label>
-          <input name="photo" type="file"/><br/><br/>
-          <button onclick={return envoyerPhoto()}>Envoyer la photo</button>
+          <input  name="photo" onchange="previsualiserPhoto(this)" type="file"/><br/><br/>
+          <div class=" tertiary inverted ">
+          <button  class="ui button" onclick="return envoyerPhoto()">Envoyer la photo</button>
+          </div>
         </form>
         
+        <img src="#" alt="" id="image" style="max-width: 500px; margin-top: 20px;" >
+       </div>
     `
 const typesObjet =
     `
-        <select type="text" id="choixTypeObjet" className="type" >
+        
+        <select class="ui search dropdown "  type="text" id="choixTypeObjet" className="type" >
         </select>
         <p class="message-erreur erreur-type"></p>
+       
     `
-
+//permettre à l'user de faire  un enter , passage a la ligne dans la description et la plage horaire
+//pour l'instant envoie du formulaire direct..
 const pageOffrirObjet = `
-    <div class="page-offrirObjet">
+    <div class="page-offrirObjet ">
     <h2>Offrir un objet</h2>
-    <div>
-    ${formPhoto}
-    </div>
-    
+    <div class="ui horizontal segments">
+    <div class="ui segment">
     <form id="formulaire-offrirObjet" class="ui form">
-    
-        
-        
-        <div class="field">
+          
+          <div class="description-conteneur field">
           <label for="description">Description</label>
-          <div class="description-conteneur">
-              <input type="text" id="description" class="description">
+              <input type="text" id="description" class="description ">
               <p class="message-erreur erreur-description"></p>
           </div>
-        </div>
 
         <div class="field">
           <label for="horaire">Plage horaire</label>
@@ -66,12 +83,18 @@ const pageOffrirObjet = `
            
             ${typesObjet}
         </div>
-        <div class="field">
-          
+        <div class=" tertiary inverted ">
+        <button class="ui  button " type="submit">Offrir l'objet</button>
         </div>
-        <button class="ui secondary inverted button" type="submit">Offrir l'objet</button>
-        
-    </form>    
+    </form>  
+     </div>
+       <div class="ui  right floated segment">
+    <div class="">
+      ${formPhoto}
+      </div>
+    </div>
+    </div>  
+    </div>
     `
 const PageOffrirObjet = () => {
     const pageDiv = document.querySelector("#page");
@@ -88,7 +111,7 @@ const PageOffrirObjet = () => {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                //Authorization: utilisateur.token,
+                Authorization: utilisateur.token,
             },
         })
         .then((response) => {
@@ -188,7 +211,7 @@ const surOffrirObjet = (e) => {
             body: JSON.stringify(nouvelObjet),
             headers: {
                 "Content-Type": "application/json",
-                //Authorization: utilisateur.token,
+                Authorization: utilisateur.token,
             }
         })
         .then((reponse) => {

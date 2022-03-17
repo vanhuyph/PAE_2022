@@ -2,6 +2,7 @@ package be.vinci.pae.presentation.ressources;
 
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
+import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -41,6 +42,7 @@ public class RessourceOffre {
   @Path("creerOffre")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
   public OffreDTO creerOffre(JsonNode json) {
 
     if (!json.hasNonNull("idObjet") ||
@@ -67,6 +69,7 @@ public class RessourceOffre {
   @Path("/telechargementPhoto")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.MULTIPART_FORM_DATA)
+  @Autorisation
   public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
     String nomFichier = fichierDisposition.getName(); //UUID
