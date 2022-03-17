@@ -6,6 +6,8 @@ public interface OffreDAO {
 
   OffreDTO creerOffre(int idObjet, String plageHoraire);
 
+  OffreDTO annulerOffre(int idOffre);
+
   OffreDTO rechercheParId(int id);
 
 }

@@ -1,6 +1,5 @@
 package be.vinci.pae.presentation.ressources;
 
-import be.vinci.pae.business.objet.ObjetUCC;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.presentation.ressources.filtres.Autorisation;
@@ -25,8 +24,6 @@ public class RessourceOffre {
   @Inject
   private OffreUCC offreUCC;
 
-  @Inject
-  private ObjetUCC objetUCC;
 
   /**
    * Créer une offre.
@@ -40,23 +37,56 @@ public class RessourceOffre {
   @Path("creerOffre")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
   public OffreDTO creerOffre(JsonNode json) {
     if (!json.hasNonNull("idObjet") || !json.hasNonNull("plageHoraire")) {
       throw new WebApplicationException(
-          Response.status(Response.Status.BAD_REQUEST)
-              .entity("Type de l'objet ou description manquant").type("text/plain").build());
+              Response.status(Response.Status.BAD_REQUEST)
+                      .entity("Type de l'objet ou description manquant").type("text/plain").build());
     }
     int idObjet = json.get("idObjet").asInt();
     String plageHoraire = json.get("plageHoraire").asText();
     OffreDTO offreDTO = offreUCC.creerUneOffre(idObjet, plageHoraire);
     if (offreDTO == null) {
       throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
-          .entity("L'ajout de l'offre a échoué").type(MediaType.TEXT_PLAIN)
-          .build());
+              .entity("L'ajout de l'offre a échoué").type(MediaType.TEXT_PLAIN)
+              .build());
     }
     return offreDTO;
   }
 
+
+  /**
+   *
+   * @param json  : json reçu de la requete avec l'id de l'offre à annuler
+   * @return un offreDTO avec seulement l'id de l'offre annulée
+   */
+
+  @POST
+  @Path("annulerOffre")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public OffreDTO annulerOffre(JsonNode json) {
+
+    if (!json.hasNonNull("idOffre")) {
+      throw new WebApplicationException(
+              Response.status(Response.Status.BAD_REQUEST)
+                      .entity("id de l'offre à annuler manquant").type("text/plain").build());
+    }
+
+    int idOffre = json.get("idOffre").asInt();
+
+
+    OffreDTO offreDTO = offreUCC.annulerUneOffre(idOffre);
+    if (offreDTO == null) {
+      throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
+              .entity("L'annulation de l'offre a échoué").type(MediaType.TEXT_PLAIN)
+              .build());
+    }
+
+    return offreDTO;
+  }
   /**
    * Recherche l'offre avec l'id id.
    *
@@ -66,23 +96,25 @@ public class RessourceOffre {
    */
   @GET
   @Path("voirDetailsOffre/{idOffre}")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
   public OffreDTO rechercheOffreParId(JsonNode json, @PathParam("idOffre") int idOffre) {
+
     if (idOffre <= 0) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("L'offre n'existe pas").type(MediaType.TEXT_PLAIN)
-          .build());
+              .entity("L'offre n'existe pas").type(MediaType.TEXT_PLAIN)
+              .build());
     }
     OffreDTO offreDTO = offreUCC.rechercheParId(idOffre);
     if (offreDTO == null) {
       throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
-          .entity("L'offre n'a pas été trouvée").type(MediaType.TEXT_PLAIN)
-          .build());
+              .entity("L'offre n'a pas été trouvée").type(MediaType.TEXT_PLAIN)
+              .build());
     }
     return offreDTO;
 
   }
+
+
 
 }

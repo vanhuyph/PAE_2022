@@ -46,6 +46,7 @@ CREATE TABLE projet.objets(
 CREATE TABLE projet.interets(
                                 utilisateur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
                                 objet INTEGER REFERENCES projet.objets(id_objet) NOT NULL,
+                                date_rdv TIMESTAMP NOT NULL,
                                 PRIMARY KEY (utilisateur, objet)
 );
 

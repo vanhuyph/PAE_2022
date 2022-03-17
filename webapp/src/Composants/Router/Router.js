@@ -2,7 +2,7 @@ import PageAccueil from "../Pages/PageAccueil";
 import PageConnexion from "../Pages/PageConnexion";
 import PageDeconnexion from "../Pages/PageDeconnexion";
 import PageInscription from "../Pages/PageInscription";
-import PageOffrirObjet from "../Pages/PageOffrirObjet";
+import PageObjet from "../Pages/PageObjet";
 
 // Configure your routes here
 const routes = {
@@ -10,7 +10,7 @@ const routes = {
   "/connexion": PageConnexion,
   "/deconnexion": PageDeconnexion,
   "/inscription": PageInscription,
-  "/offrirObjet": PageOffrirObjet,
+  "/objet/": PageObjet,
 };
 
 /**
@@ -28,11 +28,11 @@ const Router = () => {
 
     if (uri) {
       e.preventDefault();
-      /* use Web History API to add current page URL to the user's navigation history 
+      /* use Web History API to add current page URL to the user's navigation history
        & set right URL in the browser (instead of "#") */
       window.history.pushState({}, uri, window.location.origin + uri);
       /* render the requested component
-      NB : for the components that include JS, we want to assure that the JS included 
+      NB : for the components that include JS, we want to assure that the JS included
       is not runned when the JS file is charged by the browser
       therefore, those components have to be either a function or a class*/
       const componentToRender = routes[uri];
@@ -45,7 +45,7 @@ const Router = () => {
   });
 
   /* Route the right component when the page is loaded / refreshed */
-  window.addEventListener("load", (e) => {
+  window.addEventListener("load", () => {
     const componentToRender = routes[window.location.pathname];
     if (!componentToRender)
       throw Error(
@@ -69,11 +69,19 @@ const Router = () => {
  */
 
 const Redirect = (uri) => {
+
   // use Web History API to add current page URL to the user's navigation history & set right URL in the browser (instead of "#")
   window.history.pushState({}, uri, window.location.origin + uri);
   // render the requested component
-  const componentToRender = routes[uri];
-  if (routes[uri]) {
+
+  const uriSansParams = uri.split('?');
+
+
+
+
+  const componentToRender = routes[uriSansParams[0]];
+
+  if (routes[uriSansParams[0]]) {
     componentToRender();
   } else {
     throw Error("The " + uri + " ressource does not exist");

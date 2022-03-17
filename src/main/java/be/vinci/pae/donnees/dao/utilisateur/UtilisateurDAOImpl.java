@@ -20,18 +20,17 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    *
    * @param pseudo : le pseudo de l'utilisateur
    * @return utilisateurDTO : l'utilisateur, s'il trouve un utilisateur qui possède ce pseudo
-   * @throws SQLException : est lancée s'il ne trouve pas l'utilisateur
    */
   @Override
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
-        "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.adresse"
-            + " FROM projet.utilisateurs u WHERE u.pseudo = ?;");
+        "SELECT id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
+            + "etat_inscription, commentaire, adresse"
+            + " FROM projet.utilisateurs WHERE pseudo = ?;");
     try {
       ps.setString(1, pseudo);
-      utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
+      return remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -43,18 +42,17 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    *
    * @param id : l'id de l'utilisateur
    * @return utilisateurDTO : l'utilisateur, s'il trouve un utilisateur qui possède ce id
-   * @throws SQLException : est lancée s'il ne trouve pas l'utilisateur
    */
   @Override
   public UtilisateurDTO rechercheParId(int id) {
+
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     PreparedStatement ps = serviceDAL.getPs(
-        "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.adresse"
-            + "FROM projet.utilisateurs u WHERE u.id_utilisateur = ?;");
+        "SELECT * "
+            + "FROM projet.utilisateurs WHERE id_utilisateur = ?;");
     try {
       ps.setInt(1, id);
-      utilisateurDTO = remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
+      return remplirUtilisateurDepuisResulSet(utilisateurDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -75,6 +73,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
             + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL) RETURNING "
             + "id_utilisateur;");
     try {
+
       ps.setString(1, utilisateur.getPseudo());
       ps.setString(2, utilisateur.getNom());
       ps.setString(3, utilisateur.getPrenom());
@@ -109,10 +108,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         utilisateurDTO.setNom(rs.getString(3));
         utilisateurDTO.setPrenom(rs.getString(4));
         utilisateurDTO.setMdp(rs.getString(5));
-        utilisateurDTO.setGsm(rs.getString(6));
+        if(rs.getString(6) != null) utilisateurDTO.setGsm(rs.getString(6));
         utilisateurDTO.setEstAdmin(rs.getBoolean(7));
         utilisateurDTO.setEtatInscription(rs.getString(8));
-        utilisateurDTO.setCommentaire(rs.getString(9));
+        if(rs.getString(9) != null) utilisateurDTO.setCommentaire(rs.getString(9));
         utilisateurDTO.setAdresse(rs.getInt(10));
       }
     }

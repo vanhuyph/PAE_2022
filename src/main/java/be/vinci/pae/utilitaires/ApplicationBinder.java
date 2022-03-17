@@ -12,6 +12,8 @@ import be.vinci.pae.business.typeobjet.TypeObjetUCC;
 import be.vinci.pae.business.typeobjet.TypeObjetUCCImpl;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.business.utilisateur.UtilisateurUCCImpl;
+import be.vinci.pae.business.interet.InteretUCC;
+import be.vinci.pae.business.interet.InteretUCCImpl;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAOImpl;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
@@ -22,6 +24,8 @@ import be.vinci.pae.donnees.dao.typeobjet.TypeObjetDAO;
 import be.vinci.pae.donnees.dao.typeobjet.TypeObjetDAOImpl;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAOImpl;
+import be.vinci.pae.donnees.dao.interet.InteretDAO;
+import be.vinci.pae.donnees.dao.interet.InteretDAOImpl;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.donnees.services.ServiceDALImpl;
 import jakarta.inject.Singleton;
@@ -45,7 +49,8 @@ public class ApplicationBinder extends AbstractBinder {
     bind(AdresseUCCImpl.class).to(AdresseUCC.class).in(Singleton.class);
     bind(TypeObjetUCCImpl.class).to(TypeObjetUCC.class).in(Singleton.class);
     bind(TypeObjetDAOImpl.class).to(TypeObjetDAO.class).in(Singleton.class);
-
+    bind(InteretUCCImpl.class).to(InteretUCC.class).in(Singleton.class);
+    bind(InteretDAOImpl.class).to(InteretDAO.class).in(Singleton.class);
   }
 
 }

@@ -11,6 +11,8 @@ import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.business.typeobjet.TypeObjetImpl;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurImpl;
+import be.vinci.pae.business.interet.InteretDTO;
+import be.vinci.pae.business.interet.InteretImpl;
 
 public class DomaineFactoryImpl implements DomaineFactory {
 
@@ -38,5 +40,8 @@ public class DomaineFactoryImpl implements DomaineFactory {
   public TypeObjetDTO getTypeObjet() {
     return new TypeObjetImpl();
   }
+
+  @Override
+  public InteretDTO getInteret() { return new InteretImpl(); }
 
 }

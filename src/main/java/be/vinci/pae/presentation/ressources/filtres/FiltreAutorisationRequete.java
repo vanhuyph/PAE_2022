@@ -29,21 +29,25 @@ public class FiltreAutorisationRequete implements ContainerRequestFilter {
   private UtilisateurUCC utilisateurUCC;
 
   @Override
-  public void filter(ContainerRequestContext requestContext) throws IOException {
+  public void filter(ContainerRequestContext requestContext)  {
     String token = requestContext.getHeaderString("Authorization");
     if (token == null) {
       requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
           .entity("un token est nécessaire pour accéder à cette ressource").build());
     } else {
-      DecodedJWT tokenDecode = null;
+
       try {
-        tokenDecode = this.jwtVerifier.verify(token);
+        this.jwtVerifier.verify(token);
+
       } catch (Exception e) {
         throw new WebApplicationException(Response.status(Status.UNAUTHORIZED)
             .entity("token malformé: " + e.getMessage()).type("text/plain").build());
       }
-      UtilisateurDTO authenticatedUser = utilisateurUCC.rechercheParId(
-          tokenDecode.getClaim("user").asInt());
+
+      int idUtilisateur = Integer.parseInt(requestContext.getHeaderString("user"));
+
+
+      UtilisateurDTO authenticatedUser = utilisateurUCC.rechercheParId(idUtilisateur);
       if (authenticatedUser == null) {
         requestContext.abortWith(Response.status(Status.FORBIDDEN)
             .entity("Vous ne pouvez pas accéder a cette ressource").build());
