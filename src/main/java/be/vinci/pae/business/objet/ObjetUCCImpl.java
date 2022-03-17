@@ -29,4 +29,20 @@ public class ObjetUCCImpl implements ObjetUCC {
     }
     return objet;
   }
+
+  /**
+   * Recherche d'objet en focntion de leur id.
+   *
+   * @param id l'id de l'objet recherché
+   * @return l'objet correspondan ta l'id
+   */
+  @Override
+  public ObjetDTO rechercheObjetParId(int id) {
+    ObjetDTO objet = objetDAO.rechercheParId(id);
+    if (objet == null) {
+      throw new ExceptionBusiness("L'objet n'a pas pu être créé",
+          Status.INTERNAL_SERVER_ERROR); // vérifier statut de réponse
+    }
+    return objet;
+  }
 }

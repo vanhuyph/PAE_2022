@@ -25,4 +25,20 @@ public class OffreUCCImpl implements OffreUCC {
     }
     return offre;
   }
+
+  /**
+   * Recherche une offre par son id.
+   *
+   * @param idOffre id de l'offre recherchée
+   * @return l'offre correspondante  l'id idS
+   */
+  @Override
+  public OffreDTO rechercheParId(int idOffre) {
+    OffreDTO offre = offreDAO.rechercheParId(idOffre);
+    if (offre == null) {
+      throw new ExceptionBusiness("L'offre n'a pas pu être trouvée",
+          Status.INTERNAL_SERVER_ERROR); // vérifier statut de réponse
+    }
+    return offre;
+  }
 }

@@ -36,10 +36,40 @@ public class OffreDAOImpl implements OffreDAO {
       ps.setInt(1, idObjet);
       ps.setDate(2, sqlDate);
       ps.setString(3, plageHoraire);
-      offreDTO = remplirOffreDepuisResultSet(offreDTO, ps);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        offreDTO = remplirOffreDepuisResultSet(offreDTO, rs);
+      }
+      ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
     }
+
+    return offreDTO;
+  }
+
+  /**
+   * Recherche une offre par son id.
+   *
+   * @param idOffre : l'id de l'objet correspondant à l'offre
+   * @return offreDTO : l'offre
+   */
+  @Override
+  public OffreDTO rechercheParId(int idOffre) {
+    OffreDTO offreDTO = factory.getOffre();
+    PreparedStatement ps = serviceDAL.getPs(
+        "SELECT * FROM projet.offres WHERE id_offre= ? ;");
+    try {
+      ps.setInt(1, idOffre);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        offreDTO = remplirOffreDepuisResultSet(offreDTO, rs);
+      }
+      ps.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
     return offreDTO;
   }
 
@@ -52,16 +82,17 @@ public class OffreDAOImpl implements OffreDAO {
    * @throws SQLException : est lancée si il y a un problème
    */
   private OffreDTO remplirOffreDepuisResultSet(OffreDTO offreDTO,
-      PreparedStatement ps) throws SQLException {
-    try (ResultSet rs = ps.executeQuery()) {
-      while (rs.next()) {
-        offreDTO.setIdOffre(rs.getInt(1));
-        offreDTO.setObjet(
-            objetDAO.rechercheParId(rs.getInt(2))); // vérifier index //voir si possible en sql
-        offreDTO.setDateOffre(rs.getDate(3));
-        offreDTO.setPlageHoraire(rs.getString(4));
-      }
+      ResultSet rs) throws SQLException {
+    try {
+      offreDTO.setIdOffre(rs.getInt(1));
+      offreDTO.setObjet(
+          objetDAO.rechercheParId(rs.getInt(2))); //voir si possible en sql
+      offreDTO.setDateOffre(rs.getDate(3));
+      offreDTO.setPlageHoraire(rs.getString(4));
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
+
     return offreDTO;
   }
 }
