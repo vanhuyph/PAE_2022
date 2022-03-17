@@ -1,6 +1,5 @@
 package be.vinci.pae.presentation.ressources;
 
-import be.vinci.pae.business.objet.ObjetUCC;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.presentation.ressources.filtres.Autorisation;
@@ -25,8 +24,6 @@ public class RessourceOffre {
   @Inject
   private OffreUCC offreUCC;
 
-  @Inject
-  private ObjetUCC objetUCC;
 
   /**
    * Créer une offre.
