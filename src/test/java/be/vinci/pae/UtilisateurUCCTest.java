@@ -28,12 +28,12 @@ public class UtilisateurUCCTest {
 
   private UtilisateurUCC utilisateurUCC;
   private DomaineFactory domaineFactory;
-  private UtilisateurDTO utilisateurDTO1;
-  private UtilisateurDTO utilisateurDTO2;
-  private UtilisateurDTO utilisateurDTO3;
   private UtilisateurDAO utilisateurDAO;
   private AdresseDTO adresseDTO;
   private AdresseDAO adresseDAO;
+  private UtilisateurDTO utilisateurDTO1;
+  private UtilisateurDTO utilisateurDTO2;
+  private UtilisateurDTO utilisateurDTO3;
 
   @BeforeAll
   void initTout() {
@@ -43,7 +43,6 @@ public class UtilisateurUCCTest {
     this.utilisateurUCC = locator.getService(UtilisateurUCC.class);
     this.utilisateurDAO = locator.getService(UtilisateurDAO.class);
     this.adresseDAO = locator.getService(AdresseDAO.class);
-
     adresseDTO = domaineFactory.getAdresse();
     adresseDTO.setIdAdresse(1);
     adresseDTO.setRue("Rue");
@@ -95,7 +94,7 @@ public class UtilisateurUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode d'inscription avec un pseudo déjà existant")
+  @DisplayName("Test raté : méthode d'inscription avec un pseudo déjà existant.")
   public void testInscriptionV1() {
     Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO1.getPseudo()))
         .thenReturn(utilisateurDTO1);
@@ -103,7 +102,7 @@ public class UtilisateurUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode d'inscription avec les bons champs")
+  @DisplayName("Test réussi : méthode d'inscription avec les bons champs.")
   public void testInscriptionV2() {
     utilisateurDTO1.setMdp("test123");
     Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO1.getPseudo()))
@@ -140,7 +139,7 @@ public class UtilisateurUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode rechercheParPseudo renvoie un utilisateur existant")
+  @DisplayName("Test réussi : méthode rechercheParPseudo renvoie un utilisateur existant.")
   public void testRechercheParPseudoV2() {
     String pseudo = utilisateurDTO1.getPseudo();
     Mockito.when(utilisateurDAO.rechercheParPseudo(pseudo)).thenReturn(utilisateurDTO1);
@@ -148,7 +147,7 @@ public class UtilisateurUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode rechercheParPseudoInscriotion renvoie un utilisateur existant")
+  @DisplayName("Test raté : méthode rechercheParPseudoInscription renvoie un utilisateur existant.")
   public void testRechercheParPseudoInscriptionV1() {
     String pseudo = utilisateurDTO1.getPseudo();
     Mockito.when(utilisateurDAO.rechercheParPseudo(pseudo)).thenReturn(utilisateurDTO1);
@@ -157,8 +156,8 @@ public class UtilisateurUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode rechercheParPseudoInscriotion renvoie un utilisateur "
-      + "vide car le pseudo n'est pas existant")
+  @DisplayName("Test réussi : méthode rechercheParPseudoInscription renvoie un utilisateur "
+      + "vide car le pseudo n'est pas existant.")
   public void testRechercheParPseudoInscriptionV2() {
     String pseudo = utilisateurDTO1.getPseudo();
     Mockito.when(utilisateurDAO.rechercheParPseudo(pseudo)).thenReturn(utilisateurDTO3);
@@ -167,7 +166,7 @@ public class UtilisateurUCCTest {
 
   @Test
   @DisplayName("Test réussi : méthode confirmerInscription renvoie bien un utilisateur "
-      + "avec son état d'inscription à confirmé mais ne le passe pas en admin")
+      + "avec son état d'inscription à confirmé mais ne le passe pas en admin.")
   public void testConfirmerInscriptionV1() {
     int id = utilisateurDTO1.getIdUtilisateur();
     Mockito.when(utilisateurDAO.confirmerInscription(id, false)).thenReturn(utilisateurDTO1);
@@ -176,7 +175,7 @@ public class UtilisateurUCCTest {
 
   @Test
   @DisplayName("Test réussi : méthode confirmerInscription renvoie bien un utilisateur "
-      + "avec son état d'inscription à confirmé et le passe en admin")
+      + "avec son état d'inscription à confirmé et le passe en admin.")
   public void testConfirmerInscriptionV2() {
     int id = utilisateurDTO2.getIdUtilisateur();
     Mockito.when(utilisateurDAO.confirmerInscription(id, true)).thenReturn(utilisateurDTO2);
@@ -184,30 +183,30 @@ public class UtilisateurUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode refuserInscription renvoie null car l'utilisateur est "
-      + "introuvable")
+  @DisplayName("Test raté : méthode refuserInscription renvoie null car l'utilisateur n'est "
+      + "pas trouvable.")
   public void testRefuserInscriptionV1() {
     int id = utilisateurDTO2.getIdUtilisateur();
-    Mockito.when(utilisateurDAO.refuserInscription(id, "Je ne te connais pas"))
+    Mockito.when(utilisateurDAO.refuserInscription(id, "Je ne vous connais pas"))
         .thenReturn(null);
     assertThrows(BusinessException.class, () ->
-        utilisateurUCC.refuserInscription(id, "Je ne te connais pas"));
+        utilisateurUCC.refuserInscription(id, "Je ne vous connais pas"));
   }
 
   @Test
   @DisplayName("Test réussi : méthode refuserInscription renvoie bien un utilisateur "
-      + "avec son état d'inscription à refusé et un commentaire")
+      + "avec son état d'inscription à refusé et un commentaire.")
   public void testRefuserInscriptionV2() {
     int id = utilisateurDTO2.getIdUtilisateur();
-    Mockito.when(utilisateurDAO.refuserInscription(id, "Je ne te connais pas"))
+    Mockito.when(utilisateurDAO.refuserInscription(id, "Je ne vous connais pas"))
         .thenReturn(utilisateurDTO2);
     assertEquals(utilisateurDTO2,
-        utilisateurUCC.refuserInscription(id, "Je ne te connais pas"));
+        utilisateurUCC.refuserInscription(id, "Je ne vous connais pas"));
   }
 
   @Test
   @DisplayName("Test réussi : méthode listerUtilisateursEtatsInscriptions renvoie une "
-      + "liste avec tous les utilisateurs ayant l'état de leur inscription à confirmé")
+      + "liste avec tous les utilisateurs ayant l'état de leur inscription à confirmé.")
   public void testListerUtilisateursEtatsInscriptionsV1() {
     List<UtilisateurDTO> liste = new ArrayList<>();
     Mockito.when(utilisateurDAO.listerUtilisateursEtatsInscriptions("confirmé")).thenReturn(liste);
@@ -216,12 +215,11 @@ public class UtilisateurUCCTest {
 
   @Test
   @DisplayName("Test réussi : méthode listerUtilisateursEtatsInscriptions renvoie une "
-      + "liste avec tous les utilisateurs ayant l'état de leur inscription à refusé")
+      + "liste avec tous les utilisateurs ayant l'état de leur inscription à refusé.")
   public void testListerUtilisateursEtatsInscriptionsV2() {
     List<UtilisateurDTO> liste = new ArrayList<>();
     Mockito.when(utilisateurDAO.listerUtilisateursEtatsInscriptions("refusé")).thenReturn(liste);
     assertEquals(liste, utilisateurUCC.listerUtilisateursEtatsInscriptions("refusé"));
   }
-
 
 }
