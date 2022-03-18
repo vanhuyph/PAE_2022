@@ -189,4 +189,22 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     return liste;
   }
 
+  /**
+   * Met à jour les informations de l'utilisateur.
+   *
+   * @param utilisateur : l'utilisateur à mettre à jour
+   * @return utilisateurDTO : l'utilisateur avec ses informations mises à jour
+   */
+  @Override
+  public UtilisateurDTO miseAJourInfo(UtilisateurDTO utilisateur) {
+    serviceDAL.commencerTransaction();
+    UtilisateurDTO utilisateurDTO = utilisateurDAO.miseAJourInfo(utilisateur);
+    if (utilisateurDTO == null) {
+      serviceDAL.retourEnArriereTransaction();
+      throw new BusinessException("L'utilisateur n'existe pas");
+    }
+    serviceDAL.commettreTransaction();
+    return utilisateurDTO;
+  }
+
 }

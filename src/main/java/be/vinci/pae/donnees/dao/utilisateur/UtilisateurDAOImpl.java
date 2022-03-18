@@ -188,6 +188,34 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
+   * Met à jour les informations de l'utilisateur.
+   *
+   * @param utilisateur : l'utilisateur à mettre à jour
+   * @return utilisateurDTO : l'utilisateur avec ses informations mises à jour
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public UtilisateurDTO miseAJourInfo(UtilisateurDTO utilisateur) {
+    PreparedStatement ps = serviceBackendDAL.getPs(
+        "UPDATE projet.utilisateurs SET pseudo = ?, nom = ?, prenom = ?, gsm = ? "
+            + "WHERE id_utilisateur = ?");
+    try {
+      ps.setString(1, utilisateur.getPseudo());
+      ps.setString(2, utilisateur.getNom());
+      ps.setString(3, utilisateur.getPrenom());
+      ps.setString(4, utilisateur.getGsm());
+      ps.setInt(5, utilisateur.getIdUtilisateur());
+      ps.executeUpdate();
+      ps.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return rechercheParId(utilisateur.getIdUtilisateur());
+  }
+
+  /**
    * Récupère tous les utilisateurs avec un certain état d'inscription et les placent dans une
    * liste.
    *
