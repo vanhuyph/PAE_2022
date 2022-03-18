@@ -195,7 +195,7 @@ public class UtilisateurUCCTest {
 
   @Test
   @DisplayName("Test réussi : méthode refuserInscription renvoie bien un utilisateur "
-      + "avec son état d'inscription à refusé et un commentaire")
+      + "avec son état d'inscription à refusé et un commentaire.")
   public void testRefuserInscriptionV2() {
     int id = utilisateurDTO2.getIdUtilisateur();
     Mockito.when(utilisateurDAO.refuserInscription(id, "Je ne vous connais pas"))
@@ -206,7 +206,7 @@ public class UtilisateurUCCTest {
 
   @Test
   @DisplayName("Test réussi : méthode listerUtilisateursEtatsInscriptions renvoie une "
-      + "liste avec tous les utilisateurs ayant l'état de leur inscription à confirmé")
+      + "liste avec tous les utilisateurs ayant l'état de leur inscription à confirmé.")
   public void testListerUtilisateursEtatsInscriptionsV1() {
     List<UtilisateurDTO> liste = new ArrayList<>();
     Mockito.when(utilisateurDAO.listerUtilisateursEtatsInscriptions("confirmé")).thenReturn(liste);
@@ -215,7 +215,7 @@ public class UtilisateurUCCTest {
 
   @Test
   @DisplayName("Test réussi : méthode listerUtilisateursEtatsInscriptions renvoie une "
-      + "liste avec tous les utilisateurs ayant l'état de leur inscription à refusé")
+      + "liste avec tous les utilisateurs ayant l'état de leur inscription à refusé.")
   public void testListerUtilisateursEtatsInscriptionsV2() {
     List<UtilisateurDTO> liste = new ArrayList<>();
     Mockito.when(utilisateurDAO.listerUtilisateursEtatsInscriptions("refusé")).thenReturn(liste);
