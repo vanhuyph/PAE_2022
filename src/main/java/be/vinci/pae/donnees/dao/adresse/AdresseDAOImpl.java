@@ -27,24 +27,7 @@ public class AdresseDAOImpl implements AdresseDAO {
     PreparedStatement ps = serviceBackendDAL.getPs(
         "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?)  RETURNING id_adresse, "
             + "rue, numero, boite, code_postal, commune;");
-    try {
-      ps.setString(1, adresseDTO.getRue());
-      ps.setInt(2, adresseDTO.getNumero());
-      if (adresseDTO.getBoite() == 0) {
-        ps.setNull(3, Types.INTEGER);
-      } else {
-        ps.setInt(3, adresseDTO.getBoite());
-      }
-      ps.setInt(4, adresseDTO.getCodePostal());
-      ps.setString(5, adresseDTO.getCommune());
-      adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, ps);
-      ps.close();
-    } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
-      throw new FatalException(e.getMessage(), e);
-    }
-    return adresseDTO;
+    return recupAdresseDTODepuisPs(adresseDTO, ps);
   }
 
   /**
@@ -59,24 +42,7 @@ public class AdresseDAOImpl implements AdresseDAO {
     PreparedStatement ps = serviceBackendDAL.getPs(
         "UPDATE FROM projet.adresses SET rue = ?, numero = ?, boite = ?, code_postal = ?, "
             + "commune = ? WHERE id_adresse = ?;");
-    try {
-      ps.setString(1, adresseDTO.getRue());
-      ps.setInt(2, adresseDTO.getNumero());
-      if (adresseDTO.getBoite() == 0) {
-        ps.setNull(3, Types.INTEGER);
-      } else {
-        ps.setInt(3, adresseDTO.getBoite());
-      }
-      ps.setInt(4, adresseDTO.getCodePostal());
-      ps.setString(5, adresseDTO.getCommune());
-      adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, ps);
-      ps.close();
-    } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
-      throw new FatalException(e.getMessage(), e);
-    }
-    return adresseDTO;
+    return recupAdresseDTODepuisPs(adresseDTO, ps);
   }
 
   /**
@@ -103,6 +69,35 @@ public class AdresseDAOImpl implements AdresseDAO {
       throw new FatalException(e.getMessage(), e);
     }
     return adresse;
+  }
+
+  /**
+   * Récupère une adresseDTO depuis un PreparedStatement.
+   *
+   * @param adresseDTO : l'adresse à récupérer
+   * @param ps         : le PreparedStatement
+   * @return adresseDTO : l'adresse récupéré
+   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   */
+  private AdresseDTO recupAdresseDTODepuisPs(AdresseDTO adresseDTO, PreparedStatement ps) {
+    try {
+      ps.setString(1, adresseDTO.getRue());
+      ps.setInt(2, adresseDTO.getNumero());
+      if (adresseDTO.getBoite() == 0) {
+        ps.setNull(3, Types.INTEGER);
+      } else {
+        ps.setInt(3, adresseDTO.getBoite());
+      }
+      ps.setInt(4, adresseDTO.getCodePostal());
+      ps.setString(5, adresseDTO.getCommune());
+      adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, ps);
+      ps.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return adresseDTO;
   }
 
 }
