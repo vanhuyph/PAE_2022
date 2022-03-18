@@ -1,6 +1,6 @@
 import PageAccueil from "../Pages/PageAccueil";
 import PageConnexion from "../Pages/PageConnexion";
-import PageDeconnexion from "../Pages/PageDeconnexion";
+import ComposantDeconnexion from "../Pages/ComposantDeconnexion";
 import PageInscription from "../Pages/PageInscription";
 import PageAdmin from "../Pages/PageAdmin";
 
@@ -8,7 +8,7 @@ import PageAdmin from "../Pages/PageAdmin";
 const routes = {
   "/": PageAccueil,
   "/connexion": PageConnexion,
-  "/deconnexion": PageDeconnexion,
+  "/deconnexion": ComposantDeconnexion,
   "/inscription": PageInscription,
   "/admin": PageAdmin,
 };
