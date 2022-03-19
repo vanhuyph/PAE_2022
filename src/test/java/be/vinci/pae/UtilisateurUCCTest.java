@@ -90,24 +90,4 @@ public class UtilisateurUCCTest {
     assertThrows(ExceptionBusiness.class, () -> utilisateurUCC.rechercheParId(id));
   }
 
-  /*@Test
-  @DisplayName("test réussi : méthode inscription renvoie l'utilisateur inscrit.")
-  public void testInscriptionV1() {
-    utilisateurUCC.inscription("test1", "nom1", "prenom1", "mdp", 1);
-    Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()))
-        .thenReturn(utilisateurDTO);
-    assertEquals(utilisateurDTO, utilisateurUCC.rechercheParPseudo("test1"));
-  }
-
-
-  @Test
-  @DisplayName("test raté : méthode inscription renvoie null car l'utilisateur existe déjà.")
-  public void testInscriptionV2() {
-    assertThrows(ExceptionBusiness.class,
-        () -> utilisateurUCC.inscription("pseudo1", "nom1", "prenom1", "mdp"
-            , 1));
-  }*/
-
-  //test Inscription
-
 }

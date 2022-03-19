@@ -37,8 +37,6 @@ public class OffreUCCImpl implements OffreUCC {
   public List<OffreDTO> listOffres() {
 
     List<OffreDTO> listOffres = offreDAO.listOffres();
-    System.out.println("apres");
-    System.out.println(listOffres);
     if (listOffres == null) {
       throw new ExceptionBusiness("Il n'y a pas d'offre.",
           Status.BAD_REQUEST); // vérifier statut de réponse

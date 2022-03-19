@@ -34,10 +34,8 @@ const PageAccueil = () => {
   <div class="offres">
     <h2>Offres récentes</h2>
   </div>
-  <div id="offreListRecent"></div>
-  <br>
-  <div id ="offreList"></div>
-  `;
+  <div id="offreListRecent"> </div>
+  <br>`;
 
 
 
@@ -75,6 +73,13 @@ const PageAccueil = () => {
     .catch((err) => onError(err));
   
   if(utilisateur){
+    pageAccueil +=  `
+    <div class="offres">
+      <h2>Toues les offres</h2>
+    </div>
+    <div id="offreList"> </div>
+    <br>`;
+    pageDiv.innerHTML = pageAccueil;
     fetch("/api/offres/listOffres", {
       method: "GET",
       headers:{
@@ -93,38 +98,29 @@ const PageAccueil = () => {
 
 const onOffreRecentListpage = (data) =>{
   const listOffreRecent = document.getElementById("offreListRecent");
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  let listRecent = data.forEach((offre)=>{
-    console.log(offre.idOffre);
-    console.log(offre.photo);
-    console.log(offre.objetDTO.description);
-    console.log(offre.dateOffre.toLocaleTimeString());
-    listRecent+= `<article>
+  let listRecent = ``;
+  data.forEach((offre)=>{
+    const date = `${offre.dateOffre[2]}\\${offre.dateOffre[1]}\\${offre.dateOffre[0]}`
+    listRecent += `<article>
       <h4>${offre.objetDTO.photo}</h4>
       Description : ${offre.objetDTO.description}
-      Date de création : ${offre.dateOffre.toLocaleTimeString()}
-      </article>
-      `;
+      Date de création : ${date}
+      </article>`;
   })
 
   listOffreRecent.innerHTML = listRecent;
 };
 
-const onOffreListpage=(data)=>{
+const onOffreListpage = (data)=>{
   const listOffre = document.getElementById("offreList");
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-
-  let list = data.forEach((offre)=>{
-    console.log(offre.idOffre);
-    console.log(offre.photo);
-    console.log(offre.objetDTO.description);
-    console.log(offre.dateOffre.toLocaleTimeString());
-    list+= `<article>
+  let list = ``;
+  data.forEach((offre)=>{
+    const date = `${offre.dateOffre[2]}\\${offre.dateOffre[1]}\\${offre.dateOffre[0]}`
+    list += `<article>
       <h4>${offre.objetDTO.photo}</h4>
       Description : ${offre.objetDTO.description}
-      Date de création : ${offre.dateOffre.toLocaleTimeString()}
-      </article>
-      `;
+      Date de création : ${date}
+      </article>`;
   })
   listOffre.innerHTML = list;
 };

@@ -9,6 +9,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public class OffreDAOImpl implements OffreDAO {
       while (rs.next()) {
         offreDTO.setIdOffre(rs.getInt(1));
         offreDTO.setObjetDTO(objetDAO.rechercheParId(rs.getInt(2)));
-        offreDTO.setDateOffre(convertToLocalDateTimeViaInstant(rs.getDate(3)));
+        offreDTO.setDateOffre(convertirDateSQLEnLocalDateTime(rs.getDate(3)));
         offreDTO.setPlageHoraire(rs.getString(4));
       }
     }
@@ -112,10 +113,7 @@ public class OffreDAOImpl implements OffreDAO {
 
         offreDTO.setIdOffre(rs.getInt(1));
         offreDTO.setObjetDTO(objetDAO.rechercheParId(rs.getInt(2)));
-        System.out.println("liste offres");
-        LocalDateTime tt = convertToLocalDateTimeViaInstant(rs.getDate(3));
-        System.out.println(tt);
-        offreDTO.setDateOffre(convertToLocalDateTimeViaInstant(rs.getDate(3)));
+        offreDTO.setDateOffre(convertirDateSQLEnLocalDateTime(rs.getDate(3)));
         offreDTO.setPlageHoraire(rs.getString(4));
         listOffres.add(offreDTO);
         offreDTO = factory.getOffre();
@@ -124,11 +122,8 @@ public class OffreDAOImpl implements OffreDAO {
     return listOffres;
   }
 
-  public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
-    System.out.println("date");
-    LocalDateTime tt = dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-    System.out.println(tt);
-    return dateToConvert.toInstant()
+  public LocalDateTime convertirDateSQLEnLocalDateTime(Date dateToConvert) {
+    return Instant.ofEpochMilli(dateToConvert.getTime())
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime();
   }
