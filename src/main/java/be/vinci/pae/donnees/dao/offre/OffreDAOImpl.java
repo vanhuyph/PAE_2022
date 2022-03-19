@@ -3,7 +3,7 @@ package be.vinci.pae.donnees.dao.offre;
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
-import be.vinci.pae.donnees.services.ServiceDAL;
+import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import jakarta.inject.Inject;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -21,7 +21,7 @@ public class OffreDAOImpl implements OffreDAO {
   @Inject
   private DomaineFactory factory;
   @Inject
-  private ServiceDAL serviceDAL;
+  private ServiceBackendDAL serviceBackendDAL;
   @Inject
   private ObjetDAO objetDAO;
 
@@ -36,7 +36,7 @@ public class OffreDAOImpl implements OffreDAO {
   @Override
   public OffreDTO creerOffre(Integer idObjet, String plageHoraire) {
     OffreDTO offreDTO = factory.getOffre();
-    PreparedStatement ps = serviceDAL.getPs("INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?);");
+    PreparedStatement ps = serviceBackendDAL.getPs("INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?);");
 
     try {
       java.util.Date date = new java.util.Date();
@@ -60,7 +60,7 @@ public class OffreDAOImpl implements OffreDAO {
    */
   public List<OffreDTO> listOffres() {
     OffreDTO offreDTO = factory.getOffre();
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "SELECT of.id_offre, of.id_objet, of.date_offre, of.plage_horaire"
             + " FROM projet.objets o, projet.offres of WHERE o.id_objet = of.id_objet AND"
             + " (o.etat_objet = 'offert' OR o.etat_objet = 'interrese')"

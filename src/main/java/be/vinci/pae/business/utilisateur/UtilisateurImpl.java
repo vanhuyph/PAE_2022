@@ -1,5 +1,6 @@
 package be.vinci.pae.business.utilisateur;
 
+import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.vue.Vues;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -13,13 +14,13 @@ public class UtilisateurImpl implements Utilisateur {
   private int idUtilisateur;
   @JsonView(Vues.Public.class)
   private String pseudo;
-  @JsonView(Vues.Public.class)
+  @JsonView(Vues.Internal.class)
   private String nom;
-  @JsonView(Vues.Public.class)
+  @JsonView(Vues.Internal.class)
   private String prenom;
   @JsonView(Vues.Internal.class)
   private String mdp;
-  @JsonView(Vues.Public.class)
+  @JsonView(Vues.Internal.class)
   private String gsm;
   @JsonView(Vues.Public.class)
   private boolean estAdmin;
@@ -27,9 +28,8 @@ public class UtilisateurImpl implements Utilisateur {
   private String etatInscription;
   @JsonView(Vues.Public.class)
   private String commentaire;
-  @JsonView(Vues.Public.class)
-  private int adresse;
-
+  @JsonView(Vues.Internal.class)
+  private AdresseDTO adresse;
 
   @Override
   public int getIdUtilisateur() {
@@ -122,12 +122,12 @@ public class UtilisateurImpl implements Utilisateur {
   }
 
   @Override
-  public int getAdresse() {
+  public AdresseDTO getAdresse() {
     return adresse;
   }
 
   @Override
-  public void setAdresse(int adresse) {
+  public void setAdresse(AdresseDTO adresse) {
     this.adresse = adresse;
   }
 
@@ -160,7 +160,7 @@ public class UtilisateurImpl implements Utilisateur {
 
   @Override
   public String toString() {
-    return "Utilisateur{"
+    return "UtilisateurImpl{"
         + "idUtilisateur=" + idUtilisateur
         + ", pseudo='" + pseudo + '\''
         + ", nom='" + nom + '\''
@@ -168,6 +168,9 @@ public class UtilisateurImpl implements Utilisateur {
         + ", mdp='" + mdp + '\''
         + ", gsm='" + gsm + '\''
         + ", estAdmin=" + estAdmin
+        + ", etatInscription='" + etatInscription + '\''
+        + ", commentaire='" + commentaire + '\''
+        + ", adresse=" + adresse
         + '}';
   }
 }

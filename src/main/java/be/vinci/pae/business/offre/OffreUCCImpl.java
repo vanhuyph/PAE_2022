@@ -1,7 +1,7 @@
 package be.vinci.pae.business.offre;
 
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
-import be.vinci.pae.utilitaires.exceptions.ExceptionBusiness;
+import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.ArrayList;
@@ -22,8 +22,7 @@ public class OffreUCCImpl implements OffreUCC {
   public OffreDTO creerUneOffre(int idObjet, String plageHoraire) {
     OffreDTO offre = offreDAO.creerOffre(idObjet, plageHoraire);
     if (offre == null) {
-      throw new ExceptionBusiness("l'offre n'a pas pu être créé.",
-          Status.INTERNAL_SERVER_ERROR); // vérifier statut de réponse
+      throw new BusinessException("l'offre n'a pas pu être créé."); // vérifier statut de réponse
     }
 
     return offre;
@@ -38,8 +37,7 @@ public class OffreUCCImpl implements OffreUCC {
 
     List<OffreDTO> listOffres = offreDAO.listOffres();
     if (listOffres == null) {
-      throw new ExceptionBusiness("Il n'y a pas d'offre.",
-          Status.BAD_REQUEST); // vérifier statut de réponse
+      throw new BusinessException("Il n'y a pas d'offre."); // vérifier statut de réponse
     }
     return listOffres;
   }
@@ -56,8 +54,7 @@ public class OffreUCCImpl implements OffreUCC {
       listOffresRecent.add(offreDAO.listOffres().get(i));
     }
     if (listOffresRecent == null) {
-      throw new ExceptionBusiness("Il n'y a pas d'offre.",
-          Status.BAD_REQUEST); // vérifier statut de réponse
+      throw new BusinessException("Il n'y a pas d'offre."); // vérifier statut de réponse
     }
     return listOffresRecent;
   }

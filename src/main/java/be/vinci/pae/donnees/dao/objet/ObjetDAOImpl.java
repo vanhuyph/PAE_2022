@@ -4,6 +4,7 @@ import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
+import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +15,7 @@ public class ObjetDAOImpl implements ObjetDAO {
   @Inject
   private DomaineFactory factory;
   @Inject
-  private ServiceDAL serviceDAL;
+  private ServiceBackendDAL serviceBackendDAL;
   @Inject
   private UtilisateurDAO utilisateurDAO;
 
@@ -35,7 +36,7 @@ public class ObjetDAOImpl implements ObjetDAO {
       Integer offreur, String photo) {
     {
       ObjetDTO objetDTO = factory.getObjet();
-      PreparedStatement ps = serviceDAL.getPs(
+      PreparedStatement ps = serviceBackendDAL.getPs(
           "INSERT INTO projet.objets VALUES (DEFAULT, ?, ?, ?, ?, NULL, ?);");
 
       try {
@@ -64,7 +65,7 @@ public class ObjetDAOImpl implements ObjetDAO {
   @Override
   public ObjetDTO rechercheParId(int id) {
     ObjetDTO objetDTO = factory.getObjet();
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "SELECT o.id_objet, o.etat_objet, o.type_objet, o.description,"
             + " o.offreur, o.receveur, o.photo"
             + " FROM projet.objets o WHERE o.id_objet = ?;");

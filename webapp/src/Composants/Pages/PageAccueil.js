@@ -20,6 +20,7 @@ const PageAccueil = () => {
     }
   }
 
+
   let pageAccueil = `
   <div class="conteneur-modal">
     <div class="overlay declencheur-modal"></div>
@@ -42,6 +43,7 @@ const PageAccueil = () => {
 
  
   pageDiv.innerHTML = pageAccueil;
+  Navbar()
   const conteneurModal = document.querySelector(".conteneur-modal")
   const declencheurModal = document.querySelectorAll(".declencheur-modal")
   
