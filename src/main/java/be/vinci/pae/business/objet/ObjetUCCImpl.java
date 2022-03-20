@@ -1,9 +1,9 @@
 package be.vinci.pae.business.objet;
 
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
+import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.core.Response.Status;
 import java.sql.SQLException;
 
 public class ObjetUCCImpl implements ObjetUCC {
@@ -11,6 +11,8 @@ public class ObjetUCCImpl implements ObjetUCC {
   @Inject
   ObjetDAO objetDAO; // vérifier injection de dépendances
 
+  @Inject
+  ServiceDAL serviceDAL;
 
   /**
    * Creer un objet.
@@ -24,12 +26,13 @@ public class ObjetUCCImpl implements ObjetUCC {
   @Override
   public ObjetDTO creerUnObjet(int idOffreur, String typeObjet, String description, int offreur,
       String photo) {
-
+    serviceDAL.commencerTransaction();
     ObjetDTO objet = objetDAO.creerObjet("offert", typeObjet, description, offreur, photo);
     if (objet == null) {
+      serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("objet n'a pas pu être créé."); // vérifier statut de réponse
     }
-
+    serviceDAL.commettreTransaction();
     return objet;
   }
 
@@ -42,11 +45,13 @@ public class ObjetUCCImpl implements ObjetUCC {
    */
   @Override
   public ObjetDTO rechercheParId(int id) {
+    serviceDAL.commencerTransaction();
     ObjetDTO objetDTO = objetDAO.rechercheParId(id);
     if (objetDTO == null) {
+      serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("objet n'a pas pu être trouvé."); // vérifier statut de réponse
     }
-
+    serviceDAL.commettreTransaction();
     return objetDTO;
   }
 

@@ -2,6 +2,7 @@ package be.vinci.pae.presentation.ressources;
 
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
+import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -17,7 +18,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.List;
-import javax.management.MalformedObjectNameException;
 
 
 @Singleton
@@ -71,6 +71,7 @@ public class RessourceOffre {
   @GET
   @Path("listOffres")
   @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
   public List<OffreDTO> listOffres() {
     List<OffreDTO> offreDTO = offreUCC.listOffres();
     if (offreDTO == null) {
