@@ -370,6 +370,9 @@ Fin Message de bienvenue*/
     width: 71.45px;
     text-align: center;
 }
+.est-admin input{
+    margin: auto;
+}
 .refus-raison{
     text-align: center;
     margin-top: 10px;
@@ -413,6 +416,11 @@ Fin Message de bienvenue*/
         width: 150px;
     }
 
+}
+
+.ui.checkbox input[type=checkbox]{
+    opacity: 1 !important;
+    margin: auto !important;
 }
 @media screen and (max-width: 340px) {
     #choix-demande button{

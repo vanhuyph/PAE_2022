@@ -75,7 +75,7 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode inscription(UtilisateurDTO utilisateurDTO) {
-    
+
     UtilisateurDTO utilisateur = null;
 
     utilisateurUCC.rechercheParPseudoInscription(utilisateurDTO.getPseudo());

@@ -31,7 +31,6 @@ public class UtilisateurImpl implements Utilisateur {
   @JsonView(Vues.Internal.class)
   private AdresseDTO adresse;
 
-
   @Override
   public int getIdUtilisateur() {
     return idUtilisateur;
@@ -161,7 +160,7 @@ public class UtilisateurImpl implements Utilisateur {
 
   @Override
   public String toString() {
-    return "Utilisateur{"
+    return "UtilisateurImpl{"
         + "idUtilisateur=" + idUtilisateur
         + ", pseudo='" + pseudo + '\''
         + ", nom='" + nom + '\''
@@ -169,6 +168,9 @@ public class UtilisateurImpl implements Utilisateur {
         + ", mdp='" + mdp + '\''
         + ", gsm='" + gsm + '\''
         + ", estAdmin=" + estAdmin
+        + ", etatInscription='" + etatInscription + '\''
+        + ", commentaire='" + commentaire + '\''
+        + ", adresse=" + adresse
         + '}';
   }
 }

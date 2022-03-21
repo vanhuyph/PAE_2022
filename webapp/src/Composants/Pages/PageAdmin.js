@@ -159,7 +159,9 @@ const surListeAttente = (data) => {
             <p>${element.nom}</p>
             <p>${element.prenom}</p>
             <div class="est-admin">
+              <div class="ui checkbox">
               <input id="check" type="checkbox">
+              </div>
             </div>
             <div class="boutons">
                 <button id="confirmer" type="submit" class="ui green button">Confirmer</button>
@@ -281,7 +283,9 @@ const surListeRefus = (data) => {
             <p>${element.nom}</p>
             <p>${element.prenom}</p>
             <div class="est-admin">
-              <input id="check" type="checkbox">
+              <div class="ui checkbox">
+                <input id="check" type="checkbox">
+              </div>
             </div>
             <div class="">
                 <button id="confirmer" type="submit" class="ui green button">Confirmer</button>

@@ -6,4 +6,7 @@ public class FatalException extends RuntimeException {
     super(message, cause);
   }
 
+  public FatalException(String message) {
+    super(message);
+  }
 }

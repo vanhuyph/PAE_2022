@@ -3,6 +3,7 @@ package be.vinci.pae.donnees.dao.utilisateur;
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
+import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
@@ -17,7 +18,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Inject
   private DomaineFactory factory;
   @Inject
-  private ServiceDAL serviceDAL;
+  private ServiceBackendDAL serviceBackendDAL;
 
   /**
    * Recherche un utilisateur via un pseudo unique dans la base de données.
@@ -29,13 +30,12 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, a.id_adresse, a.rue, a.numero, a.boite, "
             + "a.code_postal, a.commune FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE u.pseudo = ?;");
-
     try {
       ps.setString(1, pseudo);
       try (ResultSet rs = ps.executeQuery()) {
@@ -46,6 +46,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return utilisateurDTO;
@@ -61,7 +62,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO rechercheParId(int id) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire,  a.id_adresse, a.rue, a.numero, a.boite, "
             + "a.code_postal, a.commune FROM projet.utilisateurs u "
@@ -77,6 +78,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return utilisateurDTO;
@@ -91,7 +93,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    */
   @Override
   public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "INSERT INTO projet.utilisateurs "
             + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL) RETURNING "
             + "id_utilisateur, etat_inscription, commentaire;");
@@ -111,6 +113,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return utilisateur;
@@ -127,7 +130,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "UPDATE projet.utilisateurs SET etat_inscription = ?, est_admin = ? "
             + "WHERE id_utilisateur = ? "
             + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
@@ -144,6 +147,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return utilisateurDTO;
@@ -160,7 +164,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO refuserInscription(int id, String commentaire) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "UPDATE projet.utilisateurs SET etat_inscription = ?, commentaire = ? "
             + "WHERE id_utilisateur = ? "
             + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
@@ -177,6 +181,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return utilisateurDTO;
@@ -191,7 +196,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, a.id_adresse, a.rue, a.numero, a.boite, "
             + "a.code_postal, a.commune FROM projet.utilisateurs u "
@@ -209,6 +214,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return liste;
@@ -220,19 +226,14 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @param rs             : le ResultSet
    * @param utilisateurDTO : l'utilisateur vide, qui va être rempli
    * @return utilisateurDTO : l'utilisateur rempli
-   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private UtilisateurDTO remplirUtilisateursDepuisRS(ResultSet rs, UtilisateurDTO utilisateurDTO) {
     try {
-      utilisateurDTO.setIdUtilisateur(rs.getInt(1));
-      utilisateurDTO.setPseudo(rs.getString(2));
-      utilisateurDTO.setNom(rs.getString(3));
-      utilisateurDTO.setPrenom(rs.getString(4));
-      utilisateurDTO.setMdp(rs.getString(5));
-      utilisateurDTO.setGsm(rs.getString(6));
-      utilisateurDTO.setEstAdmin(rs.getBoolean(7));
-      utilisateurDTO.setEtatInscription(rs.getString(8));
-      utilisateurDTO.setCommentaire(rs.getString(9));
+      utilisateurDTO = remplirUtilisateurSansAdresse(utilisateurDTO, rs.getInt(1),
+          rs.getString(2), rs.getString(3), rs.getString(4),
+          rs.getString(5), rs.getString(6), rs.getBoolean(7),
+          rs.getString(8), rs.getString(9));
       AdresseDTO adresseDTO = factory.getAdresse();
       adresseDTO.setIdAdresse(rs.getInt(10));
       adresseDTO.setRue(rs.getString(11));
@@ -243,33 +244,29 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       utilisateurDTO.setAdresse(adresseDTO);
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return utilisateurDTO;
   }
 
   /**
-   * Rempli les données de l'utilisateur depuis un ResultSet.
+   * Rempli les données de l'utilisateur depuis un ResultSet qui ne possède pas d'adresse.
    *
    * @param rs             : le ResultSet
    * @param utilisateurDTO : l'utilisateur vide, qui va être rempli
    * @return utilisateurDTO : l'utilisateur rempli
-   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private UtilisateurDTO remplirUtilisateursDepuisRSSansAdresse(ResultSet rs,
       UtilisateurDTO utilisateurDTO) {
     try {
-      utilisateurDTO.setIdUtilisateur(rs.getInt(1));
-      utilisateurDTO.setPseudo(rs.getString(2));
-      utilisateurDTO.setNom(rs.getString(3));
-      utilisateurDTO.setPrenom(rs.getString(4));
-      utilisateurDTO.setMdp(rs.getString(5));
-      utilisateurDTO.setGsm(rs.getString(6));
-      utilisateurDTO.setEstAdmin(rs.getBoolean(7));
-      utilisateurDTO.setEtatInscription(rs.getString(8));
-      utilisateurDTO.setCommentaire(rs.getString(9));
+      utilisateurDTO = remplirUtilisateurSansAdresse(utilisateurDTO, rs.getInt(1),
+          rs.getString(2), rs.getString(3), rs.getString(4),
+          rs.getString(5), rs.getString(6), rs.getBoolean(7),
+          rs.getString(8), rs.getString(9));
       AdresseDTO adresseDTO = factory.getAdresse();
-      PreparedStatement ps = serviceDAL.getPs(
+      PreparedStatement ps = serviceBackendDAL.getPs(
           "SELECT id_adresse, rue, numero, boite, code_postal, commune "
               + "FROM projet.adresses WHERE id_adresse = ?;");
       try {
@@ -287,18 +284,19 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       utilisateurDTO.setAdresse(adresseDTO);
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return utilisateurDTO;
   }
 
   /**
-   * Rempli les données de l'utilisateur depuis un ResultSet.
+   * Rempli les données de l'adresse depuis un ResultSet.
    *
    * @param rs         : le ResultSet
-   * @param adresseDTO : l'utilisateur vide, qui va être rempli
-   * @return utilisateurDTO : l'utilisateur rempli
-   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   * @param adresseDTO : l'adresse vide, qui va être rempli
+   * @return adresseDTO : l'adresse rempli
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private AdresseDTO remplirAdresseDepuisRS(ResultSet rs, AdresseDTO adresseDTO) {
     try {
@@ -310,9 +308,40 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       adresseDTO.setCommune(rs.getString(6));
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return adresseDTO;
+  }
+
+  /**
+   * Rempli les données de l'utilisateur sans adresse.
+   *
+   * @param utilisateurDTO  : l'utilisateur vide, qui va être rempli
+   * @param id              : l'id de l'utilisateur
+   * @param pseudo          : le pseudo de l'utilisateur
+   * @param nom             : le nom de l'utilisateur
+   * @param prenom          : le prenom de l'utilisateur
+   * @param mdp             : le mot de passe de l'utilisateur
+   * @param gsm             : le gsm de l'utilisateur
+   * @param estAdmin        : si l'utilisateur est admin ou non
+   * @param etatInscription : l'etat d'inscription de l'utilisateur
+   * @param commentaire     : le commentaire de refus concernant l'inscription de l'utilisateur
+   * @return utilisateurDTO  : l'utilisateur rempli
+   */
+  private UtilisateurDTO remplirUtilisateurSansAdresse(UtilisateurDTO utilisateurDTO, int id,
+      String pseudo, String nom, String prenom, String mdp, String gsm, boolean estAdmin,
+      String etatInscription, String commentaire) {
+    utilisateurDTO.setIdUtilisateur(id);
+    utilisateurDTO.setPseudo(pseudo);
+    utilisateurDTO.setNom(nom);
+    utilisateurDTO.setPrenom(prenom);
+    utilisateurDTO.setMdp(mdp);
+    utilisateurDTO.setGsm(gsm);
+    utilisateurDTO.setEstAdmin(estAdmin);
+    utilisateurDTO.setEtatInscription(etatInscription);
+    utilisateurDTO.setCommentaire(commentaire);
+    return utilisateurDTO;
   }
 
 }

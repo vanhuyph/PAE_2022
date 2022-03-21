@@ -1,7 +1,7 @@
 package be.vinci.pae.donnees.dao.adresse;
 
-import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.adresse.AdresseDTO;
+import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
@@ -13,9 +13,7 @@ import java.sql.Types;
 public class AdresseDAOImpl implements AdresseDAO {
 
   @Inject
-  private DomaineFactory factory;
-  @Inject
-  private ServiceDAL serviceDAL;
+  private ServiceBackendDAL serviceBackendDAL;
 
   /**
    * Ajoute une adresse dans la base de données.
@@ -26,7 +24,7 @@ public class AdresseDAOImpl implements AdresseDAO {
    */
   @Override
   public AdresseDTO ajouterAdresse(AdresseDTO adresseDTO) {
-    PreparedStatement ps = serviceDAL.getPs(
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?)  RETURNING id_adresse, "
             + "rue, numero, boite, code_postal, commune;");
     try {
@@ -43,6 +41,7 @@ public class AdresseDAOImpl implements AdresseDAO {
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return adresseDTO;
@@ -68,6 +67,7 @@ public class AdresseDAOImpl implements AdresseDAO {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return adresse;
