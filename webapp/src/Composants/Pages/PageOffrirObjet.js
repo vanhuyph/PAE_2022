@@ -135,11 +135,11 @@ const choixTypeObjet = (data) => {
 const previsualiserPhoto  =  (e) => {
     var image = document.getElementById("image")
 
-    const picture = document.getElementById("photo").files[0];
-    console.log(picture)
-    if (picture) {
+    const photo = document.getElementById("photo").files[0];
+    console.log(photo)
+    if (photo) {
         // On change l'URL de l'image
-        image.src = URL.createObjectURL(picture)
+        image.src = URL.createObjectURL(photo)
     }
 }
 const envoyerPhoto = (e) => {
