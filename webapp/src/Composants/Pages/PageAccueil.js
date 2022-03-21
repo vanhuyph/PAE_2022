@@ -77,7 +77,7 @@ const PageAccueil = () => {
   if(utilisateur){
     pageAccueil +=  `
     <div class="offres">
-      <h2>Toues les offres</h2>
+      <h2>Toutes les offres</h2>
     </div>
     <div id="offreList"> </div>
     <br>`;
@@ -86,7 +86,7 @@ const PageAccueil = () => {
       method: "GET",
       headers:{
         "Content-Type": "application/json",
-      },
+        Authorization : utilisateur.token      },
     }).then((response)=>{
       if (!response.ok)
       throw new Error(

@@ -9,4 +9,6 @@ public interface OffreDAO {
 
   List<OffreDTO> listOffres();
 
+  List<OffreDTO> listOffresRecent();
+
 }

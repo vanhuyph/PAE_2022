@@ -4,7 +4,6 @@ import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import jakarta.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
 public class OffreUCCImpl implements OffreUCC {
@@ -42,6 +41,7 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commencerTransaction();
     List<OffreDTO> listOffres = offreDAO.listOffres();
     if (listOffres == null) {
+      serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("Il n'y a pas d'offre."); // vérifier statut de réponse
     }
     serviceDAL.commettreTransaction();
@@ -55,12 +55,9 @@ public class OffreUCCImpl implements OffreUCC {
    */
   public List<OffreDTO> listOffresRecent() {
     serviceDAL.commencerTransaction();
-    List<OffreDTO> listOffresRecent = new ArrayList<>();
-
-    for (int i = 0; i < 2; i++) {
-      listOffresRecent.add(offreDAO.listOffres().get(i));
-    }
+    List<OffreDTO> listOffresRecent = offreDAO.listOffresRecent();
     if (listOffresRecent == null) {
+      serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("Il n'y a pas d'offre."); // vérifier statut de réponse
     }
     serviceDAL.commettreTransaction();

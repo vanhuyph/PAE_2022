@@ -1,5 +1,7 @@
 package be.vinci.pae;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.objet.ObjetDTO;
@@ -9,9 +11,13 @@ import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
@@ -85,11 +91,15 @@ public class OffreUCCTest {
 
   }
 
-  /*@Test
-  @DisplayName("Test reussi : méthode listOffresRecent")
+  @Test
+  @DisplayName("Test reussi : méthode listOffresRecent renvoie bien une liste")
   public void testlistOffresRecent() {
-    Mockito.when(objetUCC.rechercheParId(objetDTO1.getIdObjet())).thenReturn(objetDTO1);
-    assertEquals(offreUCC.listOffresRecent().get(1), offreDTO1);
-  }*/
+    List<OffreDTO> listOffre = new ArrayList<>();
+    assertEquals(offreUCC.listOffresRecent(), listOffre);
+  }
+
+
+
+
 
 }

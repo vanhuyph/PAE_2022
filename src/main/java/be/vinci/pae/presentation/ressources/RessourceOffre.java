@@ -3,6 +3,7 @@ package be.vinci.pae.presentation.ressources;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.presentation.ressources.filtres.Autorisation;
+import be.vinci.pae.utilitaires.exceptions.PresentationException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -94,9 +95,7 @@ public class RessourceOffre {
   public List<OffreDTO> listOffresRecent() {
     List<OffreDTO> offreDTO = offreUCC.listOffresRecent();
     if (offreDTO == null) {
-      throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
-          .entity("Liste des offres a echoué").type(MediaType.TEXT_PLAIN)
-          .build());
+      throw new PresentationException("Liste des offres a echoué",Status.BAD_REQUEST);
     }
     return offreDTO;
   }
