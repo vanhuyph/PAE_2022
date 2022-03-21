@@ -2,35 +2,25 @@ import {
     recupUtilisateurDonneesSession
 } from "../../utilitaires/session";
 import Navbar from "../Navbar/Navbar";
+import {Redirect} from "../Router/Router";
 
-//pour l'instant la navbar ne rederige pas vers la bonne page (le bouton se clique pas)
-
-
-// à regarder pour le framework je me souvenais plus c'était lequel
+// style pas travailler
 
 
-// pas encore de possibilité d'ajout de photo à voir le cours d'architecture
+// pas encore de possibilité d'ajout de photo à voir le cours d'architecture => cfr mail Leleux
+const typesObjet =
+    `
+        <select type="text" id="choixTypeObjet" className="type">
+        </select>
+        <p class="message-erreur erreur-type"></p>
+    `
 
-//différent type hardcodé pour l'instant
-let pageOffrirObjet = `
+const pageOffrirObjet = `
     <div class="page-offrirObjet">
     <h2>Offrir un objet</h2>
     <form id="formulaire-offrirObjet" class="ui form">
     
-        <div class="field">
-          <label for="type">Type</label>
-          <div class="type-conteneur">
-              <select type="text" id="type" class="type">
-                <option value="empty" selected hidden=true>Selectionnez le type</option>
-                <option value="accessoire">Accessoire</option>
-                <option value="decoration">Decoration</option>
-                <option value="plante">Plante</option>
-                <option value="jouet">Jouet</option>
-                <option value="vetement">Vêtement</option>
-              </select>
-              <p class="message-erreur erreur-type"></p>
-          </div>
-        </div>
+        
         
         <div class="field">
           <label for="description">Description</label>
@@ -47,7 +37,11 @@ let pageOffrirObjet = `
               <p class="message-erreur erreur-horaire"></p>
           </div>
         </div>
-          
+         <div class="field">
+          <label for="type">Type</label>
+           
+            ${typesObjet}
+        </div>
         <button class="ui secondary inverted button" type="submit">Offrir l'objet</button>
         
     </form>    
@@ -58,23 +52,63 @@ const PageOffrirObjet = () => {
     pageDiv.innerHTML = pageOffrirObjet;
 
 
-    let formOffrirObjet = document.querySelector("#formulaire-offrirObjet");
+    const formOffrirObjet = document.querySelector("#formulaire-offrirObjet");
 
     if (utilisateur) {
         Navbar();
 
+        fetch("/api/typesObjet/liste", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: utilisateur.token,
+            },
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(
+                    "Error code : " + response.status + " : " + response.statusText
+                );
+            }
+            console.log(response);
+            return response.json();
+        })
+        .then((data) => choixTypeObjet(data));
+
         formOffrirObjet.addEventListener("submit", surOffrirObjet);
+
+
     } else {
-        //rediriger vers l'accueil avec un message d'erreur (on ne peut pas accéder à offrir un objet si pas connecté)
+        Redirect("/connexion");
+
     }
 
 
 }
 
+const choixTypeObjet = (data) => {
+
+    let choixTypeObjet = document.querySelector("#choixTypeObjet");
+    if (data.length === 0 || !data) {
+        let listeVide = `Il n'y aucun type d'objet`;
+        choixTypeObjet.innerHTML = listeVide;
+        return;
+    }
+    let liste = `<option value="empty" selected hidden=true>Selectionnez le type</option>`;
+    data.forEach((typeObjet) => {
+        console.log(typeObjet)
+        liste += `<option value=${typeObjet.idType}>${typeObjet.nom}</option>`;
+    });
+
+    choixTypeObjet.innerHTML = liste;
+
+}
+
+
 const surOffrirObjet = (e) => {
     e.preventDefault();
     console.log("debutListenerOffriObjet");
-    let typeObjet = document.querySelector("#type");
+    let typeObjet = document.querySelector("#choixTypeObjet");
     let description = document.querySelector("#description");
     let plageHoraire = document.querySelector("#horaire");
 
@@ -105,60 +139,61 @@ const surOffrirObjet = (e) => {
     //copie collé de code avec la recuperation déjà effectuée au dessus, mais j'arrivais pas à transférer les données
     // peut etre faire par un paramètre à la méthode?
     const utilisateur = recupUtilisateurDonneesSession();
-    const idOffreur = utilisateur.utilisateur.idUtilisateur;
+    const offreur = utilisateur.utilisateur.idUtilisateur;
     
 
-    console.log("id offreur : " + idOffreur);
+    console.log("id offreur : " + offreur);
     if (description.value !== ""
         && plageHoraire.value !== ""
         && typeObjet.value !== "empty") {
 
         console.log("avant création json objet");
-        let objet = {
-            id_offreur: idOffreur,
-            type_objet: typeObjet.value,
+        let nouvelOffre = {
+            offreur: offreur,
+            typeObjet: typeObjet.value,
             description: description.value,
-            photo: "photoTest"
+            //photo: "photoTest"
+            plageHoraire: plageHoraire.value,
         }
-        console.log("juste avant premier fetch");
-        const reponseObjet = fetch("/api/objets/creerObjet", {
+        console.log("plageHoraire "+plageHoraire.value);
+
+
+        fetch("/api/offres/creerOffre", {
             method: "POST",
-            body: JSON.stringify(objet),
+            body: JSON.stringify(nouvelOffre),
             headers: {
                 "Content-Type": "application/json",
             }
         })
-            .then((reponse) => {
-                if (!reponse.ok) {
-                    throw new Error(
-                        "Error code : " + reponse.status + " : " + reponse.statusText)
-                }
-                return reponse.json();
-            })
+        .then((reponseOffre) => {
 
-        // console.log("juste avant second fetch");
-        console.log("id objet du premier fetch :" + reponseObjet.id_objet);
-        // let offre = {
-        //
-        //     id_objet: reponseObjet.id_objet,
-        //     plage_horaire: plageHoraire.value
-        // }
-
-        // fetch("/api/offres/creerOffre", {
-        //     method: "POST",
-        //     body: JSON.stringify(offre),
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     }
-        // })
-        //     .then((reponseOffre) => {
-        //         if (!reponseOffre.ok) {
-        //             throw new Error(
-        //                 "Error code : " + reponseOffre.status + " : " + reponseOffre.statusText)
-        //         }
-        //         return reponseOffre.json();
-        //     })
+            if (!reponseOffre.ok) {
+                throw new Error(
+                    "Error code : " + reponseOffre.status + " : " + reponseOffre.statusText)
+            }
+            return reponseOffre.json();
+        }).then((data) =>{ console.log(data)})
     }
+
+      /*  console.log("juste avant premier fetch");
+        fetch("/api/objets/creerObjet", {
+            method: "POST",
+            body: JSON.stringify(nouvelObjet),
+            headers: {
+                "Content-Type": "application/json",
+                //Authorization: utilisateur.token,
+            }
+        })
+        .then((reponse) => {
+            if (!reponse.ok) {
+                throw new Error(
+                    "Error code : " + reponse.status + " : " + reponse.statusText + " : " + reponse.text())
+            }
+            console.log(reponse)
+            return reponse.json()
+        }).then((data) =>surCreerOffre(data))*/
+
+
 
 }
 

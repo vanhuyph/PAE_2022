@@ -86,7 +86,8 @@ const PageAccueil = () => {
       method: "GET",
       headers:{
         "Content-Type": "application/json",
-        Authorization : utilisateur.token      },
+        Authorization : utilisateur.token      
+      },
     }).then((response)=>{
       if (!response.ok)
       throw new Error(

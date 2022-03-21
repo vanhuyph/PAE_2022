@@ -64,6 +64,7 @@ CREATE TABLE projet.offres
 );
 
 
+
 INSERT INTO projet.adresses
 VALUES (DEFAULT, 'Rue1', 21, NULL, 1420, 'Ophain');
 INSERT INTO projet.adresses
@@ -107,8 +108,41 @@ INSERT INTO projet.offres
 VALUES (DEFAULT, 3, '2017-02-05', ' ');
 
 
-SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, u.etat_inscription, u.commentaire,  o.id_objet, o.etat_objet, o.type_objet, o.description, o.photo, of.id_offre, of.date_offre, of.plage_horaire
-FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.etat_objet
-WHERE o.etat_objet = 'offert' OR o.etat_objet = 'interrese'
+SELECT a.id_adresse,
+       a.rue,
+       a.numero,
+       a.boite,
+       a.code_postal,
+       a.commune,
+
+       u.id_utilisateur,
+       u.pseudo,
+       u.nom,
+       u.prenom,
+       u.mdp,
+       u.gsm,
+       u.est_admin,
+       u.etat_inscription,
+       u.commentaire,
+
+       t.id_type,
+       t.nom,
+
+       o.id_objet,
+       o.etat_objet,
+       o.description,
+       o.photo,
+
+       of.id_offre,
+       of.date_offre,
+       of.plage_horaire
+
+FROM projet.offres of
+         LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet
+         LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur
+         LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse
+         LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet
+WHERE o.etat_objet = 'offert'
+   OR o.etat_objet = 'interrese'
 ORDER BY of.date_offre DESC
-LIMIT 2;
+LIMIT 2

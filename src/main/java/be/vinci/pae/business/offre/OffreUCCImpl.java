@@ -1,5 +1,7 @@
 package be.vinci.pae.business.offre;
 
+import be.vinci.pae.business.objet.ObjetDTO;
+import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
@@ -10,15 +12,16 @@ public class OffreUCCImpl implements OffreUCC {
 
   @Inject
   OffreDAO offreDAO; // vérifier injection de dépendances
-
+  @Inject
+  ObjetDAO objetDAO;
   @Inject
   ServiceDAL serviceDAL;
 
   /**
-   * Creer une offre.
+   * Créer une offre.
    *
    * @param plageHoraire : disponibilité de l'offreur
-   * @return l'offre créée
+   * @return offre : l'offre créée
    */
   @Override
   public OffreDTO creerUneOffre(int idObjet, String plageHoraire) {
@@ -26,10 +29,32 @@ public class OffreUCCImpl implements OffreUCC {
     OffreDTO offre = offreDAO.creerOffre(idObjet, plageHoraire);
     if (offre == null) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("l'offre n'a pas pu être créé."); // vérifier statut de réponse
+      throw new BusinessException("L'offre n'a pas pu être créée"); // vérifier statut de réponse
     }
     serviceDAL.commettreTransaction();
     return offre;
+  }
+
+  /**
+   * Créer un objet.
+   *
+   * @param typeObjet   : le type de l'objet
+   * @param description : description de l'objet
+   * @param offreur     : id de l'utilisateur offrant l'objet
+   * @param photo       : chemin de la photo, peut être null
+   * @return objet : l'objet créé
+   */
+  @Override
+  public ObjetDTO creerUnObjet(int idOffreur, int typeObjet, String description, int offreur,
+      String photo) {
+    serviceDAL.commencerTransaction();
+    ObjetDTO objet = objetDAO.creerObjet("offert", typeObjet, description, offreur, photo);
+    if (objet == null) {
+      serviceDAL.retourEnArriereTransaction();
+      throw new BusinessException("L'objet n'a pas pu être créé"); // vérifier statut de réponse
+    }
+    serviceDAL.commettreTransaction();
+    return objet;
   }
 
   /**

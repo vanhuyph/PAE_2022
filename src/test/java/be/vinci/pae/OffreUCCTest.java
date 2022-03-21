@@ -66,7 +66,7 @@ public class OffreUCCTest {
     objetDTO1.setOffreur(utilisateurDTO);
     objetDTO1.setReceveur(null);
     objetDTO1.setPhoto("");
-    objetDTO1.setTypeObjet("machine");
+    objetDTO1.setTypeObjet(null);
 
     objetDTO2 = domaineFactory.getObjet();
     objetDTO2.setIdObjet(2);
@@ -75,7 +75,7 @@ public class OffreUCCTest {
     objetDTO2.setOffreur(utilisateurDTO);
     objetDTO2.setReceveur(null);
     objetDTO2.setPhoto("");
-    objetDTO2.setTypeObjet("info");
+    objetDTO2.setTypeObjet(null);
 
     offreDTO1 = domaineFactory.getOffre();
     offreDTO1.setIdOffre(1);

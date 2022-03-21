@@ -1,12 +1,11 @@
 package be.vinci.pae.business.objet;
 
-
+import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = ObjetImpl.class)
 public interface ObjetDTO {
-
 
   int getIdObjet();
 
@@ -16,9 +15,9 @@ public interface ObjetDTO {
 
   void setEtatObjet(String etatObjet);
 
-  String getTypeObjet();
+  TypeObjetDTO getTypeObjet();
 
-  void setTypeObjet(String typeObjet);
+  void setTypeObjet(TypeObjetDTO typeObjet);
 
   String getDescription();
 

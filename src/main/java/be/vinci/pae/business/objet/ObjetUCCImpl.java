@@ -24,7 +24,7 @@ public class ObjetUCCImpl implements ObjetUCC {
    * @return l'objet créé
    */
   @Override
-  public ObjetDTO creerUnObjet(int idOffreur, String typeObjet, String description, int offreur,
+  public ObjetDTO creerUnObjet(int idOffreur, int typeObjet, String description, int offreur,
       String photo) {
     serviceDAL.commencerTransaction();
     ObjetDTO objet = objetDAO.creerObjet("offert", typeObjet, description, offreur, photo);
