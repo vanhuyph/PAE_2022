@@ -34,11 +34,12 @@ public class OffreDAOImpl implements OffreDAO {
   @Override
   public OffreDTO creerOffre(Integer idObjet, String plageHoraire) {
     OffreDTO offreDTO = factory.getOffre();
-    PreparedStatement ps = serviceBackendDAL.getPs("INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?);");
+    PreparedStatement ps = serviceBackendDAL.getPs(
+        "INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?);");
 
     try {
-      java.util.Date date = new java.util.Date();
-      java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+      LocalDateTime date = LocalDateTime.now();
+      Date sqlDate = Date.valueOf(date.toLocalDate());
       ps.setInt(1, idObjet);
       ps.setDate(2, sqlDate);
       ps.setString(3, plageHoraire);
@@ -151,10 +152,9 @@ public class OffreDAOImpl implements OffreDAO {
     List<OffreDTO> listOffres = new ArrayList<>();
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
-         objetDTO = factory.getObjet();
-         adresseDTO = factory.getAdresse();
-         offreur = factory.getUtilisateur();
-
+        objetDTO = factory.getObjet();
+        adresseDTO = factory.getAdresse();
+        offreur = factory.getUtilisateur();
         adresseDTO.setIdAdresse(rs.getInt(1));
         adresseDTO.setRue(rs.getString(2));
         adresseDTO.setNumero(rs.getInt(3));
