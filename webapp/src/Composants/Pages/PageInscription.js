@@ -105,7 +105,7 @@ const PageInscription = () => {
 const surInscription = (e) => {
   e.preventDefault()
 
-  //Recupération des valeurs dans le formilaire
+  // Recupération des valeurs dans le formilaire
   let pseudo = document.querySelector("#pseudo").value
   let nom = document.querySelector("#nom").value
   let prenom = document.querySelector("#prenom").value
