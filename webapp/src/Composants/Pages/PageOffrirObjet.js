@@ -142,15 +142,19 @@ const previsualiserPhoto  =  (e) => {
         image.src = URL.createObjectURL(photo)
     }
 }
-const envoyerPhoto = (e) => {
-    const fichierDEntree = document.querySelector('input[name=photo]');
+const envoyerPhoto = async (e) => {
+    e.preventDefault()
+    const fichierDEntree =  document.getElementById("photo");
     const formDonnee = new FormData();
-    formDonnee.append('file', fichierDEntree.files[0]);
+    console.log("append")  ;
+    formDonnee.append('photo', fichierDEntree.files[0]);
+    console.log("fetch")
     const options = {
         method: 'POST',
-        body: formDonnee
+        body: formDonnee,
     };
-    fetch('http://localhost:8080/telechargementPhoto', options);
+    await fetch('/api/offres/telechargementPhoto', options);
+    console.log("fin fetch");
     return false;
 }
 const surOffrirObjet = (e) => {
