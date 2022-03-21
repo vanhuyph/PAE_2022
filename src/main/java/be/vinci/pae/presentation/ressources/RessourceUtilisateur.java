@@ -56,9 +56,7 @@ public class RessourceUtilisateur {
     }
     String pseudo = json.get("pseudo").asText();
     String mdp = json.get("mdp").asText();
-
     UtilisateurDTO utilisateurDTO = utilisateurUCC.connexion(pseudo, mdp);
-
     ObjectNode noeud = creationToken(utilisateurDTO);
     return noeud;
   }
@@ -75,13 +73,8 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode inscription(UtilisateurDTO utilisateurDTO) {
-
-    UtilisateurDTO utilisateur = null;
-
-    utilisateurUCC.rechercheParPseudoInscription(utilisateurDTO.getPseudo());
-
+    UtilisateurDTO utilisateur;
     utilisateur = utilisateurUCC.inscription(utilisateurDTO);
-
     ObjectNode noeud = creationToken(utilisateur);
     return noeud;
   }
@@ -104,9 +97,7 @@ public class RessourceUtilisateur {
       throw new PresentationException("L'utilisateur n'a pas été retrouvé",
           Status.BAD_REQUEST);
     }
-
     utilisateur = utilisateurUCC.rechercheParPseudo(utilisateur.getPseudo());
-
     ObjectNode noeud = creationToken(utilisateur);
     return noeud;
   }
@@ -133,9 +124,7 @@ public class RessourceUtilisateur {
       throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
     boolean estAdmin = json.get("estAdmin").asBoolean();
-
     UtilisateurDTO utilisateurDTO = utilisateurUCC.confirmerInscription(id, estAdmin);
-
     return utilisateurDTO;
   }
 
@@ -160,9 +149,7 @@ public class RessourceUtilisateur {
     if (id < 1) {
       throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
-
     UtilisateurDTO utilisateurDTO = utilisateurUCC.refuserInscription(id, commentaire);
-
     return utilisateurDTO;
   }
 

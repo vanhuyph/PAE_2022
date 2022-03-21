@@ -147,24 +147,6 @@ public class UtilisateurUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode rechercheParPseudoInscription renvoie un utilisateur existant.")
-  public void testRechercheParPseudoInscriptionV1() {
-    String pseudo = utilisateurDTO1.getPseudo();
-    Mockito.when(utilisateurDAO.rechercheParPseudo(pseudo)).thenReturn(utilisateurDTO1);
-    assertThrows(ConflitException.class,
-        () -> utilisateurUCC.rechercheParPseudoInscription(pseudo));
-  }
-
-  @Test
-  @DisplayName("Test réussi : méthode rechercheParPseudoInscription renvoie un utilisateur "
-      + "vide car le pseudo n'est pas existant.")
-  public void testRechercheParPseudoInscriptionV2() {
-    String pseudo = utilisateurDTO1.getPseudo();
-    Mockito.when(utilisateurDAO.rechercheParPseudo(pseudo)).thenReturn(utilisateurDTO3);
-    assertEquals(utilisateurDTO3, utilisateurUCC.rechercheParPseudoInscription(pseudo));
-  }
-
-  @Test
   @DisplayName("Test réussi : méthode confirmerInscription renvoie bien un utilisateur "
       + "avec son état d'inscription à confirmé mais ne le passe pas en admin.")
   public void testConfirmerInscriptionV1() {

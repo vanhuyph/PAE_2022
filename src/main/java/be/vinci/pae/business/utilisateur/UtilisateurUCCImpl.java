@@ -81,26 +81,6 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   }
 
   /**
-   * Verifie si un utilisateur avec le pseudo passé en paramètre existe déjà lors de l'inscription.
-   *
-   * @param pseudo : le pseudo de l'utilisateur
-   * @return utilisateur : l'utilisateur vide si aucun utilisateur correspond au pseudo
-   * @throws ConflitException : est lancée si un utilisateur possède déjà le pseudo passé en
-   *                          paramètre
-   */
-  @Override
-  public UtilisateurDTO rechercheParPseudoInscription(String pseudo) {
-    serviceDAL.commencerTransaction();
-    UtilisateurDTO utilisateur = utilisateurDAO.rechercheParPseudo(pseudo);
-    if (utilisateur == null || utilisateur.getIdUtilisateur() > 0) {
-      serviceDAL.retourEnArriereTransaction();
-      throw new ConflitException("Ce pseudo existe déjà");
-    }
-    serviceDAL.commettreTransaction();
-    return utilisateur;
-  }
-
-  /**
    * Permet l'inscription d'un utilisateur.
    *
    * @param utilisateurDTO : l'utilisateur à inscrire
