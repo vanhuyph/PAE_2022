@@ -19,7 +19,7 @@ public class LoggerFichier {
   public static void log(Exception exception) {
     FileHandler fh = null;
     try {
-      fh = new FileHandler("logger.log", true);
+      fh = new FileHandler("logger.log", 1000000, 5, true);
       logger.addHandler(fh);
       SimpleFormatter formatter = new SimpleFormatter();
       fh.setFormatter(formatter);
