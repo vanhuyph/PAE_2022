@@ -148,14 +148,34 @@ const surOffrirObjet = (e) => {
         && typeObjet.value !== "empty") {
 
         console.log("avant création json objet");
-        let nouvelObjet = {
+        let nouvelOffre = {
             offreur: offreur,
             typeObjet: typeObjet.value,
             description: description.value,
             //photo: "photoTest"
+            plageHoraire: plageHoraire.value,
         }
+        console.log("plageHoraire "+plageHoraire.value);
 
-        console.log("juste avant premier fetch");
+
+        fetch("/api/offres/creerOffre", {
+            method: "POST",
+            body: JSON.stringify(nouvelOffre),
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then((reponseOffre) => {
+
+            if (!reponseOffre.ok) {
+                throw new Error(
+                    "Error code : " + reponseOffre.status + " : " + reponseOffre.statusText)
+            }
+            return reponseOffre.json();
+        }).then((data) =>{ console.log(data)})
+    }
+
+      /*  console.log("juste avant premier fetch");
         fetch("/api/objets/creerObjet", {
             method: "POST",
             body: JSON.stringify(nouvelObjet),
@@ -171,35 +191,9 @@ const surOffrirObjet = (e) => {
             }
             console.log(reponse)
             return reponse.json()
-        }).then((data) =>surCreerOffre(data))
+        }).then((data) =>surCreerOffre(data))*/
 
-    }
-    const surCreerOffre = (data) =>{
-        console.log("juste avant second fetch");
-        console.log(data);
-        console.log("plageHoraire "+plageHoraire.value);
-        console.log(data.idObjet);
-        let offre = {
-            idObjet: data.idObjet,
-            plageHoraire: plageHoraire.value,
-        }
 
-        fetch("/api/offres/creerOffre", {
-            method: "POST",
-            body: JSON.stringify(offre),
-            headers: {
-                "Content-Type": "application/json",
-            }
-        })
-        .then((reponseOffre) => {
-
-            if (!reponseOffre.ok) {
-                throw new Error(
-                    "Error code : " + reponseOffre.status + " : " + reponseOffre.statusText)
-            }
-            return reponseOffre.json();
-        }).then((data) =>{ console.log(data)})
-    }
 
 }
 

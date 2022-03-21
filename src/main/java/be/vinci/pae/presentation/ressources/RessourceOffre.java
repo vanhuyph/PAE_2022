@@ -1,5 +1,6 @@
 package be.vinci.pae.presentation.ressources;
 
+import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,13 +34,15 @@ public class RessourceOffre {
   @Path("creerOffre")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  //@Authorisation
   public OffreDTO creerOffre(JsonNode json) {
-    if (!json.hasNonNull("idObjet") || !json.hasNonNull("plageHoraire")) {
+    ObjetDTO nObjet = creerObjet(json);
+    if (!json.hasNonNull("plageHoraire")) {
       throw new WebApplicationException(
           Response.status(Response.Status.BAD_REQUEST)
               .entity("Type de l'objet ou description manquant").type("text/plain").build());
     }
-    int idObjet = json.get("idObjet").asInt();
+    int idObjet = nObjet.getIdObjet();
     String plageHoraire = json.get("plageHoraire").asText();
     OffreDTO offreDTO = offreUCC.creerUneOffre(idObjet, plageHoraire);
     if (offreDTO == null) {
@@ -50,4 +53,53 @@ public class RessourceOffre {
     return offreDTO;
   }
 
+  /**
+   * Creer un objet.
+   *
+   * @param json : json reçu du formulaire de connexion *
+   * @return noeud : l'objet json contenant le token et l'utilisateur *
+   * @throws WebApplicationException si type de l'objet ou description manquant
+   */
+  @POST
+  @Path("creerObjet")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+
+  public ObjetDTO creerObjet(JsonNode json) {
+    System.out.println("Debut creerObjet");
+    if (!json.hasNonNull("offreur")
+        || !json.hasNonNull("typeObjet")
+        || !json.hasNonNull("description")
+    ) {
+
+      throw new WebApplicationException(
+          Response.status(Response.Status.BAD_REQUEST)
+              .entity("type de l'objet ou description manquant").type("text/plain").build());
+    }
+
+    int idOffreur = json.get("offreur").asInt();
+    int typeObjet = json.get("typeObjet").asInt();
+    String description = json.get("description").asText();
+    // String photo = json.get("photo").asText();
+    // pour l'instant je hardcore une string "photo" dans l'appele à l'ucc
+
+    System.out.println("elements du JSON récupérés dans attribut ");
+    //peut etre que c'est mieux de test si la photo est null
+    // dans le json avant d'essayer de la convertir inutiliement
+
+    ObjetDTO objet = offreUCC.creerUnObjet(idOffreur, typeObjet, description, 1, "photo");
+    if (objet == null) {
+      throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity("L'ajout de l'objet a échoué").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+    //ObjetDTO objetDTO = Json.filtrePublicJsonVue((ObjetDTO) objet,
+    //  ObjetDTO.class);
+
+    //ObjectNode noeud = jsonMapper.createObjectNode().putPOJO("objetDTO", objetDTO);
+    System.out.println("fin creerObjet");
+
+    return objet;
+
+  }
 }
