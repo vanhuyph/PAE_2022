@@ -9,39 +9,12 @@ import {Redirect} from "../Router/Router";
 const formPhoto =
     `
         <div class="field">
-        <!--télechargement de la photo -->
-        <script>
-          const envoyerPhoto = (e) => {
-                  const fichierDEntree = document.querySelector('input[name=photo]');
-                const formDonnee = new FormData();
-               formDonnee.append('file', fichierDEntree.files[0]);
-                 const options = {
-                 method: 'POST',
-                 body: formDonnee
-               };
-             fetch('http://localhost:8080/telechargementPhoto', options);
-            return false;
-          }
-        </script>
-        <!--Prévisualisation de la photo-->
-        <script>
-  
-           var image = document.getElementById("image");
-           const previsualiserPhoto  =  (e) => {
-           const [picture] = e.files
-
-       
-            if (picture) {
-             // On change l'URL de l'image
-               image.src = URL.createObjectURL(picture)
-            }
-    } 
-</script>
-        <form class="ui form">
+        
+        <form id="envoyerPhoto" class="ui form"  >
           <label>Selectionner une photo</label>
-          <input  name="photo" onchange="previsualiserPhoto(this)" type="file"/><br/><br/>
+          <input  name="photo" id="photo" type="file"/><!--onchange=" previsualiserPhoto(this)"--> <br/><br/>
           <div class=" tertiary inverted ">
-          <button  class="ui button" onclick="return envoyerPhoto()">Envoyer la photo</button>
+          <button type="submit" class="ui button">Envoyer la photo</button>
           </div>
         </form>
         
@@ -99,9 +72,15 @@ const pageOffrirObjet = `
 const PageOffrirObjet = () => {
     const pageDiv = document.querySelector("#page");
     const utilisateur = recupUtilisateurDonneesSession();
+
+
+
     pageDiv.innerHTML = pageOffrirObjet;
+    const formulairePhoto = document.querySelector("#envoyerPhoto");
+    const photo = document.querySelector("#photo");
 
-
+    formulairePhoto.addEventListener("submit",envoyerPhoto);
+    photo.addEventListener("change",previsualiserPhoto);
     const formOffrirObjet = document.querySelector("#formulaire-offrirObjet");
 
     if (utilisateur) {
@@ -153,8 +132,27 @@ const choixTypeObjet = (data) => {
     choixTypeObjet.innerHTML = liste;
 
 }
+const previsualiserPhoto  =  (e) => {
+    var image = document.getElementById("image")
 
-
+    const picture = document.getElementById("photo").files[0];
+    console.log(picture)
+    if (picture) {
+        // On change l'URL de l'image
+        image.src = URL.createObjectURL(picture)
+    }
+}
+const envoyerPhoto = (e) => {
+    const fichierDEntree = document.querySelector('input[name=photo]');
+    const formDonnee = new FormData();
+    formDonnee.append('file', fichierDEntree.files[0]);
+    const options = {
+        method: 'POST',
+        body: formDonnee
+    };
+    fetch('http://localhost:8080/telechargementPhoto', options);
+    return false;
+}
 const surOffrirObjet = (e) => {
     e.preventDefault();
     console.log("debutListenerOffriObjet");

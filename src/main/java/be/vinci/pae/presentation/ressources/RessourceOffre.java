@@ -73,6 +73,7 @@ public class RessourceOffre {
   public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
     String nomFichier = fichierDisposition.getName(); //UUID
+    System.out.println("télécharger Photo");
     Files.copy(photo, Paths.get(nomFichier));
     return Response.ok(nomFichier).header("Access-Control-Allow-Origin", "*").build();
     //return Response.ok().build();
