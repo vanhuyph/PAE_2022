@@ -4,8 +4,6 @@ import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.DomaineFactoryImpl;
 import be.vinci.pae.business.adresse.AdresseUCC;
 import be.vinci.pae.business.adresse.AdresseUCCImpl;
-import be.vinci.pae.business.objet.ObjetUCC;
-import be.vinci.pae.business.objet.ObjetUCCImpl;
 import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.business.offre.OffreUCCImpl;
 import be.vinci.pae.business.typeobjet.TypeObjetUCC;
@@ -40,7 +38,6 @@ public class ApplicationBinder extends AbstractBinder {
     bind(OffreDAOImpl.class).to(OffreDAO.class).in(Singleton.class);
     bind(OffreUCCImpl.class).to(OffreUCC.class).in(Singleton.class);
     bind(ObjetDAOImpl.class).to(ObjetDAO.class).in(Singleton.class);
-    bind(ObjetUCCImpl.class).to(ObjetUCC.class).in(Singleton.class);
     bind(AdresseDAOImpl.class).to(AdresseDAO.class).in(Singleton.class);
     bind(AdresseUCCImpl.class).to(AdresseUCC.class).in(Singleton.class);
     bind(TypeObjetUCCImpl.class).to(TypeObjetUCC.class).in(Singleton.class);
