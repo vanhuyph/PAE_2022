@@ -5,7 +5,6 @@ import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
-import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import jakarta.inject.Inject;
 import java.sql.Date;
@@ -146,13 +145,15 @@ public class OffreDAOImpl implements OffreDAO {
    */
   private List<OffreDTO> remplirListOffresDepuisResulSet(OffreDTO offreDTO,
       PreparedStatement ps) throws SQLException {
-
+    ObjetDTO objetDTO;
+    AdresseDTO adresseDTO;
+    UtilisateurDTO offreur;
     List<OffreDTO> listOffres = new ArrayList<>();
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
-        ObjetDTO objetDTO = factory.getObjet();
-        AdresseDTO adresseDTO = factory.getAdresse();
-        UtilisateurDTO offreur = factory.getUtilisateur();
+         objetDTO = factory.getObjet();
+         adresseDTO = factory.getAdresse();
+         offreur = factory.getUtilisateur();
 
         adresseDTO.setIdAdresse(rs.getInt(1));
         adresseDTO.setRue(rs.getString(2));
