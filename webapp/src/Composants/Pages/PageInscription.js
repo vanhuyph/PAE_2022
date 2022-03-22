@@ -91,7 +91,7 @@ const PageInscription = () => {
 
   let form = document.querySelector("#formulaire-inscription");
 
-  // Rediraction si l'utilisateur possède une session, redirige vers la page d'accueil sinon soumission du formilaire
+  // Redirection si l'utilisateur possède une session, redirige vers la page d'accueil sinon soumission du formulaire
   const utilisateur = recupUtilisateurDonneesSession()
   if (utilisateur) {
     Navbar()
@@ -105,7 +105,7 @@ const PageInscription = () => {
 const surInscription = (e) => {
   e.preventDefault()
 
-  // Recupération des valeurs dans le formilaire
+  // Récupération des valeurs dans le formulaire
   let pseudo = document.querySelector("#pseudo").value
   let nom = document.querySelector("#nom").value
   let prenom = document.querySelector("#prenom").value
@@ -115,10 +115,11 @@ const surInscription = (e) => {
   let codePostal = document.querySelector("#code-postal").value
   let commune = document.querySelector("#commune").value
 
-
-  if(pseudo===""|| nom ===""|| prenom===""|| mdp===""|| rue===""|| numero===""|| codePostal===""|| commune===""){
-    document.querySelector("#messageErreur").innerHTML = "Des champs sont manquants";
-  }else {
+  if (pseudo === "" || nom === "" || prenom === "" || mdp === "" || rue === ""
+      || numero === "" || codePostal === "" || commune === "") {
+    document.querySelector(
+        "#messageErreur").innerHTML = "Des champs sont manquants";
+  } else {
     let nouvelleAdresse = {
       rue: rue,
       numero: numero,
@@ -143,7 +144,8 @@ const surInscription = (e) => {
     .then((response) => {
       if (!response.ok) {
         throw new Error(
-            "Error code : " + response.status + " : " + response.statusText + " : " + response.text())
+            "Error code : " + response.status + " : " + response.statusText
+            + " : " + response.text())
       }
       return response.json()
     })
@@ -165,7 +167,8 @@ const surErreur = (err) => {
   let messageErreur = document.querySelector("#messageErreur");
   let erreurMessage = "";
   if (err.message.includes("409")) {
-    document.querySelector(".erreur-pseudo").innerHTML = "Ce pseudo existe déjà";
+    document.querySelector(
+        ".erreur-pseudo").innerHTML = "Ce pseudo existe déjà";
   } else {
     erreurMessage = err.message;
   }

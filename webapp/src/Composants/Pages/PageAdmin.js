@@ -64,7 +64,7 @@ const PageAdmin = () => {
     }
   };
 
-  // Recuperation des utilisateurs en attente
+  // Récuperation des utilisateurs en attente
   recupEnAttente()
 
   const demandesPage = document.querySelector("#demandes")
@@ -107,7 +107,7 @@ const recupEnAttente = () => {
   .then((data) => surListeAttente(data))
 }
 
-// Récuperation des utilisateurs refusé
+// Récuperation des utilisateurs refusés
 const recupRefuse = () => {
   const session = recupUtilisateurDonneesSession();
   fetch("/api/utilisateurs/refuse", {
@@ -128,7 +128,7 @@ const recupRefuse = () => {
   .then((data) => surListeRefus(data))
 }
 
-//Affichage de la liste des inscriptions en attente
+// Affichage de la liste des inscriptions en attente
 const surListeAttente = (data) => {
   let contenu = document.querySelector("#contenu");
   if (data.length === 0 || !data) {
@@ -152,7 +152,7 @@ const surListeAttente = (data) => {
     </div>
   `;
 
-  //Affichage individuel des utilisateurs
+  // Affichage individuel des utilisateurs
   data.forEach((element) => {
     liste += `
     <div class="utilisateur">
