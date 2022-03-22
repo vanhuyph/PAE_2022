@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface OffreDAO {
 
-  OffreDTO creerOffre(int idObjet, String plageHoraire);
+  OffreDTO creerOffre(OffreDTO offreDTO);
 
   List<OffreDTO> listOffres();
 

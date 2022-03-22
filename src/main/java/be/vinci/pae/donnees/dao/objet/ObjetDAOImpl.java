@@ -5,7 +5,6 @@ import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
-import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -18,34 +17,31 @@ public class ObjetDAOImpl implements ObjetDAO {
   private DomaineFactory factory;
   @Inject
   private ServiceBackendDAL serviceBackendDAL;
-  @Inject
-  private UtilisateurDAO utilisateurDAO;
 
 
   /**
    * Créer un objet.
    *
-   * @param etatObjet   : l'état de l'objet
-   * @param typeObjet   : le type de l'objet
-   * @param description : la description de l'objet
-   * @param offreur     : l'id de l'offeur de l'objet
-   * @param photo       : chemin de la photo
+   * @param objetDTO : l'objet à créer
    * @return objetDTO : l'objet créé
    * @throws SQLException : est lancé si il ne sait pas insérer l'objet dans la db
    */
   @Override
-  public ObjetDTO creerObjet(String etatObjet, int typeObjet, String description,
-      int offreur, String photo) {
-    ObjetDTO objetDTO = factory.getObjet();
+  public ObjetDTO creerObjet(ObjetDTO objetDTO) {
     PreparedStatement ps = serviceBackendDAL.getPs(
         "INSERT INTO projet.objets VALUES (DEFAULT, ?, ?, ?, ?, null, ?) RETURNING *;");
     try {
-      ps.setString(1, etatObjet);
-      ps.setInt(2, typeObjet);
-      ps.setString(3, description);
-      ps.setInt(4, offreur);
-      ps.setString(5, photo);
-      objetDTO = remplirObjetDepuisResultSet(objetDTO, ps);
+      ps.setString(1, objetDTO.getEtatObjet());
+      ps.setInt(2, objetDTO.getTypeObjet().getIdType());
+      ps.setString(3, objetDTO.getDescription());
+      ps.setInt(4, objetDTO.getOffreur().getIdUtilisateur());
+      ps.setString(5, objetDTO.getPhoto());
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          objetDTO.setIdObjet(rs.getInt(1));
+        }
+
+      }
     } catch (SQLException e) {
       e.printStackTrace();
     }

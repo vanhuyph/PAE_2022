@@ -1,11 +1,9 @@
 package be.vinci.pae.presentation.ressources;
 
-import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -29,30 +27,23 @@ public class RessourceOffre {
   /**
    * Créer une offre.
    *
-   * @param json : json reçu du formulaire de connexion *
-   * @return noeud : l'objet json contenant le token et l'utilisateur *
-   * @throws WebApplicationException si id_objet ou plage_horaire sont null ou si l'offre n'a pas
-   *                                 été créée
+   * @param offreDTO : offre reçu du formulaire de créer une offre
+   * @return offreDTO : l'offre créer*
+   * @throws WebApplicationException si l'offre est null
    */
   @POST
   @Path("creerOffre")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  //@Authorisation
-  public OffreDTO creerOffre(JsonNode json) {
-    ObjetDTO nObjet = creerObjet(json);
-    if (!json.hasNonNull("plageHoraire")) {
+  @Autorisation
+  public OffreDTO creerOffre(OffreDTO offreDTO) {
+    System.out.println("creer offre");
+    offreDTO = offreUCC.creerUneOffre(offreDTO);
+    if (offreDTO.getObjetDTO().getDescription().isBlank()
+        || offreDTO.getObjetDTO().getTypeObjet() == null || offreDTO.getPlageHoraire().isBlank()) {
       throw new WebApplicationException(
           Response.status(Response.Status.BAD_REQUEST)
-              .entity("Type de l'objet ou description manquant").type("text/plain").build());
-    }
-    int idObjet = nObjet.getIdObjet();
-    String plageHoraire = json.get("plageHoraire").asText();
-    OffreDTO offreDTO = offreUCC.creerUneOffre(idObjet, plageHoraire);
-    if (offreDTO == null) {
-      throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
-          .entity("L'ajout de l'offre a échoué").type(MediaType.TEXT_PLAIN)
-          .build());
+              .entity("offre null").type("text/plain").build());
     }
     return offreDTO;
   }
@@ -64,7 +55,7 @@ public class RessourceOffre {
    * @return noeud : l'objet json contenant le token et l'utilisateur *
    * @throws WebApplicationException si type de l'objet ou description manquant
    */
-  @POST
+  /*@POST
   @Path("creerObjet")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -104,7 +95,8 @@ public class RessourceOffre {
 
     return objet;
 
-  }
+  }*/
+
   /**
    * Liste les offres.
    *
@@ -136,7 +128,7 @@ public class RessourceOffre {
   public List<OffreDTO> listOffresRecent() {
     List<OffreDTO> offreDTO = offreUCC.listOffresRecent();
     if (offreDTO == null) {
-      throw new PresentationException("Liste des offres a echoué",Status.BAD_REQUEST);
+      throw new PresentationException("Liste des offres a echoué", Status.BAD_REQUEST);
     }
     return offreDTO;
   }

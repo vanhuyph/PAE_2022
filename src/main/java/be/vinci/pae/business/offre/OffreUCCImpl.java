@@ -20,13 +20,20 @@ public class OffreUCCImpl implements OffreUCC {
   /**
    * Créer une offre.
    *
-   * @param plageHoraire : disponibilité de l'offreur
+   * @param offreDTO : l'offre à créer
    * @return offre : l'offre créée
    */
   @Override
-  public OffreDTO creerUneOffre(int idObjet, String plageHoraire) {
+  public OffreDTO creerUneOffre(OffreDTO offreDTO) {
     serviceDAL.commencerTransaction();
-    OffreDTO offre = offreDAO.creerOffre(idObjet, plageHoraire);
+    ObjetDTO objet = objetDAO.creerObjet(offreDTO.getObjetDTO());
+
+    if (objet == null) {
+      serviceDAL.retourEnArriereTransaction();
+      throw new BusinessException("L'objet n'a pas pu être créé"); // vérifier statut de réponse
+    }
+    offreDTO.setObjetDTO(objet);
+    OffreDTO offre = offreDAO.creerOffre(offreDTO);
     if (offre == null) {
       serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("L'offre n'a pas pu être créée"); // vérifier statut de réponse
@@ -35,27 +42,6 @@ public class OffreUCCImpl implements OffreUCC {
     return offre;
   }
 
-  /**
-   * Créer un objet.
-   *
-   * @param typeObjet   : le type de l'objet
-   * @param description : description de l'objet
-   * @param offreur     : id de l'utilisateur offrant l'objet
-   * @param photo       : chemin de la photo, peut être null
-   * @return objet : l'objet créé
-   */
-  @Override
-  public ObjetDTO creerUnObjet(int idOffreur, int typeObjet, String description, int offreur,
-      String photo) {
-    serviceDAL.commencerTransaction();
-    ObjetDTO objet = objetDAO.creerObjet("offert", typeObjet, description, offreur, photo);
-    if (objet == null) {
-      serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'objet n'a pas pu être créé"); // vérifier statut de réponse
-    }
-    serviceDAL.commettreTransaction();
-    return objet;
-  }
 
   /**
    * Lister les offres.

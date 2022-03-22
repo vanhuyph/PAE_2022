@@ -6,7 +6,6 @@ import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
-import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import jakarta.inject.Inject;
 import java.sql.Date;
@@ -25,28 +24,29 @@ public class OffreDAOImpl implements OffreDAO {
   private DomaineFactory factory;
   @Inject
   private ServiceBackendDAL serviceBackendDAL;
-  @Inject
-  ObjetDAO objetDAO;
 
   /**
    * Créer une offre.
    *
-   * @param idObjet      : l'id de l'objet correspondant à l'offre
-   * @param plageHoraire : plage horaire des disponibilité de l'offreur
-   * @return offreDTO : l'offre
+   * @param offreDTO : l'offre à créer
+   * @return offre : l'offre créée
    */
   @Override
-  public OffreDTO creerOffre(int idObjet, String plageHoraire) {
-    OffreDTO offreDTO = factory.getOffre();
+  public OffreDTO creerOffre(OffreDTO offreDTO) {
     PreparedStatement ps = serviceBackendDAL.getPs(
-        "INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?);");
+        "INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?) RETURNING *;");
     try {
       java.util.Date date = new java.util.Date();
       java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-      ps.setInt(1, idObjet);
+      ps.setInt(1, offreDTO.getObjetDTO().getIdObjet());
       ps.setDate(2, sqlDate);
-      ps.setString(3, plageHoraire);
-      offreDTO = remplirOffreDepuisResultSet(offreDTO, ps);
+      ps.setString(3, offreDTO.getPlageHoraire());
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          offreDTO.setIdOffre(rs.getInt(1));
+        }
+
+      }
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -113,27 +113,6 @@ public class OffreDAOImpl implements OffreDAO {
     return listOffresRecent;
   }
 
-  /**
-   * Rempli les données de l'offre depuis un ResultSet.
-   *
-   * @param offreDTO : l'offre vide, qui va être rempli
-   * @param ps       : le PreparedStatement déjà mis en place
-   * @return offreDTO : l'offre rempli
-   * @throws SQLException : est lancée si il y a un problème
-   */
-  private OffreDTO remplirOffreDepuisResultSet(OffreDTO offreDTO,
-      PreparedStatement ps) throws SQLException {
-    try (ResultSet rs = ps.executeQuery()) {
-      while (rs.next()) {
-        offreDTO.setIdOffre(rs.getInt(1));
-        offreDTO.setObjetDTO(
-            objetDAO.rechercheParId(rs.getInt(2))); // vérifier index //voir si possible en sql
-        offreDTO.setDateOffre(convertirDateSQLEnLocalDateTime(rs.getDate(3)));
-        offreDTO.setPlageHoraire(rs.getString(4));
-      }
-    }
-    return offreDTO;
-  }
 
   /**
    * Rempli une liste d'offre depuis un ResultSet.

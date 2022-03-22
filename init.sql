@@ -103,7 +103,7 @@ INSERT INTO projet.offres
 VALUES (DEFAULT, 2, now(), ' ');
 
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'interrese', 1, 'machine à nettoyer', 1, 2, 'photo machine');
+VALUES (DEFAULT, 'interrese', 1, 'machine à nettoyer', 1, NULL, 'photo machine');
 INSERT INTO projet.offres
 VALUES (DEFAULT, 3, '2017-02-05', ' ');
 

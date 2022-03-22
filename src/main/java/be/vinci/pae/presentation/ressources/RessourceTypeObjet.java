@@ -2,6 +2,7 @@ package be.vinci.pae.presentation.ressources;
 
 import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.business.typeobjet.TypeObjetUCC;
+import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -27,7 +28,7 @@ public class RessourceTypeObjet {
   @Path("liste")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  //@Autorisation
+  @Autorisation
   public List<TypeObjetDTO> listerTypeObjet() {
     List<TypeObjetDTO> typesObjet;
     typesObjet = typeObjetUCC.listerTypeObjet();

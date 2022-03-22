@@ -46,6 +46,7 @@ const pageOffrirObjet = `
         
     </form>    
     `
+    
 const PageOffrirObjet = () => {
     const pageDiv = document.querySelector("#page");
     const utilisateur = recupUtilisateurDonneesSession();
@@ -74,6 +75,7 @@ const PageOffrirObjet = () => {
             return response.json();
         })
         .then((data) => choixTypeObjet(data));
+
 
         formOffrirObjet.addEventListener("submit", surOffrirObjet);
 
@@ -107,94 +109,73 @@ const choixTypeObjet = (data) => {
 
 const surOffrirObjet = (e) => {
     e.preventDefault();
-    console.log("debutListenerOffriObjet");
-    let typeObjet = document.querySelector("#choixTypeObjet");
-    let description = document.querySelector("#description");
-    let plageHoraire = document.querySelector("#horaire");
+    let typeObjet = document.querySelector("#choixTypeObjet").value;
+    let description = document.querySelector("#description").value;
+    let plageHoraire = document.querySelector("#horaire").value;
 
     document.querySelector(".erreur-type").innerHTML = "";
     document.querySelector(".erreur-description").innerHTML = "";
     document.querySelector(".erreur-horaire").innerHTML = "";
 
 
-    if (description.value === "") {
+    if (description === "") {
         console.log("echec description");
         document.querySelector(".erreur-description").innerHTML = "Votre description est vide";
     }
 
-    if (plageHoraire.value === "") {
+    if (plageHoraire === "") {
         console.log("echec plage horaire");
         document.querySelector(".erreur-horaire").innerHTML = "Votre plage horaire est vide";
     }
 
-    if (typeObjet.value === "empty") {
+    if (typeObjet === "empty") {
         console.log("echec type");
         document.querySelector(".erreur-type").innerHTML = "Vous devez sélectionner un type";
     }
 
-    console.log("description :" + description.value);
-    console.log("plage horaire :" + plageHoraire.value);
-    console.log("type objet :" + typeObjet.value);
+    console.log("description :" + description);
+    console.log("plage horaire :" + plageHoraire);
+    console.log("type objet :" + typeObjet);
 
-    //copie collé de code avec la recuperation déjà effectuée au dessus, mais j'arrivais pas à transférer les données
-    // peut etre faire par un paramètre à la méthode?
     const utilisateur = recupUtilisateurDonneesSession();
-    const offreur = utilisateur.utilisateur.idUtilisateur;
-    
+    const offreur = utilisateur.utilisateur;    
 
-    console.log("id offreur : " + offreur);
-    if (description.value !== ""
-        && plageHoraire.value !== ""
-        && typeObjet.value !== "empty") {
+    if (description !== ""
+        && plageHoraire !== ""
+        && typeObjet !== "empty") {
 
-        console.log("avant création json objet");
-        let nouvelOffre = {
+        let nouvelObjet = {
             offreur: offreur,
-            typeObjet: typeObjet.value,
-            description: description.value,
-            //photo: "photoTest"
-            plageHoraire: plageHoraire.value,
+            receveur: null,
+            typeObjet: typeObjet,
+            etatObjet:"offre",
+            description: description,
+            photo: "photoTest"
         }
-        console.log("plageHoraire "+plageHoraire.value);
 
+        let nouvelOffre = {
+            objetDTO: nouvelObjet,
+            plageHoraire: plageHoraire
+        }
 
         fetch("/api/offres/creerOffre", {
             method: "POST",
             body: JSON.stringify(nouvelOffre),
             headers: {
                 "Content-Type": "application/json",
-            }
+                 Authorization : utilisateur.token    
+            },
         })
-        .then((reponseOffre) => {
-
-            if (!reponseOffre.ok) {
+        .then((response) => {
+            console.log(response.json.stringify);
+            if (!response.ok) {
                 throw new Error(
-                    "Error code : " + reponseOffre.status + " : " + reponseOffre.statusText)
+                    "Error code : " + response.status + " : " + response.statusText)
             }
-            return reponseOffre.json();
-        }).then((data) =>{ console.log(data)})
+            console.log(response);
+            return response.json();
+        }).then((donnee)=> Redirect("/"))
     }
-
-      /*  console.log("juste avant premier fetch");
-        fetch("/api/objets/creerObjet", {
-            method: "POST",
-            body: JSON.stringify(nouvelObjet),
-            headers: {
-                "Content-Type": "application/json",
-                //Authorization: utilisateur.token,
-            }
-        })
-        .then((reponse) => {
-            if (!reponse.ok) {
-                throw new Error(
-                    "Error code : " + reponse.status + " : " + reponse.statusText + " : " + reponse.text())
-            }
-            console.log(reponse)
-            return reponse.json()
-        }).then((data) =>surCreerOffre(data))*/
-
-
-
 }
 
 export default PageOffrirObjet;

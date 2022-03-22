@@ -15,28 +15,6 @@ public class ObjetUCCImpl implements ObjetUCC {
   ServiceDAL serviceDAL;
 
   /**
-   * Creer un objet.
-   *
-   * @param typeObjet   : le type de l'objet
-   * @param description : description de l'objet
-   * @param offreur     : id de l'utilisateur offrant l'objet
-   * @param photo       : chemin de la photo , peut être null
-   * @return l'objet créé
-   */
-  @Override
-  public ObjetDTO creerUnObjet(int idOffreur, int typeObjet, String description, int offreur,
-      String photo) {
-    serviceDAL.commencerTransaction();
-    ObjetDTO objet = objetDAO.creerObjet("offert", typeObjet, description, offreur, photo);
-    if (objet == null) {
-      serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("objet n'a pas pu être créé."); // vérifier statut de réponse
-    }
-    serviceDAL.commettreTransaction();
-    return objet;
-  }
-
-  /**
    * Recherche un objet via un id dans la base de donnée.
    *
    * @param id : l'id de l'objet
