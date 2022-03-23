@@ -170,7 +170,7 @@ public class UtilisateurImpl implements Utilisateur {
         + ", estAdmin=" + estAdmin
         + ", etatInscription='" + etatInscription + '\''
         + ", commentaire='" + commentaire + '\''
-        + ", adresse=" + adresse
+        + ", adresse=" + adresse.toString()
         + '}';
   }
 }

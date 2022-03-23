@@ -2,9 +2,13 @@ package be.vinci.pae;
 
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.DomaineFactoryImpl;
+import be.vinci.pae.business.offre.OffreUCC;
+import be.vinci.pae.business.offre.OffreUCCImpl;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.business.utilisateur.UtilisateurUCCImpl;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
+import be.vinci.pae.donnees.dao.objet.ObjetDAO;
+import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import be.vinci.pae.donnees.services.ServiceDAL;
@@ -20,6 +24,8 @@ public class MockApplicationBinder extends ApplicationBinder {
   private UtilisateurDAO utilisateurDAO = Mockito.mock(UtilisateurDAO.class);
   private AdresseDAO adresseDAO = Mockito.mock(AdresseDAO.class);
   private ServiceDAL serviceDAL = Mockito.mock(ServiceDAL.class);
+  private OffreDAO offreDAO = Mockito.mock(OffreDAO.class);
+  private ObjetDAO objetDAO = Mockito.mock(ObjetDAO.class);
 
   @Override
   protected void configure() {
@@ -29,6 +35,9 @@ public class MockApplicationBinder extends ApplicationBinder {
     bind(utilisateurDAO).to(UtilisateurDAO.class);
     bind(serviceDAL).to(ServiceDAL.class);
     bind(adresseDAO).to(AdresseDAO.class);
+    bind(offreDAO).to(OffreDAO.class);
+    bind(objetDAO).to(ObjetDAO.class);
+    bind(OffreUCCImpl.class).to(OffreUCC.class).in(Singleton.class);
   }
 
 }

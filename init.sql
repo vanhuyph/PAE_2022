@@ -55,23 +55,94 @@ CREATE TABLE projet.evaluations(
     commentaire VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE projet.offres(
-    id_offre SERIAL PRIMARY KEY,
-    date_offre DATE NOT NULL,
-    plage_horaire VARCHAR(500) NOT NULL
+CREATE TABLE projet.offres
+(
+    id_offre      SERIAL PRIMARY KEY,
+    id_objet      INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
+    date_offre    TIMESTAMP                                        NOT NULL,
+    plage_horaire VARCHAR(500)                                NOT NULL
 );
 
-CREATE TABLE projet.offres_precedentes(
-    id_offre_precedente SERIAL PRIMARY KEY,
-    date_precedente DATE NOT NULL,
-    offre INTEGER REFERENCES projet.offres(id_offre) NOT NULL
-);
 
-INSERT INTO projet.adresses VALUES (DEFAULT, 'Rue1', 21, NULL, 1420, 'Ophain');
-INSERT INTO projet.adresses VALUES (DEFAULT, 'Rue2', 15, NULL, 1500, 'Hal');
-INSERT INTO projet.adresses VALUES (DEFAULT, 'Rue3', 7, 23, 1700, 'Dilbeek');
 
-INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'pseudo1', 'nom1', 'prenom1', '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, false, 1, 'confirmé',NULL);
-INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'pseudo2', 'nom2', 'prenom2', '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2' , NULL, false, 2, 'en attente',NULL);
-INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'pseudo3', 'nom3', 'prenom3', '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', '0475858535', false, 3, 'refusé','Seuls les amis proches ont accès au site.');
-INSERT INTO projet.utilisateurs VALUES (DEFAULT, 'pseudo4', 'nom4', 'prenom4', '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, true, 1, 'confirmé',NULL);
+INSERT INTO projet.adresses
+VALUES (DEFAULT, 'Rue1', 21, NULL, 1420, 'Ophain');
+INSERT INTO projet.adresses
+VALUES (DEFAULT, 'Rue2', 15, NULL, 1500, 'Hal');
+INSERT INTO projet.adresses
+VALUES (DEFAULT, 'Rue3', 7, 23, 1700, 'Dilbeek');
+
+INSERT INTO projet.utilisateurs
+VALUES (DEFAULT, 'pseudo1', 'nom1', 'prenom1',
+        '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, false, 1, 'confirmé',
+        NULL);
+INSERT INTO projet.utilisateurs
+VALUES (DEFAULT, 'pseudo2', 'nom2', 'prenom2',
+        '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, false, 2,
+        'en attente', NULL);
+INSERT INTO projet.utilisateurs
+VALUES (DEFAULT, 'pseudo3', 'nom3', 'prenom3',
+        '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', '0475858535', false, 3,
+        'refusé', 'Seuls les amis proches ont accès au site.');
+INSERT INTO projet.utilisateurs
+VALUES (DEFAULT, 'pseudo4', 'nom4', 'prenom4',
+        '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, true, 1, 'confirmé',
+        NULL);
+
+INSERT INTO projet.types_objets
+VALUES (DEFAULT, 'machine');
+
+INSERT INTO projet.objets
+VALUES (DEFAULT, 'offert', 1, 'machine à laver', 1, NULL, 'photo machine à laver');
+INSERT INTO projet.offres
+VALUES (DEFAULT, 1, '2016-02-05', ' ');
+
+INSERT INTO projet.objets
+VALUES (DEFAULT, 'interrese', 1, 'machine à cuisiner', 2, NULL, 'photo machine à cuisiner');
+INSERT INTO projet.offres
+VALUES (DEFAULT, 2, now(), ' ');
+
+INSERT INTO projet.objets
+VALUES (DEFAULT, 'interrese', 1, 'machine à nettoyer', 1, NULL, 'photo machine');
+INSERT INTO projet.offres
+VALUES (DEFAULT, 3, '2017-02-05', ' ');
+
+
+SELECT a.id_adresse,
+       a.rue,
+       a.numero,
+       a.boite,
+       a.code_postal,
+       a.commune,
+
+       u.id_utilisateur,
+       u.pseudo,
+       u.nom,
+       u.prenom,
+       u.mdp,
+       u.gsm,
+       u.est_admin,
+       u.etat_inscription,
+       u.commentaire,
+
+       t.id_type,
+       t.nom,
+
+       o.id_objet,
+       o.etat_objet,
+       o.description,
+       o.photo,
+
+       of.id_offre,
+       of.date_offre,
+       of.plage_horaire
+
+FROM projet.offres of
+         LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet
+         LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur
+         LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse
+         LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet
+WHERE o.etat_objet = 'offert'
+   OR o.etat_objet = 'interrese'
+ORDER BY of.date_offre DESC
+LIMIT 2
