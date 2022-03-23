@@ -84,9 +84,9 @@ public class RessourceOffre {
    * Téléchargement de la photo.
    *
    * @param photo              : la photo à télécharger
-   * @param fichierDisposition
+   * @param fichierDisposition : le fichier disposition
    * @return response
-   * @throws IOException
+   * @throws IOException : est lancée s'il y a eu un problème lors du téléchargement de la photo
    */
   @POST
   @Path("/telechargementPhoto")

@@ -98,8 +98,7 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
         + "WHERE o.etat_objet = 'offert' OR o.etat_objet = 'interrese' "
-        + "ORDER BY of.date_offre DESC"
-        + "LIMIT 3;";
+        + "ORDER BY of.date_offre DESC LIMIT 3;";
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
