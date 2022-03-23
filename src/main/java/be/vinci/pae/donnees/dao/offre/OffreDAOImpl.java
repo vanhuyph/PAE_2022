@@ -7,6 +7,8 @@ import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
+import be.vinci.pae.donnees.services.ServiceDAL;
+import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,18 +25,17 @@ public class OffreDAOImpl implements OffreDAO {
   @Inject
   private ServiceBackendDAL serviceBackendDAL;
 
-
   /**
    * Créer une offre.
    *
    * @param offreDTO : l'offre à créer
-   * @return offre : l'offre créée
+   * @return offreDTO : l'offre créée
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public OffreDTO creerOffre(OffreDTO offreDTO) {
-    PreparedStatement ps = serviceBackendDAL.getPs(
-        "INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?) RETURNING *;");
-    try {
+    String requetePs = "INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?) RETURNING *;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       Timestamp sqlDate = Timestamp.valueOf(LocalDateTime.now());
       ps.setInt(1, offreDTO.getObjetDTO().getIdObjet());
       ps.setTimestamp(2, sqlDate);
@@ -43,90 +44,88 @@ public class OffreDAOImpl implements OffreDAO {
         while (rs.next()) {
           offreDTO.setIdOffre(rs.getInt(1));
         }
-
       }
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
     }
     return offreDTO;
   }
 
   /**
-   * Rempli une liste d'offre.
+   * Liste les offres.
    *
-   * @return List : liste d'offre
-   * @throws SQLException : est lancé si il y a un problème"
+   * @return listeOffres : la liste d'offres
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
-  public List<OffreDTO> listOffres() {
+  public List<OffreDTO> listerOffres() {
+    String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
+        + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet, "
+        + "o.description, o.photo, of.id_offre, of.date_offre, of.plage_horaire "
+        + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
+        + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
+        + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+        + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
+        + "WHERE o.etat_objet = 'offert' OR o.etat_objet = 'interrese' "
+        + "ORDER BY of.date_offre DESC";
     OffreDTO offreDTO = factory.getOffre();
-    PreparedStatement ps = serviceBackendDAL.getPs(
-        "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
-            + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet,  "
-            + "o.description, o.photo, of.id_offre, of.date_offre, of.plage_horaire "
-            + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
-            + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
-            + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
-            + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-            + "WHERE o.etat_objet = 'offert' OR o.etat_objet = 'interrese' "
-            + "ORDER BY of.date_offre DESC ");
-    List<OffreDTO> listOffres = null;
-    try {
-      listOffres = remplirListOffresDepuisResulSet(offreDTO, ps);
-      ps.close();
+    List<OffreDTO> liste;
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
     }
-    return listOffres;
+    return liste;
   }
 
   /**
-   * Rempli une liste d'offre récente.
+   * Liste les offres les plus récentes.
    *
-   * @return List : liste d'offre récente
-   * @throws SQLException : est lancé si il y a un problème"
+   * @return liste : la liste des offres les plus récentes
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
-  public List<OffreDTO> listOffresRecent() {
+  public List<OffreDTO> listerOffresRecentes() {
+    String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
+        + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet, "
+        + "o.description, o.photo, of.id_offre, of.date_offre, of.plage_horaire "
+        + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
+        + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
+        + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+        + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
+        + "WHERE o.etat_objet = 'offert' OR o.etat_objet = 'interrese' "
+        + "ORDER BY of.date_offre DESC"
+        + "LIMIT 3;";
     OffreDTO offreDTO = factory.getOffre();
-    PreparedStatement ps = serviceBackendDAL.getPs(
-        "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
-            + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet,  "
-            + "o.description, o.photo, of.id_offre, of.date_offre, of.plage_horaire "
-            + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
-            + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
-            + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
-            + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-            + "WHERE o.etat_objet = 'offert' OR o.etat_objet = 'interrese' "
-            + "ORDER BY of.date_offre DESC "
-            + "LIMIT 3;");
-    List<OffreDTO> listOffresRecent = null;
-    try {
-
-      listOffresRecent = remplirListOffresDepuisResulSet(offreDTO, ps);
-      ps.close();
+    List<OffreDTO> liste;
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
     }
-    return listOffresRecent;
+    return liste;
   }
 
-
   /**
-   * Rempli une liste d'offre depuis un ResultSet.
+   * Rempli une liste d'offres depuis un ResultSet.
    *
-   * @param offreDTO : l'offre vide, qui va être rempli
+   * @param offreDTO : l'offre vide, qui va être remplie
    * @param ps       : le PreparedStatement déjà mis en place
-   * @return List : liste remplie
-   * @throws SQLException : est lancée si il y a un problème
+   * @return liste : la liste remplie
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
-  private List<OffreDTO> remplirListOffresDepuisResulSet(OffreDTO offreDTO,
-      PreparedStatement ps) throws SQLException {
+  private List<OffreDTO> remplirListOffresDepuisResulSet(OffreDTO offreDTO, PreparedStatement ps) {
     ObjetDTO objetDTO;
     AdresseDTO adresseDTO;
     UtilisateurDTO offreur;
     TypeObjetDTO typeObjetDTO;
-    List<OffreDTO> listOffres = new ArrayList<>();
+    List<OffreDTO> liste = new ArrayList<>();
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
         typeObjetDTO = factory.getTypeObjet();
@@ -168,13 +167,15 @@ public class OffreDAOImpl implements OffreDAO {
         offreDTO.setDateOffre(rs.getTimestamp(23).toLocalDateTime());
         offreDTO.setPlageHoraire(rs.getString(24));
 
-        listOffres.add(offreDTO);
-
+        liste.add(offreDTO);
         offreDTO = factory.getOffre();
       }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
     }
-    return listOffres;
+    return liste;
   }
 
 }
-// Ne pas oublier de fermer le preparedStatement quand on aura décidé où le faire

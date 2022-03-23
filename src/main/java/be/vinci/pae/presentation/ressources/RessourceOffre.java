@@ -11,7 +11,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -25,7 +24,6 @@ import java.util.UUID;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-
 @Singleton
 @Path("/offres")
 public class RessourceOffre {
@@ -37,8 +35,9 @@ public class RessourceOffre {
    * Créer une offre.
    *
    * @param offreDTO : offre reçu du formulaire de créer une offre
-   * @return offreDTO : l'offre créer*
-   * @throws WebApplicationException si l'offre est null
+   * @return offreDTO : l'offre créée
+   * @throws PresentationException : est lancée s'il y a eu un problème lors de la création d'une
+   *                               offre
    */
   @POST
   @Path("creerOffre")
@@ -48,40 +47,45 @@ public class RessourceOffre {
   public OffreDTO creerOffre(OffreDTO offreDTO) {
     if (offreDTO.getObjetDTO().getDescription().isBlank()
         || offreDTO.getObjetDTO().getTypeObjet() == null || offreDTO.getPlageHoraire().isBlank()) {
-      throw new WebApplicationException(
-          Response.status(Response.Status.BAD_REQUEST)
-              .entity("offre null").type("text/plain").build());
+      throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
     }
     offreDTO = offreUCC.creerUneOffre(offreDTO);
-
     return offreDTO;
   }
 
   /**
    * Liste les offres.
    *
-   * @return noeud : la liste des offres
+   * @return liste : la liste des offres
    */
   @GET
-  @Path("listOffres")
+  @Path("listerOffres")
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public List<OffreDTO> listOffres() {
-    List<OffreDTO> offreDTO = offreUCC.listOffres();
-    if (offreDTO == null) {
-      throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
-          .entity("Liste des offres a echoué").type(MediaType.TEXT_PLAIN)
-          .build());
-    }
-    return offreDTO;
+  public List<OffreDTO> listerOffres() {
+    List<OffreDTO> liste = offreUCC.listerOffres();
+    return liste;
   }
 
   /**
-   * Telechargement de la photo.
+   * Liste les offres les plus récentes.
    *
-   * @param photo
+   * @return liste : la liste des offres les plus récentes
+   */
+  @GET
+  @Path("listerOffresRecentes")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<OffreDTO> listerOffresRecent() {
+    List<OffreDTO> liste = offreUCC.listerOffresRecentes();
+    return liste;
+  }
+
+  /**
+   * Téléchargement de la photo.
+   *
+   * @param photo              : la photo à télécharger
    * @param fichierDisposition
-   * @return
+   * @return response
    * @throws IOException
    */
   @POST
@@ -98,23 +102,6 @@ public class RessourceOffre {
     Files.copy(photo, Paths.get("./image/" + nomDencodage), StandardCopyOption.REPLACE_EXISTING);
     return Response.ok(nomFichier).header("Access-Control-Allow-Origin", "*").build();
     //return Response.ok().build();
-  }
-
-
-  /**
-   * Liste les offres recentes.
-   *
-   * @return noeud : la liste des offres recentes
-   */
-  @GET
-  @Path("listOffresRecent")
-  @Produces(MediaType.APPLICATION_JSON)
-  public List<OffreDTO> listOffresRecent() {
-    List<OffreDTO> offreDTO = offreUCC.listOffresRecent();
-    if (offreDTO == null) {
-      throw new PresentationException("Liste des offres a echoué", Status.BAD_REQUEST);
-    }
-    return offreDTO;
   }
 
 }

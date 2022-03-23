@@ -39,7 +39,6 @@ public class RessourceUtilisateur {
   @Inject
   private UtilisateurUCC utilisateurUCC;
 
-
   /**
    * Méthode qui connecte l'utilisateur à l'application.
    *

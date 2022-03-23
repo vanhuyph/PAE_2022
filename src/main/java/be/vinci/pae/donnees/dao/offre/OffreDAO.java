@@ -7,8 +7,7 @@ public interface OffreDAO {
 
   OffreDTO creerOffre(OffreDTO offreDTO);
 
-  List<OffreDTO> listOffres();
+  List<OffreDTO> listerOffres();
 
-  List<OffreDTO> listOffresRecent();
-
+  List<OffreDTO> listerOffresRecentes();
 }

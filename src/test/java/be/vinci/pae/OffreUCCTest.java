@@ -28,10 +28,10 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test reussi : méthode listOffresRecent renvoie bien une liste")
+  @DisplayName("Test réussi : méthode listOffresRecent renvoie bien une liste")
   public void testlistOffresRecent() {
     List<OffreDTO> listOffre = new ArrayList<>();
-    assertEquals(offreUCC.listOffresRecent(), listOffre);
+    assertEquals(offreUCC.listerOffresRecentes(), listOffre);
   }
 
 

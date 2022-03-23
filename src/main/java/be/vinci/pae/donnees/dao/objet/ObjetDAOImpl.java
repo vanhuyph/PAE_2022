@@ -12,7 +12,6 @@ public class ObjetDAOImpl implements ObjetDAO {
   @Inject
   private ServiceBackendDAL serviceBackendDAL;
 
-
   /**
    * Créer un objet.
    *

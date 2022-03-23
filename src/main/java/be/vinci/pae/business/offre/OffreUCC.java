@@ -4,11 +4,9 @@ import java.util.List;
 
 public interface OffreUCC {
 
-
   OffreDTO creerUneOffre(OffreDTO offreDTO);
 
-  List<OffreDTO> listOffres();
+  List<OffreDTO> listerOffres();
 
-  List<OffreDTO> listOffresRecent();
-
+  List<OffreDTO> listerOffresRecentes();
 }

@@ -13,7 +13,7 @@ import java.util.List;
 public class OffreUCCImpl implements OffreUCC {
 
   @Inject
-  OffreDAO offreDAO; // vérifier injection de dépendances
+  OffreDAO offreDAO;
   @Inject
   ObjetDAO objetDAO;
   @Inject
@@ -26,6 +26,7 @@ public class OffreUCCImpl implements OffreUCC {
    *
    * @param offreDTO : l'offre à créer
    * @return offre : l'offre créée
+   * @throws BusinessException : est lancée si l'objet ou l'offre n'a pas pu être créée
    */
   @Override
   public OffreDTO creerUneOffre(OffreDTO offreDTO) {
@@ -34,53 +35,42 @@ public class OffreUCCImpl implements OffreUCC {
         offreDTO.getObjetDTO().getOffreur().getPseudo());
     offreDTO.getObjetDTO().setOffreur(utilisateurDTO);
     ObjetDTO objet = objetDAO.creerObjet(offreDTO.getObjetDTO());
-
     if (objet == null) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'objet n'a pas pu être créé"); // vérifier statut de réponse
+      throw new BusinessException("L'objet n'a pas pu être créée");
     }
     offreDTO.setObjetDTO(objet);
     OffreDTO offre = offreDAO.creerOffre(offreDTO);
     if (offre == null) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'offre n'a pas pu être créée"); // vérifier statut de réponse
+      throw new BusinessException("L'offre n'a pas pu être créée");
     }
     serviceDAL.commettreTransaction();
     return offre;
   }
 
-
   /**
-   * Lister les offres.
+   * Liste les offres.
    *
-   * @return Liste offre
+   * @return liste : la liste de toutes les offres
    */
-  public List<OffreDTO> listOffres() {
+  public List<OffreDTO> listerOffres() {
     serviceDAL.commencerTransaction();
-    List<OffreDTO> listOffres = offreDAO.listOffres();
-    if (listOffres == null) {
-      serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("Il n'y a pas d'offre."); // vérifier statut de réponse
-    }
+    List<OffreDTO> liste = offreDAO.listerOffres();
     serviceDAL.commettreTransaction();
-    return listOffres;
+    return liste;
   }
 
   /**
-   * Lister les offres les plus recentes.
+   * Liste les offres les plus récentes.
    *
-   * @return Liste offre recentes
+   * @return liste : la liste des offres les plus récentes
    */
-  public List<OffreDTO> listOffresRecent() {
+  public List<OffreDTO> listerOffresRecentes() {
     serviceDAL.commencerTransaction();
-    List<OffreDTO> listOffresRecent = offreDAO.listOffresRecent();
-    if (listOffresRecent == null) {
-      serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("Il n'y a pas d'offre."); // vérifier statut de réponse
-    }
+    List<OffreDTO> liste = offreDAO.listerOffresRecentes();
     serviceDAL.commettreTransaction();
-    return listOffresRecent;
+    return liste;
   }
-
 
 }
