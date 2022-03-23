@@ -35,8 +35,10 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
         TypeObjetDTO typeObjetCourrant = factory.getTypeObjet();
         typeObjetCourrant = remplirTypeObjetDepuisResulSet(typeObjetCourrant, rs);
 
+        System.out.println(typeObjetCourrant);
         typesObjet.add(typeObjetCourrant);
-        
+        System.out.println(typesObjet.size());
+
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -48,7 +50,7 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
    * Rempli les données du type d'objet depuis un ResultSet.
    *
    * @param typeObjetDTO : le type d'objet vide, qui va être rempli
-   * @param ps           : le PreparedStatement déjà mis en place
+   * @param rs           : le PreparedStatement déjà mis en place
    * @return TypeObjetDTO : le type d'objet rempli rempli
    * @throws SQLException : est lancée si il y a un problème
    */
