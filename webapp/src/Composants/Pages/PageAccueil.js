@@ -37,10 +37,6 @@ const PageAccueil = () => {
   </div>
   <div id="offreListRecent"> </div>
   <br>`;
-
-
-
-
  
   pageDiv.innerHTML = pageAccueil;
   Navbar()
@@ -72,8 +68,7 @@ const PageAccueil = () => {
     return response.json();
   }).then((data)=>onOffreRecentListpage(data))
     .catch((err) => onError(err));
-  
-  if(utilisateur){
+  if(session){
     pageAccueil +=  `
     <div class="offres">
       <h2>Toutes les offres</h2>
@@ -85,7 +80,7 @@ const PageAccueil = () => {
       method: "GET",
       headers:{
         "Content-Type": "application/json",
-        Authorization : utilisateur.token      
+        Authorization : session.token
       },
     }).then((response)=>{
       if (!response.ok)

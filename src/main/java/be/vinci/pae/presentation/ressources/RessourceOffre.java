@@ -97,11 +97,8 @@ public class RessourceOffre {
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
     String nomFichier = fichierDisposition.getFileName();
     String nomDencodage = UUID.randomUUID().toString() + nomFichier;
-    System.out.println("nom du fichier: " + nomFichier);
-    System.out.println("télécharger Photo");
     Files.copy(photo, Paths.get("./image/" + nomDencodage), StandardCopyOption.REPLACE_EXISTING);
-    return Response.ok(nomFichier).header("Access-Control-Allow-Origin", "*").build();
-    //return Response.ok().build();
+    return Response.ok(nomFichier).build();
   }
 
 }
