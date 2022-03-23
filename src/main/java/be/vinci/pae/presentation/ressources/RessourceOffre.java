@@ -4,8 +4,6 @@ import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
-import be.vinci.pae.presentation.ressources.filtres.Autorisation;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -17,12 +15,12 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.util.List;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.UUID;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -79,6 +77,14 @@ public class RessourceOffre {
     return offreDTO;
   }
 
+  /**
+   * Telechargement de la photo.
+   *
+   * @param photo
+   * @param fichierDisposition
+   * @return
+   * @throws IOException
+   */
   @POST
   @Path("/telechargementPhoto")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -94,7 +100,6 @@ public class RessourceOffre {
     return Response.ok(nomFichier).header("Access-Control-Allow-Origin", "*").build();
     //return Response.ok().build();
   }
-
 
 
   /**
