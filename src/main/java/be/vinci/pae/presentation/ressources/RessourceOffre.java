@@ -3,6 +3,7 @@ package be.vinci.pae.presentation.ressources;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
+import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -14,6 +15,15 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
 
 @Singleton
 @Path("/offres")
@@ -102,4 +112,21 @@ public class RessourceOffre {
     return objet;
 
   }
+
+  @POST
+  @Path("/telechargementPhoto")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.MULTIPART_FORM_DATA)
+  //@Autorisation
+  public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
+      @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
+    String nomFichier = fichierDisposition.getFileName();
+    String nomDencodage = UUID.randomUUID().toString() + nomFichier;
+    System.out.println("nom du fichier: " + nomFichier);
+    System.out.println("télécharger Photo");
+    Files.copy(photo, Paths.get("./image/" + nomDencodage), StandardCopyOption.REPLACE_EXISTING);
+    return Response.ok(nomFichier).header("Access-Control-Allow-Origin", "*").build();
+    //return Response.ok().build();
+  }
+
 }

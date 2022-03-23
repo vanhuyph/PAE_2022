@@ -32,9 +32,9 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
       while (rs.next()) {
         TypeObjetDTO typeObjetCourrant = factory.getTypeObjet();
         typeObjetCourrant = remplirTypeObjetDepuisResulSet(typeObjetCourrant, rs);
-        System.out.println(typeObjetCourrant);
+
         typesObjet.add(typeObjetCourrant);
-        System.out.println(typesObjet.size());
+
       }
     } catch (SQLException e) {
       e.printStackTrace();
