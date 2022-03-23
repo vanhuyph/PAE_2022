@@ -2,8 +2,6 @@ package be.vinci.pae;
 
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.DomaineFactoryImpl;
-import be.vinci.pae.business.objet.ObjetUCC;
-import be.vinci.pae.business.objet.ObjetUCCImpl;
 import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.business.offre.OffreUCCImpl;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
@@ -40,8 +38,6 @@ public class MockApplicationBinder extends ApplicationBinder {
     bind(offreDAO).to(OffreDAO.class);
     bind(objetDAO).to(ObjetDAO.class);
     bind(OffreUCCImpl.class).to(OffreUCC.class).in(Singleton.class);
-    bind(ObjetUCCImpl.class).to(ObjetUCC.class).in(Singleton.class);
-
   }
 
 }

@@ -8,13 +8,11 @@ import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import jakarta.inject.Inject;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +22,7 @@ public class OffreDAOImpl implements OffreDAO {
   private DomaineFactory factory;
   @Inject
   private ServiceBackendDAL serviceBackendDAL;
+
 
   /**
    * Créer une offre.
@@ -36,10 +35,9 @@ public class OffreDAOImpl implements OffreDAO {
     PreparedStatement ps = serviceBackendDAL.getPs(
         "INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?) RETURNING *;");
     try {
-      java.util.Date date = new java.util.Date();
-      java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+      Timestamp sqlDate = Timestamp.valueOf(LocalDateTime.now());
       ps.setInt(1, offreDTO.getObjetDTO().getIdObjet());
-      ps.setDate(2, sqlDate);
+      ps.setTimestamp(2, sqlDate);
       ps.setString(3, offreDTO.getPlageHoraire());
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
@@ -167,7 +165,7 @@ public class OffreDAOImpl implements OffreDAO {
 
         offreDTO.setIdOffre(rs.getInt(22));
         offreDTO.setObjetDTO(objetDTO);
-        offreDTO.setDateOffre(convertirDateSQLEnLocalDateTime(rs.getDate(23)));
+        offreDTO.setDateOffre(rs.getTimestamp(23).toLocalDateTime());
         offreDTO.setPlageHoraire(rs.getString(24));
 
         listOffres.add(offreDTO);
@@ -178,10 +176,5 @@ public class OffreDAOImpl implements OffreDAO {
     return listOffres;
   }
 
-  public LocalDateTime convertirDateSQLEnLocalDateTime(Date dateToConvert) {
-    return Instant.ofEpochMilli(dateToConvert.getTime())
-        .atZone(ZoneId.systemDefault())
-        .toLocalDateTime();
-  }
 }
 // Ne pas oublier de fermer le preparedStatement quand on aura décidé où le faire

@@ -59,7 +59,7 @@ CREATE TABLE projet.offres
 (
     id_offre      SERIAL PRIMARY KEY,
     id_objet      INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
-    date_offre    DATE                                        NOT NULL,
+    date_offre    TIMESTAMP                                        NOT NULL,
     plage_horaire VARCHAR(500)                                NOT NULL
 );
 

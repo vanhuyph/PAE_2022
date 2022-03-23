@@ -48,14 +48,14 @@ public class RessourceOffre {
     return offreDTO;
   }
 
-  /**
+  /*
    * Creer un objet.
    *
    * @param json : json reçu du formulaire de connexion *
    * @return noeud : l'objet json contenant le token et l'utilisateur *
    * @throws WebApplicationException si type de l'objet ou description manquant
-   */
-  /*@POST
+   *
+  @POST
   @Path("creerObjet")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)

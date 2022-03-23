@@ -1,10 +1,7 @@
 package be.vinci.pae.donnees.dao.objet;
 
 import be.vinci.pae.business.DomaineFactory;
-import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.objet.ObjetDTO;
-import be.vinci.pae.business.typeobjet.TypeObjetDTO;
-import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -47,13 +44,13 @@ public class ObjetDAOImpl implements ObjetDAO {
     return objetDTO;
   }
 
-  /**
+  /*
    * Recherche un objet via un id dans la base de données.
    *
    * @param id : l'id de l'objet
    * @return objetDTO : l'objet, s'il trouve un objet qui possède ce id
    * @throws SQLException : est lancée s'il ne trouve pas l'objet
-   */
+   *
   @Override
   public ObjetDTO rechercheParId(int id) {
     ObjetDTO objetDTO = factory.getObjet();
@@ -82,7 +79,7 @@ public class ObjetDAOImpl implements ObjetDAO {
    * @param ps       : le PreparedStatement déjà mis en place
    * @return objetDTO : l'objet rempli
    * @throws SQLException : est lancé si il y a un problème"
-   */
+   *
   private ObjetDTO remplirObjetDepuisResultSet(ObjetDTO objetDTO, PreparedStatement ps) {
     TypeObjetDTO typeObjetDTO;
     AdresseDTO adresseDTO;
@@ -126,5 +123,5 @@ public class ObjetDAOImpl implements ObjetDAO {
       e.printStackTrace();
     }
     return objetDTO;
-  }
+  }*/
 }

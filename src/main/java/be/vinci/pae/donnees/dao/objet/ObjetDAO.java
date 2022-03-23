@@ -6,6 +6,5 @@ public interface ObjetDAO {
 
   ObjetDTO creerObjet(ObjetDTO objetDTO);
 
-  ObjetDTO rechercheParId(int id);
 
 }
