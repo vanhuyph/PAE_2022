@@ -2,6 +2,7 @@ import PageAccueil from "../Pages/PageAccueil";
 import PageConnexion from "../Pages/PageConnexion";
 import PageDeconnexion from "../Pages/PageDeconnexion";
 import PageInscription from "../Pages/PageInscription";
+import PageAdmin from "../Pages/PageAdmin";
 import PageOffrirObjet from "../Pages/PageOffrirObjet";
 
 // Configure your routes here
@@ -10,6 +11,7 @@ const routes = {
   "/connexion": PageConnexion,
   "/deconnexion": PageDeconnexion,
   "/inscription": PageInscription,
+  "/admin": PageAdmin,
   "/offrirObjet": PageOffrirObjet,
 };
 
@@ -47,10 +49,11 @@ const Router = () => {
   /* Route the right component when the page is loaded / refreshed */
   window.addEventListener("load", (e) => {
     const componentToRender = routes[window.location.pathname];
-    if (!componentToRender)
+    if (!componentToRender) {
       throw Error(
-        "The " + window.location.pathname + " ressource does not exist."
+          "The " + window.location.pathname + " ressource does not exist."
       );
+    }
 
     componentToRender();
   });
@@ -80,4 +83,4 @@ const Redirect = (uri) => {
   }
 };
 
-export { Router, Redirect };
+export {Router, Redirect};

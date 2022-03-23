@@ -2,66 +2,67 @@ DROP SCHEMA IF EXISTS projet CASCADE;
 CREATE SCHEMA projet;
 
 CREATE TABLE projet.adresses(
-                                id_adresse SERIAL PRIMARY KEY,
-                                rue VARCHAR(255) NOT NULL ,
-                                numero INTEGER NOT NULL,
-                                boite INTEGER,
-                                code_postal INTEGER NOT NULL,
-                                commune VARCHAR(30)
+    id_adresse SERIAL PRIMARY KEY,
+    rue VARCHAR(255) NOT NULL ,
+    numero INTEGER NOT NULL,
+    boite INTEGER,
+    code_postal INTEGER NOT NULL,
+    commune VARCHAR(30)
 );
 
 
 CREATE TABLE projet.types_objets(
-                                    id_type SERIAL PRIMARY KEY,
-                                    nom VARCHAR(50) NOT NULL
+    id_type SERIAL PRIMARY KEY,
+    nom VARCHAR(50) NOT NULL
 );
 
 
 CREATE TABLE projet.utilisateurs(
-                                    id_utilisateur SERIAL PRIMARY KEY,
-                                    pseudo VARCHAR(25) NOT NULL ,
-                                    nom VARCHAR(50) NOT NULL,
-                                    prenom VARCHAR(50) NOT NULL,
-                                    mdp VARCHAR(255) NOT NULL,
-                                    gsm VARCHAR(15),
-                                    est_admin BOOLEAN NOT NULL,
-                                    adresse INTEGER REFERENCES projet.adresses (id_adresse) NOT NULL,
-                                    etat_inscription VARCHAR(10) NOT NULL,
-                                    commentaire VARCHAR(255) NULL
+    id_utilisateur SERIAL PRIMARY KEY,
+    pseudo VARCHAR(25) NOT NULL ,
+    nom VARCHAR(50) NOT NULL,
+    prenom VARCHAR(50) NOT NULL,
+    mdp VARCHAR(255) NOT NULL,
+    gsm VARCHAR(15),
+    est_admin BOOLEAN NOT NULL,
+    adresse INTEGER REFERENCES projet.adresses (id_adresse) NOT NULL,
+    etat_inscription VARCHAR(10) NOT NULL,
+    commentaire VARCHAR(255) NULL
 );
 
 
 CREATE TABLE projet.objets(
-                              id_objet SERIAL PRIMARY KEY,
-                              etat_objet VARCHAR(9) NOT NULL,
-                              type_objet INTEGER REFERENCES projet.types_objets (id_type) NOT NULL,
-                              description VARCHAR(255) NOT NULL,
-                              offreur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
-                              receveur INTEGER REFERENCES projet.utilisateurs (id_utilisateur),
-                              photo VARCHAR(255)
+    id_objet SERIAL PRIMARY KEY,
+    etat_objet VARCHAR(9) NOT NULL,
+    type_objet INTEGER REFERENCES projet.types_objets (id_type) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    offreur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
+    receveur INTEGER REFERENCES projet.utilisateurs (id_utilisateur),
+    photo VARCHAR(255)
 );
 
 -- taille photo?
 
 CREATE TABLE projet.interets(
-                                utilisateur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
-                                objet INTEGER REFERENCES projet.objets(id_objet) NOT NULL,
-                                PRIMARY KEY (utilisateur, objet)
+    utilisateur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
+    objet INTEGER REFERENCES projet.objets(id_objet) NOT NULL,
+    PRIMARY KEY (utilisateur, objet)
 );
 
 CREATE TABLE projet.evaluations(
-                                   id_evaluation SERIAL PRIMARY KEY,
-                                   objet INTEGER REFERENCES projet.objets(id_objet) NOT NULL,
-                                   commentaire VARCHAR(255) NOT NULL
+    id_evaluation SERIAL PRIMARY KEY,
+    objet INTEGER REFERENCES projet.objets(id_objet) NOT NULL,
+    commentaire VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE projet.offres
 (
     id_offre      SERIAL PRIMARY KEY,
     id_objet      INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
-    date_offre    DATE                                        NOT NULL,
+    date_offre    TIMESTAMP                                        NOT NULL,
     plage_horaire VARCHAR(500)                                NOT NULL
 );
+
 
 
 INSERT INTO projet.adresses
@@ -102,15 +103,46 @@ INSERT INTO projet.offres
 VALUES (DEFAULT, 2, now(), ' ');
 
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'interrese', 1, 'machine à nettoyer', 1, 2, 'photo machine');
+VALUES (DEFAULT, 'interrese', 1, 'machine à nettoyer', 1, NULL, 'photo machine');
 INSERT INTO projet.offres
 VALUES (DEFAULT, 3, '2017-02-05', ' ');
 
 
-INSERT INTO projet.types_objets VALUES (DEFAULT,'Décoration');
-INSERT INTO projet.types_objets VALUES (DEFAULT,'Meuble');
-INSERT INTO projet.types_objets VALUES (DEFAULT,'Plante');
-INSERT INTO projet.types_objets VALUES (DEFAULT,'Jouet');
-INSERT INTO projet.types_objets VALUES (DEFAULT,'Vêtement');
+SELECT a.id_adresse,
+       a.rue,
+       a.numero,
+       a.boite,
+       a.code_postal,
+       a.commune,
 
+       u.id_utilisateur,
+       u.pseudo,
+       u.nom,
+       u.prenom,
+       u.mdp,
+       u.gsm,
+       u.est_admin,
+       u.etat_inscription,
+       u.commentaire,
 
+       t.id_type,
+       t.nom,
+
+       o.id_objet,
+       o.etat_objet,
+       o.description,
+       o.photo,
+
+       of.id_offre,
+       of.date_offre,
+       of.plage_horaire
+
+FROM projet.offres of
+         LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet
+         LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur
+         LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse
+         LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet
+WHERE o.etat_objet = 'offert'
+   OR o.etat_objet = 'interrese'
+ORDER BY of.date_offre DESC
+LIMIT 2

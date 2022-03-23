@@ -2,7 +2,7 @@ package be.vinci.pae.donnees.dao.typeobjet;
 
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.typeobjet.TypeObjetDTO;
-import be.vinci.pae.donnees.services.ServiceDAL;
+import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +15,7 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
   @Inject
   private DomaineFactory factory;
   @Inject
-  private ServiceDAL serviceDAL;
+  private ServiceBackendDAL serviceBackendDAL;
 
   /**
    * Liste les types d'objet.
@@ -24,17 +24,15 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
    */
   @Override
   public List<TypeObjetDTO> listerTypeObjet() {
-    List<TypeObjetDTO> typesObjet = new ArrayList<TypeObjetDTO>();
-    PreparedStatement ps = serviceDAL.getPs(
+    List<TypeObjetDTO> typesObjet = new ArrayList<>();
+    PreparedStatement ps = serviceBackendDAL.getPs(
         "SELECT * FROM projet.types_Objets  ;");
     try {
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
         TypeObjetDTO typeObjetCourrant = factory.getTypeObjet();
         typeObjetCourrant = remplirTypeObjetDepuisResulSet(typeObjetCourrant, rs);
-
         typesObjet.add(typeObjetCourrant);
-
       }
     } catch (SQLException e) {
       e.printStackTrace();

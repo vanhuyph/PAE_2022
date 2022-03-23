@@ -1,6 +1,5 @@
 package be.vinci.pae.business;
 
-
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.offre.OffreDTO;

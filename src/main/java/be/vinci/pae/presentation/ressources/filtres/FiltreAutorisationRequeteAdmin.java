@@ -12,13 +12,12 @@ import jakarta.ws.rs.ext.Provider;
 
 @Singleton
 @Provider
-@Autorisation
-public class FiltreAutorisationRequete extends AutorisationAbstraite implements
+@AutorisationAdmin
+public class FiltreAutorisationRequeteAdmin extends AutorisationAbstraite implements
     ContainerRequestFilter {
 
   @Override
   public void filter(ContainerRequestContext requestContext) {
-
     UtilisateurDTO utilisateurAuthentifie = null;
     try {
       utilisateurAuthentifie = tokenDecode(requestContext);
@@ -29,11 +28,11 @@ public class FiltreAutorisationRequete extends AutorisationAbstraite implements
       requestContext.abortWith(Response.status(Status.INTERNAL_SERVER_ERROR)
           .entity(e.getMessage()).build());
     }
-    if (utilisateurAuthentifie == null) {
+    if (utilisateurAuthentifie == null || !utilisateurAuthentifie.isEstAdmin()) {
       requestContext.abortWith(Response.status(Status.FORBIDDEN)
           .entity("Vous ne pouvez pas accéder a cette ressource").build());
     }
     requestContext.setProperty("utilisateur", utilisateurAuthentifie);
-  }
 
+  }
 }

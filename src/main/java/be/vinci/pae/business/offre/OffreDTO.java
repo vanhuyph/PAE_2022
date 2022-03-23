@@ -2,7 +2,7 @@ package be.vinci.pae.business.offre;
 
 import be.vinci.pae.business.objet.ObjetDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @JsonDeserialize(as = OffreImpl.class)
 public interface OffreDTO {
@@ -11,13 +11,13 @@ public interface OffreDTO {
 
   void setIdOffre(int idOffre);
 
-  Date getDateOffre();
+  LocalDateTime getDateOffre();
 
-  void setDateOffre(Date dateOffre);
+  void setDateOffre(LocalDateTime dateOffre);
 
-  ObjetDTO getObjet();
+  ObjetDTO getObjetDTO();
 
-  void setObjet(ObjetDTO objet);
+  void setObjetDTO(ObjetDTO objetDTO);
 
   String getPlageHoraire();
 

@@ -118,17 +118,22 @@ const surInscription = (e) => {
 
   }else {
 
+    let nouvelleAdresse = {
+      rue: rue,
+      numero: numero,
+      boite: document.querySelector("#boite").value,
+      codePostal: codePostal,
+      commune: commune
+    }
     let nouvelUtilisateur = {
       pseudo: pseudo,
       nom: nom,
       prenom: prenom,
       mdp: mdp,
-      rue: rue,
-      numero: numero,
-      boite: document.querySelector("#boite").value,
-      code_postal: codePostal,
-      commune: commune
+      adresse: nouvelleAdresse
     }
+
+    console.log(nouvelUtilisateur)
 
     fetch("/api/utilisateurs/inscription", {
       method: "POST",
