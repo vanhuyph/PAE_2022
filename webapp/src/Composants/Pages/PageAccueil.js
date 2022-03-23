@@ -37,7 +37,7 @@ const PageAccueil = () => {
   </div>
   <div id="offreListRecent"> </div>
   <br>`;
- 
+
   pageDiv.innerHTML = pageAccueil;
   Navbar()
   const conteneurModal = document.querySelector(".conteneur-modal")
@@ -55,48 +55,49 @@ const PageAccueil = () => {
     conteneurModal.classList.toggle("active")
   }))
 
-  fetch("/api/offres/listOffresRecent", {
+  fetch("/api/offres/listerOffresRecentes", {
     method: "GET",
-    headers:{
+    headers: {
       "Content-Type": "application/json",
     },
-  }).then((response)=>{
-    if (!response.ok)
-    throw new Error(
-      "Error code : " + response.status + " : " + response.statusText
-    );
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error(
+          "Error code : " + response.status + " : " + response.statusText);
+    }
     return response.json();
-  }).then((data)=>onOffreRecentListpage(data))
-    .catch((err) => onError(err));
-  if(session){
-    pageAccueil +=  `
+  }).then((data) => onOffreRecentListpage(data))
+  .catch((err) => onError(err));
+  if (session) {
+    pageAccueil += `
     <div class="offres">
       <h2>Toutes les offres</h2>
     </div>
     <div id="offreList"> </div>
     <br>`;
     pageDiv.innerHTML = pageAccueil;
-    fetch("/api/offres/listOffres", {
+    fetch("/api/offres/listerOffres", {
       method: "GET",
-      headers:{
+      headers: {
         "Content-Type": "application/json",
-        Authorization : session.token
+        Authorization: session.token
       },
-    }).then((response)=>{
-      if (!response.ok)
-      throw new Error(
-        "Error code : " + response.status + " : " + response.statusText
-      );
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error(
+            "Error code : " + response.status + " : " + response.statusText
+        );
+      }
       return response.json();
-    }).then((data)=>onOffreListpage(data))
-      .catch((err) => onError(err));
+    }).then((data) => onOffreListpage(data))
+    .catch((err) => onError(err));
   }
 };
 
-const onOffreRecentListpage = (data) =>{
+const onOffreRecentListpage = (data) => {
   const listOffreRecent = document.getElementById("offreListRecent");
   let listRecent = ``;
-  data.forEach((offre)=>{
+  data.forEach((offre) => {
     const date = `${offre.dateOffre[2]}\\${offre.dateOffre[1]}\\${offre.dateOffre[0]}`
     listRecent += `<article>
       <h4>${offre.objetDTO.photo}</h4>
@@ -108,10 +109,10 @@ const onOffreRecentListpage = (data) =>{
   listOffreRecent.innerHTML = listRecent;
 };
 
-const onOffreListpage = (data)=>{
+const onOffreListpage = (data) => {
   const listOffre = document.getElementById("offreList");
   let list = ``;
-  data.forEach((offre)=>{
+  data.forEach((offre) => {
     const date = `${offre.dateOffre[2]}\\${offre.dateOffre[1]}\\${offre.dateOffre[0]}`
     list += `<article>
       <h4>${offre.objetDTO.photo}</h4>
