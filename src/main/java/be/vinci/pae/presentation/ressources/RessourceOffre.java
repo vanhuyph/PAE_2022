@@ -74,7 +74,7 @@ public class RessourceOffre {
   //@Autorisation
   public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
-    String nomFichier = fichierDisposition.getFileName(); //UUID
+    String nomFichier = fichierDisposition.getFileName();
     String nomDencodage = UUID.randomUUID().toString() + nomFichier;
     System.out.println("nom du fichier: " + nomFichier);
     System.out.println("télécharger Photo");

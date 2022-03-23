@@ -27,7 +27,6 @@ public class Main {
     return GrizzlyHttpServerFactory.createHttpServer(URI.create(Config.getPropriete("BaseURI")),
         rc);
   }
-
   /**
    * Méthode main.
    *
@@ -35,7 +34,6 @@ public class Main {
    */
   public static void main(String[] args) throws IOException {
     Config.charger("dev.properties");
-
     final HttpServer server = startServer();
     System.out.println(
         String.format("Jersey app disponible sur " + Config.getPropriete("BaseURI")));

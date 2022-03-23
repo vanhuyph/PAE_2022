@@ -27,7 +27,7 @@ public class RessourceTypeObjet {
   @Path("liste")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  //@Autorisation
+ 
   public List<TypeObjetDTO> listerTypeObjet() {
     List<TypeObjetDTO> typesObjet;
     typesObjet = typeObjetUCC.listerTypeObjet();
