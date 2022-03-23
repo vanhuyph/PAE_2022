@@ -101,7 +101,7 @@ public class OffreDAOImpl implements OffreDAO {
             + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
             + "WHERE o.etat_objet = 'offert' OR o.etat_objet = 'interrese' "
             + "ORDER BY of.date_offre DESC "
-            + "LIMIT 2;");
+            + "LIMIT 3;");
     List<OffreDTO> listOffresRecent = null;
     try {
 

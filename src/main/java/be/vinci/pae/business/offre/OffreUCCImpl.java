@@ -1,8 +1,10 @@
 package be.vinci.pae.business.offre;
 
 import be.vinci.pae.business.objet.ObjetDTO;
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
+import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import jakarta.inject.Inject;
@@ -16,6 +18,8 @@ public class OffreUCCImpl implements OffreUCC {
   ObjetDAO objetDAO;
   @Inject
   ServiceDAL serviceDAL;
+  @Inject
+  UtilisateurDAO utilisateurDAO;
 
   /**
    * Créer une offre.
@@ -26,6 +30,9 @@ public class OffreUCCImpl implements OffreUCC {
   @Override
   public OffreDTO creerUneOffre(OffreDTO offreDTO) {
     serviceDAL.commencerTransaction();
+    UtilisateurDTO utilisateurDTO = utilisateurDAO.rechercheParPseudo(
+        offreDTO.getObjetDTO().getOffreur().getPseudo());
+    offreDTO.getObjetDTO().setOffreur(utilisateurDTO);
     ObjetDTO objet = objetDAO.creerObjet(offreDTO.getObjetDTO());
 
     if (objet == null) {

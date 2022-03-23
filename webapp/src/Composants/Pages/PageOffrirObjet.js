@@ -138,7 +138,8 @@ const surOffrirObjet = (e) => {
     console.log("type objet :" + typeObjet);
 
     const utilisateur = recupUtilisateurDonneesSession();
-    const offreur = utilisateur.utilisateur;    
+    const offreur = utilisateur.utilisateur;
+    console.log(offreur);
 
     if (description !== ""
         && plageHoraire !== ""
@@ -147,8 +148,7 @@ const surOffrirObjet = (e) => {
         let nouvelObjet = {
             offreur: offreur,
             receveur: null,
-            typeObjet: typeObjet,
-            etatObjet:"offre",
+            typeObjet: {idType: typeObjet},
             description: description,
             photo: "photoTest"
         }

@@ -37,14 +37,14 @@ public class RessourceOffre {
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
   public OffreDTO creerOffre(OffreDTO offreDTO) {
-    System.out.println("creer offre");
-    offreDTO = offreUCC.creerUneOffre(offreDTO);
     if (offreDTO.getObjetDTO().getDescription().isBlank()
         || offreDTO.getObjetDTO().getTypeObjet() == null || offreDTO.getPlageHoraire().isBlank()) {
       throw new WebApplicationException(
           Response.status(Response.Status.BAD_REQUEST)
               .entity("offre null").type("text/plain").build());
     }
+    offreDTO = offreUCC.creerUneOffre(offreDTO);
+
     return offreDTO;
   }
 
