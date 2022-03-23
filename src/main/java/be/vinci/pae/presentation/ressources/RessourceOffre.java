@@ -57,7 +57,6 @@ public class RessourceOffre {
     return offreDTO;
   }
 
-
   /**
    * Liste les offres.
    *
@@ -117,6 +116,5 @@ public class RessourceOffre {
     }
     return offreDTO;
   }
-
 
 }

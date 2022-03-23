@@ -6,29 +6,45 @@ import {Redirect} from "../Router/Router";
 
 // style pas travailler
 
-
-// pas encore de possibilité d'ajout de photo à voir le cours d'architecture => cfr mail Leleux
+const formPhoto =
+    `
+        <div class="field">
+        
+        <form id="envoyerPhoto" class="ui form"  >
+          <label>Selectionner une photo</label>
+          <input  name="photo" id="photo" type="file"/><!--onchange=" previsualiserPhoto(this)"--> <br/><br/>
+          <img src="#" alt="" id="image" style="max-width: 500px; margin-top: 20px;" >
+          <div class=" tertiary inverted ">
+          
+          <button type="submit" class="ui button">Envoyer la photo</button>
+          </div>
+        </form>
+        
+        
+       </div>
+    `
 const typesObjet =
     `
-        <select type="text" id="choixTypeObjet" className="type">
+        
+        <select class="ui search dropdown "  type="text" id="choixTypeObjet" className="type" >
         </select>
         <p class="message-erreur erreur-type"></p>
+       
     `
-
+//permettre à l'user de faire  un enter , passage a la ligne dans la description et la plage horaire
+//pour l'instant envoie du formulaire direct..
 const pageOffrirObjet = `
-    <div class="page-offrirObjet">
+    <div class="page-offrirObjet ">
     <h2>Offrir un objet</h2>
+    <div class="ui horizontal segments">
+    <div class="ui segment">
     <form id="formulaire-offrirObjet" class="ui form">
-    
-        
-        
-        <div class="field">
+          
+          <div class="description-conteneur field">
           <label for="description">Description</label>
-          <div class="description-conteneur">
-              <input type="text" id="description" class="description">
+              <input type="text" id="description" class="description ">
               <p class="message-erreur erreur-description"></p>
           </div>
-        </div>
 
         <div class="field">
           <label for="horaire">Plage horaire</label>
@@ -42,17 +58,32 @@ const pageOffrirObjet = `
            
             ${typesObjet}
         </div>
-        <button class="ui secondary inverted button" type="submit">Offrir l'objet</button>
-        
-    </form>    
+        <div class=" tertiary inverted ">
+        <button class="ui  button " type="submit">Offrir l'objet</button>
+        </div>
+    </form>  
+     </div>
+       <div class="ui  right floated segment">
+    <div class="">
+      ${formPhoto}
+      </div>
+    </div>
+    </div>  
+    </div>
     `
-    
+
 const PageOffrirObjet = () => {
     const pageDiv = document.querySelector("#page");
     const utilisateur = recupUtilisateurDonneesSession();
+
+
+
     pageDiv.innerHTML = pageOffrirObjet;
+    const formulairePhoto = document.querySelector("#envoyerPhoto");
+    const photo = document.querySelector("#photo");
 
-
+    formulairePhoto.addEventListener("submit",envoyerPhoto);
+    photo.addEventListener("change",previsualiserPhoto);
     const formOffrirObjet = document.querySelector("#formulaire-offrirObjet");
 
     if (utilisateur) {
@@ -75,7 +106,6 @@ const PageOffrirObjet = () => {
             return response.json();
         })
         .then((data) => choixTypeObjet(data));
-
 
         formOffrirObjet.addEventListener("submit", surOffrirObjet);
 
@@ -105,8 +135,31 @@ const choixTypeObjet = (data) => {
     choixTypeObjet.innerHTML = liste;
 
 }
+const previsualiserPhoto  =  (e) => {
+    var image = document.getElementById("image")
 
-
+    const photo = document.getElementById("photo").files[0];
+    console.log(photo)
+    if (photo) {
+        // On change l'URL de l'image
+        image.src = URL.createObjectURL(photo)
+    }
+}
+const envoyerPhoto = async (e) => {
+    e.preventDefault()
+    const fichierDEntree =  document.getElementById("photo");
+    const formDonnee = new FormData();
+    console.log("append")  ;
+    formDonnee.append('photo', fichierDEntree.files[0]);
+    console.log("fetch")
+    const options = {
+        method: 'POST',
+        body: formDonnee,
+    };
+    await fetch('/api/offres/telechargementPhoto', options);
+    console.log("fin fetch");
+    return false;
+}
 const surOffrirObjet = (e) => {
     e.preventDefault();
     let typeObjet = document.querySelector("#choixTypeObjet").value;
@@ -137,6 +190,8 @@ const surOffrirObjet = (e) => {
     console.log("plage horaire :" + plageHoraire);
     console.log("type objet :" + typeObjet);
 
+    //copie collé de code avec la recuperation déjà effectuée au dessus, mais j'arrivais pas à transférer les données
+    // peut etre faire par un paramètre à la méthode?
     const utilisateur = recupUtilisateurDonneesSession();
     const offreur = utilisateur.utilisateur;
     console.log(offreur);
@@ -150,8 +205,26 @@ const surOffrirObjet = (e) => {
             receveur: null,
             typeObjet: {idType: typeObjet},
             description: description,
-            photo: "photoTest"
+            // photo: "photoTest"
         }
+
+        console.log("juste avant premier fetch");
+        fetch("/api/objets/creerObjet", {
+            method: "POST",
+            body: JSON.stringify(nouvelObjet),
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: utilisateur.token,
+            }
+        })
+        .then((reponse) => {
+            if (!reponse.ok) {
+                throw new Error(
+                    "Error code : " + reponse.status + " : " + reponse.statusText + " : " + reponse.text())
+            }
+            console.log(reponse)
+            return reponse.json()
+        }).then((data) =>surCreerOffre(data))
 
         let nouvelOffre = {
             objetDTO: nouvelObjet,
@@ -163,7 +236,7 @@ const surOffrirObjet = (e) => {
             body: JSON.stringify(nouvelOffre),
             headers: {
                 "Content-Type": "application/json",
-                 Authorization : utilisateur.token    
+                 Authorization : utilisateur.token
             },
         })
         .then((response) => {
