@@ -131,12 +131,16 @@ const previsualiserPhoto  =  (e) => {
 }
 const envoyerPhoto = async (e) => {
     e.preventDefault()
+    const session = recupUtilisateurDonneesSession();
     const fichierDEntree =  document.getElementById("photo");
     const formDonnee = new FormData();
     formDonnee.append('photo', fichierDEntree.files[0]);
     const options = {
         method: 'POST',
         body: formDonnee,
+        headers: {
+            Authorization : session.token
+        },
     };
     await fetch('/api/offres/telechargementPhoto', options);
     return false;

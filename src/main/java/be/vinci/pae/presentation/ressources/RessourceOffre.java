@@ -83,7 +83,7 @@ public class RessourceOffre {
   @Path("/telechargementPhoto")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.MULTIPART_FORM_DATA)
-  //@Autorisation
+  @Autorisation
   public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
     String nomFichier = fichierDisposition.getFileName();
