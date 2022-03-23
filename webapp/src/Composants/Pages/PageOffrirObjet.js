@@ -13,12 +13,14 @@ const formPhoto =
         <form id="envoyerPhoto" class="ui form"  >
           <label>Selectionner une photo</label>
           <input  name="photo" id="photo" type="file"/><!--onchange=" previsualiserPhoto(this)"--> <br/><br/>
+          <img src="#" alt="" id="image" style="max-width: 500px; margin-top: 20px;" >
           <div class=" tertiary inverted ">
+          
           <button type="submit" class="ui button">Envoyer la photo</button>
           </div>
         </form>
         
-        <img src="#" alt="" id="image" style="max-width: 500px; margin-top: 20px;" >
+        
        </div>
     `
 const typesObjet =

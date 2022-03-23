@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -72,9 +74,11 @@ public class RessourceOffre {
   //@Autorisation
   public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
-    String nomFichier = fichierDisposition.getName(); //UUID
+    String nomFichier = fichierDisposition.getFileName(); //UUID
+    String nomDencodage = UUID.randomUUID().toString() + nomFichier;
+    System.out.println("nom du fichier: " + nomFichier);
     System.out.println("télécharger Photo");
-    Files.copy(photo, Paths.get(nomFichier));
+    Files.copy(photo, Paths.get("./image/" + nomDencodage), StandardCopyOption.REPLACE_EXISTING);
     return Response.ok(nomFichier).header("Access-Control-Allow-Origin", "*").build();
     //return Response.ok().build();
   }
