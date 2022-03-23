@@ -24,7 +24,7 @@ let inscription = `
       </div>
     </div>
     <div class="field">
-      <label for="prenom">Prenom <span>*</span></label>
+      <label for="prenom">Prénom <span>*</span></label>
       <div class="prenom-conteneur">
         <input type="text" id="prenom">
       </div>
@@ -46,7 +46,7 @@ let inscription = `
     <div class="field">
       <div class="two fields">
         <div class="field">
-          <label for="numero">Numero <span>*</span></label>
+          <label for="numero">Numéro <span>*</span></label>
           <div class="numero-conteneur">
             <input type="number" id="numero">
           </div>
@@ -91,15 +91,14 @@ const PageInscription = () => {
 
   let form = document.querySelector("#formulaire-inscription");
 
-  // Redirection si l'utilisateur possède une session, redirige vers la page d'accueil sinon soumission du formulaire
-  const utilisateur = recupUtilisateurDonneesSession()
-  if (utilisateur) {
+  // Redirection si l'utilisateur possède une session vers la page d'accueil sinon soumission du formulaire
+  const session = recupUtilisateurDonneesSession()
+  if (session) {
     Navbar()
     Redirect("/")
   } else {
     form.addEventListener("submit", surInscription)
   }
-
 }
 
 const surInscription = (e) => {
@@ -152,13 +151,12 @@ const surInscription = (e) => {
     .then((donnee) => surInscrUtilisateur(donnee))
     .catch(err => surErreur(err))
   }
-
 }
 
 // Création données de session et redirection accueil
 const surInscrUtilisateur = (donnee) => {
-  const utilisateur = {...donnee, isAutenticated: true}
-  creationDonneeSessionUtilisateur(utilisateur, false)
+  const session = {...donnee, isAutenticated: true}
+  creationDonneeSessionUtilisateur(session, false)
   Redirect("/")
 }
 

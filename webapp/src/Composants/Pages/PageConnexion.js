@@ -43,7 +43,7 @@ const PageConnexion = () => {
   pageDiv.innerHTML = pageCon;
   let formCon = document.querySelector("#formulaire-connexion")
 
-  // Récuperation de la session et redirection sur accueil sinon envoie du formulaire possible
+  // Récupération de la session et redirection sur l'accueil sinon envoie du formulaire possible
   const session = recupUtilisateurDonneesSession()
   if (session) {
     Navbar()
@@ -110,8 +110,7 @@ const surErreur = (err) => {
   let messageErreur = document.querySelector("#messageErreur");
   let erreurMessage = "";
   console.log(err)
-  if (err.message.includes(
-      "401")) {
+  if (err.message.includes("401")) {
     erreurMessage = "Pseudo ou mot de passe incorrect";
   } else {
     erreurMessage = err.message;

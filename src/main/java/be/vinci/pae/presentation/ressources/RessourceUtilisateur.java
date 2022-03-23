@@ -52,8 +52,8 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode connexion(JsonNode json) {
-    if (!json.hasNonNull("pseudo") || !json.hasNonNull("mdp") || json.get("pseudo").equals("")
-        || json.get("mdp").equals("")) {
+    if (!json.hasNonNull("pseudo") || !json.hasNonNull("mdp") || json.get("pseudo").asText()
+        .equals("") || json.get("mdp").asText().equals("")) {
       throw new PresentationException("Pseudo ou mot de passe manquant", Status.BAD_REQUEST);
     }
     String pseudo = json.get("pseudo").asText();

@@ -50,7 +50,7 @@ const PageAdmin = () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = page;
 
-  // Gestion responsive avec la barre veritcal pour pc et horizontale pour mobile
+  // Gestion responsive avec la barre verticale pour pc et horizontale pour mobile
   if (window.innerWidth < 576) {
     document.getElementById("bar").innerHTML = barHori;
   } else {
@@ -64,9 +64,8 @@ const PageAdmin = () => {
     }
   };
 
-  // Récuperation des utilisateurs en attente
+  // Récupération des utilisateurs en attente
   recupEnAttente()
-
   const demandesPage = document.querySelector("#demandes")
   const refusPage = document.querySelector("#refus")
   const contenu = document.querySelector("#contenu")
@@ -86,7 +85,7 @@ const PageAdmin = () => {
   })
 }
 
-// Récuperation des utilisateurs en attente
+// Récupération des utilisateurs en attente
 const recupEnAttente = () => {
   const session = recupUtilisateurDonneesSession();
   fetch("/api/utilisateurs/attente", {
@@ -99,15 +98,14 @@ const recupEnAttente = () => {
   .then((response) => {
     if (!response.ok) {
       throw new Error(
-          "Error code : " + response.status + " : " + response.statusText
-      );
+          "Error code : " + response.status + " : " + response.statusText);
     }
     return response.json();
   })
   .then((data) => surListeAttente(data))
 }
 
-// Récuperation des utilisateurs refusés
+// Récupération des utilisateurs refusés
 const recupRefuse = () => {
   const session = recupUtilisateurDonneesSession();
   fetch("/api/utilisateurs/refuse", {
@@ -120,8 +118,7 @@ const recupRefuse = () => {
   .then((response) => {
     if (!response.ok) {
       throw new Error(
-          "Error code : " + response.status + " : " + response.statusText
-      );
+          "Error code : " + response.status + " : " + response.statusText);
     }
     return response.json();
   })
@@ -142,7 +139,7 @@ const surListeAttente = (data) => {
         <div class="tete">
             <p>Pseudo</p>
             <p>Nom</p>
-            <p>Prenom</p>
+            <p>Prénom</p>
             <p>Est admin</p>
             <div class="boutons-tete">
                 <div class="btn1"></div>
@@ -251,7 +248,6 @@ const surListeAttente = (data) => {
         })
         .then(() => recupEnAttente())
       })
-
     });
   });
 }
@@ -270,11 +266,9 @@ const surListeRefus = (data) => {
         <div class="tete">
             <p>Pseudo</p>
             <p>Nom</p>
-            <p>Prenom</p>
+            <p>Prénom</p>
             <p>Est admin</p>
-            
             <div class="btn-refus"></div>
-            
         </div>
     </div>`;
 
@@ -301,7 +295,6 @@ const surListeRefus = (data) => {
             <p class="commentaire-refus">${element.commentaire}</p>
         </div>
     </div>
-    
     `;
   });
   liste += `</div>`;
