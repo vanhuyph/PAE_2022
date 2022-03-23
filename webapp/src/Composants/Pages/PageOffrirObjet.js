@@ -9,7 +9,6 @@ import {Redirect} from "../Router/Router";
 const formPhoto =
     `
         <div class="field">
-        
         <form id="envoyerPhoto" class="ui form"  >
           <label>Selectionner une photo</label>
           <input  name="photo" id="photo" type="file"/><!--onchange=" previsualiserPhoto(this)"--> <br/><br/>
@@ -19,17 +18,13 @@ const formPhoto =
           <button type="submit" class="ui button">Envoyer la photo</button>
           </div>
         </form>
-        
-        
        </div>
     `
 const typesObjet =
     `
-        
         <select class="ui search dropdown "  type="text" id="choixTypeObjet" className="type" >
         </select>
         <p class="message-erreur erreur-type"></p>
-       
     `
 //permettre à l'user de faire  un enter , passage a la ligne dans la description et la plage horaire
 //pour l'instant envoie du formulaire direct..
@@ -55,7 +50,6 @@ const pageOffrirObjet = `
         </div>
          <div class="field">
           <label for="type">Type</label>
-           
             ${typesObjet}
         </div>
         <div class=" tertiary inverted ">
@@ -74,9 +68,7 @@ const pageOffrirObjet = `
 
 const PageOffrirObjet = () => {
     const pageDiv = document.querySelector("#page");
-    const utilisateur = recupUtilisateurDonneesSession();
-
-
+    const session = recupUtilisateurDonneesSession();
 
     pageDiv.innerHTML = pageOffrirObjet;
     const formulairePhoto = document.querySelector("#envoyerPhoto");
@@ -86,14 +78,14 @@ const PageOffrirObjet = () => {
     photo.addEventListener("change",previsualiserPhoto);
     const formOffrirObjet = document.querySelector("#formulaire-offrirObjet");
 
-    if (utilisateur) {
+    if (session) {
         Navbar();
 
         fetch("/api/typesObjet/liste", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: utilisateur.token,
+                Authorization: session.token,
             },
         })
         .then((response) => {
@@ -102,20 +94,14 @@ const PageOffrirObjet = () => {
                     "Error code : " + response.status + " : " + response.statusText
                 );
             }
-            console.log(response);
             return response.json();
         })
         .then((data) => choixTypeObjet(data));
 
         formOffrirObjet.addEventListener("submit", surOffrirObjet);
-
-
     } else {
         Redirect("/connexion");
-
     }
-
-
 }
 
 const choixTypeObjet = (data) => {
@@ -128,7 +114,6 @@ const choixTypeObjet = (data) => {
     }
     let liste = `<option value="empty" selected hidden=true>Selectionnez le type</option>`;
     data.forEach((typeObjet) => {
-        console.log(typeObjet)
         liste += `<option value=${typeObjet.idType}>${typeObjet.nom}</option>`;
     });
 
@@ -139,7 +124,6 @@ const previsualiserPhoto  =  (e) => {
     var image = document.getElementById("image")
 
     const photo = document.getElementById("photo").files[0];
-    console.log(photo)
     if (photo) {
         // On change l'URL de l'image
         image.src = URL.createObjectURL(photo)
@@ -149,15 +133,12 @@ const envoyerPhoto = async (e) => {
     e.preventDefault()
     const fichierDEntree =  document.getElementById("photo");
     const formDonnee = new FormData();
-    console.log("append")  ;
     formDonnee.append('photo', fichierDEntree.files[0]);
-    console.log("fetch")
     const options = {
         method: 'POST',
         body: formDonnee,
     };
     await fetch('/api/offres/telechargementPhoto', options);
-    console.log("fin fetch");
     return false;
 }
 const surOffrirObjet = (e) => {
@@ -186,15 +167,10 @@ const surOffrirObjet = (e) => {
         document.querySelector(".erreur-type").innerHTML = "Vous devez sélectionner un type";
     }
 
-    console.log("description :" + description);
-    console.log("plage horaire :" + plageHoraire);
-    console.log("type objet :" + typeObjet);
-
     //copie collé de code avec la recuperation déjà effectuée au dessus, mais j'arrivais pas à transférer les données
     // peut etre faire par un paramètre à la méthode?
-    const utilisateur = recupUtilisateurDonneesSession();
-    const offreur = utilisateur.utilisateur;
-    console.log(offreur);
+    const session = recupUtilisateurDonneesSession();
+    const offreur = session.utilisateur;
 
     if (description !== ""
         && plageHoraire !== ""
@@ -208,44 +184,25 @@ const surOffrirObjet = (e) => {
             // photo: "photoTest"
         }
 
-        console.log("juste avant premier fetch");
-        fetch("/api/objets/creerObjet", {
-            method: "POST",
-            body: JSON.stringify(nouvelObjet),
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: utilisateur.token,
-            }
-        })
-        .then((reponse) => {
-            if (!reponse.ok) {
-                throw new Error(
-                    "Error code : " + reponse.status + " : " + reponse.statusText + " : " + reponse.text())
-            }
-            console.log(reponse)
-            return reponse.json()
-        }).then((data) =>surCreerOffre(data))
-
         let nouvelOffre = {
             objetDTO: nouvelObjet,
             plageHoraire: plageHoraire
         }
+        console.log(nouvelOffre)
 
         fetch("/api/offres/creerOffre", {
             method: "POST",
             body: JSON.stringify(nouvelOffre),
             headers: {
                 "Content-Type": "application/json",
-                 Authorization : utilisateur.token
+                 Authorization : session.token
             },
         })
         .then((response) => {
-            console.log(response.json.stringify);
             if (!response.ok) {
                 throw new Error(
                     "Error code : " + response.status + " : " + response.statusText)
             }
-            console.log(response);
             return response.json();
         }).then((donnee)=> Redirect("/"))
     }

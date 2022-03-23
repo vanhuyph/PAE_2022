@@ -11,7 +11,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -37,8 +36,8 @@ public class RessourceOffre {
    * Créer une offre.
    *
    * @param offreDTO : offre reçu du formulaire de créer une offre
-   * @return offreDTO : l'offre créer*
-   * @throws WebApplicationException si l'offre est null
+   * @return offreDTO : l'offre créée
+   * @throws PresentationException : lancée si l'offre est null
    */
   @POST
   @Path("creerOffre")
@@ -48,19 +47,17 @@ public class RessourceOffre {
   public OffreDTO creerOffre(OffreDTO offreDTO) {
     if (offreDTO.getObjetDTO().getDescription().isBlank()
         || offreDTO.getObjetDTO().getTypeObjet() == null || offreDTO.getPlageHoraire().isBlank()) {
-      throw new WebApplicationException(
-          Response.status(Response.Status.BAD_REQUEST)
-              .entity("offre null").type("text/plain").build());
+      throw new PresentationException("Offre null", Status.BAD_REQUEST);
     }
     offreDTO = offreUCC.creerUneOffre(offreDTO);
-
     return offreDTO;
   }
 
   /**
    * Liste les offres.
    *
-   * @return noeud : la liste des offres
+   * @return offreDTO : la liste des offres
+   * @throws PresentationException : lancée
    */
   @GET
   @Path("listOffres")
@@ -69,9 +66,7 @@ public class RessourceOffre {
   public List<OffreDTO> listOffres() {
     List<OffreDTO> offreDTO = offreUCC.listOffres();
     if (offreDTO == null) {
-      throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
-          .entity("Liste des offres a echoué").type(MediaType.TEXT_PLAIN)
-          .build());
+      throw new PresentationException("Liste des offres a echoué", Status.BAD_REQUEST);
     }
     return offreDTO;
   }
@@ -93,18 +88,16 @@ public class RessourceOffre {
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
     String nomFichier = fichierDisposition.getFileName();
     String nomDencodage = UUID.randomUUID().toString() + nomFichier;
-    System.out.println("nom du fichier: " + nomFichier);
-    System.out.println("télécharger Photo");
     Files.copy(photo, Paths.get("./image/" + nomDencodage), StandardCopyOption.REPLACE_EXISTING);
-    return Response.ok(nomFichier).header("Access-Control-Allow-Origin", "*").build();
-    //return Response.ok().build();
+    return Response.ok(nomFichier).build();
   }
 
 
   /**
    * Liste les offres recentes.
    *
-   * @return noeud : la liste des offres recentes
+   * @return offreDTO : la liste des offres recentes
+   * @throws PresentationException : lancée si
    */
   @GET
   @Path("listOffresRecent")
