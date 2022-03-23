@@ -32,6 +32,7 @@ import org.glassfish.jersey.server.ContainerRequest;
 @Path("/utilisateurs")
 public class RessourceUtilisateur {
 
+  // (86.400.000 ms) -> 1 jour.
   private static final long EXPIRATION_TIME = 86400 * 1000;
   private static final ObjectMapper jsonMapper = new ObjectMapper();
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getPropriete("JWTSecret"));
@@ -51,7 +52,8 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode connexion(JsonNode json) {
-    if (!json.hasNonNull("pseudo") || !json.hasNonNull("mdp")) {
+    if (!json.hasNonNull("pseudo") || !json.hasNonNull("mdp") || json.get("pseudo").equals("")
+        || json.get("mdp").equals("")) {
       throw new PresentationException("Pseudo ou mot de passe manquant", Status.BAD_REQUEST);
     }
     String pseudo = json.get("pseudo").asText();
@@ -74,6 +76,14 @@ public class RessourceUtilisateur {
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode inscription(UtilisateurDTO utilisateurDTO) {
     UtilisateurDTO utilisateur;
+    if (utilisateurDTO.getPseudo().isBlank() || utilisateurDTO.getNom().isBlank()
+        || utilisateurDTO.getPrenom().isBlank() || utilisateurDTO.getMdp().isBlank()
+        || utilisateurDTO.getAdresse().getRue().isBlank()
+        || utilisateurDTO.getAdresse().getNumero() < 1
+        || utilisateurDTO.getAdresse().getCodePostal() < 1 || utilisateurDTO.getAdresse()
+        .getCommune().isBlank()) {
+      throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
+    }
     utilisateur = utilisateurUCC.inscription(utilisateurDTO);
     ObjectNode noeud = creationToken(utilisateur);
     return noeud;
@@ -94,8 +104,7 @@ public class RessourceUtilisateur {
   public ObjectNode recupererUtilisateur(@Context ContainerRequest request) {
     UtilisateurDTO utilisateur = (UtilisateurDTO) request.getProperty("utilisateur");
     if (utilisateur == null) {
-      throw new PresentationException("L'utilisateur n'a pas été retrouvé",
-          Status.BAD_REQUEST);
+      throw new PresentationException("L'utilisateur n'a pas été retrouvé", Status.BAD_REQUEST);
     }
     utilisateur = utilisateurUCC.rechercheParPseudo(utilisateur.getPseudo());
     ObjectNode noeud = creationToken(utilisateur);
