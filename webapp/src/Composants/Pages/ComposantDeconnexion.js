@@ -2,10 +2,10 @@ import {enleverDonneeSession} from "../../utilitaires/session"
 import Navbar from "../Navbar/Navbar";
 import {Redirect} from "../Router/Router";
 
-const PageDeconnexion = () => {
+const ComposantDeconnexion = () => {
   enleverDonneeSession()
   Navbar()
   Redirect("/")
 }
 
-export default PageDeconnexion;
+export default ComposantDeconnexion;

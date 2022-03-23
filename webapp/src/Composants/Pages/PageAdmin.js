@@ -20,6 +20,7 @@ const barHori = `
 </div>
 `
 
+//Contenu pricipal de la page
 const pricipal = `
 <div id="principal">
   <div id="choix-demande" class="ui buttons">
@@ -34,23 +35,22 @@ const pricipal = `
 
 const page = `
 <div class="page-admin">
-<div id="bar">
-  ${barVertical}
-</div>
-${pricipal}
+  <div id="bar">
+    ${barVertical}
+  </div>
+  ${pricipal}
 </div>
 `
 
 const PageAdmin = () => {
-  const utilisateur = recupUtilisateurDonneesSession();
-  if (!utilisateur || !utilisateur.utilisateur.estAdmin) {
-    return Redirect("/");
+  const session = recupUtilisateurDonneesSession();
+  if (!session || !session.utilisateur.estAdmin) {
+    Redirect("/");
   }
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = page;
 
-  // Gestion responsive
-
+  // Gestion responsive avec la barre verticale pour pc et horizontale pour mobile
   if (window.innerWidth < 576) {
     document.getElementById("bar").innerHTML = barHori;
   } else {
@@ -64,20 +64,20 @@ const PageAdmin = () => {
     }
   };
 
+  // Récupération des utilisateurs en attente
   recupEnAttente()
-
   const demandesPage = document.querySelector("#demandes")
   const refusPage = document.querySelector("#refus")
   const contenu = document.querySelector("#contenu")
-
   const demandes = "<h2>Liste des demandes d'inscriptions</h2>"
   contenu.innerHTML = demandes
+
+  // Changement contenu pricipal
   demandesPage.addEventListener("click", () => {
     refusPage.classList.remove("positive")
     demandesPage.classList.add("positive")
     recupEnAttente()
   })
-
   refusPage.addEventListener("click", () => {
     demandesPage.classList.remove("positive")
     refusPage.classList.add("positive")
@@ -85,47 +85,47 @@ const PageAdmin = () => {
   })
 }
 
+// Récupération des utilisateurs en attente
 const recupEnAttente = () => {
-  const utilisateur = recupUtilisateurDonneesSession();
+  const session = recupUtilisateurDonneesSession();
   fetch("/api/utilisateurs/attente", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: utilisateur.token,
+      Authorization: session.token,
     },
   })
   .then((response) => {
     if (!response.ok) {
       throw new Error(
-          "Error code : " + response.status + " : " + response.statusText
-      );
+          "Error code : " + response.status + " : " + response.statusText);
     }
     return response.json();
   })
   .then((data) => surListeAttente(data))
 }
 
+// Récupération des utilisateurs refusés
 const recupRefuse = () => {
-  const utilisateur = recupUtilisateurDonneesSession();
+  const session = recupUtilisateurDonneesSession();
   fetch("/api/utilisateurs/refuse", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: utilisateur.token,
+      Authorization: session.token,
     },
   })
   .then((response) => {
     if (!response.ok) {
       throw new Error(
-          "Error code : " + response.status + " : " + response.statusText
-      );
+          "Error code : " + response.status + " : " + response.statusText);
     }
     return response.json();
   })
   .then((data) => surListeRefus(data))
 }
 
-//Affichage de la liste des inscriptions en attente
+// Affichage de la liste des inscriptions en attente
 const surListeAttente = (data) => {
   let contenu = document.querySelector("#contenu");
   if (data.length === 0 || !data) {
@@ -139,7 +139,7 @@ const surListeAttente = (data) => {
         <div class="tete">
             <p>Pseudo</p>
             <p>Nom</p>
-            <p>Prenom</p>
+            <p>Prénom</p>
             <p>Est admin</p>
             <div class="boutons-tete">
                 <div class="btn1"></div>
@@ -149,7 +149,7 @@ const surListeAttente = (data) => {
     </div>
   `;
 
-  //Affichage individuel des utilisateurs
+  // Affichage individuel des utilisateurs
   data.forEach((element) => {
     liste += `
     <div class="utilisateur">
@@ -185,8 +185,9 @@ const surListeAttente = (data) => {
   contenu.innerHTML = liste;
 
   document.querySelectorAll(".utilisateur").forEach((item) => {
-    const utilisateur = recupUtilisateurDonneesSession();
-    //Confirmation de l'utilisateur
+    const session = recupUtilisateurDonneesSession();
+
+    // Confirmation de l'utilisateur
     item.querySelector("#formulaire-confirme").addEventListener("submit",
         (e) => {
           e.preventDefault()
@@ -201,7 +202,7 @@ const surListeAttente = (data) => {
             body: JSON.stringify(confirmation),
             headers: {
               "Content-Type": "application/json",
-              Authorization: utilisateur.token
+              Authorization: session.token
             }
           })
           .then((reponse) => {
@@ -214,11 +215,11 @@ const surListeAttente = (data) => {
           .then(() => recupEnAttente())
         });
 
-    //Refus de l'utilisateur
+    // Refus de l'utilisateur
     item.querySelector("#refuser").addEventListener("click", (e) => {
       e.preventDefault()
 
-      //Afficher la div de refus
+      // Afficher la div de refus
       const refus = item.querySelector(".raison-refus")
       refus.classList.toggle("montrer-block")
 
@@ -235,7 +236,7 @@ const surListeAttente = (data) => {
           body: JSON.stringify(refus),
           headers: {
             "Content-Type": "application/json",
-            Authorization: utilisateur.token
+            Authorization: session.token
           }
         })
         .then((reponse) => {
@@ -247,13 +248,13 @@ const surListeAttente = (data) => {
         })
         .then(() => recupEnAttente())
       })
-
     });
   });
 }
-//Affichage de la liste des inscriptions refusées
+
+// Affichage de la liste des inscriptions refusées
 const surListeRefus = (data) => {
-  const utilisateur = recupUtilisateurDonneesSession();
+  const session = recupUtilisateurDonneesSession();
   let contenu = document.querySelector("#contenu");
   if (data.length === 0 || !data) {
     let listeVide = `<div><h2>Liste des inscriptions refusées</h2>Il n'y a aucune inscription refusée pour l'instant`;
@@ -265,15 +266,13 @@ const surListeRefus = (data) => {
         <div class="tete">
             <p>Pseudo</p>
             <p>Nom</p>
-            <p>Prenom</p>
+            <p>Prénom</p>
             <p>Est admin</p>
-            
             <div class="btn-refus"></div>
-            
         </div>
     </div>`;
 
-  //Affichage individuel des utilisateurs
+  // Affichage individuel des utilisateurs
   data.forEach((element) => {
     liste += `
     <div class="utilisateur">
@@ -296,19 +295,18 @@ const surListeRefus = (data) => {
             <p class="commentaire-refus">${element.commentaire}</p>
         </div>
     </div>
-    
     `;
   });
   liste += `</div>`;
   contenu.innerHTML = liste;
   document.querySelectorAll(".utilisateur").forEach((item) => {
-    //Confirmation de l'utilisateur
+
+    // Confirmation de l'utilisateur
     item.querySelector("#formulaire-confirme").addEventListener("submit",
         (e) => {
           e.preventDefault()
           const admin = item.querySelector("#check").checked
           const id = item.querySelector("#id-utilisateur").value
-
           let confirmation = {
             estAdmin: admin
           }
@@ -317,7 +315,7 @@ const surListeRefus = (data) => {
             body: JSON.stringify(confirmation),
             headers: {
               "Content-Type": "application/json",
-              Authorization: utilisateur.token
+              Authorization: session.token
             }
           })
           .then((reponse) => {

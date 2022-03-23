@@ -4,22 +4,22 @@ import {
 } from "../../utilitaires/session";
 import Navbar from "../Navbar/Navbar";
 
+// Page d'accueil
 const PageAccueil = () => {
   const pageDiv = document.querySelector("#page");
-  const utilisateur = recupUtilisateurDonneesSession()
+  const session = recupUtilisateurDonneesSession()
   let etatInscription
   let commentaire
-  if (utilisateur) {
-    if (utilisateur.utilisateur.etatInscription !== "confirmé") {
-      etatInscription = utilisateur.utilisateur.etatInscription
-      if (utilisateur.utilisateur.etatInscription === "en attente") {
+  if (session) {
+    if (session.utilisateur.etatInscription !== "confirmé") {
+      etatInscription = session.utilisateur.etatInscription
+      if (session.utilisateur.etatInscription === "en attente") {
         commentaire = "Vous pourrez accéder aux fonctionnalités lorsqu'un administrateur aura confirmé votre inscription."
       } else {
-        commentaire = utilisateur.utilisateur.commentaire
+        commentaire = session.utilisateur.commentaire
       }
     }
   }
-
 
   let pageAccueil = `
   <div class="conteneur-modal">
@@ -46,10 +46,9 @@ const PageAccueil = () => {
   Navbar()
   const conteneurModal = document.querySelector(".conteneur-modal")
   const declencheurModal = document.querySelectorAll(".declencheur-modal")
-  
-  
-  if (utilisateur) {
-    if (utilisateur.utilisateur.etatInscription !== "confirmé") {
+
+  if (session) {
+    if (session.utilisateur.etatInscription !== "confirmé") {
       conteneurModal.classList.add('active')
       enleverDonneeSession()
       Navbar()
