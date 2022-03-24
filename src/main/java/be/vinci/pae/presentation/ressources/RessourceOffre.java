@@ -10,10 +10,12 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -92,13 +94,27 @@ public class RessourceOffre {
   @Path("/telechargementPhoto")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.MULTIPART_FORM_DATA)
-  //@Autorisation
+  @Autorisation
   public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
     String nomFichier = fichierDisposition.getFileName();
     String nomDencodage = UUID.randomUUID().toString() + nomFichier;
     Files.copy(photo, Paths.get("./image/" + nomDencodage), StandardCopyOption.REPLACE_EXISTING);
-    return Response.ok(nomFichier).build();
+    return Response.ok(nomDencodage).build();
   }
 
+  /**
+   * Voir la photo d'une offre.
+   *
+   * @param UUIDPhoto nom du fichier sur le serveur
+   * @return une réponse contenant la photo
+   */
+  @GET
+  @Path("/photos/{UUIDPhoto}")
+  @Produces({"image/*"})
+  public Response voirPhotoOffre(@PathParam("UUIDPhoto") String UUIDPhoto) {
+
+    return Response.ok(new File("./image/" + UUIDPhoto)).build();
+
+  }
 }

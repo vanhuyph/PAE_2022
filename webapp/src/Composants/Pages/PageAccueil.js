@@ -94,7 +94,7 @@ const PageAccueil = () => {
     conteneurModal.classList.toggle("active")
   }))
 };
-
+//check la taille des images
 const onOffreRecentListpage = (data) => {
   const listOffreRecent = document.getElementById("offreListRecent");
   const session = recupUtilisateurDonneesSession()
