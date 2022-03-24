@@ -116,7 +116,6 @@ public class OffreDAOImpl implements OffreDAO {
   public OffreDTO rechercheParId(int idOffre) {
     System.out.println("RechercheParId DAO :" + idOffre);
     OffreDTO offreDTO = factory.getOffre();
-    //String requetePs = "SELECT * FROM projet.offres WHERE id_offre= ? ;";
     String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
         + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
         + "u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet, "
@@ -202,14 +201,10 @@ public class OffreDAOImpl implements OffreDAO {
    * @return offreDTO : l'offre rempli
    */
   private OffreDTO remplirOffreDepuisResultSet(OffreDTO offreDTO, ResultSet rs) {
-    ObjetDTO objetDTO;
-    AdresseDTO adresseDTO;
-    UtilisateurDTO offreur;
-    TypeObjetDTO typeObjetDTO;
-    typeObjetDTO = factory.getTypeObjet();
-    objetDTO = factory.getObjet();
-    adresseDTO = factory.getAdresse();
-    offreur = factory.getUtilisateur();
+    ObjetDTO objetDTO = factory.getObjet();
+    AdresseDTO adresseDTO = factory.getAdresse();
+    UtilisateurDTO offreur = factory.getUtilisateur();
+    TypeObjetDTO typeObjetDTO = factory.getTypeObjet();
 
     try {
       adresseDTO.setIdAdresse(rs.getInt(1));

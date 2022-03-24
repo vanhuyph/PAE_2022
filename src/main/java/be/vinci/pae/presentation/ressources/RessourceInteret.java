@@ -12,6 +12,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response.Status;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -24,15 +25,17 @@ public class RessourceInteret {
   private InteretUCC interetUCC;
 
   /**
+   * Créer un intérêt pour une offre.
+   *
    * @param json : json envoyé par le formulaire de créer un interet
-   * @return un interetDTO
-   * @throws Exception : si problème avec les dates
+   * @return interet : interetDTO
+   * @throws Exception : est lancée si il y a eu un problème avec la date de rdv
    */
   @POST
   @Path("creerInteret")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public InteretDTO creetInteret(JsonNode json) throws Exception {
+  public InteretDTO creetInteret(JsonNode json) throws ParseException {
     if (!json.hasNonNull("idUtilisateurInteresse")
         || !json.hasNonNull("idObjet")
         || !json.hasNonNull("dateRdv")) {

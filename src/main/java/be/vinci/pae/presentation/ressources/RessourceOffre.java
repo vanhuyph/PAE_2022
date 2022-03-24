@@ -82,35 +82,37 @@ public class RessourceOffre {
     return liste;
   }
 
-
   /**
-   * @return un offreDTO avec seulement l'id de l'offre annulée
+   * Annule une offre.
+   *
+   * @param id : l'id de l'offre a annulé
+   * @return offreDTO : l'offre annulée
+   * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'annulation
+   *                               a échoué
    */
-
   @POST
   @Path("annulerOffre/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
   public OffreDTO annulerOffre(@PathParam("id") int id) {
-
     if (id <= 0) {
-      throw new PresentationException("Offre incorrecte", Status.BAD_REQUEST);
+      throw new PresentationException("L'id de l'offre est incorrecte", Status.BAD_REQUEST);
     }
-
     OffreDTO offreDTO = offreUCC.annulerUneOffre(id);
     if (offreDTO == null) {
       throw new PresentationException("L'annulation de l'offre a échoué", Status.BAD_REQUEST);
     }
-
     return offreDTO;
   }
 
   /**
-   * Recherche l'offre avec l'id id.
+   * Permet de voir les détails de l'offre avec l'id passé en paramètre.
    *
-   * @param id id de l'offre
-   * @return l'offre correspondant a l'id
+   * @param id : l'id de l'offre
+   * @return offreDTO : les détails de l'offre avec l'id passé en paramètre
+   * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'offre n'a
+   *                               pas pu être trouvée
    */
   @GET
   @Path("voirDetailsOffre/{id}")
@@ -118,14 +120,13 @@ public class RessourceOffre {
   @Autorisation
   public OffreDTO rechercheOffreParId(@PathParam("id") int id) {
     if (id <= 0) {
-      throw new PresentationException("Offre incorrecte", Status.BAD_REQUEST);
+      throw new PresentationException("L'id de l'offre est incorrecte", Status.BAD_REQUEST);
     }
     OffreDTO offreDTO = offreUCC.rechercheParId(id);
     if (offreDTO == null) {
       throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
     }
     return offreDTO;
-
   }
 
   /**
@@ -144,7 +145,7 @@ public class RessourceOffre {
   public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
     String nomFichier = fichierDisposition.getFileName();
-    String nomDencodage = UUID.randomUUID().toString() + nomFichier;
+    String nomDencodage = UUID.randomUUID() + nomFichier;
     Files.copy(photo, Paths.get("./image/" + nomDencodage), StandardCopyOption.REPLACE_EXISTING);
     return Response.ok(nomDencodage).build();
   }
@@ -152,15 +153,14 @@ public class RessourceOffre {
   /**
    * Voir la photo d'une offre.
    *
-   * @param uuidPhoto nom du fichier sur le serveur
+   * @param uuidPhoto : nom du fichier sur le serveur
    * @return une réponse contenant la photo
    */
   @GET
   @Path("/photos/{uuidPhoto}")
   @Produces({"image/*"})
   public Response voirPhotoOffre(@PathParam("uuidPhoto") String uuidPhoto) {
-
     return Response.ok(new File("./image/" + uuidPhoto)).build();
-
   }
+
 }
