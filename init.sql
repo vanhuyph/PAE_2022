@@ -140,12 +140,13 @@ INSERT INTO projet.types_objets
 VALUES (DEFAULT, 'Vêtements');
 
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 3, 'Décorations de Noël de couleur rouge.', 3, NULL, 'test');
+VALUES (DEFAULT, 'Offert', 3, 'Décorations de Noël de couleur rouge.', 3, NULL,
+        'christmas-1869533_640.png');
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'Offert', 3, 'Cadre représentant un chien noir sur un fond noir.', 3, NULL,
-        'test');
+        'dog-4118585_640.jpg');
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'test');
+VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'BureauEcolier-7.JPG');
 
 INSERT INTO projet.offres
 VALUES (DEFAULT, 1, '21-03-22', 'Mardi de 17h à 22h');
