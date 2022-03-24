@@ -11,11 +11,9 @@ const formPhoto =
         <div class="field">
         <form id="envoyerPhoto" class="ui form"  >
           <label>Selectionner une photo</label>
-          <input  name="photo" id="photo" type="file"/><!--onchange=" previsualiserPhoto(this)"--> <br/><br/>
+          <input  name="photo" id="photo" type="file"/> <br/><br/>
           <img src="#" alt="" id="image" style="max-width: 500px; margin-top: 20px;" >
-          <div class=" tertiary inverted ">
-          
-          <button type="submit" class="ui button">Envoyer la photo</button>
+          <div class=" tertiary inverted "> 
           </div>
         </form>
        </div>
@@ -129,9 +127,11 @@ const previsualiserPhoto  =  (e) => {
         image.src = URL.createObjectURL(photo)
     }
 }
+
 const envoyerPhoto = async (e) => {
-    e.preventDefault()
+
     const session = recupUtilisateurDonneesSession();
+    let nomPhoto ;
     const fichierDEntree =  document.getElementById("photo");
     const formDonnee = new FormData();
     formDonnee.append('photo', fichierDEntree.files[0]);
@@ -142,14 +142,25 @@ const envoyerPhoto = async (e) => {
             Authorization : session.token
         },
     };
-    await fetch('/api/offres/telechargementPhoto', options);
-    return false;
+    fetch('/api/offres/telechargementPhoto', options).then((res)=>{
+        if (!res.ok){
+            throw new Error(
+                "Error code : " + res.status + " : " + res.statusText
+            );
+        }
+        return res.text()
+    }).then((data)=>{
+        nomPhoto=data.toString()
+
+    })
+    return nomPhoto;
 }
 const surOffrirObjet = (e) => {
     e.preventDefault();
     let typeObjet = document.querySelector("#choixTypeObjet").value;
     let description = document.querySelector("#description").value;
     let plageHoraire = document.querySelector("#horaire").value;
+    let  photo = document.querySelector("#image");
 
     document.querySelector(".erreur-type").innerHTML = "";
     document.querySelector(".erreur-description").innerHTML = "";
@@ -175,7 +186,12 @@ const surOffrirObjet = (e) => {
     // peut etre faire par un paramètre à la méthode?
     const session = recupUtilisateurDonneesSession();
     const offreur = session.utilisateur;
-
+    const srcPhoto = photo.attributes.getNamedItem("src")
+    console.log(srcPhoto.value)
+    let nomPhoto = "donnamis.png"
+    if (srcPhoto.value !== "#" ){
+        nomPhoto = envoyerPhoto()
+    }
     if (description !== ""
         && plageHoraire !== ""
         && typeObjet !== "empty") {
@@ -185,7 +201,7 @@ const surOffrirObjet = (e) => {
             receveur: null,
             typeObjet: {idType: typeObjet},
             description: description,
-            // photo: "photoTest"
+            photo: nomPhoto
         }
 
         let nouvelOffre = {

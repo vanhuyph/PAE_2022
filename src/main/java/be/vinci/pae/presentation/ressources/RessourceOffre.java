@@ -92,13 +92,13 @@ public class RessourceOffre {
   @Path("/telechargementPhoto")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.MULTIPART_FORM_DATA)
-  //@Autorisation
+  @Autorisation
   public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
     String nomFichier = fichierDisposition.getFileName();
     String nomDencodage = UUID.randomUUID().toString() + nomFichier;
     Files.copy(photo, Paths.get("./image/" + nomDencodage), StandardCopyOption.REPLACE_EXISTING);
-    return Response.ok(nomFichier).build();
+    return Response.ok(nomDencodage).build();
   }
 
 }
