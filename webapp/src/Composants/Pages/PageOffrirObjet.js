@@ -142,7 +142,7 @@ const envoyerPhoto = async (e) => {
             Authorization : session.token
         },
     };
-    fetch('/api/offres/telechargementPhoto', options).then((res)=>{
+   await fetch('/api/offres/telechargementPhoto', options).then((res)=>{
         if (!res.ok){
             throw new Error(
                 "Error code : " + res.status + " : " + res.statusText
@@ -153,9 +153,10 @@ const envoyerPhoto = async (e) => {
         nomPhoto=data.toString()
 
     })
+    console.log(nomPhoto)
     return nomPhoto;
 }
-const surOffrirObjet = (e) => {
+const surOffrirObjet = async (e) => {
     e.preventDefault();
     let typeObjet = document.querySelector("#choixTypeObjet").value;
     let description = document.querySelector("#description").value;
@@ -186,11 +187,13 @@ const surOffrirObjet = (e) => {
     // peut etre faire par un paramètre à la méthode?
     const session = recupUtilisateurDonneesSession();
     const offreur = session.utilisateur;
+    //verification si une image a été ajoiuté
     const srcPhoto = photo.attributes.getNamedItem("src")
     console.log(srcPhoto.value)
+    //image par défault si pas d'image
     let nomPhoto = "donnamis.png"
     if (srcPhoto.value !== "#" ){
-        nomPhoto = envoyerPhoto()
+        nomPhoto = await envoyerPhoto()
     }
     if (description !== ""
         && plageHoraire !== ""
@@ -201,7 +204,7 @@ const surOffrirObjet = (e) => {
             receveur: null,
             typeObjet: {idType: typeObjet},
             description: description,
-            photo: nomPhoto
+            photo: nomPhoto.toString()
         }
 
         let nouvelOffre = {
@@ -210,7 +213,7 @@ const surOffrirObjet = (e) => {
         }
         console.log(nouvelOffre)
 
-        fetch("/api/offres/creerOffre", {
+       await  fetch("/api/offres/creerOffre", {
             method: "POST",
             body: JSON.stringify(nouvelOffre),
             headers: {
