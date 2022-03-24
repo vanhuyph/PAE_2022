@@ -31,7 +31,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     String requetePs =
-        "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+            "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, a.id_adresse, a.rue, a.numero, a.boite, "
             + "a.code_postal, a.commune FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
@@ -197,11 +197,12 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     List<UtilisateurDTO> liste = new ArrayList<>();
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, etatInscription);
-      ResultSet rs = ps.executeQuery();
-      while (rs.next()) {
-        UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-        remplirUtilisateursDepuisRS(rs, utilisateurDTO);
-        liste.add(utilisateurDTO);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
+          remplirUtilisateursDepuisRS(rs, utilisateurDTO);
+          liste.add(utilisateurDTO);
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -268,6 +269,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         }
       } catch (SQLException e) {
         e.printStackTrace();
+        ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
         throw new FatalException(e.getMessage(), e);
       }
       utilisateurDTO.setAdresse(adresseDTO);

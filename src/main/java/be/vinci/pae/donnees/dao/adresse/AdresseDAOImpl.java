@@ -24,10 +24,9 @@ public class AdresseDAOImpl implements AdresseDAO {
    */
   @Override
   public AdresseDTO ajouterAdresse(AdresseDTO adresseDTO) {
-    PreparedStatement ps = serviceBackendDAL.getPs(
-        "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?)  RETURNING id_adresse, "
-            + "rue, numero, boite, code_postal, commune;");
-    try {
+    String requetePs = "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?) "
+        + "RETURNING id_adresse, rue, numero, boite, code_postal, commune;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, adresseDTO.getRue());
       ps.setInt(2, adresseDTO.getNumero());
       if (adresseDTO.getBoite().equals("") || adresseDTO.getBoite() == null) {
@@ -38,7 +37,6 @@ public class AdresseDAOImpl implements AdresseDAO {
       ps.setInt(4, adresseDTO.getCodePostal());
       ps.setString(5, adresseDTO.getCommune());
       adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, ps);
-      ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
