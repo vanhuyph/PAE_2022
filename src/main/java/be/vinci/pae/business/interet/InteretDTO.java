@@ -1,23 +1,22 @@
 package be.vinci.pae.business.interet;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import java.util.Date;
 
 @JsonDeserialize(as = InteretImpl.class)
 public interface InteretDTO {
 
-    int getIdUtilisateur();
+  int getIdUtilisateur();
 
-    void setIdUtilisateur(int idUtilisateurInteresse);
+  void setIdUtilisateur(int idUtilisateurInteresse);
 
-    int getIdObjet();
+  int getIdObjet();
 
-    void setIdObjet(int idObjet);
+  void setIdObjet(int idObjet);
 
-    Date getDateRdv();
+  Date getDateRdv();
 
-    void setDateRdv(Date dateRdv);
+  void setDateRdv(Date dateRdv);
 
 
 }

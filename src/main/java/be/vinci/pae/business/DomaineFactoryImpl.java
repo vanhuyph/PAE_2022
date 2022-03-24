@@ -9,10 +9,12 @@ import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreImpl;
 import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.business.typeobjet.TypeObjetImpl;
-import be.vinci.pae.business.utilisateur.UtilisateurDTO;
-import be.vinci.pae.business.utilisateur.UtilisateurImpl;
 import be.vinci.pae.business.interet.InteretDTO;
 import be.vinci.pae.business.interet.InteretImpl;
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
+import be.vinci.pae.business.utilisateur.UtilisateurImpl;
+
+
 
 public class DomaineFactoryImpl implements DomaineFactory {
 
@@ -32,6 +34,7 @@ public class DomaineFactoryImpl implements DomaineFactory {
     return new ObjetImpl();
   }
 
+  @Override
   public AdresseDTO getAdresse() {
     return new AdresseImpl();
   }
@@ -42,6 +45,8 @@ public class DomaineFactoryImpl implements DomaineFactory {
   }
 
   @Override
-  public InteretDTO getInteret() { return new InteretImpl(); }
+  public InteretDTO getInteret() {
+    return new InteretImpl();
+  }
 
 }
