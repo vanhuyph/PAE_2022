@@ -35,11 +35,11 @@ CREATE TABLE projet.objets
 (
     id_objet    SERIAL PRIMARY KEY,
     etat_objet  VARCHAR(9)                                              NOT NULL,
-    description VARCHAR(255)                                            NOT NULL,
-    photo       VARCHAR(255),
     type_objet  INTEGER REFERENCES projet.types_objets (id_type)        NOT NULL,
+    description VARCHAR(255)                                            NOT NULL,
     offreur     INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
-    receveur    INTEGER REFERENCES projet.utilisateurs (id_utilisateur)
+    receveur    INTEGER REFERENCES projet.utilisateurs (id_utilisateur),
+    photo       VARCHAR(255)
 );
 
 CREATE TABLE projet.interets
@@ -59,9 +59,9 @@ CREATE TABLE projet.evaluations
 CREATE TABLE projet.offres
 (
     id_offre      SERIAL PRIMARY KEY,
+    id_objet      INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
     date_offre    TIMESTAMP                                   NOT NULL,
-    plage_horaire VARCHAR(255)                                NOT NULL,
-    id_objet      INTEGER REFERENCES projet.objets (id_objet) NOT NULL
+    plage_horaire VARCHAR(255)                                NOT NULL
 );
 
 CREATE TABLE projet.offres_precedentes
@@ -140,16 +140,16 @@ INSERT INTO projet.types_objets
 VALUES (DEFAULT, 'Vêtements');
 
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 'Décorations de Noël de couleur rouge.', 'test', 3, 3, NULL);
+VALUES (DEFAULT, 'Offert', 3, 'Décorations de Noël de couleur rouge.', 3, NULL, 'test');
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 'Cadre représentant un chien noir sur un fond noir.', 'test', 3, 3,
-        NULL);
+VALUES (DEFAULT, 'Offert', 3, 'Cadre représentant un chien noir sur un fond noir.', 3, NULL,
+        'test');
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 'Ancien bureau d’écolier.', 'test', 8, 4, NULL);
+VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'test');
 
 INSERT INTO projet.offres
-VALUES (DEFAULT, '21-03-22', 'Mardi de 17h à 22h', 1);
+VALUES (DEFAULT, 1, '21-03-22', 'Mardi de 17h à 22h');
 INSERT INTO projet.offres
-VALUES (DEFAULT, '25-03-22', 'Lundi de 18h à 22h', 2);
+VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h');
 INSERT INTO projet.offres
-VALUES (DEFAULT, '25-03-22', 'Tous les jours de 15h à 18h', 3);
+VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h');
