@@ -46,13 +46,15 @@ public class OffreDAOImpl implements OffreDAO {
   }
 
   /**
-   *
-   * @param idOffre : est l'id de l'offre qu'on veut annulé
-   * @return : un offreDTO avec seulement un id de l'offre annulé
-   */
+  *
+  * Annuler une offre via un id.
+  *
+  * @param idOffre : est l'id de l'offre qu'on veut annulé
+  * @return : un offreDTO avec seulement un id de l'offre annulé
+  */
   @Override
-  public OffreDTO annulerOffre(int idOffre){
-    System.out.println("idOffre annulerOffreDAO :"+idOffre);
+  public OffreDTO annulerOffre(int idOffre) {
+    System.out.println("idOffre annulerOffreDAO :" + idOffre);
     OffreDTO offreDTO = factory.getOffre();
     PreparedStatement ps = serviceDAL.getPs(
             "UPDATE projet.objets SET etat_objet = 'annulé' WHERE id_objet = ?;");
@@ -77,7 +79,7 @@ public class OffreDAOImpl implements OffreDAO {
    */
   @Override
   public OffreDTO rechercheParId(int idOffre) {
-    System.out.println("RechercheParId DAO :"+idOffre);
+    System.out.println("RechercheParId DAO :" + idOffre);
     OffreDTO offreDTO = factory.getOffre();
     PreparedStatement ps = serviceDAL.getPs(
             "SELECT * FROM projet.offres WHERE id_offre= ? ;");
@@ -113,7 +115,7 @@ public class OffreDAOImpl implements OffreDAO {
         offreDTO.setDateOffre(rs.getDate(3));
         offreDTO.setPlageHoraire(rs.getString(4));
 
-      }} catch(SQLException e){
+      } } catch (SQLException e) {
       e.printStackTrace();
     }
 

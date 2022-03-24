@@ -108,10 +108,14 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         utilisateurDTO.setNom(rs.getString(3));
         utilisateurDTO.setPrenom(rs.getString(4));
         utilisateurDTO.setMdp(rs.getString(5));
-        if(rs.getString(6) != null) utilisateurDTO.setGsm(rs.getString(6));
+        if(rs.getString(6) != null) {
+          utilisateurDTO.setGsm(rs.getString(6));
+        }
         utilisateurDTO.setEstAdmin(rs.getBoolean(7));
         utilisateurDTO.setEtatInscription(rs.getString(8));
-        if(rs.getString(9) != null) utilisateurDTO.setCommentaire(rs.getString(9));
+        if(rs.getString(9) != null) {
+          utilisateurDTO.setCommentaire(rs.getString(9));
+        }
         utilisateurDTO.setAdresse(rs.getInt(10));
       }
     }

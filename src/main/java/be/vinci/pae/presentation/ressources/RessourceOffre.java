@@ -42,7 +42,8 @@ public class RessourceOffre {
     if (!json.hasNonNull("idObjet") || !json.hasNonNull("plageHoraire")) {
       throw new WebApplicationException(
               Response.status(Response.Status.BAD_REQUEST)
-                      .entity("Type de l'objet ou description manquant").type("text/plain").build());
+                      .entity("Type de l'objet ou description manquant")
+                      .type("text/plain").build());
     }
     int idObjet = json.get("idObjet").asInt();
     String plageHoraire = json.get("plageHoraire").asText();
@@ -57,6 +58,7 @@ public class RessourceOffre {
 
 
   /**
+   * Annuler une offre via une id.
    *
    * @param json  : json reçu de la requete avec l'id de l'offre à annuler
    * @return un offreDTO avec seulement l'id de l'offre annulée
@@ -87,6 +89,8 @@ public class RessourceOffre {
 
     return offreDTO;
   }
+
+
   /**
    * Recherche l'offre avec l'id id.
    *

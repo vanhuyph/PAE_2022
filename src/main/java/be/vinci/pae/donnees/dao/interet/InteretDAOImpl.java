@@ -21,6 +21,7 @@ public class InteretDAOImpl implements InteretDAO {
 
 
   /**
+  * Ajoute un interet avec une id.
   *
   * @param idUtilisateurInteresse : l'id de l'utilisateur qui veut marquer son interet sur une offre
   * @param idObjet : l'id de l'objet dont l'utilisateur est interessé
@@ -28,7 +29,7 @@ public class InteretDAOImpl implements InteretDAO {
   * @return InteretDTO : interetDTO remplit
   */
   @Override
-  public InteretDTO ajouterInteret(int idUtilisateurInteresse, int idObjet , Date dateRdv ) {
+  public InteretDTO ajouterInteret(int idUtilisateurInteresse, int idObjet , Date dateRdv) {
     InteretDTO interetDTO = factory.getInteret();
     PreparedStatement ps = serviceDAL.getPs("INSERT INTO projet.interets "
             + "VALUES (?, ?, ?) RETURNING *;");
@@ -37,33 +38,35 @@ public class InteretDAOImpl implements InteretDAO {
 
       java.sql.Timestamp dateRdvSQL = new java.sql.Timestamp(dateRdv.getTime());
 
-       ps.setInt(1, idUtilisateurInteresse);
-       ps.setInt(2, idObjet);
-       ps.setTimestamp(3, dateRdvSQL);
+      ps.setInt(1, idUtilisateurInteresse);
+      ps.setInt(2, idObjet);
+      ps.setTimestamp(3, dateRdvSQL);
 
-         return remplirInteretDepuisResultSet(interetDTO, ps);
-       } catch(SQLException e){
-         e.printStackTrace();
-       }
-       return interetDTO;
+        return remplirInteretDepuisResultSet(interetDTO, ps);
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+      return interetDTO;
   }
 
 
   /**
+  * Remplit un interetDTO avec la réponse du préparedStatement.
   *
   * @param interet : l'interetDTO qu'on va remplir grace au preparedStatement
   * @param ps : le preparedStatement qu'on va executer
   * @return un interetDTO complété
   * @throws SQLException : est lancée si il y a un problème
   */
-  private InteretDTO remplirInteretDepuisResultSet(InteretDTO interet, PreparedStatement ps) throws SQLException {
+  private InteretDTO remplirInteretDepuisResultSet(InteretDTO interet, PreparedStatement ps)
+          throws SQLException {
     try (ResultSet rs = ps.executeQuery()) {
-      while(rs.next()) {
+      while (rs.next()) {
         interet.setIdUtilisateur(rs.getInt(1));
         interet.setIdObjet(rs.getInt(2));
         interet.setDateRdv(rs.getDate(3));
       }
     }
-  return interet;
+    return interet;
   }
 }

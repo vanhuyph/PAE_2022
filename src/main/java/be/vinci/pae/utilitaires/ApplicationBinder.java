@@ -1,9 +1,11 @@
 package be.vinci.pae.utilitaires;
 
-import be.vinci.pae.business.DomaineFactory;
-import be.vinci.pae.business.DomaineFactoryImpl;
 import be.vinci.pae.business.adresse.AdresseUCC;
 import be.vinci.pae.business.adresse.AdresseUCCImpl;
+import be.vinci.pae.business.DomaineFactory;
+import be.vinci.pae.business.DomaineFactoryImpl;
+import be.vinci.pae.business.interet.InteretUCC;
+import be.vinci.pae.business.interet.InteretUCCImpl;
 import be.vinci.pae.business.objet.ObjetUCC;
 import be.vinci.pae.business.objet.ObjetUCCImpl;
 import be.vinci.pae.business.offre.OffreUCC;
@@ -12,8 +14,6 @@ import be.vinci.pae.business.typeobjet.TypeObjetUCC;
 import be.vinci.pae.business.typeobjet.TypeObjetUCCImpl;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.business.utilisateur.UtilisateurUCCImpl;
-import be.vinci.pae.business.interet.InteretUCC;
-import be.vinci.pae.business.interet.InteretUCCImpl;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAOImpl;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;

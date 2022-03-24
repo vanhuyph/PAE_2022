@@ -14,13 +14,13 @@ public class InteretUCCImpl implements InteretUCC {
 
 
   @Override
-  public InteretDTO creerUnInteret(int idUtilisateurInteresse, int idObjet, Date dateRdv ) {
+  public InteretDTO creerUnInteret(int idUtilisateurInteresse, int idObjet, Date dateRdv) {
 
-    InteretDTO interet = interetDAO.ajouterInteret(idUtilisateurInteresse, idObjet, dateRdv );
+    InteretDTO interet = interetDAO.ajouterInteret(idUtilisateurInteresse, idObjet, dateRdv);
     if (interet == null) {
       throw new ExceptionBusiness("L'interet n'a pas pu être créé.",
         Status.INTERNAL_SERVER_ERROR); // vérifier statut de réponse
-      }
+    }
 
     return interet;
   }
