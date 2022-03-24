@@ -54,7 +54,7 @@ let inscription = `
         <div class="field">
           <label for="boite">Boite</label>
           <div class="boite-conteneur">
-            <input type="number" id="boite">
+            <input type="text" id="boite">
           </div>
         </div>
       </div>

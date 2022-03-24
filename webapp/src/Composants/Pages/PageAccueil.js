@@ -11,9 +11,9 @@ const PageAccueil = () => {
   let etatInscription
   let commentaire
   if (session) {
-    if (session.utilisateur.etatInscription !== "confirmé") {
+    if (session.utilisateur.etatInscription !== "Confirmé") {
       etatInscription = session.utilisateur.etatInscription
-      if (session.utilisateur.etatInscription === "en attente") {
+      if (session.utilisateur.etatInscription === "En attente") {
         commentaire = "Vous pourrez accéder aux fonctionnalités lorsqu'un administrateur aura confirmé votre inscription."
       } else {
         commentaire = session.utilisateur.commentaire
@@ -59,7 +59,7 @@ const PageAccueil = () => {
   .catch((err) => onError(err));
 
   if (session) {
-    if (session.utilisateur.etatInscription !== "confirmé") {
+    if (session.utilisateur.etatInscription !== "Confirmé") {
       conteneurModal.classList.add('active')
       enleverDonneeSession()
       Navbar()

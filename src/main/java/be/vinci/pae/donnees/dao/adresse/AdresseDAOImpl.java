@@ -30,10 +30,10 @@ public class AdresseDAOImpl implements AdresseDAO {
     try {
       ps.setString(1, adresseDTO.getRue());
       ps.setInt(2, adresseDTO.getNumero());
-      if (adresseDTO.getBoite() == 0) {
+      if (adresseDTO.getBoite().equals("") || adresseDTO.getBoite() == null) {
         ps.setNull(3, Types.INTEGER);
       } else {
-        ps.setInt(3, adresseDTO.getBoite());
+        ps.setString(3, adresseDTO.getBoite());
       }
       ps.setInt(4, adresseDTO.getCodePostal());
       ps.setString(5, adresseDTO.getCommune());
@@ -61,7 +61,7 @@ public class AdresseDAOImpl implements AdresseDAO {
         adresse.setIdAdresse(rs.getInt(1));
         adresse.setRue(rs.getString(2));
         adresse.setNumero(rs.getInt(3));
-        adresse.setBoite(rs.getInt(4));
+        adresse.setBoite(rs.getString(4));
         adresse.setCodePostal(rs.getInt(5));
         adresse.setCommune(rs.getString(6));
       }

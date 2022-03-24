@@ -17,9 +17,9 @@ public interface AdresseDTO {
 
   void setNumero(int numero);
 
-  int getBoite();
+  String getBoite();
 
-  void setBoite(int boite);
+  void setBoite(String boite);
 
   int getCodePostal();
 
