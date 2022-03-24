@@ -5,7 +5,6 @@ import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.utilitaires.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -15,7 +14,6 @@ import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.Provider;
-import java.io.IOException;
 
 @Singleton
 @Provider

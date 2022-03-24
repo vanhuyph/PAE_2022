@@ -1,9 +1,9 @@
 package be.vinci.pae.utilitaires;
 
-import be.vinci.pae.business.adresse.AdresseUCC;
-import be.vinci.pae.business.adresse.AdresseUCCImpl;
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.DomaineFactoryImpl;
+import be.vinci.pae.business.adresse.AdresseUCC;
+import be.vinci.pae.business.adresse.AdresseUCCImpl;
 import be.vinci.pae.business.interet.InteretUCC;
 import be.vinci.pae.business.interet.InteretUCCImpl;
 import be.vinci.pae.business.objet.ObjetUCC;
@@ -22,10 +22,11 @@ import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAOImpl;
 import be.vinci.pae.donnees.dao.typeobjet.TypeObjetDAO;
 import be.vinci.pae.donnees.dao.typeobjet.TypeObjetDAOImpl;
-import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
-import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAOImpl;
 import be.vinci.pae.donnees.dao.interet.InteretDAO;
 import be.vinci.pae.donnees.dao.interet.InteretDAOImpl;
+import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
+import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAOImpl;
+
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.donnees.services.ServiceDALImpl;
 import jakarta.inject.Singleton;

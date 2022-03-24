@@ -46,7 +46,6 @@ public class OffreDAOImpl implements OffreDAO {
   }
 
   /**
-  *
   * Annuler une offre via un id.
   *
   * @param idOffre : est l'id de l'offre qu'on veut annulé
@@ -115,7 +114,8 @@ public class OffreDAOImpl implements OffreDAO {
         offreDTO.setDateOffre(rs.getDate(3));
         offreDTO.setPlageHoraire(rs.getString(4));
 
-      } } catch (SQLException e) {
+      }
+    } catch (SQLException e) {
       e.printStackTrace();
     }
 

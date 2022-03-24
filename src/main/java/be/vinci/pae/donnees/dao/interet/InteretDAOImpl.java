@@ -29,7 +29,7 @@ public class InteretDAOImpl implements InteretDAO {
   * @return InteretDTO : interetDTO remplit
   */
   @Override
-  public InteretDTO ajouterInteret(int idUtilisateurInteresse, int idObjet , Date dateRdv) {
+  public InteretDTO ajouterInteret(int idUtilisateurInteresse, int idObjet, Date dateRdv) {
     InteretDTO interetDTO = factory.getInteret();
     PreparedStatement ps = serviceDAL.getPs("INSERT INTO projet.interets "
             + "VALUES (?, ?, ?) RETURNING *;");
@@ -42,11 +42,11 @@ public class InteretDAOImpl implements InteretDAO {
       ps.setInt(2, idObjet);
       ps.setTimestamp(3, dateRdvSQL);
 
-        return remplirInteretDepuisResultSet(interetDTO, ps);
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-      return interetDTO;
+      return remplirInteretDepuisResultSet(interetDTO, ps);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return interetDTO;
   }
 
 
