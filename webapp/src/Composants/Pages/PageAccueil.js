@@ -93,16 +93,20 @@ const PageAccueil = () => {
     .catch((err) => onError(err));
   }
 };
-
+//check la taille des images
 const onOffreRecentListpage = (data) => {
   const listOffreRecent = document.getElementById("offreListRecent");
   let listRecent = ``;
   data.forEach((offre) => {
     const date = `${offre.dateOffre[2]}\\${offre.dateOffre[1]}\\${offre.dateOffre[0]}`
     listRecent += `<article>
-      <h4>${offre.objetDTO.photo}</h4>
+       <div>
+        <img src="/api/offres/photos/${offre.objetDTO.photo}"/>
+      </div>
+      <div>
       Description : ${offre.objetDTO.description}
-      Date de création : ${date}
+      </br>Date de création : ${date}
+      </div>
       </article>`;
   })
 
@@ -115,9 +119,13 @@ const onOffreListpage = (data) => {
   data.forEach((offre) => {
     const date = `${offre.dateOffre[2]}\\${offre.dateOffre[1]}\\${offre.dateOffre[0]}`
     list += `<article>
-      <h4>${offre.objetDTO.photo}</h4>
+      <div>
+        <img src="/api/offres/photos/${offre.objetDTO.photo} "/>
+      </div>
+      <div>
       Description : ${offre.objetDTO.description}
-      Date de création : ${date}
+      </br>Date de création : ${date}
+      </div>
       </article>`;
   })
   listOffre.innerHTML = list;
