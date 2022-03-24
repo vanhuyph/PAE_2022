@@ -4,6 +4,7 @@ import ComposantDeconnexion from "../Pages/ComposantDeconnexion";
 import PageInscription from "../Pages/PageInscription";
 import PageAdmin from "../Pages/PageAdmin";
 import PageOffrirObjet from "../Pages/PageOffrirObjet";
+import PageObjet from "../Pages/PageObjet";
 
 // Configuration des routeurs ici
 const routes = {
@@ -13,6 +14,7 @@ const routes = {
   "/inscription": PageInscription,
   "/admin": PageAdmin,
   "/offrirObjet": PageOffrirObjet,
+  "/objet/": PageObjet,
 };
 
 /**
@@ -83,4 +85,4 @@ const Redirect = (uri) => {
   }
 };
 
-export {Router, Redirect};
+export { Router, Redirect };

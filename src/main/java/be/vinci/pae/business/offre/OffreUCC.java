@@ -9,4 +9,8 @@ public interface OffreUCC {
   List<OffreDTO> listerOffres();
 
   List<OffreDTO> listerOffresRecentes();
+
+  OffreDTO annulerUneOffre(int idOffre);
+
+  OffreDTO rechercheParId(int id);
 }

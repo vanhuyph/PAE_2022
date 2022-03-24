@@ -10,4 +10,8 @@ public interface OffreDAO {
   List<OffreDTO> listerOffres();
 
   List<OffreDTO> listerOffresRecentes();
+
+  OffreDTO annulerOffre(int idOffre);
+
+  OffreDTO rechercheParId(int id);
 }

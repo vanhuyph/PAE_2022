@@ -66,4 +66,37 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commettreTransaction();
     return liste;
   }
+
+  /**
+   * Annuler une offre.
+   *
+   * @param idOffre : id de l'offre à annuler
+   * @throws BusinessException : lance une exception business si l'offre n'a pas pu être annulée
+   * @return l'offre annulée
+   */
+  @Override
+  public OffreDTO annulerUneOffre(int idOffre) {
+    System.out.println("début annuler offre UccImpl");
+    OffreDTO offre = offreDAO.annulerOffre(idOffre);
+    if (offre == null) {
+      throw new BusinessException("l'offre n'a pas pu être annulée.");
+    }
+    System.out.println("fin annuler offre UccImpl");
+    return offre;
+  }
+
+  /**
+   * Recherche une offre par son id.
+   *
+   * @param idOffre id de l'offre recherchée
+   * @return l'offre correspondante  l'id idS
+   */
+  @Override
+  public OffreDTO rechercheParId(int idOffre) {
+    OffreDTO offre = offreDAO.rechercheParId(idOffre);
+    if (offre == null) {
+      throw new BusinessException("l'offre n'a pas pu être annulée.");
+    }
+    return offre;
+  }
 }
