@@ -31,7 +31,7 @@ public class InteretImpl implements Interet {
     return idObjet;
   }
 
-  public void setIdObjet(int idObjet){
+  public void setIdObjet(int idObjet) {
     this.idObjet = idObjet;
   }
 
@@ -48,24 +48,24 @@ public class InteretImpl implements Interet {
     if (this == o) {
       return true;
     }
-      if (o == null || getClass() != o.getClass()) {
-        return false;
-      }
-      InteretImpl interet = (InteretImpl) o;
-      return idObjet == interet.idObjet && idUtilisateurInteresse == interet.idUtilisateurInteresse;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    InteretImpl interet = (InteretImpl) o;
+    return idObjet == interet.idObjet && idUtilisateurInteresse == interet.idUtilisateurInteresse;
   }
 
   @Override
   public int hashCode() {
-        return Objects.hash(idObjet, idUtilisateurInteresse);
-    }
+    return Objects.hash(idObjet, idUtilisateurInteresse);
+  }
 
   @Override
   public String toString() {
     return "Interet{"
-                + "id utilisateur interesse= "+ idUtilisateurInteresse
-                + "id objet= "+ idObjet
-                + "date de rendez vous ="+ dateRdv
+                + "id utilisateur interesse= " + idUtilisateurInteresse
+                + "id objet= " + idObjet
+                + "date de rendez vous =" + dateRdv
                 + "}";
   }
 }
