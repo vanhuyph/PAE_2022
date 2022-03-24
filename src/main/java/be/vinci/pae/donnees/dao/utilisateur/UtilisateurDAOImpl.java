@@ -31,7 +31,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     String requetePs =
-            "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, a.id_adresse, a.rue, a.numero, a.boite, "
             + "a.code_postal, a.commune FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
@@ -116,11 +116,11 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
-   * Met à jour l'état de l'inscription d'un utilisateur à "confirmé".
+   * Met à jour l'état de l'inscription d'un utilisateur à "Confirmé".
    *
    * @param id       : l'id de l'utilisateur
    * @param estAdmin : si l'utilisateur est admin
-   * @return utilisateurDTO : l'utilisateur avec l'état de son inscription à "confirmé"
+   * @return utilisateurDTO : l'utilisateur avec l'état de son inscription à "Confirmé"
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
@@ -148,7 +148,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
-   * Met à jour le commentaire et l'état de l'inscription d'un utilisateur à "refusé".
+   * Met à jour le commentaire et l'état de l'inscription d'un utilisateur à "Refusé".
    *
    * @param id          : l'id de l'utilisateur
    * @param commentaire : le commentaire que l'on va ajouter
