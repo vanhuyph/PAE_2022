@@ -36,11 +36,11 @@ public class RessourceInteret {
   @Path("creerInteret")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public InteretDTO creetInteret(JsonNode json) throws Exception{
+  public InteretDTO creetInteret(JsonNode json) throws Exception {
 
     if (!json.hasNonNull("idUtilisateurInteresse")
-    || !json.hasNonNull("idObjet")
-    || !json.hasNonNull("dateRdv")) {
+      || !json.hasNonNull("idObjet")
+      || !json.hasNonNull("dateRdv")) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
               .entity("id de l'utilisateur ou de l'objet ou date manquant")
               .type("text/plain").build());
@@ -54,9 +54,10 @@ public class RessourceInteret {
     long dataJavaInt = dateJava.getTime();
     long dataJavaNow = System.currentTimeMillis();
 
-    if (dataJavaInt<dataJavaNow){
+    if (dataJavaInt < dataJavaNow) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-              .entity("la date de rendez vous ne peut pas être dans le passé").type("text/plain").build());
+              .entity("la date de rendez vous ne peut pas être dans le passé")
+              .type("text/plain").build());
 
     }
 
@@ -68,5 +69,5 @@ public class RessourceInteret {
     }
 
     return interet;
-    }
+  }
 }
