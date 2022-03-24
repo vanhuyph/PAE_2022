@@ -19,35 +19,41 @@ public class InteretImpl implements Interet {
   @JsonView(Vues.Public.class)
   private Date dateRdv;
 
-  public int getIdUtilisateur()  { return idUtilisateurInteresse;}
+  public int getIdUtilisateur()  {
+    return idUtilisateurInteresse;
+  }
 
   public void setIdUtilisateur(int idUtilisateurInteresse) {
-        this.idUtilisateurInteresse = idUtilisateurInteresse;
-    }
+    this.idUtilisateurInteresse = idUtilisateurInteresse;
+  }
 
   public int getIdObjet() {
-        return idObjet;
-    }
+    return idObjet;
+  }
 
   public void setIdObjet(int idObjet){
-        this.idObjet = idObjet;
-    }
+    this.idObjet = idObjet;
+  }
 
-  public Date getDateRdv() { return dateRdv; }
+  public Date getDateRdv() {
+    return dateRdv;
+  }
 
-  public void setDateRdv(Date dateRdv) {this.dateRdv = dateRdv; }
+  public void setDateRdv(Date dateRdv) {
+    this.dateRdv = dateRdv;
+  }
 
   @Override
   public boolean equals(Object o) {
-     if (this == o) {
-       return true;
-     }
-       if (o == null || getClass() != o.getClass()) {
-         return false;
-       }
-       InteretImpl interet = (InteretImpl) o;
-       return idObjet == interet.idObjet && idUtilisateurInteresse == interet.idUtilisateurInteresse;
+    if (this == o) {
+      return true;
     }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+      InteretImpl interet = (InteretImpl) o;
+      return idObjet == interet.idObjet && idUtilisateurInteresse == interet.idUtilisateurInteresse;
+  }
 
   @Override
   public int hashCode() {
@@ -61,5 +67,5 @@ public class InteretImpl implements Interet {
                 + "id objet= "+ idObjet
                 + "date de rendez vous ="+ dateRdv
                 + "}";
-    }
+  }
 }

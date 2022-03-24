@@ -4,7 +4,6 @@ import be.vinci.pae.donnees.dao.interet.InteretDAO;
 import be.vinci.pae.utilitaires.exceptions.ExceptionBusiness;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
-
 import java.util.Date;
 
 public class InteretUCCImpl implements InteretUCC {
