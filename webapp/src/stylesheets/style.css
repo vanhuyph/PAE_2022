@@ -27,6 +27,12 @@ body{
 .modal,.modal .header, .modal .content{
     background-color: #e1e9f3 !important;
 }
+/*Cartes accueil*/
+.card{
+    background-color: #ecf5ff !important;
+    color: black;
+}
+/*Cartes accueil*/
 
 /* Modification UI */
 
