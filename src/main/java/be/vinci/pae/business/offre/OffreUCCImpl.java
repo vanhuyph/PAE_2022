@@ -68,5 +68,4 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commettreTransaction();
     return liste;
   }
-
 }

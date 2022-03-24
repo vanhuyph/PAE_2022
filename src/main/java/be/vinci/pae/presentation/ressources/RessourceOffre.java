@@ -10,10 +10,12 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -101,4 +103,13 @@ public class RessourceOffre {
     return Response.ok(nomDencodage).build();
   }
 
+  @GET
+  @Path("/photos/{UUIDPhoto}")
+  @Produces({"image/*"})
+  //@Autorisation
+  public Response voirPhotoOffre(@PathParam("UUIDPhoto") String UUIDPhoto) {
+
+    return Response.ok(new File("./image/" + UUIDPhoto)).build();
+
+  }
 }
