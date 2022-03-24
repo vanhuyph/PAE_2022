@@ -11,9 +11,9 @@ const PageAccueil = () => {
   let etatInscription
   let commentaire
   if (session) {
-    if (session.utilisateur.etatInscription !== "confirmé") {
+    if (session.utilisateur.etatInscription !== "Confirmé") {
       etatInscription = session.utilisateur.etatInscription
-      if (session.utilisateur.etatInscription === "en attente") {
+      if (session.utilisateur.etatInscription === "En attente") {
         commentaire = "Vous pourrez accéder aux fonctionnalités lorsqu'un administrateur aura confirmé votre inscription."
       } else {
         commentaire = session.utilisateur.commentaire
@@ -34,27 +34,16 @@ const PageAccueil = () => {
   </div>
   <div class="offres">
     <h2>Offres récentes</h2>
+    <div id="offreListRecent"> </div>
   </div>
-  <div id="offreListRecent"> </div>
-  <br>`;
+  `;
 
   pageDiv.innerHTML = pageAccueil;
   Navbar()
   const conteneurModal = document.querySelector(".conteneur-modal")
   const declencheurModal = document.querySelectorAll(".declencheur-modal")
 
-  if (session) {
-    if (session.utilisateur.etatInscription !== "confirmé") {
-      conteneurModal.classList.add('active')
-      enleverDonneeSession()
-      Navbar()
-    }
-  }
-
-  declencheurModal.forEach(decl => decl.addEventListener("click", () => {
-    conteneurModal.classList.toggle("active")
-  }))
-
+  // Récupération de la liste des offres récentes
   fetch("/api/offres/listerOffresRecentes", {
     method: "GET",
     headers: {
@@ -68,66 +57,95 @@ const PageAccueil = () => {
     return response.json();
   }).then((data) => onOffreRecentListpage(data))
   .catch((err) => onError(err));
+
   if (session) {
-    pageAccueil += `
-    <div class="offres">
-      <h2>Toutes les offres</h2>
-    </div>
-    <div id="offreList"> </div>
-    <br>`;
-    pageDiv.innerHTML = pageAccueil;
-    fetch("/api/offres/listerOffres", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: session.token
-      },
-    }).then((response) => {
-      if (!response.ok) {
-        throw new Error(
-            "Error code : " + response.status + " : " + response.statusText
-        );
-      }
-      return response.json();
-    }).then((data) => onOffreListpage(data))
-    .catch((err) => onError(err));
+    if (session.utilisateur.etatInscription !== "Confirmé") {
+      conteneurModal.classList.add('active')
+      enleverDonneeSession()
+      Navbar()
+    }else{
+      pageAccueil += `
+      <div class="offres">
+        <h2>Toutes les offres</h2>
+        <div id="offreList"> </div>
+      </div>
+      
+      `;
+        pageDiv.innerHTML = pageAccueil;
+        fetch("/api/offres/listerOffres", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token
+          },
+        }).then((response) => {
+          if (!response.ok) {
+            throw new Error(
+                "Error code : " + response.status + " : " + response.statusText
+            );
+          }
+          return response.json();
+        }).then((data) => onOffreListpage(data))
+        .catch((err) => onError(err));
+    }
   }
+
+  declencheurModal.forEach(decl => decl.addEventListener("click", () => {
+    conteneurModal.classList.toggle("active")
+  }))
 };
 //check la taille des images
 const onOffreRecentListpage = (data) => {
   const listOffreRecent = document.getElementById("offreListRecent");
-  let listRecent = ``;
+  const session = recupUtilisateurDonneesSession()
+  let listRecent = `<div class="ui cards">`;
   data.forEach((offre) => {
-    const date = `${offre.dateOffre[2]}\\${offre.dateOffre[1]}\\${offre.dateOffre[0]}`
-    listRecent += `<article>
-       <div>
-        <img src="/api/offres/photos/${offre.objetDTO.photo}"/>
+    if (session) {
+      listRecent += `
+      <a class="card">
+        <div class="image">
+          <img src="${offre.objetDTO.photo}" alt="">
+        </div>
+        <div class="content">
+          <h4 class="header">Description</h4>
+           <p>${offre.objetDTO.description}</p>
+        </div>
+      </a>
+    `;
+    }else{
+      listRecent += `
+      <div class="card">
+        <div class="image">
+          <img src="${offre.objetDTO.photo}" alt="">
+        </div>
+        <div class="content">
+          <h4 class="header">Description</h4>
+           <p>${offre.objetDTO.description}</p>
+        </div>
       </div>
-      <div>
-      Description : ${offre.objetDTO.description}
-      </br>Date de création : ${date}
-      </div>
-      </article>`;
+    `;
+    }
   })
-
+  listRecent += `</div>`;
   listOffreRecent.innerHTML = listRecent;
 };
 
 const onOffreListpage = (data) => {
   const listOffre = document.getElementById("offreList");
-  let list = ``;
+  let list = `<div class="ui link cards">`;
   data.forEach((offre) => {
-    const date = `${offre.dateOffre[2]}\\${offre.dateOffre[1]}\\${offre.dateOffre[0]}`
-    list += `<article>
-      <div>
-        <img src="/api/offres/photos/${offre.objetDTO.photo} "/>
-      </div>
-      <div>
-      Description : ${offre.objetDTO.description}
-      </br>Date de création : ${date}
-      </div>
-      </article>`;
+    list += `
+      <a class="card">
+        <div class="image">
+          <img src="${offre.objetDTO.photo}" alt="">
+        </div>
+        <div class="content">
+          <h4 class="header">Description</h4>
+           <p>${offre.objetDTO.description}</p>
+        </div>
+      </a>`;
   })
+  list += `</div>`;
   listOffre.innerHTML = list;
 };
 

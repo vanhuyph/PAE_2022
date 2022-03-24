@@ -31,7 +31,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     String requetePs =
-        "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+            "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, a.id_adresse, a.rue, a.numero, a.boite, "
             + "a.code_postal, a.commune FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
@@ -92,7 +92,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
     String requetePs = "INSERT INTO projet.utilisateurs "
-        + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL) RETURNING "
+        + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'En attente', NULL) RETURNING "
         + "id_utilisateur, etat_inscription, commentaire;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, utilisateur.getPseudo());
@@ -131,7 +131,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
         + "etat_inscription, commentaire, adresse;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      ps.setString(1, "confirmé");
+      ps.setString(1, "Confirmé");
       ps.setBoolean(2, estAdmin);
       ps.setInt(3, id);
       try (ResultSet rs = ps.executeQuery()) {
@@ -163,7 +163,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
         + "etat_inscription, commentaire, adresse;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      ps.setString(1, "refusé");
+      ps.setString(1, "Refusé");
       ps.setString(2, commentaire);
       ps.setInt(3, id);
       try (ResultSet rs = ps.executeQuery()) {
@@ -197,11 +197,12 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     List<UtilisateurDTO> liste = new ArrayList<>();
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, etatInscription);
-      ResultSet rs = ps.executeQuery();
-      while (rs.next()) {
-        UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-        remplirUtilisateursDepuisRS(rs, utilisateurDTO);
-        liste.add(utilisateurDTO);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
+          remplirUtilisateursDepuisRS(rs, utilisateurDTO);
+          liste.add(utilisateurDTO);
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -229,7 +230,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       adresseDTO.setIdAdresse(rs.getInt(10));
       adresseDTO.setRue(rs.getString(11));
       adresseDTO.setNumero(rs.getInt(12));
-      adresseDTO.setBoite(rs.getInt(13));
+      adresseDTO.setBoite(rs.getString(13));
       adresseDTO.setCodePostal(rs.getInt(14));
       adresseDTO.setCommune(rs.getString(15));
       utilisateurDTO.setAdresse(adresseDTO);
@@ -268,6 +269,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         }
       } catch (SQLException e) {
         e.printStackTrace();
+        ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
         throw new FatalException(e.getMessage(), e);
       }
       utilisateurDTO.setAdresse(adresseDTO);
@@ -292,7 +294,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       adresseDTO.setIdAdresse(rs.getInt(1));
       adresseDTO.setRue(rs.getString(2));
       adresseDTO.setNumero(rs.getInt(3));
-      adresseDTO.setBoite(rs.getInt(4));
+      adresseDTO.setBoite(rs.getString(4));
       adresseDTO.setCodePostal(rs.getInt(5));
       adresseDTO.setCommune(rs.getString(6));
     } catch (SQLException e) {

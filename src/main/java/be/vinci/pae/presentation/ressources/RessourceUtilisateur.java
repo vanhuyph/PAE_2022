@@ -199,7 +199,7 @@ public class RessourceUtilisateur {
   @AutorisationAdmin
   public List<UtilisateurDTO> listerInscriptionsRefusees() {
     List<UtilisateurDTO> liste;
-    liste = utilisateurUCC.listerUtilisateursEtatsInscriptions("refusé");
+    liste = utilisateurUCC.listerUtilisateursEtatsInscriptions("Refusé");
     return liste;
   }
 
@@ -215,7 +215,7 @@ public class RessourceUtilisateur {
   @AutorisationAdmin
   public List<UtilisateurDTO> listerInscriptionsEnAttente() {
     List<UtilisateurDTO> liste;
-    liste = utilisateurUCC.listerUtilisateursEtatsInscriptions("en attente");
+    liste = utilisateurUCC.listerUtilisateursEtatsInscriptions("En attente");
     return liste;
   }
 

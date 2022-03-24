@@ -3,6 +3,8 @@ package be.vinci.pae.donnees.dao.typeobjet;
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
+import be.vinci.pae.donnees.services.ServiceDAL;
+import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,21 +23,24 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
    * Liste les types d'objet.
    *
    * @return typesObjet : la liste des types d'objet
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public List<TypeObjetDTO> listerTypeObjet() {
+    String requetePs = "SELECT * FROM projet.types_objets;";
     List<TypeObjetDTO> typesObjet = new ArrayList<>();
-    PreparedStatement ps = serviceBackendDAL.getPs(
-        "SELECT * FROM projet.types_Objets  ;");
-    try {
-      ResultSet rs = ps.executeQuery();
-      while (rs.next()) {
-        TypeObjetDTO typeObjetCourrant = factory.getTypeObjet();
-        typeObjetCourrant = remplirTypeObjetDepuisResulSet(typeObjetCourrant, rs);
-        typesObjet.add(typeObjetCourrant);
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          TypeObjetDTO typeObjetCourrant = factory.getTypeObjet();
+          typeObjetCourrant = remplirTypeObjetDepuisResulSet(typeObjetCourrant, rs);
+          typesObjet.add(typeObjetCourrant);
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
     }
     return typesObjet;
   }
@@ -46,7 +51,7 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
    * @param typeObjetDTO : le type d'objet vide, qui va être rempli
    * @param rs           : le PreparedStatement déjà mis en place
    * @return typeObjetDTO : le type d'objet rempli rempli
-   * @throws SQLException : est lancée si il y a un problème
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private TypeObjetDTO remplirTypeObjetDepuisResulSet(TypeObjetDTO typeObjetDTO,
       ResultSet rs) throws SQLException {
@@ -55,6 +60,8 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
       typeObjetDTO.setNom(rs.getString(2));
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
     }
     return typeObjetDTO;
   }
