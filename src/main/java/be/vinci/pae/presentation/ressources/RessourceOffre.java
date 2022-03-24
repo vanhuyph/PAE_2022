@@ -103,10 +103,15 @@ public class RessourceOffre {
     return Response.ok(nomDencodage).build();
   }
 
+  /**
+   * Voir la photo d'une offre.
+   *
+   * @param UUIDPhoto nom du fichier sur le serveur
+   * @return une réponse contenant la photo
+   */
   @GET
   @Path("/photos/{UUIDPhoto}")
   @Produces({"image/*"})
-  //@Autorisation
   public Response voirPhotoOffre(@PathParam("UUIDPhoto") String UUIDPhoto) {
 
     return Response.ok(new File("./image/" + UUIDPhoto)).build();
