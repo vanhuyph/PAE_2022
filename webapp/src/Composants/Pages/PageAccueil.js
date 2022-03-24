@@ -104,7 +104,7 @@ const onOffreRecentListpage = (data) => {
       listRecent += `
       <a class="card">
         <div class="image">
-          <img src="${offre.objetDTO.photo}" alt="">
+          <img src="/api/offres/photos/${offre.objetDTO.photo}">
         </div>
         <div class="content">
           <h4 class="header">Description</h4>
@@ -116,7 +116,7 @@ const onOffreRecentListpage = (data) => {
       listRecent += `
       <div class="card">
         <div class="image">
-          <img src="${offre.objetDTO.photo}" alt="">
+          <img src="/api/offres/photos/${offre.objetDTO.photo}">
         </div>
         <div class="content">
           <h4 class="header">Description</h4>
@@ -137,7 +137,7 @@ const onOffreListpage = (data) => {
     list += `
       <a class="card">
         <div class="image">
-          <img src="${offre.objetDTO.photo}" alt="">
+          <img src="/api/offres/photos/${offre.objetDTO.photo}">
         </div>
         <div class="content">
           <h4 class="header">Description</h4>

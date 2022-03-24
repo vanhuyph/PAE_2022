@@ -106,15 +106,15 @@ public class RessourceOffre {
   /**
    * Voir la photo d'une offre.
    *
-   * @param UUIDPhoto nom du fichier sur le serveur
+   * @param uuidPhoto nom du fichier sur le serveur
    * @return une réponse contenant la photo
    */
   @GET
-  @Path("/photos/{UUIDPhoto}")
+  @Path("/photos/{uuidPhoto}")
   @Produces({"image/*"})
-  public Response voirPhotoOffre(@PathParam("UUIDPhoto") String UUIDPhoto) {
-
-    return Response.ok(new File("./image/" + UUIDPhoto)).build();
+  public Response voirPhotoOffre(@PathParam("uuidPhoto") String uuidPhoto) {
+  
+    return Response.ok(new File("./image/" + uuidPhoto)).build();
 
   }
 }
