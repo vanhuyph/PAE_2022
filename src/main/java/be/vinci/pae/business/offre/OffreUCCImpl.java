@@ -70,18 +70,16 @@ public class OffreUCCImpl implements OffreUCC {
   /**
    * Annuler une offre.
    *
-   * @param idOffre : id de l'offre à annuler
-   * @throws BusinessException : lance une exception business si l'offre n'a pas pu être annulée
+   * @param id : id de l'offre à annuler
    * @return l'offre annulée
+   * @throws BusinessException : lance une exception business si l'offre n'a pas pu être annulée
    */
   @Override
-  public OffreDTO annulerUneOffre(int idOffre) {
-    System.out.println("début annuler offre UccImpl");
-    OffreDTO offre = offreDAO.annulerOffre(idOffre);
-    if (offre == null) {
+  public OffreDTO annulerUneOffre(int id) {
+    OffreDTO offre = offreDAO.annulerOffre(id);
+    if (offre == null || offre.getIdOffre() <= 0) {
       throw new BusinessException("l'offre n'a pas pu être annulée.");
     }
-    System.out.println("fin annuler offre UccImpl");
     return offre;
   }
 
@@ -94,8 +92,8 @@ public class OffreUCCImpl implements OffreUCC {
   @Override
   public OffreDTO rechercheParId(int idOffre) {
     OffreDTO offre = offreDAO.rechercheParId(idOffre);
-    if (offre == null) {
-      throw new BusinessException("l'offre n'a pas pu être annulée.");
+    if (offre == null || offre.getIdOffre() <= 0) {
+      throw new BusinessException("l'offre n'a pas pu être trouvée.");
     }
     return offre;
   }

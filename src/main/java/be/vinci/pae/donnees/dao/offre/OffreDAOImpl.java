@@ -83,25 +83,24 @@ public class OffreDAOImpl implements OffreDAO {
   }
 
   /**
+   * Annule l'offre.
    *
-   * @param idOffre : est l'id de l'offre qu'on veut annulé
+   * @param id : est l'id de l'offre qu'on veut annulé
    * @return : un offreDTO avec seulement un id de l'offre annulé
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public OffreDTO annulerOffre(int idOffre){
-    System.out.println("idOffre annulerOffreDAO :"+idOffre);
+  public OffreDTO annulerOffre(int id) {
     OffreDTO offreDTO = factory.getOffre();
-    PreparedStatement ps = serviceBackendDAL.getPs(
-        "UPDATE projet.objets SET etat_objet = 'annulé' WHERE id_objet = ?;");
-
-    try {
-      ps.setInt(1, idOffre);
+    String requetePs = "UPDATE projet.objets SET etat_objet = 'annulé' WHERE id_objet = ?;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setInt(1, id);
       ps.execute();
-
-
-      offreDTO.setIdOffre(idOffre);
+      offreDTO.setIdOffre(id);
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
     }
     return offreDTO;
   }
@@ -111,24 +110,32 @@ public class OffreDAOImpl implements OffreDAO {
    *
    * @param idOffre : l'id de l'objet correspondant à l'offre
    * @return offreDTO : l'offre
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public OffreDTO rechercheParId(int idOffre) {
-    System.out.println("RechercheParId DAO :"+idOffre);
+    System.out.println("RechercheParId DAO :" + idOffre);
     OffreDTO offreDTO = factory.getOffre();
-    PreparedStatement ps = serviceBackendDAL.getPs(
-            "SELECT * FROM projet.offres WHERE id_offre= ? ;");
-    try {
+    //String requetePs = "SELECT * FROM projet.offres WHERE id_offre= ? ;";
+    String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
+        + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet, "
+        + "o.description, o.photo, of.id_offre, of.date_offre, of.plage_horaire "
+        + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
+        + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
+        + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+        + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
+        + "WHERE of.id_offre = ?;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs);) {
       ps.setInt(1, idOffre);
-
-
-      return remplirOffreDepuisResultSet(offreDTO, ps);
-
-
+      try (ResultSet rs = ps.executeQuery()) {
+        offreDTO = remplirOffreDepuisResultSet(offreDTO, rs);
+      }
     } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
     }
-
     return offreDTO;
   }
 
@@ -152,7 +159,9 @@ public class OffreDAOImpl implements OffreDAO {
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
+      try (ResultSet rs = ps.executeQuery()) {
+        liste = remplirListOffresDepuisResulSet(offreDTO, ps);
+      }
     } catch (SQLException e) {
       e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
@@ -170,52 +179,10 @@ public class OffreDAOImpl implements OffreDAO {
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private List<OffreDTO> remplirListOffresDepuisResulSet(OffreDTO offreDTO, PreparedStatement ps) {
-    ObjetDTO objetDTO;
-    AdresseDTO adresseDTO;
-    UtilisateurDTO offreur;
-    TypeObjetDTO typeObjetDTO;
     List<OffreDTO> liste = new ArrayList<>();
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
-        typeObjetDTO = factory.getTypeObjet();
-        objetDTO = factory.getObjet();
-        adresseDTO = factory.getAdresse();
-        offreur = factory.getUtilisateur();
-
-        adresseDTO.setIdAdresse(rs.getInt(1));
-        adresseDTO.setRue(rs.getString(2));
-        adresseDTO.setNumero(rs.getInt(3));
-        adresseDTO.setBoite(rs.getString(4));
-        adresseDTO.setCodePostal(rs.getInt(5));
-        adresseDTO.setCommune(rs.getString(6));
-
-        offreur.setIdUtilisateur(rs.getInt(7));
-        offreur.setPseudo(rs.getString(8));
-        offreur.setNom(rs.getString(9));
-        offreur.setPrenom(rs.getString(10));
-        offreur.setMdp(rs.getString(11));
-        offreur.setGsm(rs.getString(12));
-        offreur.setEstAdmin(rs.getBoolean(13));
-        offreur.setEtatInscription(rs.getString(14));
-        offreur.setCommentaire(rs.getString(15));
-        offreur.setAdresse(adresseDTO);
-
-        typeObjetDTO.setIdType(rs.getInt(16));
-        typeObjetDTO.setNom(rs.getString(17));
-
-        objetDTO.setIdObjet(rs.getInt(18));
-        objetDTO.setEtatObjet(rs.getString(19));
-        objetDTO.setTypeObjet(typeObjetDTO);
-        objetDTO.setDescription(rs.getString(20));
-        objetDTO.setOffreur(offreur);
-        objetDTO.setReceveur(null);
-        objetDTO.setPhoto(rs.getString(21));
-
-        offreDTO.setIdOffre(rs.getInt(22));
-        offreDTO.setObjetDTO(objetDTO);
-        offreDTO.setDateOffre(rs.getTimestamp(23).toLocalDateTime());
-        offreDTO.setPlageHoraire(rs.getString(24));
-
+        offreDTO = remplirOffreDepuisResultSet(offreDTO, rs);
         liste.add(offreDTO);
         offreDTO = factory.getOffre();
       }
@@ -231,26 +198,58 @@ public class OffreDAOImpl implements OffreDAO {
    * Rempli les données de l'offre depuis un ResultSet.
    *
    * @param offreDTO : l'offre vide, qui va être rempli
-   * @param ps       : le Prepared Statement déjà préparé
+   * @param rs       : le Result Statement déjà préparé
    * @return offreDTO : l'offre rempli
-   * @throws SQLException : est lancée si il y a un problème
    */
-  private OffreDTO remplirOffreDepuisResultSet(OffreDTO offreDTO,
-      PreparedStatement ps) throws SQLException {
-    try (ResultSet rs = ps.executeQuery()) {
-      while (rs.next()) {
-        offreDTO.setIdOffre(rs.getInt(1));
-        // offreDTO.setObjet(
-        //    objetDAO.rechercheParId(rs.getInt(2))); //voir si possible en sql
-        //offreDTO.setDateOffre(rs.getDate(3));
-        offreDTO.setPlageHoraire(rs.getString(4));
+  private OffreDTO remplirOffreDepuisResultSet(OffreDTO offreDTO, ResultSet rs) {
+    ObjetDTO objetDTO;
+    AdresseDTO adresseDTO;
+    UtilisateurDTO offreur;
+    TypeObjetDTO typeObjetDTO;
+    typeObjetDTO = factory.getTypeObjet();
+    objetDTO = factory.getObjet();
+    adresseDTO = factory.getAdresse();
+    offreur = factory.getUtilisateur();
 
-      }} catch(SQLException e){
+    try {
+      adresseDTO.setIdAdresse(rs.getInt(1));
+      adresseDTO.setRue(rs.getString(2));
+      adresseDTO.setNumero(rs.getInt(3));
+      adresseDTO.setBoite(rs.getString(4));
+      adresseDTO.setCodePostal(rs.getInt(5));
+      adresseDTO.setCommune(rs.getString(6));
+
+      offreur.setIdUtilisateur(rs.getInt(7));
+      offreur.setPseudo(rs.getString(8));
+      offreur.setNom(rs.getString(9));
+      offreur.setPrenom(rs.getString(10));
+      offreur.setMdp(rs.getString(11));
+      offreur.setGsm(rs.getString(12));
+      offreur.setEstAdmin(rs.getBoolean(13));
+      offreur.setEtatInscription(rs.getString(14));
+      offreur.setCommentaire(rs.getString(15));
+      offreur.setAdresse(adresseDTO);
+
+      typeObjetDTO.setIdType(rs.getInt(16));
+      typeObjetDTO.setNom(rs.getString(17));
+
+      objetDTO.setIdObjet(rs.getInt(18));
+      objetDTO.setEtatObjet(rs.getString(19));
+      objetDTO.setTypeObjet(typeObjetDTO);
+      objetDTO.setDescription(rs.getString(20));
+      objetDTO.setOffreur(offreur);
+      objetDTO.setReceveur(null);
+      objetDTO.setPhoto(rs.getString(21));
+
+      offreDTO.setIdOffre(rs.getInt(22));
+      offreDTO.setObjetDTO(objetDTO);
+      offreDTO.setDateOffre(rs.getTimestamp(23).toLocalDateTime());
+      offreDTO.setPlageHoraire(rs.getString(24));
+    } catch (SQLException e) {
       e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
     }
-
-
-
     return offreDTO;
   }
 

@@ -4,7 +4,6 @@ import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -13,7 +12,6 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -86,59 +84,45 @@ public class RessourceOffre {
 
 
   /**
-   *
-   * @param json  : json reçu de la requete avec l'id de l'offre à annuler
    * @return un offreDTO avec seulement l'id de l'offre annulée
    */
 
   @POST
-  @Path("annulerOffre")
+  @Path("annulerOffre/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public OffreDTO annulerOffre(JsonNode json) {
+  public OffreDTO annulerOffre(@PathParam("id") int id) {
 
-    if (!json.hasNonNull("idOffre")) {
-      throw new WebApplicationException(
-          Response.status(Response.Status.BAD_REQUEST)
-              .entity("id de l'offre à annuler manquant").type("text/plain").build());
+    if (id <= 0) {
+      throw new PresentationException("Offre incorrecte", Status.BAD_REQUEST);
     }
 
-    int idOffre = json.get("idOffre").asInt();
-
-
-    OffreDTO offreDTO = offreUCC.annulerUneOffre(idOffre);
+    OffreDTO offreDTO = offreUCC.annulerUneOffre(id);
     if (offreDTO == null) {
-      throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
-          .entity("L'annulation de l'offre a échoué").type(MediaType.TEXT_PLAIN)
-          .build());
+      throw new PresentationException("L'annulation de l'offre a échoué", Status.BAD_REQUEST);
     }
 
     return offreDTO;
   }
+
   /**
    * Recherche l'offre avec l'id id.
    *
-   * @param json    json contenant le token.
-   * @param idOffre id de l'offre
+   * @param id id de l'offre
    * @return l'offre correspondant a l'id
    */
   @GET
-  @Path("voirDetailsOffre/{idOffre}")
+  @Path("voirDetailsOffre/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public OffreDTO rechercheOffreParId(JsonNode json, @PathParam("idOffre") int idOffre) {
-
-    if (idOffre <= 0) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("L'offre n'existe pas").type(MediaType.TEXT_PLAIN)
-          .build());
+  public OffreDTO rechercheOffreParId(@PathParam("id") int id) {
+    if (id <= 0) {
+      throw new PresentationException("Offre incorrecte", Status.BAD_REQUEST);
     }
-    OffreDTO offreDTO = offreUCC.rechercheParId(idOffre);
+    OffreDTO offreDTO = offreUCC.rechercheParId(id);
     if (offreDTO == null) {
-      throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR)
-          .entity("L'offre n'a pas été trouvée").type(MediaType.TEXT_PLAIN)
-          .build());
+      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
     }
     return offreDTO;
 
@@ -175,7 +159,7 @@ public class RessourceOffre {
   @Path("/photos/{uuidPhoto}")
   @Produces({"image/*"})
   public Response voirPhotoOffre(@PathParam("uuidPhoto") String uuidPhoto) {
-  
+
     return Response.ok(new File("./image/" + uuidPhoto)).build();
 
   }
