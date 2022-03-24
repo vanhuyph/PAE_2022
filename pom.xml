@@ -36,6 +36,50 @@
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.1.2</version>
       </plugin>
+      <plugin>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <configuration>
+          <jvmTarget>1.6</jvmTarget>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <id>compile</id>
+            <phase>compile</phase>
+          </execution>
+          <execution>
+            <goals>
+              <goal>test-compile</goal>
+            </goals>
+            <id>test-compile</id>
+            <phase>test-compile</phase>
+          </execution>
+        </executions>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <version>${kotlin.version}</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <id>compile</id>
+            <phase>compile</phase>
+          </execution>
+          <execution>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <id>testCompile</id>
+            <phase>test-compile</phase>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
@@ -49,6 +93,10 @@
     </dependency>
     <dependency>
       <artifactId>jersey-media-json-jackson</artifactId>
+      <groupId>org.glassfish.jersey.media</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>jersey-media-multipart</artifactId>
       <groupId>org.glassfish.jersey.media</groupId>
     </dependency>
     <dependency>
@@ -67,6 +115,11 @@
       <version>3.18.3</version>
     </dependency>
     <dependency>
+      <artifactId>commons-dbcp2</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <version>2.8.0</version>
+    </dependency>
+    <dependency>
       <artifactId>junit-jupiter-engine</artifactId>
       <groupId>org.junit.jupiter</groupId>
       <version>5.8.2</version>
@@ -80,6 +133,23 @@
       <artifactId>mockito-junit-jupiter</artifactId>
       <groupId>org.mockito</groupId>
       <version>4.0.0</version>
+    </dependency>
+    <dependency>
+      <artifactId>kotlin-stdlib</artifactId>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <version>${kotlin.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>kotlin-test</artifactId>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <scope>test</scope>
+      <version>${kotlin.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <scope>compile</scope>
+      <version>2.13.2</version>
     </dependency>
   </dependencies>
   <dependencyManagement>
@@ -102,25 +172,11 @@
 
   <properties>
     <jersey.version>3.0.3</jersey.version>
+    <kotlin.version>1.6.20-RC</kotlin.version>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.15.0</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.3.1</version>
-      </plugin>
-    </plugins>
-  </reporting>
 
   <version>0.0.1-SNAPSHOT</version>
 

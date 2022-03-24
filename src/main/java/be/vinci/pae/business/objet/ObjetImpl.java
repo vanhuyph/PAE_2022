@@ -1,5 +1,7 @@
 package be.vinci.pae.business.objet;
 
+import be.vinci.pae.business.typeobjet.TypeObjetDTO;
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.vue.Vues;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -13,13 +15,13 @@ public class ObjetImpl implements Objet {
   @JsonView(Vues.Public.class)
   private String etatObjet;
   @JsonView(Vues.Public.class)
-  private int typeObjet;
+  private TypeObjetDTO typeObjet;
   @JsonView(Vues.Public.class)
   private String description;
   @JsonView(Vues.Public.class)
-  private int offreur;
+  private UtilisateurDTO offreur;
   @JsonView(Vues.Public.class)
-  private int receveur;
+  private UtilisateurDTO receveur;
   @JsonView(Vues.Public.class)//vérifier type d'objet
   private String photo;
 
@@ -39,11 +41,11 @@ public class ObjetImpl implements Objet {
     this.etatObjet = etatObjet;
   }
 
-  public int getTypeObjet() {
+  public TypeObjetDTO getTypeObjet() {
     return typeObjet;
   }
 
-  public void setTypeObjet(int typeObjet) {
+  public void setTypeObjet(TypeObjetDTO typeObjet) {
     this.typeObjet = typeObjet;
   }
 
@@ -55,19 +57,19 @@ public class ObjetImpl implements Objet {
     this.description = decsription;
   }
 
-  public int getOffreur() {
+  public UtilisateurDTO getOffreur() {
     return offreur;
   }
 
-  public void setOffreur(int offreur) {
+  public void setOffreur(UtilisateurDTO offreur) {
     this.offreur = offreur;
   }
 
-  public int getReceveur() {
+  public UtilisateurDTO getReceveur() {
     return receveur;
   }
 
-  public void setReceveur(int receveur) {
+  public void setReceveur(UtilisateurDTO receveur) {
     this.receveur = receveur;
   }
 

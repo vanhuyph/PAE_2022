@@ -1,9 +1,8 @@
 package be.vinci.pae.donnees.dao.interet;
 
-
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.interet.InteretDTO;
-import be.vinci.pae.donnees.services.ServiceDAL;
+import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,8 +16,7 @@ public class InteretDAOImpl implements InteretDAO {
   private DomaineFactory factory;
 
   @Inject
-  private ServiceDAL serviceDAL;
-
+  private ServiceBackendDAL serviceBackendDAL;
 
   /**
   * Ajoute un interet avec une id.
@@ -31,8 +29,8 @@ public class InteretDAOImpl implements InteretDAO {
   @Override
   public InteretDTO ajouterInteret(int idUtilisateurInteresse, int idObjet, Date dateRdv) {
     InteretDTO interetDTO = factory.getInteret();
-    PreparedStatement ps = serviceDAL.getPs("INSERT INTO projet.interets "
-            + "VALUES (?, ?, ?) RETURNING *;");
+    PreparedStatement ps = serviceBackendDAL.getPs("INSERT INTO projet.interets "
+        + "VALUES (?, ?, ?) RETURNING *;");
 
     try {
 
