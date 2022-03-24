@@ -39,8 +39,8 @@ public class RessourceInteret {
   public InteretDTO creetInteret(JsonNode json) throws Exception {
 
     if (!json.hasNonNull("idUtilisateurInteresse")
-      || !json.hasNonNull("idObjet")
-      || !json.hasNonNull("dateRdv")) {
+        || !json.hasNonNull("idObjet")
+        || !json.hasNonNull("dateRdv")) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
               .entity("id de l'utilisateur ou de l'objet ou date manquant")
               .type("text/plain").build());
