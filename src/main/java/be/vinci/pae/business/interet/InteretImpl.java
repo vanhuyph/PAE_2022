@@ -1,8 +1,8 @@
 package be.vinci.pae.business.interet;
 
 
-
-
+import be.vinci.pae.business.objet.ObjetDTO;
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.vue.Vues;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -12,27 +12,29 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class InteretImpl implements Interet {
 
+
   @JsonView(Vues.Public.class)
-  private int idUtilisateurInteresse;
+  private UtilisateurDTO utilisateur;
   @JsonView(Vues.Public.class)
-  private int idObjet;
+  private ObjetDTO objet;
   @JsonView(Vues.Public.class)
   private Date dateRdv;
 
-  public int getIdUtilisateur()  {
-    return idUtilisateurInteresse;
+
+  public UtilisateurDTO getUtilisateur() {
+    return utilisateur;
   }
 
-  public void setIdUtilisateur(int idUtilisateurInteresse) {
-    this.idUtilisateurInteresse = idUtilisateurInteresse;
+  public void setUtilisateur(UtilisateurDTO utilisateur) {
+    this.utilisateur = utilisateur;
   }
 
-  public int getIdObjet() {
-    return idObjet;
+  public ObjetDTO getObjet() {
+    return objet;
   }
 
-  public void setIdObjet(int idObjet) {
-    this.idObjet = idObjet;
+  public void setObjet(ObjetDTO objet) {
+    this.objet = objet;
   }
 
   public Date getDateRdv() {
@@ -52,20 +54,21 @@ public class InteretImpl implements Interet {
       return false;
     }
     InteretImpl interet = (InteretImpl) o;
-    return idObjet == interet.idObjet && idUtilisateurInteresse == interet.idUtilisateurInteresse;
+    return Objects.equals(utilisateur, interet.utilisateur) && Objects.equals(
+        objet, interet.objet) && Objects.equals(dateRdv, interet.dateRdv);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idObjet, idUtilisateurInteresse);
+    return Objects.hash(utilisateur, objet, dateRdv);
   }
 
   @Override
   public String toString() {
-    return "Interet{"
-                + "id utilisateur interesse= " + idUtilisateurInteresse
-                + "id objet= " + idObjet
-                + "date de rendez vous =" + dateRdv
-                + "}";
+    return "InteretImpl{"
+        + "utilisateur=" + utilisateur
+        + ", objet=" + objet
+        + ", dateRdv=" + dateRdv
+        + '}';
   }
 }

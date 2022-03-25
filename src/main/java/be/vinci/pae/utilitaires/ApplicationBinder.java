@@ -39,7 +39,6 @@ public class ApplicationBinder extends AbstractBinder {
     bind(ServiceDALImpl.class).to(ServiceBackendDAL.class).to(ServiceDAL.class).in(Singleton.class);
     bind(UtilisateurUCCImpl.class).to(UtilisateurUCC.class).in(Singleton.class);
     bind(AdresseDAOImpl.class).to(AdresseDAO.class).in(Singleton.class);
-    bind(ObjetDAOImpl.class).to(ObjetDAO.class).in(Singleton.class);
     bind(OffreDAOImpl.class).to(OffreDAO.class).in(Singleton.class);
     bind(OffreUCCImpl.class).to(OffreUCC.class).in(Singleton.class);
     bind(ObjetDAOImpl.class).to(ObjetDAO.class).in(Singleton.class);

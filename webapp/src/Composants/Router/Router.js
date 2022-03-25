@@ -14,7 +14,7 @@ const routes = {
   "/inscription": PageInscription,
   "/admin": PageAdmin,
   "/offrirObjet": PageOffrirObjet,
-  "/objet/": PageObjet,
+  "/objet": PageObjet,
 };
 
 /**
@@ -29,7 +29,6 @@ const Router = () => {
   navbarWrapper.addEventListener("click", (e) => {
     // Pour obtenir un attribut de données par l'intermédiaire de l'objet dataset, il faut obtenir la propriété par la partie du nom de l'attribut après data (notez que les tirets sont convertis en camelCase).
     let uri = e.target.dataset.uri;
-
     if (uri) {
       e.preventDefault();
       /* utilise l'API Historique Web pour ajouter l'URL de la page actuelle à l'historique de navigation de l'utilisateur
@@ -50,20 +49,23 @@ const Router = () => {
 
   /* Achemine le bon composant lorsque la page est chargée / rafraîchie */
   window.addEventListener("load", (e) => {
-    const componentToRender = routes[window.location.pathname];
+    let chemins = window.location.pathname.split("/")
+    const componentToRender = routes["/"+chemins[1]];
     if (!componentToRender) {
       throw Error(
           "La " + window.location.pathname + " ressource n'existe pas"
       );
     }
-
-    componentToRender();
+    if(chemins[2]) componentToRender(chemins[2])
+    else componentToRender();
   });
 
   // Achemine le bon composant lorsque l'utilisateur utilise l'historique de navigation.
   window.addEventListener("popstate", () => {
-    const componentToRender = routes[window.location.pathname];
-    componentToRender();
+    let chemins = window.location.pathname.split("/")
+    const componentToRender = routes["/"+chemins[1]];
+    if (chemins[2])componentToRender(chemins[2])
+    else componentToRender();
   });
 };
 
@@ -73,13 +75,15 @@ const Router = () => {
  * tableau des routes du routeur
  */
 
-const Redirect = (uri) => {
+const Redirect = (uri,data) => {
   // utilise l'API Historique Web pour ajouter l'URL de la page actuelle à l'historique de navigation de l'utilisateur et définir la bonne URL dans le navigateur (au lieu de "#")
-  window.history.pushState({}, uri, window.location.origin + uri);
+  if (!data)window.history.pushState({}, uri, window.location.origin + uri);
+  else window.history.pushState({}, uri + "/"+ data, window.location.origin + uri + "/"+ data);
   // rend le composant demandé
   const componentToRender = routes[uri];
   if (routes[uri]) {
-    componentToRender();
+    if(!data)componentToRender()
+    else componentToRender(data)
   } else {
     throw Error("La " + uri + " ressource n'existe pas");
   }

@@ -3,6 +3,7 @@ import {
   recupUtilisateurDonneesSession
 } from "../../utilitaires/session";
 import Navbar from "../Navbar/Navbar";
+import {Redirect} from "../Router/Router";
 
 // Page d'accueil
 const PageAccueil = () => {
@@ -102,7 +103,8 @@ const onOffreRecentListpage = (data) => {
   data.forEach((offre) => {
     if (session) {
       listRecent += `
-      <a class="card">
+      <a id="of" class="card" data-of="${offre.idOffre}">
+        <div id=${offre.idOffre}></div>
         <div class="image">
           <img src="/api/offres/photos/${offre.objetDTO.photo}">
         </div>
@@ -112,6 +114,7 @@ const onOffreRecentListpage = (data) => {
         </div>
       </a>
     `;
+
     }else{
       listRecent += `
       <div class="card">
@@ -128,6 +131,7 @@ const onOffreRecentListpage = (data) => {
   })
   listRecent += `</div>`;
   listOffreRecent.innerHTML = listRecent;
+
 };
 
 const onOffreListpage = (data) => {
@@ -135,7 +139,7 @@ const onOffreListpage = (data) => {
   let list = `<div class="ui link cards">`;
   data.forEach((offre) => {
     list += `
-      <a class="card">
+      <a id="of" class="card" data-of="${offre.idOffre}">
         <div class="image">
           <img src="/api/offres/photos/${offre.objetDTO.photo}">
         </div>
@@ -147,6 +151,16 @@ const onOffreListpage = (data) => {
   })
   list += `</div>`;
   listOffre.innerHTML = list;
+  const session = recupUtilisateurDonneesSession()
+
+  if (session){
+    document.querySelectorAll("#of").forEach(offre => {
+      offre.addEventListener("click",(e) => {
+        console.log()
+        Redirect("/objet",offre.getAttribute("data-of"))
+      })
+    })
+  }
 };
 
 export default PageAccueil;

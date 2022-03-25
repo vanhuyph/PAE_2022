@@ -14,6 +14,8 @@ public interface UtilisateurDAO {
 
   UtilisateurDTO confirmerInscription(int id, boolean estAdmin) throws FatalException;
 
+  UtilisateurDTO modifierGsm(UtilisateurDTO utilisateurDTO);
+
   List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription)
       throws FatalException;
 

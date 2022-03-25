@@ -92,7 +92,7 @@ public class OffreDAOImpl implements OffreDAO {
   @Override
   public OffreDTO annulerOffre(int id) {
     OffreDTO offreDTO = factory.getOffre();
-    String requetePs = "UPDATE projet.objets SET etat_objet = 'annulé' WHERE id_objet = ?;";
+    String requetePs = "UPDATE projet.objets SET etat_objet = 'Annulé' WHERE id_objet = ?;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, id);
       ps.execute();
@@ -114,9 +114,9 @@ public class OffreDAOImpl implements OffreDAO {
    */
   @Override
   public OffreDTO rechercheParId(int idOffre) {
-    System.out.println("RechercheParId DAO :" + idOffre);
     OffreDTO offreDTO = factory.getOffre();
-    String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
+    System.out.println("RechercheParId DAO :" + idOffre);
+    String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
         + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
         + "u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet, "
         + "o.description, o.photo, of.id_offre, of.date_offre, of.plage_horaire "
@@ -125,10 +125,12 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
         + "WHERE of.id_offre = ?;";
-    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs);) {
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, idOffre);
       try (ResultSet rs = ps.executeQuery()) {
-        offreDTO = remplirOffreDepuisResultSet(offreDTO, rs);
+        while (rs.next()) {
+          offreDTO = remplirOffreDepuisResultSet(offreDTO, rs);
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();

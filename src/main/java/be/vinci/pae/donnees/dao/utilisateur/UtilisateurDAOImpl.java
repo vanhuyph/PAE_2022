@@ -179,6 +179,26 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     return utilisateurDTO;
   }
 
+  @Override
+  public UtilisateurDTO modifierGsm(UtilisateurDTO utilisateurDTO) {
+
+    String requetePs = "UPDATE projet.utilisateurs SET gsm = ? WHERE id_utilisateur = ? RETURNING *;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setString(1, utilisateurDTO.getGsm());
+      ps.setInt(2, utilisateurDTO.getIdUtilisateur());
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          utilisateurDTO = remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return utilisateurDTO;
+  }
+
   /**
    * Récupère tous les utilisateurs avec un certain état d'inscription et les placent dans une
    * liste.
