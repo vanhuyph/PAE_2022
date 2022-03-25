@@ -29,8 +29,8 @@ public class InteretUCCImpl implements InteretUCC {
       interetDTO.setUtilisateur(utilisateurDAO.modifierGsm(interetDTO.getUtilisateur()));
     }
     InteretDTO interet = interetDAO.ajouterInteret(interetDTO);
-    if (interet == null || (interet.getUtilisateur().getIdUtilisateur() <= 0 || interet.getObjet()
-        .getIdObjet() <= 0)) {
+    if (interet == null || interet.getUtilisateur().getIdUtilisateur() <= 0 || interet.getObjet()
+        .getIdObjet() <= 0) {
       serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("L'interet n'a pas pu être créé.");
     }

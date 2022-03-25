@@ -36,7 +36,7 @@ public class RessourceInteret {
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
   public InteretDTO creetInteret(InteretDTO interetDTO) throws ParseException {
-    
+
     InteretDTO interet = interetUCC.creerUnInteret(interetDTO);
     if (interet == null) {
       throw new PresentationException("L'ajout de l'intérêt à échoué", Status.BAD_REQUEST);
@@ -44,6 +44,13 @@ public class RessourceInteret {
     return interet;
   }
 
+  /**
+   * Récupère le nombre de personnes intéressées pour une offre.
+   *
+   * @param id : l'id de l'offre dont les personnes sont intéressées
+   * @return nbInteret : le nombre de personnes intéressées
+   * @throws PresentationException : est lancée si l'id de l'offre est incorrecte
+   */
   @GET
   @Path("/nbPersonnesInteresees/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -53,10 +60,8 @@ public class RessourceInteret {
     if (id <= 0) {
       throw new PresentationException("L'id de l'offre est incorrecte", Status.BAD_REQUEST);
     }
-
     int nbInteret = interetUCC.nbPersonnesInteressees(id);
     return nbInteret;
-
   }
 
 }

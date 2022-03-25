@@ -133,7 +133,7 @@ public class RessourceOffre {
   /**
    * Permet de voir les détails de l'offre avec l'id passé en paramètre.
    *
-   * @param id : l'id de l'offre
+   * @param idObjet : l'id de l'objet
    * @return offreDTO : les détails de l'offre avec l'id passé en paramètre
    * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'offre n'a
    *                               pas pu être trouvée

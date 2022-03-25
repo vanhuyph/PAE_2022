@@ -29,7 +29,7 @@ public class InteretDAOImpl implements InteretDAO {
       ps.setInt(1, interetDTO.getUtilisateur().getIdUtilisateur());
       ps.setInt(2, interetDTO.getObjet().getIdObjet());
       ps.setDate(3, dateRdvSQL);
-      remplirInteretDepuisResultSet(interetDTO, ps);
+      ps.executeQuery();
     } catch (SQLException e) {
       e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
@@ -55,27 +55,6 @@ public class InteretDAOImpl implements InteretDAO {
       throw new FatalException(e.getMessage(), e);
     }
     return nbPers;
-  }
-
-  /**
-   * Rempli les données de l'intérêt.
-   *
-   * @param interet : l'intérêt vide, qui va être rempli
-   * @param ps      : le PreparedStatement
-   * @return interet : l'intérêt rempli
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
-  private InteretDTO remplirInteretDepuisResultSet(InteretDTO interet, PreparedStatement ps) {
-    try (ResultSet rs = ps.executeQuery()) {
-      while (rs.next()) {
-        //interet.set(rs.getInt(1));
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
-      throw new FatalException(e.getMessage(), e);
-    }
-    return interet;
   }
 
 }

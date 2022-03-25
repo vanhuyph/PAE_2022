@@ -181,8 +181,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 
   @Override
   public UtilisateurDTO modifierGsm(UtilisateurDTO utilisateurDTO) {
-
-    String requetePs = "UPDATE projet.utilisateurs SET gsm = ? WHERE id_utilisateur = ? RETURNING *;";
+    String requetePs = "UPDATE projet.utilisateurs SET gsm = ? WHERE id_utilisateur = ? "
+        + "RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, utilisateurDTO.getGsm());
       ps.setInt(2, utilisateurDTO.getIdUtilisateur());
