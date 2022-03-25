@@ -17,7 +17,6 @@ public class OffreUCCImpl implements OffreUCC {
   @Inject
   ServiceDAL serviceDAL;
 
-
   /**
    * Créer une offre.
    *
@@ -76,10 +75,13 @@ public class OffreUCCImpl implements OffreUCC {
    */
   @Override
   public OffreDTO annulerUneOffre(int id) {
+    serviceDAL.commencerTransaction();
     OffreDTO offre = offreDAO.annulerOffre(id);
     if (offre == null || offre.getIdOffre() <= 0) {
+      serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("l'offre n'a pas pu être annulée.");
     }
+    serviceDAL.commettreTransaction();
     return offre;
   }
 
@@ -91,10 +93,14 @@ public class OffreUCCImpl implements OffreUCC {
    */
   @Override
   public OffreDTO rechercheParId(int idOffre) {
+    serviceDAL.commencerTransaction();
     OffreDTO offre = offreDAO.rechercheParId(idOffre);
     if (offre == null || offre.getIdOffre() <= 0) {
+      serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("l'offre n'a pas pu être trouvée.");
     }
+    serviceDAL.commettreTransaction();
     return offre;
   }
+
 }

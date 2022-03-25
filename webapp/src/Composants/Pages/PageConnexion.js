@@ -88,7 +88,7 @@ const surConnexion = (e) => {
     .then((reponse) => {
       if (!reponse.ok) {
         throw new Error(
-            "Error code : " + reponse.status + " : " + reponse.statusText)
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText)
       }
       return reponse.json();
     })
@@ -105,7 +105,7 @@ const surConUtilisateur = (donnee, souvenir) => {
   Redirect("/")
 }
 
-// Si erreur lors du submit du formulaire
+// Si erreur lors de la soumission du formulaire
 const surErreur = (err) => {
   let messageErreur = document.querySelector("#messageErreur");
   let erreurMessage = "";

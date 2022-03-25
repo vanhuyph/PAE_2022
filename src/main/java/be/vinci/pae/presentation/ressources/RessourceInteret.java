@@ -29,7 +29,7 @@ public class RessourceInteret {
    *
    * @param json : json envoyé par le formulaire de créer un interet
    * @return interet : interetDTO
-   * @throws Exception : est lancée si il y a eu un problème avec la date de rdv
+   * @throws PresentationException : est lancée s'il y a eu une erreur
    */
   @POST
   @Path("creerInteret")
@@ -54,8 +54,7 @@ public class RessourceInteret {
     }
     InteretDTO interet = interetUCC.creerUnInteret(idUtilisateurInteresse, idObjet, dateJava);
     if (interet == null) {
-      throw new PresentationException("L'ajout de l'intérêt à échoué",
-          Status.BAD_REQUEST);
+      throw new PresentationException("L'ajout de l'intérêt a échoué", Status.BAD_REQUEST);
     }
     return interet;
   }

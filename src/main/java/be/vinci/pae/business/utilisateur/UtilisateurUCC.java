@@ -17,4 +17,5 @@ public interface UtilisateurUCC {
   UtilisateurDTO refuserInscription(int id, String commentaire);
 
   List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription);
+
 }

@@ -77,4 +77,5 @@ public class OffreImpl implements Offre {
         + ", plage horaire= " + plageHoraire
         + '}';
   }
+
 }

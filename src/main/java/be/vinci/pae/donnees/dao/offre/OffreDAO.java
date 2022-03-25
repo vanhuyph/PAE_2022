@@ -14,4 +14,5 @@ public interface OffreDAO {
   OffreDTO annulerOffre(int idOffre);
 
   OffreDTO rechercheParId(int id);
+
 }

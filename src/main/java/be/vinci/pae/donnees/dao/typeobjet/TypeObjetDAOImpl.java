@@ -65,4 +65,5 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
     }
     return typeObjetDTO;
   }
+
 }

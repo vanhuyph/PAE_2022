@@ -6,4 +6,5 @@ import java.util.Date;
 public interface InteretDAO {
 
   InteretDTO ajouterInteret(int idUtilisateurInteresse, int idObjet, Date dateRdv);
+
 }

@@ -143,7 +143,7 @@ const surInscription = (e) => {
     .then((response) => {
       if (!response.ok) {
         throw new Error(
-            "Error code : " + response.status + " : " + response.statusText
+            "Code d'erreur : " + response.status + " : " + response.statusText
             + " : " + response.text())
       }
       return response.json()
@@ -153,7 +153,7 @@ const surInscription = (e) => {
   }
 }
 
-// Création données de session et redirection accueil
+// Création données de session et redirection vers l'accueil
 const surInscrUtilisateur = (donnee) => {
   const session = {...donnee, isAutenticated: true}
   creationDonneeSessionUtilisateur(session, false)

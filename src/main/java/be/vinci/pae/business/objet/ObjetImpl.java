@@ -110,4 +110,5 @@ public class ObjetImpl implements Objet {
         + ", photo= " + photo
         + '}';
   }
+
 }

@@ -1,8 +1,5 @@
 package be.vinci.pae.business.interet;
 
-
-
-
 import be.vinci.pae.vue.Vues;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -19,7 +16,7 @@ public class InteretImpl implements Interet {
   @JsonView(Vues.Public.class)
   private Date dateRdv;
 
-  public int getIdUtilisateur()  {
+  public int getIdUtilisateur() {
     return idUtilisateurInteresse;
   }
 
@@ -63,9 +60,10 @@ public class InteretImpl implements Interet {
   @Override
   public String toString() {
     return "Interet{"
-                + "id utilisateur interesse= " + idUtilisateurInteresse
-                + "id objet= " + idObjet
-                + "date de rendez vous =" + dateRdv
-                + "}";
+        + "id utilisateur interesse= " + idUtilisateurInteresse
+        + "id objet= " + idObjet
+        + "date de rendez vous =" + dateRdv
+        + "}";
   }
+
 }

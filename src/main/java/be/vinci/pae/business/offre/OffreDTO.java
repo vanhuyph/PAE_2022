@@ -22,4 +22,5 @@ public interface OffreDTO {
   String getPlageHoraire();
 
   void setPlageHoraire(String plageHoraire);
+
 }

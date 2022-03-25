@@ -34,4 +34,5 @@ public interface ObjetDTO {
   String getPhoto();
 
   void setPhoto(String photo);
+
 }

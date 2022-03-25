@@ -7,11 +7,9 @@ import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 
-
 public interface DomaineFactory {
 
   UtilisateurDTO getUtilisateur();
-
 
   OffreDTO getOffre();
 

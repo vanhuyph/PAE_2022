@@ -98,7 +98,7 @@ const recupEnAttente = () => {
   .then((response) => {
     if (!response.ok) {
       throw new Error(
-          "Error code : " + response.status + " : " + response.statusText);
+          "Code d'erreur : " + response.status + " : " + response.statusText);
     }
     return response.json();
   })
@@ -118,7 +118,7 @@ const recupRefuse = () => {
   .then((response) => {
     if (!response.ok) {
       throw new Error(
-          "Error code : " + response.status + " : " + response.statusText);
+          "Code d'erreur : " + response.status + " : " + response.statusText);
     }
     return response.json();
   })
@@ -208,7 +208,8 @@ const surListeAttente = (data) => {
           .then((reponse) => {
             if (!reponse.ok) {
               throw new Error(
-                  "Error code : " + reponse.status + " : " + reponse.statusText)
+                  "Code d'erreur : " + reponse.status + " : "
+                  + reponse.statusText)
             }
             return reponse.json();
           })
@@ -242,7 +243,8 @@ const surListeAttente = (data) => {
         .then((reponse) => {
           if (!reponse.ok) {
             throw new Error(
-                "Error code : " + reponse.status + " : " + reponse.statusText)
+                "Code d'erreur : " + reponse.status + " : "
+                + reponse.statusText)
           }
           return reponse.json();
         })
@@ -321,7 +323,8 @@ const surListeRefus = (data) => {
           .then((reponse) => {
             if (!reponse.ok) {
               throw new Error(
-                  "Error code : " + reponse.status + " : " + reponse.statusText)
+                  "Code d'erreur : " + reponse.status + " : "
+                  + reponse.statusText)
             }
             return reponse.json();
           })

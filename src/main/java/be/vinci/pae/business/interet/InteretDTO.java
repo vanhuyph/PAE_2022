@@ -18,5 +18,4 @@ public interface InteretDTO {
 
   void setDateRdv(Date dateRdv);
 
-
 }

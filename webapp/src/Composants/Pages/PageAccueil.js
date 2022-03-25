@@ -34,7 +34,7 @@ const PageAccueil = () => {
   </div>
   <div class="offres">
     <h2>Offres récentes</h2>
-    <div id="offreListRecent"> </div>
+    <div id="liste-offres-recentes"> </div>
   </div>
   `;
 
@@ -52,56 +52,53 @@ const PageAccueil = () => {
   }).then((response) => {
     if (!response.ok) {
       throw new Error(
-          "Error code : " + response.status + " : " + response.statusText);
+          "Code d'erreur : " + response.status + " : " + response.statusText);
     }
     return response.json();
-  }).then((data) => onOffreRecentListpage(data))
-  .catch((err) => onError(err));
+  }).then((data) => surListeOffresRecentes(data))
 
   if (session) {
     if (session.utilisateur.etatInscription !== "Confirmé") {
       conteneurModal.classList.add('active')
       enleverDonneeSession()
       Navbar()
-    }else{
+    } else {
       pageAccueil += `
       <div class="offres">
         <h2>Toutes les offres</h2>
-        <div id="offreList"> </div>
+        <div id="liste-offres"> </div>
       </div>
-      
       `;
-        pageDiv.innerHTML = pageAccueil;
-        fetch("/api/offres/listerOffres", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: session.token
-          },
-        }).then((response) => {
-          if (!response.ok) {
-            throw new Error(
-                "Error code : " + response.status + " : " + response.statusText
-            );
-          }
-          return response.json();
-        }).then((data) => onOffreListpage(data))
-        .catch((err) => onError(err));
+      pageDiv.innerHTML = pageAccueil;
+      fetch("/api/offres/listerOffres", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: session.token
+        },
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error(
+              "Code d'erreur : " + response.status + " : " + response.statusText
+          );
+        }
+        return response.json();
+      }).then((data) => surListeOffres(data))
     }
   }
-
   declencheurModal.forEach(decl => decl.addEventListener("click", () => {
     conteneurModal.classList.toggle("active")
   }))
 };
-//check la taille des images
-const onOffreRecentListpage = (data) => {
-  const listOffreRecent = document.getElementById("offreListRecent");
+
+// Affichage d'une liste des offres les plus récentes
+const surListeOffresRecentes = (data) => {
+  const listeOffresRecentes = document.getElementById("liste-offres-recentes");
   const session = recupUtilisateurDonneesSession()
-  let listRecent = `<div class="ui cards">`;
+  let listeRecente = `<div class="ui cards">`;
   data.forEach((offre) => {
     if (session) {
-      listRecent += `
+      listeRecente += `
       <a class="card">
         <div class="image">
           <img src="/api/offres/photos/${offre.objetDTO.photo}">
@@ -112,8 +109,8 @@ const onOffreRecentListpage = (data) => {
         </div>
       </a>
     `;
-    }else{
-      listRecent += `
+    } else {
+      listeRecente += `
       <div class="card">
         <div class="image">
           <img src="/api/offres/photos/${offre.objetDTO.photo}">
@@ -126,15 +123,16 @@ const onOffreRecentListpage = (data) => {
     `;
     }
   })
-  listRecent += `</div>`;
-  listOffreRecent.innerHTML = listRecent;
+  listeRecente += `</div>`;
+  listeOffresRecentes.innerHTML = listeRecente;
 };
 
-const onOffreListpage = (data) => {
-  const listOffre = document.getElementById("offreList");
-  let list = `<div class="ui link cards">`;
+// Affichage d'une liste de toutes les offres
+const surListeOffres = (data) => {
+  const listeOffres = document.getElementById("liste-offres");
+  let liste = `<div class="ui link cards">`;
   data.forEach((offre) => {
-    list += `
+    liste += `
       <a class="card">
         <div class="image">
           <img src="/api/offres/photos/${offre.objetDTO.photo}">
@@ -145,8 +143,8 @@ const onOffreListpage = (data) => {
         </div>
       </a>`;
   })
-  list += `</div>`;
-  listOffre.innerHTML = list;
+  liste += `</div>`;
+  listeOffres.innerHTML = liste;
 };
 
 export default PageAccueil;

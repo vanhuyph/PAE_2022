@@ -1,6 +1,5 @@
 package be.vinci.pae.business;
 
-
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.adresse.AdresseImpl;
 import be.vinci.pae.business.interet.InteretDTO;
@@ -14,8 +13,6 @@ import be.vinci.pae.business.typeobjet.TypeObjetImpl;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurImpl;
 
-
-
 public class DomaineFactoryImpl implements DomaineFactory {
 
   @Override
@@ -24,7 +21,6 @@ public class DomaineFactoryImpl implements DomaineFactory {
   }
 
   @Override
-
   public OffreDTO getOffre() {
     return new OffreImpl();
   }

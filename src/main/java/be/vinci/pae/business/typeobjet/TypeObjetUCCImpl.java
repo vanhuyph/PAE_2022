@@ -16,17 +16,18 @@ public class TypeObjetUCCImpl implements TypeObjetUCC {
   /**
    * Liste les types d'objet.
    *
-   * @return la liste des types d'objet
+   * @return liste : la liste des types d'objets
    */
   @Override
   public List<TypeObjetDTO> listerTypeObjet() {
     serviceDAL.commencerTransaction();
-    List<TypeObjetDTO> listTypeObjets = typeObjetDAO.listerTypeObjet();
-    if (listTypeObjets == null) {
+    List<TypeObjetDTO> liste = typeObjetDAO.listerTypeObjet();
+    if (liste == null) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("Il n'y a pas de type d'objet."); // vérifier statut de réponse
+      throw new BusinessException("Il n'y a pas de type d'objets");
     }
     serviceDAL.commettreTransaction();
-    return listTypeObjets;
+    return liste;
   }
+
 }
