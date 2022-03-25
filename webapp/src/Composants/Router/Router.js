@@ -31,7 +31,7 @@ const Router = () => {
     let uri = e.target.dataset.uri;
     if (uri) {
       e.preventDefault();
-      /* utilise l'API Historique Web pour ajouter l'URL de la page actuelle à l'historique de navigation de l'utilisateur
+      /* Utilise l'API Historique Web pour ajouter l'URL de la page actuelle à l'historique de navigation de l'utilisateur
        & définir la bonne URL dans le navigateur (au lieu de "#") */
       window.history.pushState({}, uri, window.location.origin + uri);
       /* Fait un rendu du composant demandé
@@ -50,22 +50,28 @@ const Router = () => {
   /* Achemine le bon composant lorsque la page est chargée / rafraîchie */
   window.addEventListener("load", (e) => {
     let chemins = window.location.pathname.split("/")
-    const componentToRender = routes["/"+chemins[1]];
+    const componentToRender = routes["/" + chemins[1]];
     if (!componentToRender) {
       throw Error(
           "La " + window.location.pathname + " ressource n'existe pas"
       );
     }
-    if(chemins[2]) componentToRender(chemins[2])
-    else componentToRender();
+    if (chemins[2]) {
+      componentToRender(chemins[2])
+    } else {
+      componentToRender();
+    }
   });
 
   // Achemine le bon composant lorsque l'utilisateur utilise l'historique de navigation.
   window.addEventListener("popstate", () => {
     let chemins = window.location.pathname.split("/")
-    const componentToRender = routes["/"+chemins[1]];
-    if (chemins[2])componentToRender(chemins[2])
-    else componentToRender();
+    const componentToRender = routes["/" + chemins[1]];
+    if (chemins[2]) {
+      componentToRender(chemins[2])
+    } else {
+      componentToRender();
+    }
   });
 };
 
@@ -75,18 +81,25 @@ const Router = () => {
  * tableau des routes du routeur
  */
 
-const Redirect = (uri,data) => {
-  // utilise l'API Historique Web pour ajouter l'URL de la page actuelle à l'historique de navigation de l'utilisateur et définir la bonne URL dans le navigateur (au lieu de "#")
-  if (!data)window.history.pushState({}, uri, window.location.origin + uri);
-  else window.history.pushState({}, uri + "/"+ data, window.location.origin + uri + "/"+ data);
-  // rend le composant demandé
+const Redirect = (uri, data) => {
+  // Utilise l'API Historique Web pour ajouter l'URL de la page actuelle à l'historique de navigation de l'utilisateur et définir la bonne URL dans le navigateur (au lieu de "#")
+  if (!data) {
+    window.history.pushState({}, uri, window.location.origin + uri);
+  } else {
+    window.history.pushState({}, uri + "/" + data,
+        window.location.origin + uri + "/" + data);
+  }
+  // Rend le composant demandé
   const componentToRender = routes[uri];
   if (routes[uri]) {
-    if(!data)componentToRender()
-    else componentToRender(data)
+    if (!data) {
+      componentToRender()
+    } else {
+      componentToRender(data)
+    }
   } else {
     throw Error("La " + uri + " ressource n'existe pas");
   }
 };
 
-export { Router, Redirect };
+export {Router, Redirect};

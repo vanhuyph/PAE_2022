@@ -5,7 +5,7 @@ import {Redirect} from "../Router/Router";
 const PageObjet = (id) => {
   const session = recupUtilisateurDonneesSession()
   // Récupère l'objet
-  fetch(API_URL+"offres/voirDetailsOffre/"+id, {
+  fetch(API_URL + "offres/voirDetailsOffre/" + id, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -13,23 +13,26 @@ const PageObjet = (id) => {
     },
   })
   .then((reponse) => {
-    if(!reponse.ok)
+    if (!reponse.ok) {
       throw new Error(
           "Code d'erreur : " + reponse.status + " : " + reponse.statusText
       )
+    }
     return reponse.json()
   })
   .then((donnee) => {
-    if (donnee.objetDTO.offreur.idUtilisateur === session.utilisateur.idUtilisateur){
+    if (donnee.objetDTO.offreur.idUtilisateur
+        === session.utilisateur.idUtilisateur) {
       surDetailObjetProprio(donnee)
-    }else {
+    } else {
       surDetailObjet(donnee)
     }
   })
 }
 const surDetailObjet = async (offre) => {
-  // Page detail de l'objet
-  let dateOffre = new Date(offre.dateOffre[0], offre.dateOffre[1]-1,offre.dateOffre[2]).toLocaleDateString("fr-BE")
+  // Page détails de l'objet
+  let dateOffre = new Date(offre.dateOffre[0], offre.dateOffre[1] - 1,
+      offre.dateOffre[2]).toLocaleDateString("fr-BE")
   let pageDiv = document.querySelector("#page");
   let session = recupUtilisateurDonneesSession()
   let nbInteressees = 0;
@@ -45,7 +48,6 @@ const surDetailObjet = async (offre) => {
       })
   .then((reponse) => {
     if (!reponse.ok) {
-      //message echec?
       throw new Error(
           "Code erreur : " + reponse.status + " : " + reponse.statusText
       );
@@ -55,9 +57,8 @@ const surDetailObjet = async (offre) => {
   })
   .then((nbInt) => nbInteressees = nbInt)
 
-
   // Récupération des offres précedentes
-  let offresPrecedentes="Pas d'offres précédentes";
+  let offresPrecedentes = "Pas d'offres précédentes";
   await fetch(
       API_URL + 'offres/offresPrecedentes/' + offre.objetDTO.idObjet, {
         method: "GET",
@@ -73,12 +74,11 @@ const surDetailObjet = async (offre) => {
           "Code erreur : " + reponse.status + " : " + reponse.statusText
       );
     }
-
     return reponse.json();
   })
-  .then((offres) =>{
-    if(offres.length>1){
-      offresPrecedentes =""
+  .then((offres) => {
+    if (offres.length > 1) {
+      offresPrecedentes = ""
       offres.forEach((off) => {
         let daOf = new Date(off.dateOffre[0], off.dateOffre[1] - 1,
             off.dateOffre[2]).toLocaleDateString("fr-BE")
@@ -173,7 +173,7 @@ const surDetailObjet = async (offre) => {
   pageDiv.innerHTML = offrePage
 
   document.querySelector("#form-interet").addEventListener("submit", (e) => {
-
+    e.preventDefault();
     let date = document.getElementById("dateRdv").value
     let utilisateur = {
       ...session.utilisateur,
@@ -185,7 +185,6 @@ const surDetailObjet = async (offre) => {
       objet: offre.objetDTO,
       dateRdv: date
     }
-    console.log(interet)
 
     fetch(API_URL + 'interets/creerInteret', {
       method: "POST",
@@ -198,19 +197,18 @@ const surDetailObjet = async (offre) => {
     .then((response) => {
       if (!response.ok) {
         throw new Error(
-            "Error code : " + response.status + " : " + response.statusText
+            "Code d'erreur : " + response.status + " : " + response.statusText
         );
       }
       return response.json();
-    })
-
+    }).then(() => Redirect("/"))
   })
-
 }
 
 const surDetailObjetProprio = async (offre) => {
   let pageDiv = document.querySelector("#page");
-  let dateOffre = new Date(offre.dateOffre[0], offre.dateOffre[1]-1,offre.dateOffre[2]).toLocaleDateString("fr-BE")
+  let dateOffre = new Date(offre.dateOffre[0], offre.dateOffre[1] - 1,
+      offre.dateOffre[2]).toLocaleDateString("fr-BE")
   let nbInteressees = 0;
   let session = recupUtilisateurDonneesSession()
   await fetch(
@@ -232,7 +230,7 @@ const surDetailObjetProprio = async (offre) => {
     return reponse.json();
   })
   .then((nbInt) => nbInteressees = nbInt)
-  let offresPrecedentes="Pas d'offres précédentes";
+  let offresPrecedentes = "Pas d'offres précédentes";
   await fetch(
       API_URL + 'offres/offresPrecedentes/' + offre.objetDTO.idObjet, {
         method: "GET",
@@ -251,9 +249,9 @@ const surDetailObjetProprio = async (offre) => {
 
     return reponse.json();
   })
-  .then((offres) =>{
-    if(offres.length>1){
-      offresPrecedentes =""
+  .then((offres) => {
+    if (offres.length > 1) {
+      offresPrecedentes = ""
       offres.forEach((off) => {
         let daOf = new Date(off.dateOffre[0], off.dateOffre[1] - 1,
             off.dateOffre[2]).toLocaleDateString("fr-BE")
@@ -342,16 +340,13 @@ const surDetailObjetProprio = async (offre) => {
     })
     .then((response) => {
       if (!response.ok) {
-        //message echec?
         throw new Error(
-            "Error code : " + response.status + " : " + response.statusText
+            "Code d'erreur : " + response.status + " : " + response.statusText
         );
       }
-      console.log(response);
-
       return response.json();
     })
-    .then((donnee) => Redirect("/"))
+    .then(() => Redirect("/"))
   })
 }
 
@@ -359,7 +354,8 @@ const surDetailObjetProprioModifier = async (offre) => {
   let session = recupUtilisateurDonneesSession()
   let pageDiv = document.querySelector("#page");
   let nbInteressees = 0;
-  let dateOffre = new Date(offre.dateOffre[0], offre.dateOffre[1]-1,offre.dateOffre[2]).toLocaleDateString("fr-BE")
+  let dateOffre = new Date(offre.dateOffre[0], offre.dateOffre[1] - 1,
+      offre.dateOffre[2]).toLocaleDateString("fr-BE")
 
   await fetch(
       API_URL + 'interets/nbPersonnesInteresees/' + offre.objetDTO.idObjet, {
@@ -381,7 +377,7 @@ const surDetailObjetProprioModifier = async (offre) => {
   })
   .then((nbInt) => nbInteressees = nbInt)
 
-  let offresPrecedentes="Pas d'offres précédentes";
+  let offresPrecedentes = "Pas d'offres précédentes";
   await fetch(
       API_URL + 'offres/offresPrecedentes/' + offre.objetDTO.idObjet, {
         method: "GET",
@@ -400,9 +396,9 @@ const surDetailObjetProprioModifier = async (offre) => {
 
     return reponse.json();
   })
-  .then((offres) =>{
-    if(offres.length>1){
-      offresPrecedentes =""
+  .then((offres) => {
+    if (offres.length > 1) {
+      offresPrecedentes = ""
       offres.forEach((off) => {
         let daOf = new Date(off.dateOffre[0], off.dateOffre[1] - 1,
             off.dateOffre[2]).toLocaleDateString("fr-BE")
@@ -493,4 +489,5 @@ const surDetailObjetProprioModifier = async (offre) => {
     surDetailObjetProprio(offre)
   })
 }
+
 export default PageObjet;

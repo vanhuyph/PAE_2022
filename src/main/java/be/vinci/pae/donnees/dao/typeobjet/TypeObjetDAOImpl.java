@@ -28,13 +28,13 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
   @Override
   public List<TypeObjetDTO> listerTypeObjet() {
     String requetePs = "SELECT * FROM projet.types_objets;";
-    List<TypeObjetDTO> typesObjet = new ArrayList<>();
+    List<TypeObjetDTO> liste = new ArrayList<>();
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           TypeObjetDTO typeObjetCourrant = factory.getTypeObjet();
           typeObjetCourrant = remplirTypeObjetDepuisResulSet(typeObjetCourrant, rs);
-          typesObjet.add(typeObjetCourrant);
+          liste.add(typeObjetCourrant);
         }
       }
     } catch (SQLException e) {
@@ -42,7 +42,7 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
-    return typesObjet;
+    return liste;
   }
 
   /**
@@ -53,8 +53,7 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
    * @return typeObjetDTO : le type d'objet rempli rempli
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
-  private TypeObjetDTO remplirTypeObjetDepuisResulSet(TypeObjetDTO typeObjetDTO,
-      ResultSet rs) throws SQLException {
+  private TypeObjetDTO remplirTypeObjetDepuisResulSet(TypeObjetDTO typeObjetDTO, ResultSet rs) {
     try {
       typeObjetDTO.setIdType(rs.getInt(1));
       typeObjetDTO.setNom(rs.getString(2));

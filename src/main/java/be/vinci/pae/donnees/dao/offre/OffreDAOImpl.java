@@ -115,7 +115,6 @@ public class OffreDAOImpl implements OffreDAO {
   @Override
   public OffreDTO rechercheParId(int idOffre) {
     OffreDTO offreDTO = factory.getOffre();
-    System.out.println("RechercheParId DAO :" + idOffre);
     String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
         + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
         + "u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet, "
