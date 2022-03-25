@@ -5,6 +5,7 @@ import {
 import Navbar from "../Navbar/Navbar";
 import {Redirect} from "../Router/Router";
 
+// Formulaire d'inscription
 let inscription = `
 <div class="page-inscription">
   <h2>Inscription</h2>
@@ -23,7 +24,7 @@ let inscription = `
       </div>
     </div>
     <div class="field">
-      <label for="prenom">Prenom <span>*</span></label>
+      <label for="prenom">Prénom <span>*</span></label>
       <div class="prenom-conteneur">
         <input type="text" id="prenom">
       </div>
@@ -42,11 +43,10 @@ let inscription = `
         <input type="text" id="rue">
       </div>
     </div>
-    
     <div class="field">
       <div class="two fields">
         <div class="field">
-          <label for="numero">Numero <span>*</span></label>
+          <label for="numero">Numéro <span>*</span></label>
           <div class="numero-conteneur">
             <input type="number" id="numero">
           </div>
@@ -54,12 +54,11 @@ let inscription = `
         <div class="field">
           <label for="boite">Boite</label>
           <div class="boite-conteneur">
-            <input type="number" id="boite">
+            <input type="text" id="boite">
           </div>
         </div>
       </div>
     </div>
-    
     <div class="field">
       <label for="code-postal">Code postal <span>*</span></label>
       <div class="code-postal-conteneur">
@@ -82,7 +81,7 @@ let inscription = `
    <a href="/connexion">
      <button class="ui button inverted secondary">Connexion</button>
    </a>
-  
+   
 </div>
 `
 
@@ -91,18 +90,21 @@ const PageInscription = () => {
   pageDiv.innerHTML = inscription;
 
   let form = document.querySelector("#formulaire-inscription");
-  const utilisateur = recupUtilisateurDonneesSession()
-  if (utilisateur) {
+
+  // Redirection si l'utilisateur possède une session vers la page d'accueil sinon soumission du formulaire
+  const session = recupUtilisateurDonneesSession()
+  if (session) {
     Navbar()
     Redirect("/")
   } else {
     form.addEventListener("submit", surInscription)
   }
-
 }
 
 const surInscription = (e) => {
   e.preventDefault()
+
+  // Récupération des valeurs dans le formulaire
   let pseudo = document.querySelector("#pseudo").value
   let nom = document.querySelector("#nom").value
   let prenom = document.querySelector("#prenom").value
@@ -112,24 +114,25 @@ const surInscription = (e) => {
   let codePostal = document.querySelector("#code-postal").value
   let commune = document.querySelector("#commune").value
 
-  if(pseudo===""|| nom ===""|| prenom===""|| mdp===""|| rue===""|| numero===""|| codePostal===""|| commune===""){
-
-    document.querySelector("#messageErreur").innerHTML = "Des champs sont manquants";
-
-  }else {
-
+  if (pseudo === "" || nom === "" || prenom === "" || mdp === "" || rue === ""
+      || numero === "" || codePostal === "" || commune === "") {
+    document.querySelector(
+        "#messageErreur").innerHTML = "Des champs sont manquants";
+  } else {
+    let nouvelleAdresse = {
+      rue: rue,
+      numero: numero,
+      boite: document.querySelector("#boite").value,
+      codePostal: codePostal,
+      commune: commune
+    }
     let nouvelUtilisateur = {
       pseudo: pseudo,
       nom: nom,
       prenom: prenom,
       mdp: mdp,
-      rue: rue,
-      numero: numero,
-      boite: document.querySelector("#boite").value,
-      code_postal: codePostal,
-      commune: commune
+      adresse: nouvelleAdresse
     }
-
     fetch("/api/utilisateurs/inscription", {
       method: "POST",
       body: JSON.stringify(nouvelUtilisateur),
@@ -140,29 +143,30 @@ const surInscription = (e) => {
     .then((response) => {
       if (!response.ok) {
         throw new Error(
-            "Error code : " + response.status + " : " + response.statusText + " : " + response.text())
+            "Error code : " + response.status + " : " + response.statusText
+            + " : " + response.text())
       }
-      console.log(response)
       return response.json()
     })
     .then((donnee) => surInscrUtilisateur(donnee))
     .catch(err => surErreur(err))
   }
-
 }
 
+// Création données de session et redirection accueil
 const surInscrUtilisateur = (donnee) => {
-  const utilisateur = {...donnee, isAutenticated: true}
-  creationDonneeSessionUtilisateur(utilisateur, false)
+  const session = {...donnee, isAutenticated: true}
+  creationDonneeSessionUtilisateur(session, false)
   Redirect("/")
 }
 
+// Si erreur dans le fetch
 const surErreur = (err) => {
   let messageErreur = document.querySelector("#messageErreur");
   let erreurMessage = "";
-  console.log(err)
   if (err.message.includes("409")) {
-    document.querySelector(".erreur-pseudo").innerHTML = "Ce pseudo existe déjà";
+    document.querySelector(
+        ".erreur-pseudo").innerHTML = "Ce pseudo existe déjà";
   } else {
     erreurMessage = err.message;
   }

@@ -1,117 +1,156 @@
 DROP SCHEMA IF EXISTS projet CASCADE;
 CREATE SCHEMA projet;
 
-CREATE TABLE projet.adresses(
-                                id_adresse SERIAL PRIMARY KEY,
-                                rue VARCHAR(255) NOT NULL ,
-                                numero INTEGER NOT NULL,
-                                boite INTEGER,
-                                code_postal INTEGER NOT NULL,
-                                commune VARCHAR(30)
+CREATE TABLE projet.adresses
+(
+    id_adresse  SERIAL PRIMARY KEY,
+    rue         VARCHAR(255) NOT NULL,
+    numero      INTEGER      NOT NULL,
+    boite       VARCHAR(10),
+    code_postal INTEGER      NOT NULL,
+    commune     VARCHAR(30)
 );
 
-
-CREATE TABLE projet.types_objets(
-                                    id_type SERIAL PRIMARY KEY,
-                                    nom VARCHAR(50) NOT NULL
+CREATE TABLE projet.types_objets
+(
+    id_type SERIAL PRIMARY KEY,
+    nom     VARCHAR(50) NOT NULL
 );
 
-
-CREATE TABLE projet.utilisateurs(
-                                    id_utilisateur SERIAL PRIMARY KEY,
-                                    pseudo VARCHAR(25) NOT NULL ,
-                                    nom VARCHAR(50) NOT NULL,
-                                    prenom VARCHAR(50) NOT NULL,
-                                    mdp VARCHAR(255) NOT NULL,
-                                    gsm VARCHAR(15),
-                                    est_admin BOOLEAN NOT NULL,
-                                    adresse INTEGER REFERENCES projet.adresses (id_adresse) NOT NULL,
-                                    etat_inscription VARCHAR(10) NOT NULL,
-                                    commentaire VARCHAR(255) NULL
+CREATE TABLE projet.utilisateurs
+(
+    id_utilisateur   SERIAL PRIMARY KEY,
+    pseudo           VARCHAR(25)                                     NOT NULL,
+    nom              VARCHAR(50)                                     NOT NULL,
+    prenom           VARCHAR(50)                                     NOT NULL,
+    mdp              VARCHAR(255)                                    NOT NULL,
+    gsm              VARCHAR(15),
+    est_admin        BOOLEAN                                         NOT NULL,
+    adresse          INTEGER REFERENCES projet.adresses (id_adresse) NOT NULL,
+    etat_inscription VARCHAR(10)                                     NOT NULL,
+    commentaire      VARCHAR(255) NULL
 );
 
-
-CREATE TABLE projet.objets(
-                              id_objet SERIAL PRIMARY KEY,
-                              etat_objet VARCHAR(9) NOT NULL,
-                              type_objet INTEGER REFERENCES projet.types_objets (id_type) NOT NULL,
-                              description VARCHAR(255) NOT NULL,
-                              offreur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
-                              receveur INTEGER REFERENCES projet.utilisateurs (id_utilisateur),
-                              photo VARCHAR(255)
+CREATE TABLE projet.objets
+(
+    id_objet    SERIAL PRIMARY KEY,
+    etat_objet  VARCHAR(9)                                              NOT NULL,
+    type_objet  INTEGER REFERENCES projet.types_objets (id_type)        NOT NULL,
+    description VARCHAR(255)                                            NOT NULL,
+    offreur     INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
+    receveur    INTEGER REFERENCES projet.utilisateurs (id_utilisateur),
+    photo       VARCHAR(255)
 );
 
--- taille photo?
-
-CREATE TABLE projet.interets(
-                                utilisateur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
-                                objet INTEGER REFERENCES projet.objets(id_objet) NOT NULL,
-                                date_rdv TIMESTAMP NOT NULL,
-                                PRIMARY KEY (utilisateur, objet)
+CREATE TABLE projet.interets
+(
+    utilisateur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
+    objet       INTEGER REFERENCES projet.objets (id_objet)             NOT NULL,
+    PRIMARY KEY (utilisateur, objet)
 );
 
-CREATE TABLE projet.evaluations(
-                                   id_evaluation SERIAL PRIMARY KEY,
-                                   objet INTEGER REFERENCES projet.objets(id_objet) NOT NULL,
-                                   commentaire VARCHAR(255) NOT NULL
+CREATE TABLE projet.evaluations
+(
+    id_evaluation SERIAL PRIMARY KEY,
+    objet         INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
+    commentaire   VARCHAR(255)                                NOT NULL
 );
 
 CREATE TABLE projet.offres
 (
     id_offre      SERIAL PRIMARY KEY,
     id_objet      INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
-    date_offre    DATE                                        NOT NULL,
-    plage_horaire VARCHAR(500)                                NOT NULL
+    date_offre    TIMESTAMP                                   NOT NULL,
+    plage_horaire VARCHAR(255)                                NOT NULL
 );
 
+CREATE TABLE projet.offres_precedentes
+(
+    id_offre_precedente SERIAL PRIMARY KEY,
+    date_precedente     DATE                                        NOT NULL,
+    offre               INTEGER REFERENCES projet.offres (id_offre) NOT NULL
+);
 
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Rue1', 21, NULL, 1420, 'Ophain');
+VALUES (DEFAULT, 'Rue de l’Eglise', 11, 'B1', 4987, 'Stoumont');
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Rue2', 15, NULL, 1500, 'Hal');
+VALUES (DEFAULT, 'Rue de Renkin', 7, NULL, 4800, 'Verviers');
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Rue3', 7, 23, 1700, 'Dilbeek');
+VALUES (DEFAULT, 'Rue Haute Folie', 6, 'A103', 4800, 'Verviers');
+INSERT INTO projet.adresses
+VALUES (DEFAULT, 'Haut-Vinâve', 13, NULL, 4845, 'Jalhay');
+
+INSERT INTO projet.utilisateurs
+VALUES (DEFAULT, 'caro', 'Line', 'Caroline',
+        '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 1, 'Refusé',
+        'Il faudra patienter un jour ou deux.');
+INSERT INTO projet.utilisateurs
+VALUES (DEFAULT, 'achil', 'Ile', 'Achille',
+        '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 2,
+        'En attente', NULL);
+INSERT INTO projet.utilisateurs
+VALUES (DEFAULT, 'bazz', 'Ile', 'Basile',
+        '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 3, 'Confirmé',
+        NULL);
+INSERT INTO projet.utilisateurs
+VALUES (DEFAULT, 'bri', 'Lehmann', 'Brigitte',
+        '$2a$10$W0IiogOO7ef5/Kw.GdmEkO46mtg6VSeDsV5SYc4Dzmp4XnnOBUAkC', NULL, true, 4, 'Confirmé',
+        NULL);
 
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'pseudo1', 'nom1', 'prenom1',
-        '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, false, 1, 'confirmé',
+        '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, false, 1, 'Confirmé',
         NULL);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'pseudo2', 'nom2', 'prenom2',
         '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, false, 2,
-        'en attente', NULL);
+        'En attente', NULL);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'pseudo3', 'nom3', 'prenom3',
         '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', '0475858535', false, 3,
-        'refusé', 'Seuls les amis proches ont accès au site.');
+        'Refusé', 'Seuls les amis proches ont accès au site.');
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'pseudo4', 'nom4', 'prenom4',
-        '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, true, 1, 'confirmé',
+        '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, true, 1, 'Confirmé',
         NULL);
 
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'machine');
+VALUES (DEFAULT, 'Accessoires pour animaux domestiques');
+INSERT INTO projet.types_objets
+VALUES (DEFAULT, 'Accessoires pour voiture');
+INSERT INTO projet.types_objets
+VALUES (DEFAULT, 'Décoration');
+INSERT INTO projet.types_objets
+VALUES (DEFAULT, 'Jouets');
+INSERT INTO projet.types_objets
+VALUES (DEFAULT, 'Literie');
+INSERT INTO projet.types_objets
+VALUES (DEFAULT, 'Matériel de cuisine');
+INSERT INTO projet.types_objets
+VALUES (DEFAULT, 'Matériel de jardinage');
+INSERT INTO projet.types_objets
+VALUES (DEFAULT, 'Meuble');
+INSERT INTO projet.types_objets
+VALUES (DEFAULT, 'Plantes');
+INSERT INTO projet.types_objets
+VALUES (DEFAULT, 'Produits cosmétiques');
+INSERT INTO projet.types_objets
+VALUES (DEFAULT, 'Vélo, trottinette');
+INSERT INTO projet.types_objets
+VALUES (DEFAULT, 'Vêtements');
 
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'offert', 1, 'machine à laver', 1, NULL, 'photo machine à laver');
-INSERT INTO projet.offres
-VALUES (DEFAULT, 1, '2016-02-05', ' ');
-
+VALUES (DEFAULT, 'Offert', 3, 'Décorations de Noël de couleur rouge.', 3, NULL,
+        'christmas-1869533_640.png');
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'interrese', 1, 'machine à cuisiner', 2, NULL, 'photo machine à cuisiner');
-INSERT INTO projet.offres
-VALUES (DEFAULT, 2, now(), ' ');
-
+VALUES (DEFAULT, 'Offert', 3, 'Cadre représentant un chien noir sur un fond noir.', 3, NULL,
+        'dog-4118585_640.jpg');
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'interrese', 1, 'machine à nettoyer', 1, 2, 'photo machine');
+VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'BureauEcolier-7.JPG');
+
 INSERT INTO projet.offres
-VALUES (DEFAULT, 3, '2017-02-05', ' ');
-
-
-INSERT INTO projet.types_objets VALUES (DEFAULT,'Décoration');
-INSERT INTO projet.types_objets VALUES (DEFAULT,'Meuble');
-INSERT INTO projet.types_objets VALUES (DEFAULT,'Plante');
-INSERT INTO projet.types_objets VALUES (DEFAULT,'Jouet');
-INSERT INTO projet.types_objets VALUES (DEFAULT,'Vêtement');
-
-
+VALUES (DEFAULT, 1, '21-03-22', 'Mardi de 17h à 22h');
+INSERT INTO projet.offres
+VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h');
+INSERT INTO projet.offres
+VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h');

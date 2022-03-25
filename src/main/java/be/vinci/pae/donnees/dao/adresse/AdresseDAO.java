@@ -4,7 +4,6 @@ import be.vinci.pae.business.adresse.AdresseDTO;
 
 public interface AdresseDAO {
 
-  AdresseDTO ajouterAdresse(String rue, int numero, int boite, int codePostal,
-      String commune);
-  
+  AdresseDTO ajouterAdresse(AdresseDTO adresseDTO);
+
 }

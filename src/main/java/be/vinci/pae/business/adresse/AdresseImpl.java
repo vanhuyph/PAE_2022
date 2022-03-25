@@ -15,7 +15,7 @@ public class AdresseImpl implements AdresseDTO, Adresse {
   @JsonView(Vues.Public.class)
   private int numero;
   @JsonView(Vues.Public.class)
-  private int boite;
+  private String boite;
   @JsonView(Vues.Public.class)
   private int codePostal;
   @JsonView(Vues.Public.class)
@@ -52,12 +52,12 @@ public class AdresseImpl implements AdresseDTO, Adresse {
   }
 
   @Override
-  public int getBoite() {
+  public String getBoite() {
     return boite;
   }
 
   @Override
-  public void setBoite(int boite) {
+  public void setBoite(String boite) {
     this.boite = boite;
   }
 
