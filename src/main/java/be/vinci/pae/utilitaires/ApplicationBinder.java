@@ -2,12 +2,8 @@ package be.vinci.pae.utilitaires;
 
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.DomaineFactoryImpl;
-import be.vinci.pae.business.adresse.AdresseUCC;
-import be.vinci.pae.business.adresse.AdresseUCCImpl;
 import be.vinci.pae.business.interet.InteretUCC;
 import be.vinci.pae.business.interet.InteretUCCImpl;
-import be.vinci.pae.business.objet.ObjetUCC;
-import be.vinci.pae.business.objet.ObjetUCCImpl;
 import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.business.offre.OffreUCCImpl;
 import be.vinci.pae.business.typeobjet.TypeObjetUCC;
