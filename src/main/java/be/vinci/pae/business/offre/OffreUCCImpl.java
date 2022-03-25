@@ -103,4 +103,21 @@ public class OffreUCCImpl implements OffreUCC {
     return offre;
   }
 
+  /**
+   * Récupère les offres précédentes de l'objet avec l'id passé en paramètre.
+   *
+   * @param idObjet : l'id de l'objet à récupérer
+   * @return liste : la liste des offres précédentes de l'objet avec l'id passé en paramètre
+   */
+  @Override
+  public List<OffreDTO> offresPrecedentes(int idObjet) {
+    serviceDAL.commencerTransaction();
+    if (idObjet <= 0) {
+      throw new BusinessException("L'id de l'objet est incorrect");
+    }
+    List<OffreDTO> liste = offreDAO.offresPrecedentes(idObjet);
+    serviceDAL.commettreTransaction();
+    return liste;
+  }
+
 }

@@ -9,6 +9,7 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -90,7 +91,7 @@ public class RessourceOffre {
    * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'annulation
    *                               a échoué
    */
-  @POST
+  @PUT
   @Path("annulerOffre/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -127,6 +128,29 @@ public class RessourceOffre {
       throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
     }
     return offreDTO;
+  }
+
+  /**
+   * Permet de voir les détails de l'offre avec l'id passé en paramètre.
+   *
+   * @param idObjet : l'id de l'objet
+   * @return offreDTO : les détails de l'offre avec l'id passé en paramètre
+   * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'offre n'a
+   *                               pas pu être trouvée
+   */
+  @GET
+  @Path("offresPrecedentes/{idObjet}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<OffreDTO> offresPrecedentes(@PathParam("idObjet") int idObjet) {
+    if (idObjet <= 0) {
+      throw new PresentationException("L'id de l'offre est incorrecte", Status.BAD_REQUEST);
+    }
+    List<OffreDTO> listeOffreDTO = offreUCC.offresPrecedentes(idObjet);
+    if (listeOffreDTO == null) {
+      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
+    }
+    return listeOffreDTO;
   }
 
   /**

@@ -3,6 +3,7 @@ import {
   recupUtilisateurDonneesSession
 } from "../../utilitaires/session";
 import Navbar from "../Navbar/Navbar";
+import {Redirect} from "../Router/Router";
 
 // Page d'accueil
 const PageAccueil = () => {
@@ -99,7 +100,8 @@ const surListeOffresRecentes = (data) => {
   data.forEach((offre) => {
     if (session) {
       listeRecente += `
-      <a class="card">
+      <a id="of" class="card" data-of="${offre.idOffre}">
+        <div id=${offre.idOffre}></div>
         <div class="image">
           <img src="/api/offres/photos/${offre.objetDTO.photo}">
         </div>
@@ -133,7 +135,7 @@ const surListeOffres = (data) => {
   let liste = `<div class="ui link cards">`;
   data.forEach((offre) => {
     liste += `
-      <a class="card">
+      <a id="of" class="card" data-of="${offre.idOffre}">
         <div class="image">
           <img src="/api/offres/photos/${offre.objetDTO.photo}">
         </div>
@@ -145,6 +147,14 @@ const surListeOffres = (data) => {
   })
   liste += `</div>`;
   listeOffres.innerHTML = liste;
+  const session = recupUtilisateurDonneesSession()
+  if (session){
+    document.querySelectorAll("#of").forEach(offre => {
+      offre.addEventListener("click", (e) => {
+        Redirect("/objet", offre.getAttribute("data-of"))
+      })
+    })
+  }
 };
 
 export default PageAccueil;

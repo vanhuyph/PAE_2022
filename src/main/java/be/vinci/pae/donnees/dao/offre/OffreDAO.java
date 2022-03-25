@@ -15,4 +15,6 @@ public interface OffreDAO {
 
   OffreDTO rechercheParId(int id);
 
+  List<OffreDTO> offresPrecedentes(int idObjet);
+
 }

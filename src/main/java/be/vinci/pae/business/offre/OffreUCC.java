@@ -14,4 +14,6 @@ public interface OffreUCC {
 
   OffreDTO rechercheParId(int id);
 
+  List<OffreDTO> offresPrecedentes(int idObjet);
+
 }

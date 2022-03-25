@@ -2,20 +2,18 @@ package be.vinci.pae.presentation.ressources;
 
 import be.vinci.pae.business.interet.InteretDTO;
 import be.vinci.pae.business.interet.InteretUCC;
+import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response.Status;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 @Singleton
 @Path("/interets")
@@ -27,7 +25,7 @@ public class RessourceInteret {
   /**
    * Créer un intérêt pour une offre.
    *
-   * @param json : json envoyé par le formulaire de créer un interet
+   * @param interetDTO : json envoyé par le formulaire de créer un interet
    * @return interet : interetDTO
    * @throws PresentationException : est lancée s'il y a eu une erreur
    */
@@ -35,28 +33,33 @@ public class RessourceInteret {
   @Path("creerInteret")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public InteretDTO creetInteret(JsonNode json) throws ParseException {
-    if (!json.hasNonNull("idUtilisateurInteresse")
-        || !json.hasNonNull("idObjet")
-        || !json.hasNonNull("dateRdv")) {
-      throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
-    }
-    int idUtilisateurInteresse = json.get("idUtilisateurInteresse").asInt();
-    int idObjet = json.get("idObjet").asInt();
-    String dateRdvString = json.get("dateRdv").asText();
-    Date dateJava = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.FRANCE).parse(
-        dateRdvString);
-    long dataJavaInt = dateJava.getTime();
-    long dataJavaNow = System.currentTimeMillis();
-    if (dataJavaInt < dataJavaNow) {
-      throw new PresentationException("La date de rendez-vous ne peut pas être dans le passé",
-          Status.BAD_REQUEST);
-    }
-    InteretDTO interet = interetUCC.creerUnInteret(idUtilisateurInteresse, idObjet, dateJava);
+  @Autorisation
+  public InteretDTO creetInteret(InteretDTO interetDTO) {
+    InteretDTO interet = interetUCC.creerUnInteret(interetDTO);
     if (interet == null) {
       throw new PresentationException("L'ajout de l'intérêt a échoué", Status.BAD_REQUEST);
     }
     return interet;
+  }
+
+  /**
+   * Récupère le nombre de personnes intéressées pour une offre.
+   *
+   * @param id : l'id de l'offre dont les personnes sont intéressées
+   * @return nbInteret : le nombre de personnes intéressées
+   * @throws PresentationException : est lancée si l'id de l'offre est incorrecte
+   */
+  @GET
+  @Path("/nbPersonnesInteresees/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public int nbPersonnesInteresees(@PathParam("id") int id) {
+    if (id <= 0) {
+      throw new PresentationException("L'id de l'offre est incorrecte", Status.BAD_REQUEST);
+    }
+    int nbInteret = interetUCC.nbPersonnesInteressees(id);
+    return nbInteret;
   }
 
 }
