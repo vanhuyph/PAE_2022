@@ -46,43 +46,44 @@ const PageAdmin = () => {
   const session = recupUtilisateurDonneesSession();
   if (!session || !session.utilisateur.estAdmin) {
     Redirect("/");
-  }
-  const pageDiv = document.querySelector("#page");
-  pageDiv.innerHTML = page;
-
-  // Gestion responsive avec la barre verticale pour pc et horizontale pour mobile
-  if (window.innerWidth < 576) {
-    document.getElementById("bar").innerHTML = barHori;
   } else {
-    document.getElementById("bar").innerHTML = barVertical;
-  }
-  window.onresize = () => {
+    const pageDiv = document.querySelector("#page");
+    pageDiv.innerHTML = page;
+
+    // Gestion responsive avec la barre verticale pour pc et horizontale pour mobile
     if (window.innerWidth < 576) {
       document.getElementById("bar").innerHTML = barHori;
     } else {
       document.getElementById("bar").innerHTML = barVertical;
     }
-  };
+    window.onresize = () => {
+      if (window.innerWidth < 576) {
+        document.getElementById("bar").innerHTML = barHori;
+      } else {
+        document.getElementById("bar").innerHTML = barVertical;
+      }
+    };
 
-  // Récupération des utilisateurs en attente
-  recupEnAttente()
-  const demandesPage = document.querySelector("#demandes")
-  const refusPage = document.querySelector("#refus")
-  const contenu = document.querySelector("#contenu")
-  const demandes = "<h2>Liste des demandes d'inscriptions</h2>"
-  contenu.innerHTML = demandes
-
-  // Changement contenu pricipal
-  demandesPage.addEventListener("click", () => {
-    refusPage.classList.remove("positive")
-    demandesPage.classList.add("positive")
+    // Récupération des utilisateurs en attente
     recupEnAttente()
-  })
-  refusPage.addEventListener("click", () => {
-    demandesPage.classList.remove("positive")
-    refusPage.classList.add("positive")
-    recupRefuse()
-  })
+    const demandesPage = document.querySelector("#demandes")
+    const refusPage = document.querySelector("#refus")
+    const contenu = document.querySelector("#contenu")
+    const demandes = "<h2>Liste des demandes d'inscriptions</h2>"
+    contenu.innerHTML = demandes
+
+    // Changement contenu pricipal
+    demandesPage.addEventListener("click", () => {
+      refusPage.classList.remove("positive")
+      demandesPage.classList.add("positive")
+      recupEnAttente()
+    })
+    refusPage.addEventListener("click", () => {
+      demandesPage.classList.remove("positive")
+      refusPage.classList.add("positive")
+      recupRefuse()
+    })
+  }
 }
 
 // Récupération des utilisateurs en attente
