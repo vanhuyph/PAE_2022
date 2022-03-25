@@ -131,6 +131,29 @@ public class RessourceOffre {
   }
 
   /**
+   * Permet de voir les détails de l'offre avec l'id passé en paramètre.
+   *
+   * @param id : l'id de l'offre
+   * @return offreDTO : les détails de l'offre avec l'id passé en paramètre
+   * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'offre n'a
+   *                               pas pu être trouvée
+   */
+  @GET
+  @Path("offresPrecedentes/{idObjet}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<OffreDTO> offresPrecedentes(@PathParam("idObjet") int idObjet) {
+    if (idObjet <= 0) {
+      throw new PresentationException("L'id de l'offre est incorrecte", Status.BAD_REQUEST);
+    }
+    List<OffreDTO> listeOffreDTO = offreUCC.offresPrecedentes(idObjet);
+    if (listeOffreDTO == null) {
+      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
+    }
+    return listeOffreDTO;
+  }
+
+  /**
    * Téléchargement de la photo.
    *
    * @param photo              : la photo à télécharger

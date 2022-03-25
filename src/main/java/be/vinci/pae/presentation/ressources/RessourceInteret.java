@@ -7,8 +7,10 @@ import be.vinci.pae.utilitaires.exceptions.PresentationException;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response.Status;
@@ -34,12 +36,27 @@ public class RessourceInteret {
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
   public InteretDTO creetInteret(InteretDTO interetDTO) throws ParseException {
-
+    
     InteretDTO interet = interetUCC.creerUnInteret(interetDTO);
     if (interet == null) {
       throw new PresentationException("L'ajout de l'intérêt à échoué", Status.BAD_REQUEST);
     }
     return interet;
+  }
+
+  @GET
+  @Path("/nbPersonnesInteresees/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public int nbPersonnesInteresees(@PathParam("id") int id) {
+    if (id <= 0) {
+      throw new PresentationException("L'id de l'offre est incorrecte", Status.BAD_REQUEST);
+    }
+
+    int nbInteret = interetUCC.nbPersonnesInteressees(id);
+    return nbInteret;
+
   }
 
 }

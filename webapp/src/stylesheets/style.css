@@ -34,6 +34,12 @@ body{
 }
 /*Cartes accueil*/
 
+.container {
+    margin-top: 30px;
+}
+
+
+
 /* Modification UI */
 
 /* Début style navbar */
@@ -423,6 +429,10 @@ Fin Message de bienvenue*/
         width: 150px;
     }
 
+}
+
+.propose{
+    margin-top: 15px;
 }
 
 .ui.checkbox input[type=checkbox]{

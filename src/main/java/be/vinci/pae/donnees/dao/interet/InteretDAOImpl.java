@@ -38,6 +38,25 @@ public class InteretDAOImpl implements InteretDAO {
     return interetDTO;
   }
 
+  @Override
+  public int nbPersonnesInteressees(int idObjet) {
+    String requetePS = "SELECT COUNT(i.utilisateur) FROM projet.interets i WHERE i.objet = ?;";
+    int nbPers = 0;
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
+      ps.setInt(1, idObjet);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          nbPers = rs.getInt(1);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return nbPers;
+  }
+
   /**
    * Rempli les données de l'intérêt.
    *

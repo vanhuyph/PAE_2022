@@ -13,4 +13,6 @@ public interface OffreUCC {
   OffreDTO annulerUneOffre(int idOffre);
 
   OffreDTO rechercheParId(int id);
+
+  List<OffreDTO> offresPrecedentes(int idObjet);
 }

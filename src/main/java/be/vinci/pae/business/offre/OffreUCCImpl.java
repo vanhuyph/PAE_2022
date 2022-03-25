@@ -103,4 +103,15 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commettreTransaction();
     return offre;
   }
+
+  @Override
+  public List<OffreDTO> offresPrecedentes(int idObjet) {
+    serviceDAL.commencerTransaction();
+    if (idObjet <= 0) {
+      throw new BusinessException("Objet incorrect");
+    }
+    List<OffreDTO> offreDTOS = offreDAO.offresPrecedentes(idObjet);
+    serviceDAL.commettreTransaction();
+    return offreDTOS;
+  }
 }

@@ -171,6 +171,30 @@ public class OffreDAOImpl implements OffreDAO {
     return liste;
   }
 
+  @Override
+  public List<OffreDTO> offresPrecedentes(int idObjet) {
+    String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
+        + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet, "
+        + "o.description, o.photo, of.id_offre, of.date_offre, of.plage_horaire "
+        + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
+        + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
+        + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+        + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
+        + "WHERE of.id_objet = ?;";
+    OffreDTO offreDTO = factory.getOffre();
+    List<OffreDTO> liste;
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setInt(1, idObjet);
+      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return liste;
+  }
+
   /**
    * Rempli une liste d'offres depuis un ResultSet.
    *

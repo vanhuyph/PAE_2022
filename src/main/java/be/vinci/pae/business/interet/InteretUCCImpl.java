@@ -37,4 +37,16 @@ public class InteretUCCImpl implements InteretUCC {
     serviceDAL.commettreTransaction();
     return interet;
   }
+
+  @Override
+  public int nbPersonnesInteressees(int id) {
+    serviceDAL.commencerTransaction();
+    if (id <= 0) {
+      serviceDAL.retourEnArriereTransaction();
+      throw new BusinessException("l'offre n'a pas pu être trouvée.");
+    }
+    int nbPersonnesInteressees = interetDAO.nbPersonnesInteressees(id);
+    serviceDAL.commettreTransaction();
+    return nbPersonnesInteressees;
+  }
 }

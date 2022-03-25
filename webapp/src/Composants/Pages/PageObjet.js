@@ -27,10 +27,67 @@ const PageObjet = (id) => {
     }
   })
 }
-const surDetailObjet = (offre) => {
+const surDetailObjet = async (offre) => {
+  // Page detail de l'objet
+  let dateOffre = new Date(offre.dateOffre[0], offre.dateOffre[1]-1,offre.dateOffre[2]).toLocaleDateString("fr-BE")
   let pageDiv = document.querySelector("#page");
+  let session = recupUtilisateurDonneesSession()
+  let nbInteressees = 0;
 
-  let offresPrecedentes = 'Changer';
+  // Récupération du nombre d'interets
+  await fetch(
+      API_URL + 'interets/nbPersonnesInteresees/' + offre.objetDTO.idObjet, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: session.token,
+        },
+      })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      //message echec?
+      throw new Error(
+          "Code erreur : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+
+    return reponse.json();
+  })
+  .then((nbInt) => nbInteressees = nbInt)
+
+
+  // Récupération des offres précedentes
+  let offresPrecedentes="Pas d'offres précédentes";
+  await fetch(
+      API_URL + 'offres/offresPrecedentes/' + offre.objetDTO.idObjet, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: session.token,
+        },
+      })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      //message echec?
+      throw new Error(
+          "Code erreur : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+
+    return reponse.json();
+  })
+  .then((offres) =>{
+    if(offres.length>1){
+      offresPrecedentes =""
+      offres.forEach((off) => {
+        let daOf = new Date(off.dateOffre[0], off.dateOffre[1] - 1,
+            off.dateOffre[2]).toLocaleDateString("fr-BE")
+        if (daOf !== dateOffre) {
+          offresPrecedentes += `<p>${daOf}</p>`
+        }
+      })
+    }
+  })
   let offrePage = `
   <div class="ui container">
     <div class="ui two column grid">
@@ -39,12 +96,12 @@ const surDetailObjet = (offre) => {
         <div class="ui two column grid">
           <div class="column">
           </div>
-          <div class="column">
+          <div class="column propose">
             <p>Proposé par: ${offre.objetDTO.offreur.pseudo}</p>
           </div>
         </div>
       </div>
-      <div class="ui two column grid">
+      <div class="ui two column grid caracteristique-objet">
         <div class="row">
           <div class="column">
             <h4>Type</h4>
@@ -56,13 +113,13 @@ const surDetailObjet = (offre) => {
           </div>
         </div>
         <div class="row">
-          <div class="column">
+          <div class="column nb-inter">
             <h4>Nombre de personnes intéressées</h4>
-            <p>Changer</p>
+            <p>${nbInteressees}</p>
           </div>
           <div class="column">
             <h4>Date</h4>
-            <p>${offre.dateOffre[2]}/${offre.dateOffre[1]}/${offre.dateOffre[0]}</p>
+            <p>${dateOffre}</p>
           </div>
         </div>
       </div>
@@ -74,7 +131,7 @@ const surDetailObjet = (offre) => {
           <p>${offre.objetDTO.description}</p>
         </div>
         <div class="column">
-          <h4>Date précedentes de l'offre</h4>
+          <h4>Date(s) précedente(s) de l'offre</h4>
           <p>${offresPrecedentes}</p>
         </div>
       </div>
@@ -116,7 +173,7 @@ const surDetailObjet = (offre) => {
   pageDiv.innerHTML = offrePage
 
   document.querySelector("#form-interet").addEventListener("submit", (e) => {
-    let session = recupUtilisateurDonneesSession()
+
     let date = document.getElementById("dateRdv").value
     let utilisateur = {
       ...session.utilisateur,
@@ -130,7 +187,7 @@ const surDetailObjet = (offre) => {
     }
     console.log(interet)
 
-    fetch(API_URL+'interets/creerInteret',{
+    fetch(API_URL + 'interets/creerInteret', {
       method: "POST",
       body: JSON.stringify(interet),
       headers: {
@@ -151,10 +208,61 @@ const surDetailObjet = (offre) => {
 
 }
 
-const surDetailObjetProprio = (offre) => {
+const surDetailObjetProprio = async (offre) => {
   let pageDiv = document.querySelector("#page");
+  let dateOffre = new Date(offre.dateOffre[0], offre.dateOffre[1]-1,offre.dateOffre[2]).toLocaleDateString("fr-BE")
+  let nbInteressees = 0;
+  let session = recupUtilisateurDonneesSession()
+  await fetch(
+      API_URL + 'interets/nbPersonnesInteresees/' + offre.objetDTO.idObjet, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: session.token,
+        },
+      })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      //message echec?
+      throw new Error(
+          "Code erreur : " + reponse.status + " : " + reponse.statusText
+      );
+    }
 
-  let offresPrecedentes = 'Changer';
+    return reponse.json();
+  })
+  .then((nbInt) => nbInteressees = nbInt)
+  let offresPrecedentes="Pas d'offres précédentes";
+  await fetch(
+      API_URL + 'offres/offresPrecedentes/' + offre.objetDTO.idObjet, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: session.token,
+        },
+      })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      //message echec?
+      throw new Error(
+          "Code erreur : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+
+    return reponse.json();
+  })
+  .then((offres) =>{
+    if(offres.length>1){
+      offresPrecedentes =""
+      offres.forEach((off) => {
+        let daOf = new Date(off.dateOffre[0], off.dateOffre[1] - 1,
+            off.dateOffre[2]).toLocaleDateString("fr-BE")
+        if (daOf !== dateOffre) {
+          offresPrecedentes += `<p>${daOf}</p>`
+        }
+      })
+    }
+  })
   let offrePage = `
   <div class="ui container">
     <div class="ui two column grid">
@@ -163,12 +271,12 @@ const surDetailObjetProprio = (offre) => {
         <div class="ui two column grid">
           <div class="column">
           </div>
-          <div class="column">
+          <div class="column propose">
             <p>Proposé par: ${offre.objetDTO.offreur.pseudo}</p>
           </div>
         </div>
       </div>
-      <div class="ui two column grid">
+      <div class="ui two column grid caracteristique-objet">
         <div class="row">
           <div class="column">
             <h4>Type</h4>
@@ -182,11 +290,11 @@ const surDetailObjetProprio = (offre) => {
         <div class="row">
           <div class="column">
             <h4>Nombre de personnes intéressées</h4>
-            <p>Changer</p>
+            <p>${nbInteressees}</p>
           </div>
           <div class="column">
             <h4>Date</h4>
-            <p>${offre.dateOffre[2]}/${offre.dateOffre[1]}/${offre.dateOffre[0]}</p>
+            <p>${dateOffre}</p>
           </div>
         </div>
       </div>
@@ -198,7 +306,7 @@ const surDetailObjetProprio = (offre) => {
           <p>${offre.objetDTO.description}</p>
         </div>
         <div class="column">
-          <h4>Date précedentes de l'offre</h4>
+          <h4>Date(s) précedente(s) de l'offre</h4>
           <p>${offresPrecedentes}</p>
         </div>
       </div>
@@ -221,11 +329,11 @@ const surDetailObjetProprio = (offre) => {
   pageDiv.innerHTML = offrePage
 
   document.querySelector("#modifier-offre").addEventListener("click", () => {
-    surDetailObjetProprioModifier(offre)
+    //surDetailObjetProprioModifier(offre)
   })
   document.querySelector("#annuler-offre").addEventListener("click", () => {
     const session = recupUtilisateurDonneesSession()
-    fetch("/api/offres/annulerOffre/"+offre.idOffre, {
+    fetch("/api/offres/annulerOffre/" + offre.idOffre, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -247,10 +355,64 @@ const surDetailObjetProprio = (offre) => {
   })
 }
 
-const surDetailObjetProprioModifier = (offre) => {
+const surDetailObjetProprioModifier = async (offre) => {
+  let session = recupUtilisateurDonneesSession()
   let pageDiv = document.querySelector("#page");
+  let nbInteressees = 0;
+  let dateOffre = new Date(offre.dateOffre[0], offre.dateOffre[1]-1,offre.dateOffre[2]).toLocaleDateString("fr-BE")
 
-  let offresPrecedentes = 'Changer';
+  await fetch(
+      API_URL + 'interets/nbPersonnesInteresees/' + offre.objetDTO.idObjet, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: session.token,
+        },
+      })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      //message echec?
+      throw new Error(
+          "Code erreur : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+
+    return reponse.json();
+  })
+  .then((nbInt) => nbInteressees = nbInt)
+
+  let offresPrecedentes="Pas d'offres précédentes";
+  await fetch(
+      API_URL + 'offres/offresPrecedentes/' + offre.objetDTO.idObjet, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: session.token,
+        },
+      })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      //message echec?
+      throw new Error(
+          "Code erreur : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+
+    return reponse.json();
+  })
+  .then((offres) =>{
+    if(offres.length>1){
+      offresPrecedentes =""
+      offres.forEach((off) => {
+        let daOf = new Date(off.dateOffre[0], off.dateOffre[1] - 1,
+            off.dateOffre[2]).toLocaleDateString("fr-BE")
+        if (daOf !== dateOffre) {
+          offresPrecedentes += `<p>${daOf}</p>`
+        }
+      })
+    }
+  })
+
   let offrePage = `
   <div class="ui container">
   <form class="ui form">
@@ -261,12 +423,12 @@ const surDetailObjetProprioModifier = (offre) => {
           <div class="column">
           <button>Modifier la photo</button>
           </div>
-          <div class="column">
+          <div class="column propose">
             <p>Proposé par: ${offre.objetDTO.offreur.pseudo}</p>
           </div>
         </div>
       </div>
-      <div class="ui two column grid">
+      <div class="ui two column grid caracteristique-objet">
         <div class="row">
           <div class="column">
             <h4>Type</h4>
@@ -280,11 +442,11 @@ const surDetailObjetProprioModifier = (offre) => {
         <div class="row">
           <div class="column">
             <h4>Nombre de personnes intéressées</h4>
-            <p>Changer</p>
+            <p>${nbInteressees}</p>
           </div>
           <div class="column">
             <h4>Date</h4>
-            <p>${offre.dateOffre[2]}/${offre.dateOffre[1]}/${offre.dateOffre[0]}</p>
+            <p>${dateOffre}</p>
           </div>
         </div>
       </div>
@@ -298,8 +460,8 @@ const surDetailObjetProprioModifier = (offre) => {
         </div>
         </div>
         <div class="column">
-          <h4>Date précedentes de l'offre</h4>
-          <p>${offresPrecedentes}</p>
+          <h4>Date(s) précedente(s) de l'offre</h4>
+          ${offresPrecedentes}
         </div>
       </div>
       <div class="row">

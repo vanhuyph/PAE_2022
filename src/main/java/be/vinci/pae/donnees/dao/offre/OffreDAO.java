@@ -14,4 +14,6 @@ public interface OffreDAO {
   OffreDTO annulerOffre(int idOffre);
 
   OffreDTO rechercheParId(int id);
+
+  List<OffreDTO> offresPrecedentes(int idObjet);
 }
