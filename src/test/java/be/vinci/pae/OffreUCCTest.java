@@ -5,16 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.objet.ObjetDTO;
-import be.vinci.pae.business.offre.OffreUCC;
-import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.business.offre.OffreDTO;
+import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
-import java.util.ArrayList;
-import java.util.List;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import java.util.ArrayList;
+import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeAll;
@@ -91,7 +90,6 @@ public class OffreUCCTest {
   @Test
   @DisplayName("Test raté : méthode creer une offre avec un créer un objet qui rate. ")
   public void creerUneOffreV1() {
-
     Mockito.when(objetDAO.creerObjet(objetDTO1)).thenReturn(null);
     assertThrows(BusinessException.class, () -> offreUCC.creerUneOffre(offreDTO1));
   }
@@ -99,7 +97,6 @@ public class OffreUCCTest {
   @Test
   @DisplayName("Test raté : méthode creer une offre avec créer offre qui rate. ")
   public void creerUneOffreV2() {
-
     Mockito.when(objetDAO.creerObjet(objetDTO1)).thenReturn(objetDTO2);
     Mockito.when(offreDAO.creerOffre(offreDTO1)).thenReturn(null);
     assertThrows(BusinessException.class, () -> offreUCC.creerUneOffre(offreDTO1));
@@ -117,16 +114,14 @@ public class OffreUCCTest {
 
   @Test
   @DisplayName("Test raté : méthode annuler une offre qui rate. ")
-  public void AnnulerUneOffreV1() {
-
+  public void annulerOffreV1() {
     Mockito.when(offreDAO.annulerOffre(1)).thenReturn(null);
     assertThrows(BusinessException.class, () -> offreUCC.annulerUneOffre(1));
   }
 
   @Test
   @DisplayName("Test réussi : méthode annuler une offre. ")
-  public void AnnulerUneOffreV2() {
-
+  public void annulerOffreV2() {
     Mockito.when(offreDAO.annulerOffre(1)).thenReturn(offreDTO2);
     assertEquals(offreDTO2, offreUCC.annulerUneOffre(1));
   }
@@ -134,7 +129,6 @@ public class OffreUCCTest {
   @Test
   @DisplayName("Test raté : méthode recherche par id qui rate. ")
   public void rechercheParIdV1() {
-
     Mockito.when(offreDAO.rechercheParId(1)).thenReturn(null);
     assertThrows(BusinessException.class, () -> offreUCC.rechercheParId(1));
   }
@@ -142,7 +136,6 @@ public class OffreUCCTest {
   @Test
   @DisplayName("Test réussi : méthode recherche par id. ")
   public void rechercheParIdV2() {
-
     Mockito.when(offreDAO.rechercheParId(1)).thenReturn(offreDTO2);
     assertEquals(offreDTO2, offreUCC.rechercheParId(1));
   }
