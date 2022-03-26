@@ -79,7 +79,7 @@ public class OffreUCCImpl implements OffreUCC {
     OffreDTO offre = offreDAO.annulerOffre(id);
     if (offre == null || offre.getIdOffre() <= 0) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("l'offre n'a pas pu être annulée.");
+      throw new BusinessException("L'offre n'a pas pu être annulée.");
     }
     serviceDAL.commettreTransaction();
     return offre;
@@ -97,7 +97,7 @@ public class OffreUCCImpl implements OffreUCC {
     OffreDTO offre = offreDAO.rechercheParId(idOffre);
     if (offre == null || offre.getIdOffre() <= 0) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("l'offre n'a pas pu être trouvée.");
+      throw new BusinessException("L'offre n'a pas pu être trouvée.");
     }
     serviceDAL.commettreTransaction();
     return offre;

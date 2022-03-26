@@ -14,7 +14,7 @@ const Navbar = () => {
             </a>
             <ul class="nav-list">
                 <li><a href="#" data-uri="/">Accueil</a></li>
-                <li><a href="#" data-uri="/offrirObjet">Créer une offre</a></li>
+                <li><a href="#" data-uri="/offrirObjet">Offrir un objet</a></li>
                 <li><a href="#" data-uri="/deconnexion">Se déconnecter</a></li>
             </ul>
             <div class="menu"></div>

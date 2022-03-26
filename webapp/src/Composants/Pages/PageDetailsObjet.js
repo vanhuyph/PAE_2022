@@ -2,7 +2,7 @@ import {API_URL} from "../../utilitaires/serveur";
 import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import {Redirect} from "../Router/Router";
 
-const PageObjet = (id) => {
+const PageDetailsObjet = (id) => {
   const session = recupUtilisateurDonneesSession()
   // Récupère l'objet
   fetch(API_URL + "offres/voirDetailsOffre/" + id, {
@@ -37,7 +37,7 @@ const surDetailObjet = async (offre) => {
   let session = recupUtilisateurDonneesSession()
   let nbInteressees = 0;
 
-  // Récupération du nombre d'interets
+  // Récupération du nombre d'intérêts
   await fetch(
       API_URL + 'interets/nbPersonnesInteresees/' + offre.objetDTO.idObjet, {
         method: "GET",
@@ -52,7 +52,6 @@ const surDetailObjet = async (offre) => {
           "Code erreur : " + reponse.status + " : " + reponse.statusText
       );
     }
-
     return reponse.json();
   })
   .then((nbInt) => nbInteressees = nbInt)
@@ -88,6 +87,14 @@ const surDetailObjet = async (offre) => {
       })
     }
   })
+
+  // Date de demain pour éviter le choix des dates dans le passé
+  var ajd = new Date();
+  var dd = String(ajd.getDate() + 1).padStart(2, '0');
+  var mm = String(ajd.getMonth() + 1).padStart(2, '0');
+  var yyyy = ajd.getFullYear();
+  ajd = yyyy + '-' + mm + '-' + dd;
+
   let offrePage = `
   <div class="ui container">
     <div class="ui two column grid">
@@ -97,18 +104,18 @@ const surDetailObjet = async (offre) => {
           <div class="column">
           </div>
           <div class="column propose">
-            <p>Proposé par: ${offre.objetDTO.offreur.pseudo}</p>
+            <p>Proposé par : ${offre.objetDTO.offreur.pseudo}</p>
           </div>
         </div>
       </div>
       <div class="ui two column grid caracteristique-objet">
         <div class="row">
           <div class="column">
-            <h4>Type</h4>
+            <h4>Type de l'objet</h4>
             <p>${offre.objetDTO.typeObjet.nom}</p>
           </div>
           <div class="column">
-            <h4>Etat de l'objet</h4>
+            <h4>État de l'objet</h4>
             <p>${offre.objetDTO.etatObjet}</p>
           </div>
         </div>
@@ -118,7 +125,7 @@ const surDetailObjet = async (offre) => {
             <p>${nbInteressees}</p>
           </div>
           <div class="column">
-            <h4>Date</h4>
+            <h4>Date de l'offre</h4>
             <p>${dateOffre}</p>
           </div>
         </div>
@@ -146,15 +153,16 @@ const surDetailObjet = async (offre) => {
         <div class="row">
           <div class="column">
           <div class="field">
-            <label for="dateRdv">Votre disponibilité :</label>
-            <input type="date" id="dateRdv" class="date-rdv">
+            <label for="dateRdv">Indiquer votre disponibilité :</label>
+            <input type="date" id="dateRdv" min=${ajd} class="date-rdv">
+            <div id="messageErreur" class="message-erreur"></div>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="column">
             <div class="field">
-              <label for="gsm-interet">Si vous souhaitez être appelé, veuillez introduire votre numero d'appel</label>
+              <label for="gsm-interet">Si vous souhaitez être appelé, veuillez introduire votre numéro d'appel</label>
               <input type="text" id="gsm-interet">
             </div>
           </div>
@@ -174,6 +182,8 @@ const surDetailObjet = async (offre) => {
 
   document.querySelector("#form-interet").addEventListener("submit", (e) => {
     e.preventDefault();
+    let dateRdv = document.querySelector("#dateRdv").value;
+    let messageErreur = document.querySelector("#messageErreur");
     let date = document.getElementById("dateRdv").value
     let utilisateur = {
       ...session.utilisateur,
@@ -186,22 +196,28 @@ const surDetailObjet = async (offre) => {
       dateRdv: date
     }
 
-    fetch(API_URL + 'interets/creerInteret', {
-      method: "POST",
-      body: JSON.stringify(interet),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: session.token,
-      },
-    })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(
-            "Code d'erreur : " + response.status + " : " + response.statusText
-        );
-      }
-      return response.json();
-    }).then(() => Redirect("/"))
+    // Vérifie si une disponibilité est introduite
+    if (dateRdv === "") {
+      messageErreur.innerText = "Veuillez introduire une disponibilité";
+    } else {
+      fetch(API_URL + 'interets/creerInteret', {
+        method: "POST",
+        body: JSON.stringify(interet),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: session.token,
+        },
+      })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+              "Code d'erreur : " + response.status + " : " + response.statusText
+          );
+        }
+        return response.json();
+      }).then(() => Redirect("/"))
+      .catch(err => surErreur(err))
+    }
   })
 }
 
@@ -221,7 +237,6 @@ const surDetailObjetProprio = async (offre) => {
       })
   .then((reponse) => {
     if (!reponse.ok) {
-      //message echec?
       throw new Error(
           "Code erreur : " + reponse.status + " : " + reponse.statusText
       );
@@ -241,7 +256,6 @@ const surDetailObjetProprio = async (offre) => {
       })
   .then((reponse) => {
     if (!reponse.ok) {
-      //message echec?
       throw new Error(
           "Code erreur : " + reponse.status + " : " + reponse.statusText
       );
@@ -281,7 +295,7 @@ const surDetailObjetProprio = async (offre) => {
             <p>${offre.objetDTO.typeObjet.nom}</p>
           </div>
           <div class="column">
-            <h4>Etat de l'objet</h4>
+            <h4>État de l'objet</h4>
             <p>${offre.objetDTO.etatObjet}</p>
           </div>
         </div>
@@ -317,8 +331,8 @@ const surDetailObjetProprio = async (offre) => {
     <div class="ui two column grid">
       <div class="column">
       <div class="ui buttons">
-        <button id="modifier-offre" class="ui green button">Modifier votre profil</button>
-        <button id="annuler-offre" class="ui negative button">Annuler l'offre</button>
+        <button id="modifier-offre" class="ui green button">Modifier votre offre</button>
+        <button id="annuler-offre" class="ui negative button">Annuler votre offre</button>
       </div>
       </div>
     </div>
@@ -367,7 +381,6 @@ const surDetailObjetProprioModifier = async (offre) => {
       })
   .then((reponse) => {
     if (!reponse.ok) {
-      //message echec?
       throw new Error(
           "Code erreur : " + reponse.status + " : " + reponse.statusText
       );
@@ -388,12 +401,10 @@ const surDetailObjetProprioModifier = async (offre) => {
       })
   .then((reponse) => {
     if (!reponse.ok) {
-      //message echec?
       throw new Error(
           "Code erreur : " + reponse.status + " : " + reponse.statusText
       );
     }
-
     return reponse.json();
   })
   .then((offres) => {
@@ -490,4 +501,16 @@ const surDetailObjetProprioModifier = async (offre) => {
   })
 }
 
-export default PageObjet;
+// Si erreur lors de la soumission du formulaire
+const surErreur = (err) => {
+  let messageErreur = document.querySelector("#messageErreur");
+  let erreurMessage = "";
+  if (err.message.includes("412")) {
+    erreurMessage = "Erreur lors du marquage de l'intérêt";
+  } else {
+    erreurMessage = err.message;
+  }
+  messageErreur.innerText = erreurMessage;
+}
+
+export default PageDetailsObjet;

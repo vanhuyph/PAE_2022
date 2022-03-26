@@ -52,7 +52,7 @@ public class RessourceUtilisateur {
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode connexion(JsonNode json) {
     if (!json.hasNonNull("pseudo") || !json.hasNonNull("mdp") || json.get("pseudo").asText()
-        .equals("") || json.get("mdp").asText().equals("")) {
+        .isBlank() || json.get("mdp").asText().isBlank()) {
       throw new PresentationException("Pseudo ou mot de passe manquant", Status.BAD_REQUEST);
     }
     String pseudo = json.get("pseudo").asText();
@@ -151,7 +151,7 @@ public class RessourceUtilisateur {
   @AutorisationAdmin
   public UtilisateurDTO refuserUtilisateur(JsonNode json, @PathParam("id") int id) {
     String commentaire = json.get("commentaire").asText();
-    if (commentaire.equals("")) {
+    if (commentaire.isBlank()) {
       throw new PresentationException("Commentaire manquant", Status.BAD_REQUEST);
     }
     if (id < 1) {
