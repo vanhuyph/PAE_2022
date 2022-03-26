@@ -3,6 +3,7 @@ package be.vinci.pae.presentation.ressources;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.presentation.ressources.filtres.Autorisation;
+import be.vinci.pae.utilitaires.Config;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -170,7 +171,8 @@ public class RessourceOffre {
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
     String nomFichier = fichierDisposition.getFileName();
     String nomDencodage = UUID.randomUUID() + nomFichier;
-    Files.copy(photo, Paths.get("./image/" + nomDencodage), StandardCopyOption.REPLACE_EXISTING);
+    Files.copy(photo, Paths.get(Config.getPropriete("OneDrivePhotos") + nomDencodage),
+        StandardCopyOption.REPLACE_EXISTING);
     return Response.ok(nomDencodage).build();
   }
 
@@ -184,7 +186,7 @@ public class RessourceOffre {
   @Path("/photos/{uuidPhoto}")
   @Produces({"image/*"})
   public Response voirPhotoOffre(@PathParam("uuidPhoto") String uuidPhoto) {
-    return Response.ok(new File("./image/" + uuidPhoto)).build();
+    return Response.ok(new File(Config.getPropriete("OneDrivePhotos") + uuidPhoto)).build();
   }
 
 }

@@ -88,6 +88,12 @@ const surDetailObjet = async (offre) => {
       })
     }
   })
+  var ajd = new Date();
+  var dd = String(ajd.getDate()).padStart(2, '0');
+  var mm = String(ajd.getMonth() + 1).padStart(2, '0');
+  var yyyy = ajd.getFullYear();
+  ajd = dd + '/' + mm + '/' + yyyy;
+  console.log(ajd)
   let offrePage = `
   <div class="ui container">
     <div class="ui two column grid">
@@ -97,18 +103,18 @@ const surDetailObjet = async (offre) => {
           <div class="column">
           </div>
           <div class="column propose">
-            <p>Proposé par: ${offre.objetDTO.offreur.pseudo}</p>
+            <p>Proposé par : ${offre.objetDTO.offreur.pseudo}</p>
           </div>
         </div>
       </div>
       <div class="ui two column grid caracteristique-objet">
         <div class="row">
           <div class="column">
-            <h4>Type</h4>
+            <h4>Type de l'objet</h4>
             <p>${offre.objetDTO.typeObjet.nom}</p>
           </div>
           <div class="column">
-            <h4>Etat de l'objet</h4>
+            <h4>État de l'objet</h4>
             <p>${offre.objetDTO.etatObjet}</p>
           </div>
         </div>
@@ -118,7 +124,7 @@ const surDetailObjet = async (offre) => {
             <p>${nbInteressees}</p>
           </div>
           <div class="column">
-            <h4>Date</h4>
+            <h4>Date de l'offre</h4>
             <p>${dateOffre}</p>
           </div>
         </div>
@@ -146,15 +152,16 @@ const surDetailObjet = async (offre) => {
         <div class="row">
           <div class="column">
           <div class="field">
-            <label for="dateRdv">Votre disponibilité :</label>
-            <input type="date" id="dateRdv" class="date-rdv">
+            <label for="dateRdv">Indiquer votre disponibilité :</label>
+            <input type="date" min="26/03/2022" id="dateRdv" class="date-rdv">
+            <div id="messageErreur" class="message-erreur"></div>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="column">
             <div class="field">
-              <label for="gsm-interet">Si vous souhaitez être appelé, veuillez introduire votre numero d'appel</label>
+              <label for="gsm-interet">Si vous souhaitez être appelé, veuillez introduire votre numéro d'appel</label>
               <input type="text" id="gsm-interet">
             </div>
           </div>
@@ -202,6 +209,7 @@ const surDetailObjet = async (offre) => {
       }
       return response.json();
     }).then(() => Redirect("/"))
+    .catch(err => surErreur(err))
   })
 }
 
@@ -488,6 +496,19 @@ const surDetailObjetProprioModifier = async (offre) => {
   document.querySelector("#annuler").addEventListener("click", () => {
     surDetailObjetProprio(offre)
   })
+}
+
+// Si erreur lors de la soumission du formulaire
+const surErreur = (err) => {
+  let messageErreur = document.querySelector("#messageErreur");
+  let erreurMessage = "";
+  console.log(err)
+  if (err.message.includes("412")) {
+    erreurMessage = "Erreur lors du marquage de l'intérêt";
+  } else {
+    erreurMessage = err.message;
+  }
+  messageErreur.innerText = erreurMessage;
 }
 
 export default PageObjet;
