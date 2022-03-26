@@ -46,6 +46,7 @@ CREATE TABLE projet.interets
 (
     utilisateur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
     objet       INTEGER REFERENCES projet.objets (id_objet)             NOT NULL,
+    date        DATE                                                    NOT NULL,
     PRIMARY KEY (utilisateur, objet)
 );
 
@@ -62,13 +63,6 @@ CREATE TABLE projet.offres
     id_objet      INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
     date_offre    TIMESTAMP                                   NOT NULL,
     plage_horaire VARCHAR(255)                                NOT NULL
-);
-
-CREATE TABLE projet.offres_precedentes
-(
-    id_offre_precedente SERIAL PRIMARY KEY,
-    date_precedente     DATE                                        NOT NULL,
-    offre               INTEGER REFERENCES projet.offres (id_offre) NOT NULL
 );
 
 INSERT INTO projet.adresses
