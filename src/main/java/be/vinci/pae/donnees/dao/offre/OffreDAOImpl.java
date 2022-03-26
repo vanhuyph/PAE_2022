@@ -159,9 +159,7 @@ public class OffreDAOImpl implements OffreDAO {
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      try (ResultSet rs = ps.executeQuery()) {
-        liste = remplirListOffresDepuisResulSet(offreDTO, ps);
-      }
+      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
@@ -230,7 +228,6 @@ public class OffreDAOImpl implements OffreDAO {
     AdresseDTO adresseDTO = factory.getAdresse();
     UtilisateurDTO offreur = factory.getUtilisateur();
     TypeObjetDTO typeObjetDTO = factory.getTypeObjet();
-
     try {
       adresseDTO.setIdAdresse(rs.getInt(1));
       adresseDTO.setRue(rs.getString(2));

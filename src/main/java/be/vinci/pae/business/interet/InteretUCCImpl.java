@@ -25,7 +25,7 @@ public class InteretUCCImpl implements InteretUCC {
       serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("La date de rendez-vous ne peut pas être dans le passé");
     }
-    if (!interetDTO.getUtilisateur().getGsm().equals("")) {
+    if (!interetDTO.getUtilisateur().getGsm().isBlank()) {
       interetDTO.setUtilisateur(utilisateurDAO.modifierGsm(interetDTO.getUtilisateur()));
     }
     InteretDTO interet = interetDAO.ajouterInteret(interetDTO);

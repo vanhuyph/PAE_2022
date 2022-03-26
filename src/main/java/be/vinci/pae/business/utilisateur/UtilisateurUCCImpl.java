@@ -95,7 +95,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     utilisateur.setMdp(utilisateur.hashMdp(utilisateur.getMdp()));
     if (utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()).getIdUtilisateur() > 0) {
       serviceDAL.retourEnArriereTransaction();
-      throw new ConflitException("Ce pseudo déjà utilisé");
+      throw new ConflitException("Ce pseudo est déjà utilisé");
     }
     AdresseDTO adresseDTO = adresseDAO.ajouterAdresse(utilisateurDTO.getAdresse());
     if (adresseDTO == null) {
@@ -127,7 +127,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     UtilisateurDTO utilisateurDTO = utilisateurDAO.confirmerInscription(id, estAdmin);
     if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être confirmé");
+      throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être confirmée");
     }
     serviceDAL.commettreTransaction();
     return utilisateurDTO;
@@ -148,7 +148,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     UtilisateurDTO utilisateurDTO = utilisateurDAO.refuserInscription(id, commentaire);
     if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être refusé");
+      throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être refusée");
     }
     serviceDAL.commettreTransaction();
     return utilisateurDTO;

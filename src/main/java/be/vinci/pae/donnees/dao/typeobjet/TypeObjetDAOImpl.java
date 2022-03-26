@@ -32,9 +32,9 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          TypeObjetDTO typeObjetCourrant = factory.getTypeObjet();
-          typeObjetCourrant = remplirTypeObjetDepuisResulSet(typeObjetCourrant, rs);
-          liste.add(typeObjetCourrant);
+          TypeObjetDTO typeObjetCourant = factory.getTypeObjet();
+          typeObjetCourant = remplirTypeObjetDepuisResulSet(typeObjetCourant, rs);
+          liste.add(typeObjetCourant);
         }
       }
     } catch (SQLException e) {
