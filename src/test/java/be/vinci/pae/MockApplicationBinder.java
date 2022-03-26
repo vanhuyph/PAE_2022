@@ -36,14 +36,14 @@ public class MockApplicationBinder extends ApplicationBinder {
     bind(DomaineFactoryImpl.class).to(DomaineFactory.class).in(Singleton.class);
     bind(UtilisateurUCCImpl.class).to(UtilisateurUCC.class).in(Singleton.class);
     bind(ServiceDALImpl.class).to(ServiceBackendDAL.class).in(Singleton.class);
+    bind(OffreUCCImpl.class).to(OffreUCC.class).in(Singleton.class);
+    bind(InteretUCCImpl.class).to(InteretUCC.class).in(Singleton.class);
     bind(utilisateurDAO).to(UtilisateurDAO.class);
     bind(serviceDAL).to(ServiceDAL.class);
     bind(adresseDAO).to(AdresseDAO.class);
     bind(interetDAO).to(InteretDAO.class);
     bind(offreDAO).to(OffreDAO.class);
     bind(objetDAO).to(ObjetDAO.class);
-    bind(OffreUCCImpl.class).to(OffreUCC.class).in(Singleton.class);
-    bind(InteretUCCImpl.class).to(InteretUCC.class).in(Singleton.class);
   }
 
 }
