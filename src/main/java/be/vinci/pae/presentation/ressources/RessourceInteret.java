@@ -35,6 +35,14 @@ public class RessourceInteret {
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
   public InteretDTO creetInteret(InteretDTO interetDTO) {
+    if (interetDTO.getObjet() == null || interetDTO.getUtilisateur() == null
+        || interetDTO.getObjet().getIdObjet() < 1
+        || interetDTO.getUtilisateur().getIdUtilisateur() < 1) {
+      throw new PresentationException("Objet ou utilisateur manquant", Status.BAD_REQUEST);
+    }
+    if (interetDTO.getDateRdv() == null) {
+      throw new PresentationException("Date de disponibilité manquante", Status.BAD_REQUEST);
+    }
     InteretDTO interet = interetUCC.creerUnInteret(interetDTO);
     if (interet == null) {
       throw new PresentationException("L'ajout de l'intérêt a échoué", Status.BAD_REQUEST);
