@@ -144,4 +144,28 @@ public class OffreUCCTest {
     assertEquals(liste, offreUCC.offresPrecedentes(id));
   }
 
+  @Test
+  @DisplayName("Test raté : méthode creerObjet renvoie null car l'objet n'a pas été créé")
+  public void testCreerUneOffreV1() {
+    Mockito.when(objetDAO.creerObjet(objetDTO1)).thenReturn(null);
+    assertThrows(BusinessException.class, () -> offreUCC.creerUneOffre(offreDTO1));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode creerOffre renvoie null car l'offre n'a pas été créée")
+  public void testCreerUneOffreV2() {
+    Mockito.when(objetDAO.creerObjet(objetDTO1)).thenReturn(objetDTO1);
+    Mockito.when(offreDAO.creerOffre(offreDTO1)).thenReturn(null);
+    assertThrows(BusinessException.class, () -> offreUCC.creerUneOffre(offreDTO1));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode creerUneOffre renvoie l'offre créée")
+  public void testCreerUneOffreV3() {
+    offreDTO1.setObjetDTO(objetDTO1);
+    Mockito.when(objetDAO.creerObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO1);
+    Mockito.when(offreDAO.creerOffre(offreDTO1)).thenReturn(offreDTO1);
+    assertEquals(offreDTO1, offreUCC.creerUneOffre(offreDTO1));
+  }
+
 }

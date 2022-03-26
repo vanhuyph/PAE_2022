@@ -6,9 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.interet.InteretDTO;
 import be.vinci.pae.business.interet.InteretUCC;
+import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.interet.InteretDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,6 +30,7 @@ public class InteretUCCTest {
   private InteretDTO interetDTO;
   private InteretUCC interetUCC;
   private UtilisateurDTO utilisateurDTO;
+  private ObjetDTO objetDTO;
 
   @BeforeAll
   void initTout() {
@@ -35,20 +40,46 @@ public class InteretUCCTest {
     this.interetUCC = locator.getService(InteretUCC.class);
     interetDTO = domaineFactory.getInteret();
     utilisateurDTO = domaineFactory.getUtilisateur();
+    objetDTO = domaineFactory.getObjet();
+    utilisateurDTO.setIdUtilisateur(1);
+    utilisateurDTO.setGsm("");
+    objetDTO.setIdObjet(1);
+    interetDTO.setObjet(objetDTO);
     interetDTO.setUtilisateur(utilisateurDTO);
   }
 
-  //  @Test
-  //  @DisplayName("Test raté : méthode creerUnInteret avec une date invalide.")
-  //  public void testCreerUnInteretV1() {
-  //
-  //  }
-  //
-  //  @Test
-  //  @DisplayName("Test réussi : méthode creerUnInteret TBD")
-  //  public void testCreerUnInteretV2() {
-  //
-  //  }
+  @Test
+  @DisplayName("Test raté : méthode creerUnInteret avec une date invalide.")
+  public void testCreerUnInteretV1() {
+    ZoneId zone = ZoneId.systemDefault();
+    LocalDate dateLocal = LocalDate.of(2010, 01, 01);
+    Date date = Date.from(dateLocal.atStartOfDay(zone).toInstant());
+    interetDTO.setDateRdv(date);
+    assertThrows(BusinessException.class, () -> interetUCC.creerUnInteret(interetDTO));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode creerUnInteret renvoie null car "
+      + "l'intérêt n'a pas pu être créé.")
+  public void testCreerUnInteretV2() {
+    ZoneId zone = ZoneId.systemDefault();
+    LocalDate dateLocal = LocalDate.of(2023, 01, 01);
+    Date date = Date.from(dateLocal.atStartOfDay(zone).toInstant());
+    interetDTO.setDateRdv(date);
+    Mockito.when(interetDAO.ajouterInteret(interetDTO)).thenReturn(null);
+    assertThrows(BusinessException.class, () -> interetUCC.creerUnInteret(interetDTO));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode creerUnInteret TBD")
+  public void testCreerUnInteretV3() {
+    ZoneId zone = ZoneId.systemDefault();
+    LocalDate dateLocal = LocalDate.of(2023, 01, 01);
+    Date date = Date.from(dateLocal.atStartOfDay(zone).toInstant());
+    interetDTO.setDateRdv(date);
+    Mockito.when(interetDAO.ajouterInteret(interetDTO)).thenReturn(interetDTO);
+    assertEquals(interetDTO, interetUCC.creerUnInteret(interetDTO));
+  }
 
   @Test
   @DisplayName("Test raté : méthode nbPersonnesInteressees renvoie -1 car l'objet est introuvable.")
