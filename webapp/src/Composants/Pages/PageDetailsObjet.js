@@ -95,12 +95,12 @@ const surDetailObjet = async (offre) => {
   var yyyy = ajd.getFullYear();
   ajd = yyyy + '-' + mm + '-' + dd;
 
+  // Page des détails de l'objet
   let offrePage = `
   <div class="interet-popup">
     <div class="container-popup-interet">
     </div>
   </div>
-  
   <div class="ui container">
     <div class="ui two column grid">
       <div class="column">
@@ -127,7 +127,7 @@ const surDetailObjet = async (offre) => {
         <div class="row">
           <div class="column nb-inter">
             <h4>Nombre de personnes intéressées</h4>
-            <p>${nbInteressees}</p>
+            <p class="nb-interessees">${nbInteressees}</p>
           </div>
           <div class="column">
             <h4>Date de l'offre</h4>
@@ -206,6 +206,7 @@ const surDetailObjet = async (offre) => {
     if (dateRdv === "") {
       messageErreur.innerText = "Veuillez introduire une disponibilité";
     } else {
+      messageErreur.innerText = "";
       document.querySelector("#marquer-interet").classList.add("loading")
       fetch(API_URL + 'interets/creerInteret', {
         method: "POST",
@@ -224,15 +225,18 @@ const surDetailObjet = async (offre) => {
         }
         return response.json();
       }).then(() => {
-        setInterval(() =>{
+        setInterval(() => {
           document.querySelector("#marquer-interet").classList.remove("loading")
-          //document.querySelector("#marquer-interet").classList.add("disabled")
+          document.querySelector("#marquer-interet").classList.add("disabled")
           let popup = document.querySelector(".interet-popup");
-          document.querySelector(".container-popup-interet").innerHTML = "<p>Vous intérêt a bien été marqué</p>"
-          popup.style="transform: translateX(-310px); opacity: 1;transition: all 1s ease;";
+          document.querySelector(
+              ".container-popup-interet").innerHTML = "<p>Votre intérêt a bien été marqué</p>"
+          popup.style = "transform: translateX(-310px); opacity: 1;transition: all 1s ease;";
           setInterval(() => {
-            popup.style="transform: translateX(300px); opacity: 0; transition: all 3.5s ease;";
-          },3000)
+            document.querySelector(".nb-interessees").innerHTML = nbInteressees
+                + 1;
+            popup.style = "transform: translateX(300px); opacity: 0; transition: all 3.5s ease;";
+          }, 3000)
         }, 1000)
       })
       .catch(err => surErreur(err))
@@ -279,7 +283,6 @@ const surDetailObjetProprio = async (offre) => {
           "Code erreur : " + reponse.status + " : " + reponse.statusText
       );
     }
-
     return reponse.json();
   })
   .then((offres) => {
@@ -404,12 +407,12 @@ const surDetailObjetProprioModifier = async (offre) => {
           "Code erreur : " + reponse.status + " : " + reponse.statusText
       );
     }
-
     return reponse.json();
   })
   .then((nbInt) => nbInteressees = nbInt)
 
   let offresPrecedentes = "Pas d'offres précédentes";
+  // Récupère les dates des offres précédentes
   await fetch(
       API_URL + 'offres/offresPrecedentes/' + offre.objetDTO.idObjet, {
         method: "GET",

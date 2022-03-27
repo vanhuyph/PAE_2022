@@ -20,7 +20,7 @@ const barHori = `
 </div>
 `
 
-//Contenu pricipal de la page
+// Contenu pricipal de la page
 const pricipal = `
 <div id="principal">
   <div id="choix-demande" class="ui buttons">
