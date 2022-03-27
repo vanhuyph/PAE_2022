@@ -187,6 +187,7 @@ const surDetailObjet = async (offre) => {
   pageDiv.innerHTML = offrePage
 
   document.querySelector("#form-interet").addEventListener("submit", (e) => {
+    console.log("dedans")
     e.preventDefault();
     let dateRdv = document.querySelector("#dateRdv").value;
     let messageErreur = document.querySelector("#messageErreur");
@@ -225,19 +226,21 @@ const surDetailObjet = async (offre) => {
         }
         return response.json();
       }).then(() => {
-        setInterval(() => {
+        let premierInter = setInterval(() => {
           document.querySelector("#marquer-interet").classList.remove("loading")
           document.querySelector("#marquer-interet").classList.add("disabled")
           let popup = document.querySelector(".interet-popup");
           document.querySelector(
               ".container-popup-interet").innerHTML = "<p>Votre intérêt a bien été marqué</p>"
           popup.style = "transform: translateX(-310px); opacity: 1;transition: all 1s ease;";
-          setInterval(() => {
+          let deuxiemeInter = setInterval(() => {
             document.querySelector(".nb-interessees").innerHTML = nbInteressees
                 + 1;
             document.querySelector(".etat-objet").innerHTML = 'Intéressé'
             popup.style = "transform: translateX(300px); opacity: 0; transition: all 3.5s ease;";
+            clearInterval(deuxiemeInter);
           }, 3000)
+          clearInterval(premierInter);
         }, 1000)
       })
       .catch(err => surErreur(err))
