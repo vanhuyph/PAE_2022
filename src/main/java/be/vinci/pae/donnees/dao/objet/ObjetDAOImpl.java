@@ -43,4 +43,25 @@ public class ObjetDAOImpl implements ObjetDAO {
     return objetDTO;
   }
 
+  /**
+   * Créer un objet.
+   *
+   * @param objetDTO : l'objet à créer
+   * @return objetDTO : l'objet créé
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public ObjetDTO changeEtatObjet(ObjetDTO objetDTO) {
+    String requetePs = "UPDATE projet.objets SET etat_objet = ? WHERE id_objet = ?;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setString(1, objetDTO.getEtatObjet());
+      ps.setInt(2, objetDTO.getIdObjet());
+      ps.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return objetDTO;
+  }
 }

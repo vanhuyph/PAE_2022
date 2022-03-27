@@ -1,6 +1,7 @@
 package be.vinci.pae.business.interet;
 
 import be.vinci.pae.donnees.dao.interet.InteretDAO;
+import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
@@ -15,6 +16,8 @@ public class InteretUCCImpl implements InteretUCC {
   UtilisateurDAO utilisateurDAO;
   @Inject
   ServiceDAL serviceDAL;
+  @Inject
+  ObjetDAO objetDAO;
 
   @Override
   public InteretDTO creerUnInteret(InteretDTO interetDTO) {
@@ -28,6 +31,8 @@ public class InteretUCCImpl implements InteretUCC {
     if (!interetDTO.getUtilisateur().getGsm().isBlank()) {
       interetDTO.setUtilisateur(utilisateurDAO.modifierGsm(interetDTO.getUtilisateur()));
     }
+    interetDTO.getObjet().setEtatObjet("Intéressé");
+    objetDAO.changeEtatObjet(interetDTO.getObjet());
     InteretDTO interet = interetDAO.ajouterInteret(interetDTO);
     if (interet == null || interet.getUtilisateur().getIdUtilisateur() <= 0 || interet.getObjet()
         .getIdObjet() <= 0) {

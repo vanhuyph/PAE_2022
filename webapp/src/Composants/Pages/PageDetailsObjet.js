@@ -121,7 +121,7 @@ const surDetailObjet = async (offre) => {
           </div>
           <div class="column">
             <h4>État de l'objet</h4>
-            <p>${offre.objetDTO.etatObjet}</p>
+            <p class="etat-objet">${offre.objetDTO.etatObjet}</p>
           </div>
         </div>
         <div class="row">
@@ -235,6 +235,7 @@ const surDetailObjet = async (offre) => {
           setInterval(() => {
             document.querySelector(".nb-interessees").innerHTML = nbInteressees
                 + 1;
+            document.querySelector(".etat-objet").innerHTML = 'Intéressé'
             popup.style = "transform: translateX(300px); opacity: 0; transition: all 3.5s ease;";
           }, 3000)
         }, 1000)
