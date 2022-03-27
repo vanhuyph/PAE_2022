@@ -96,6 +96,11 @@ const surDetailObjet = async (offre) => {
   ajd = yyyy + '-' + mm + '-' + dd;
 
   let offrePage = `
+  <div class="interet-popup">
+    <div class="container-popup-interet">
+    </div>
+  </div>
+  
   <div class="ui container">
     <div class="ui two column grid">
       <div class="column">
@@ -170,7 +175,8 @@ const surDetailObjet = async (offre) => {
         <div class="row">
           <div class="column">
             <div class="field">
-              <button type="submit" class="ui primary button">Marquer mon intérêt</button>
+              <button type="submit" class="ui primary button" id="marquer-interet">Marquer mon intérêt</button>
+              <p class="interet-marque"></p>
             </div>
           </div>
         </div>
@@ -200,6 +206,7 @@ const surDetailObjet = async (offre) => {
     if (dateRdv === "") {
       messageErreur.innerText = "Veuillez introduire une disponibilité";
     } else {
+      document.querySelector("#marquer-interet").classList.add("loading")
       fetch(API_URL + 'interets/creerInteret', {
         method: "POST",
         body: JSON.stringify(interet),
@@ -210,12 +217,24 @@ const surDetailObjet = async (offre) => {
       })
       .then((response) => {
         if (!response.ok) {
+          document.querySelector("#marquer-interet").classList.remove("loading")
           throw new Error(
               "Code d'erreur : " + response.status + " : " + response.statusText
           );
         }
         return response.json();
-      }).then(() => Redirect("/"))
+      }).then(() => {
+        setInterval(() =>{
+          document.querySelector("#marquer-interet").classList.remove("loading")
+          //document.querySelector("#marquer-interet").classList.add("disabled")
+          let popup = document.querySelector(".interet-popup");
+          document.querySelector(".container-popup-interet").innerHTML = "<p>Vous intérêt a bien été marqué</p>"
+          popup.style="transform: translateX(-310px); opacity: 1;transition: all 1s ease;";
+          setInterval(() => {
+            popup.style="transform: translateX(300px); opacity: 0; transition: all 3.5s ease;";
+          },3000)
+        }, 1000)
+      })
       .catch(err => surErreur(err))
     }
   })
