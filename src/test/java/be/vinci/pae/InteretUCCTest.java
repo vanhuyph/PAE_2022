@@ -71,7 +71,7 @@ public class InteretUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode creerUnInteret TBD")
+  @DisplayName("Test réussi : méthode creerUnInteret.")
   public void testCreerUnInteretV3() {
     ZoneId zone = ZoneId.systemDefault();
     LocalDate dateLocal = LocalDate.of(2023, 01, 01);

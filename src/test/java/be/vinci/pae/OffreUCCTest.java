@@ -64,18 +64,27 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode creerUneOffre renvoie null.")
-  public void creerUneOffreV1() {
+  @DisplayName("Test raté : méthode creerObjet renvoie null car l'objet n'a pas été créé.")
+  public void testCreerOffreV1() {
     Mockito.when(objetDAO.creerObjet(objetDTO1)).thenReturn(null);
-    assertThrows(BusinessException.class, () -> offreUCC.creerUneOffre(offreDTO1));
+    assertThrows(BusinessException.class, () -> offreUCC.creerOffre(offreDTO1));
   }
 
   @Test
-  @DisplayName("Test raté : méthode creerUneOffre avec créer offre qui rate.")
-  public void creerUneOffreV2() {
-    Mockito.when(objetDAO.creerObjet(objetDTO1)).thenReturn(objetDTO2);
+  @DisplayName("Test raté : méthode creerOffre renvoie null car l'offre n'a pas été créée.")
+  public void testCreerOffreV2() {
+    Mockito.when(objetDAO.creerObjet(objetDTO1)).thenReturn(objetDTO1);
     Mockito.when(offreDAO.creerOffre(offreDTO1)).thenReturn(null);
-    assertThrows(BusinessException.class, () -> offreUCC.creerUneOffre(offreDTO1));
+    assertThrows(BusinessException.class, () -> offreUCC.creerOffre(offreDTO1));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode creerOffre renvoie l'offre créée.")
+  public void testCreerOffreV3() {
+    offreDTO1.setObjetDTO(objetDTO1);
+    Mockito.when(objetDAO.creerObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO1);
+    Mockito.when(offreDAO.creerOffre(offreDTO1)).thenReturn(offreDTO1);
+    assertEquals(offreDTO1, offreUCC.creerOffre(offreDTO1));
   }
 
   @Test
@@ -95,19 +104,19 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode annulerUneOffre renvoie null car l'offre n'est pas trouvable.")
-  public void annulerUneOffreV1() {
+  @DisplayName("Test raté : méthode annulerOffre renvoie null car l'offre n'est pas trouvable.")
+  public void annulerOffreV1() {
     int id = -1;
     Mockito.when(offreDAO.annulerOffre(id)).thenReturn(null);
-    assertThrows(BusinessException.class, () -> offreUCC.annulerUneOffre(id));
+    assertThrows(BusinessException.class, () -> offreUCC.annulerOffre(id));
   }
 
   @Test
-  @DisplayName("Test réussi : méthode annulerUneOffre renvoie l'offre annulée.")
-  public void annulerUneOffreV2() {
+  @DisplayName("Test réussi : méthode annulerOffre renvoie l'offre annulée.")
+  public void annulerOffreV2() {
     int id = offreDTO1.getIdOffre();
     Mockito.when(offreDAO.annulerOffre(id)).thenReturn(offreDTO1);
-    assertEquals(offreDTO1, offreUCC.annulerUneOffre(id));
+    assertEquals(offreDTO1, offreUCC.annulerOffre(id));
   }
 
   @Test
@@ -142,30 +151,6 @@ public class OffreUCCTest {
     List<OffreDTO> liste = new ArrayList<>();
     Mockito.when(offreDAO.offresPrecedentes(id)).thenReturn(liste);
     assertEquals(liste, offreUCC.offresPrecedentes(id));
-  }
-
-  @Test
-  @DisplayName("Test raté : méthode creerObjet renvoie null car l'objet n'a pas été créé")
-  public void testCreerUneOffreV1() {
-    Mockito.when(objetDAO.creerObjet(objetDTO1)).thenReturn(null);
-    assertThrows(BusinessException.class, () -> offreUCC.creerUneOffre(offreDTO1));
-  }
-
-  @Test
-  @DisplayName("Test raté : méthode creerOffre renvoie null car l'offre n'a pas été créée")
-  public void testCreerUneOffreV2() {
-    Mockito.when(objetDAO.creerObjet(objetDTO1)).thenReturn(objetDTO1);
-    Mockito.when(offreDAO.creerOffre(offreDTO1)).thenReturn(null);
-    assertThrows(BusinessException.class, () -> offreUCC.creerUneOffre(offreDTO1));
-  }
-
-  @Test
-  @DisplayName("Test réussi : méthode creerUneOffre renvoie l'offre créée")
-  public void testCreerUneOffreV3() {
-    offreDTO1.setObjetDTO(objetDTO1);
-    Mockito.when(objetDAO.creerObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO1);
-    Mockito.when(offreDAO.creerOffre(offreDTO1)).thenReturn(offreDTO1);
-    assertEquals(offreDTO1, offreUCC.creerUneOffre(offreDTO1));
   }
 
 }

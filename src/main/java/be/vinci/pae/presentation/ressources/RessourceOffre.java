@@ -53,7 +53,7 @@ public class RessourceOffre {
         || offreDTO.getObjetDTO().getTypeObjet() == null || offreDTO.getPlageHoraire().isBlank()) {
       throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
     }
-    offreDTO = offreUCC.creerUneOffre(offreDTO);
+    offreDTO = offreUCC.creerOffre(offreDTO);
     return offreDTO;
   }
 
@@ -99,9 +99,9 @@ public class RessourceOffre {
   @Autorisation
   public OffreDTO annulerOffre(@PathParam("id") int id) {
     if (id <= 0) {
-      throw new PresentationException("L'id de l'offre est incorrecte", Status.BAD_REQUEST);
+      throw new PresentationException("L'id de l'offre est incorrect", Status.BAD_REQUEST);
     }
-    OffreDTO offreDTO = offreUCC.annulerUneOffre(id);
+    OffreDTO offreDTO = offreUCC.annulerOffre(id);
     if (offreDTO == null) {
       throw new PresentationException("L'annulation de l'offre a échoué", Status.BAD_REQUEST);
     }
@@ -122,7 +122,7 @@ public class RessourceOffre {
   @Autorisation
   public OffreDTO rechercheOffreParId(@PathParam("id") int id) {
     if (id <= 0) {
-      throw new PresentationException("L'id de l'offre est incorrecte", Status.BAD_REQUEST);
+      throw new PresentationException("L'id de l'offre est incorrect", Status.BAD_REQUEST);
     }
     OffreDTO offreDTO = offreUCC.rechercheParId(id);
     if (offreDTO == null) {
@@ -145,7 +145,7 @@ public class RessourceOffre {
   @Autorisation
   public List<OffreDTO> offresPrecedentes(@PathParam("idObjet") int idObjet) {
     if (idObjet <= 0) {
-      throw new PresentationException("L'id de l'offre est incorrecte", Status.BAD_REQUEST);
+      throw new PresentationException("L'id de l'offre est incorrect", Status.BAD_REQUEST);
     }
     List<OffreDTO> listeOffreDTO = offreUCC.offresPrecedentes(idObjet);
     if (listeOffreDTO == null) {

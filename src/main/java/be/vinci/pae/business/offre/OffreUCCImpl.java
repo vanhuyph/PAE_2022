@@ -25,7 +25,7 @@ public class OffreUCCImpl implements OffreUCC {
    * @throws BusinessException : est lancée si l'objet ou l'offre n'a pas pu être créée
    */
   @Override
-  public OffreDTO creerUneOffre(OffreDTO offreDTO) {
+  public OffreDTO creerOffre(OffreDTO offreDTO) {
     serviceDAL.commencerTransaction();
     ObjetDTO objet = objetDAO.creerObjet(offreDTO.getObjetDTO());
     if (objet == null) {
@@ -74,7 +74,7 @@ public class OffreUCCImpl implements OffreUCC {
    * @throws BusinessException : lance une exception business si l'offre n'a pas pu être annulée
    */
   @Override
-  public OffreDTO annulerUneOffre(int id) {
+  public OffreDTO annulerOffre(int id) {
     serviceDAL.commencerTransaction();
     OffreDTO offre = offreDAO.annulerOffre(id);
     if (offre == null || offre.getIdOffre() <= 0) {

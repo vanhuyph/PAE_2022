@@ -55,7 +55,7 @@ public class RessourceInteret {
    *
    * @param id : l'id de l'offre dont les personnes sont intéressées
    * @return nbInteret : le nombre de personnes intéressées
-   * @throws PresentationException : est lancée si l'id de l'offre est incorrecte
+   * @throws PresentationException : est lancée si l'id de l'offre est incorrect
    */
   @GET
   @Path("/nbPersonnesInteresees/{id}")
@@ -64,7 +64,7 @@ public class RessourceInteret {
   @Autorisation
   public int nbPersonnesInteresees(@PathParam("id") int id) {
     if (id <= 0) {
-      throw new PresentationException("L'id de l'offre est incorrecte", Status.BAD_REQUEST);
+      throw new PresentationException("L'id de l'offre est incorrect", Status.BAD_REQUEST);
     }
     int nbInteret = interetUCC.nbPersonnesInteressees(id);
     return nbInteret;

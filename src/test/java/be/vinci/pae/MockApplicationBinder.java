@@ -6,12 +6,15 @@ import be.vinci.pae.business.interet.InteretUCC;
 import be.vinci.pae.business.interet.InteretUCCImpl;
 import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.business.offre.OffreUCCImpl;
+import be.vinci.pae.business.typeobjet.TypeObjetUCC;
+import be.vinci.pae.business.typeobjet.TypeObjetUCCImpl;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.business.utilisateur.UtilisateurUCCImpl;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
 import be.vinci.pae.donnees.dao.interet.InteretDAO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
+import be.vinci.pae.donnees.dao.typeobjet.TypeObjetDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import be.vinci.pae.donnees.services.ServiceDAL;
@@ -30,6 +33,7 @@ public class MockApplicationBinder extends ApplicationBinder {
   private OffreDAO offreDAO = Mockito.mock(OffreDAO.class);
   private ObjetDAO objetDAO = Mockito.mock(ObjetDAO.class);
   private InteretDAO interetDAO = Mockito.mock(InteretDAO.class);
+  private TypeObjetDAO typeObjetDAO = Mockito.mock(TypeObjetDAO.class);
 
   @Override
   protected void configure() {
@@ -38,12 +42,14 @@ public class MockApplicationBinder extends ApplicationBinder {
     bind(ServiceDALImpl.class).to(ServiceBackendDAL.class).in(Singleton.class);
     bind(OffreUCCImpl.class).to(OffreUCC.class).in(Singleton.class);
     bind(InteretUCCImpl.class).to(InteretUCC.class).in(Singleton.class);
+    bind(TypeObjetUCCImpl.class).to(TypeObjetUCC.class).in(Singleton.class);
     bind(utilisateurDAO).to(UtilisateurDAO.class);
     bind(serviceDAL).to(ServiceDAL.class);
     bind(adresseDAO).to(AdresseDAO.class);
     bind(interetDAO).to(InteretDAO.class);
     bind(offreDAO).to(OffreDAO.class);
     bind(objetDAO).to(ObjetDAO.class);
+    bind(typeObjetDAO).to(TypeObjetDAO.class);
   }
 
 }
