@@ -5,6 +5,7 @@ import {
 import {Redirect} from "../Router/Router";
 import Navbar from "../Navbar/Navbar";
 
+// Page de connexion
 let pageCon = `
     <div class="page-connexion">
         <h2>Connexion</h2>
@@ -33,7 +34,7 @@ let pageCon = `
             
         </form>
         <p class="separateur-ou">ou</p>
-        <button class="ui secondary inverted button">S'inscrire</button>
+        <a href="/inscription"><button class="ui secondary inverted button">S'inscrire</button></a>
     </div>
   `;
 
@@ -41,8 +42,10 @@ const PageConnexion = () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = pageCon;
   let formCon = document.querySelector("#formulaire-connexion")
-  const utilisateur = recupUtilisateurDonneesSession()
-  if (utilisateur) {
+
+  // Récupération de la session et redirection sur l'accueil sinon envoie du formulaire possible
+  const session = recupUtilisateurDonneesSession()
+  if (session) {
     Navbar()
     Redirect("/")
   } else {
@@ -50,6 +53,7 @@ const PageConnexion = () => {
   }
 }
 
+// Envoie du formulaire
 const surConnexion = (e) => {
   e.preventDefault()
   let pseudo = document.querySelector("#pseudo")
@@ -57,6 +61,8 @@ const surConnexion = (e) => {
   document.querySelector(".erreur-pseudo").innerHTML = ""
   document.querySelector(".erreur-mdp").innerHTML = ""
   document.querySelector("#messageErreur").innerHTML = ""
+
+  // Vérification des valeurs du formulaire
   if (pseudo.value === "") {
     document.querySelector(".erreur-pseudo").innerHTML = "Votre pseudo est vide"
   }
@@ -69,6 +75,8 @@ const surConnexion = (e) => {
       pseudo: pseudo.value,
       mdp: mdp.value
     }
+
+    // Remember me
     let souvenir = document.querySelector("#souvenir").checked
     fetch("/api/utilisateurs/connexion", {
       method: "POST",
@@ -80,7 +88,7 @@ const surConnexion = (e) => {
     .then((reponse) => {
       if (!reponse.ok) {
         throw new Error(
-            "Error code : " + reponse.status + " : " + reponse.statusText)
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText)
       }
       return reponse.json();
     })
@@ -89,6 +97,7 @@ const surConnexion = (e) => {
   }
 }
 
+// Création des données de session et redirection vers l'accueil
 const surConUtilisateur = (donnee, souvenir) => {
   const utilisateur = {...donnee, isAutenticated: true}
   creationDonneeSessionUtilisateur(utilisateur, souvenir)
@@ -96,13 +105,12 @@ const surConUtilisateur = (donnee, souvenir) => {
   Redirect("/")
 }
 
+// Si erreur lors de la soumission du formulaire
 const surErreur = (err) => {
   let messageErreur = document.querySelector("#messageErreur");
   let erreurMessage = "";
   console.log(err)
-  if (err.message.includes(
-      "401") || err.message.includes(
-      "500")) {
+  if (err.message.includes("401")) {
     erreurMessage = "Pseudo ou mot de passe incorrect";
   } else {
     erreurMessage = err.message;
