@@ -187,7 +187,6 @@ const surDetailObjet = async (offre) => {
   pageDiv.innerHTML = offrePage
 
   document.querySelector("#form-interet").addEventListener("submit", (e) => {
-    console.log("dedans")
     e.preventDefault();
     let dateRdv = document.querySelector("#dateRdv").value;
     let messageErreur = document.querySelector("#messageErreur");
