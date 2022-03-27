@@ -176,7 +176,7 @@ const surDetailObjet = async (offre) => {
           <div class="column">
             <div class="field">
               <button type="submit" class="ui primary button" id="marquer-interet">Marquer mon intérêt</button>
-              <p class="interet-marque"></p>
+              <p id="serveurErreur" class="message-erreur"></p>
             </div>
           </div>
         </div>
@@ -522,7 +522,7 @@ const surDetailObjetProprioModifier = async (offre) => {
 
 // Si erreur lors de la soumission du formulaire
 const surErreur = (err) => {
-  let messageErreur = document.querySelector("#messageErreur");
+  let messageErreur = document.querySelector("#serveurErreur");
   let erreurMessage = "";
   if (err.message.includes("412")) {
     erreurMessage = "Erreur lors du marquage de l'intérêt";
