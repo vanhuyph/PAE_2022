@@ -68,7 +68,7 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-        + "WHERE o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
+        + "WHERE o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' OR o.etat_objet = 'Annulé' "
         + "ORDER BY of.date_offre DESC";
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
@@ -154,7 +154,7 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-        + "WHERE o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
+        + "WHERE o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' OR o.etat_objet = 'Annulé' "
         + "ORDER BY of.date_offre DESC LIMIT 3;";
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;

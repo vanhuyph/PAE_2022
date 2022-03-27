@@ -98,7 +98,7 @@ const surListeOffresRecentes = (data) => {
   const session = recupUtilisateurDonneesSession()
   let listeRecente = `<div class="ui cards">`;
   data.forEach((offre) => {
-    if (session) {
+    if (session && offre.objetDTO.etatObjet === "Annulé" && (session.utilisateur.estAdmin || (offre.objetDTO.offreur.idUtilisateur === session.utilisateur.idUtilisateur))){
       listeRecente += `
       <a id="of" class="card" data-of="${offre.idOffre}">
         <div id=${offre.idOffre}></div>
@@ -111,8 +111,22 @@ const surListeOffresRecentes = (data) => {
         </div>
       </a>
     `;
-    } else {
-      listeRecente += `
+    }else if (offre.objetDTO.etatObjet !== "Annulé"){
+      if (session) {
+        listeRecente += `
+      <a id="of" class="card" data-of="${offre.idOffre}">
+        <div id=${offre.idOffre}></div>
+        <div class="image">
+          <img src="/api/offres/photos/${offre.objetDTO.photo}">
+        </div>
+        <div class="content">
+          <h4 class="header">Description</h4>
+           <p>${offre.objetDTO.description}</p>
+        </div>
+      </a>
+    `;
+      } else {
+        listeRecente += `
       <div class="card">
         <div class="image">
           <img src="/api/offres/photos/${offre.objetDTO.photo}">
@@ -123,6 +137,7 @@ const surListeOffresRecentes = (data) => {
         </div>
       </div>
     `;
+      }
     }
   })
   listeRecente += `</div>`;
@@ -132,9 +147,24 @@ const surListeOffresRecentes = (data) => {
 // Affichage d'une liste de toutes les offres
 const surListeOffres = (data) => {
   const listeOffres = document.getElementById("liste-offres");
+  const session = recupUtilisateurDonneesSession()
   let liste = `<div class="ui link cards">`;
   data.forEach((offre) => {
-    liste += `
+    if (session && offre.objetDTO.etatObjet === "Annulé" && (session.utilisateur.estAdmin || (offre.objetDTO.offreur.idUtilisateur === session.utilisateur.idUtilisateur))){
+      liste += `
+      <a id="of" class="card" data-of="${offre.idOffre}">
+        <div id=${offre.idOffre}></div>
+        <div class="image">
+          <img src="/api/offres/photos/${offre.objetDTO.photo}">
+        </div>
+        <div class="content">
+          <h4 class="header">Description</h4>
+           <p>${offre.objetDTO.description}</p>
+        </div>
+      </a>
+    `;
+    }else if (offre.objetDTO.etatObjet !== "Annulé") {
+      liste += `
       <a id="of" class="card" data-of="${offre.idOffre}">
         <div class="image">
           <img src="/api/offres/photos/${offre.objetDTO.photo}">
@@ -144,10 +174,10 @@ const surListeOffres = (data) => {
            <p>${offre.objetDTO.description}</p>
         </div>
       </a>`;
+    }
   })
   liste += `</div>`;
   listeOffres.innerHTML = liste;
-  const session = recupUtilisateurDonneesSession()
   if (session){
     document.querySelectorAll("#of").forEach(offre => {
       offre.addEventListener("click", (e) => {
