@@ -91,23 +91,6 @@ VALUES (DEFAULT, 'bri', 'Lehmann', 'Brigitte',
         '$2a$10$W0IiogOO7ef5/Kw.GdmEkO46mtg6VSeDsV5SYc4Dzmp4XnnOBUAkC', NULL, true, 4, 'Confirmé',
         NULL);
 
-INSERT INTO projet.utilisateurs
-VALUES (DEFAULT, 'pseudo1', 'nom1', 'prenom1',
-        '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, false, 1, 'Confirmé',
-        NULL);
-INSERT INTO projet.utilisateurs
-VALUES (DEFAULT, 'pseudo2', 'nom2', 'prenom2',
-        '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, false, 2,
-        'En attente', NULL);
-INSERT INTO projet.utilisateurs
-VALUES (DEFAULT, 'pseudo3', 'nom3', 'prenom3',
-        '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', '0475858535', false, 3,
-        'Refusé', 'Seuls les amis proches ont accès au site.');
-INSERT INTO projet.utilisateurs
-VALUES (DEFAULT, 'pseudo4', 'nom4', 'prenom4',
-        '$2a$10$0t0a./eaznbH5YnfPlgbA.8beRBzA6szoyafFijA3PNgFDnSdUKl2', NULL, true, 1, 'Confirmé',
-        NULL);
-
 INSERT INTO projet.types_objets
 VALUES (DEFAULT, 'Accessoires pour animaux domestiques');
 INSERT INTO projet.types_objets
