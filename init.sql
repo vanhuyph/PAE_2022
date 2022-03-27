@@ -148,3 +148,21 @@ INSERT INTO projet.offres
 VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h');
 INSERT INTO projet.offres
 VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h');
+
+SELECT u.id_utilisateur, u.pseudo, u.est_admin, u.etat_inscription, u.commentaire
+FROM projet.utilisateurs u
+ORDER BY u.est_admin, u.etat_inscription;
+
+SELECT o.id_objet, o.description, t.nom AS "type", o.etat_objet, of.date_offre
+FROM projet.objets o,
+     projet.types_objets t,
+     projet.offres of
+WHERE o.type_objet = t.id_type
+  AND of.id_objet = o.id_objet
+ORDER BY of.date_offre;
+
+SELECT u.nom, o.description
+FROM projet.objets o,
+     projet.utilisateurs u
+WHERE u.id_utilisateur = o.offreur
+ORDER BY u.nom, o.description;

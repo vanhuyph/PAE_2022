@@ -44,10 +44,10 @@ public class ObjetDAOImpl implements ObjetDAO {
   }
 
   /**
-   * Créer un objet.
+   * Change l'état de l'objet.
    *
-   * @param objetDTO : l'objet à créer
-   * @return objetDTO : l'objet créé
+   * @param objetDTO : l'objet à changer d'état
+   * @return objetDTO : l'objet avec son état changé
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
@@ -64,4 +64,5 @@ public class ObjetDAOImpl implements ObjetDAO {
     }
     return objetDTO;
   }
+
 }

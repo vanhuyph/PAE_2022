@@ -19,6 +19,13 @@ public class InteretUCCImpl implements InteretUCC {
   @Inject
   ObjetDAO objetDAO;
 
+  /**
+   * Créer un intérêt pour une offre.
+   *
+   * @param interetDTO : l'intérêt à créer
+   * @return interet : interetDTO
+   * @throws BusinessException : est lancée s'il y a eu une erreur
+   */
   @Override
   public InteretDTO creerUnInteret(InteretDTO interetDTO) {
     serviceDAL.commencerTransaction();
@@ -43,7 +50,13 @@ public class InteretUCCImpl implements InteretUCC {
     return interet;
   }
 
-
+  /**
+   * Récupère le nombre de personnes intéressées pour une offre.
+   *
+   * @param id : l'id de l'offre dont les personnes sont intéressées
+   * @return nbPersonnesInteressees : le nombre de personnes intéressées
+   * @throws BusinessException : est lancée si l'id de l'offre est incorrect
+   */
   @Override
   public int nbPersonnesInteressees(int id) {
     serviceDAL.commencerTransaction();
