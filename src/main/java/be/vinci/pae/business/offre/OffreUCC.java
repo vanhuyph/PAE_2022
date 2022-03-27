@@ -4,13 +4,13 @@ import java.util.List;
 
 public interface OffreUCC {
 
-  OffreDTO creerUneOffre(OffreDTO offreDTO);
+  OffreDTO creerOffre(OffreDTO offreDTO);
 
   List<OffreDTO> listerOffres();
 
   List<OffreDTO> listerOffresRecentes();
 
-  OffreDTO annulerUneOffre(int idOffre);
+  OffreDTO annulerOffre(int idOffre);
 
   OffreDTO rechercheParId(int id);
 
