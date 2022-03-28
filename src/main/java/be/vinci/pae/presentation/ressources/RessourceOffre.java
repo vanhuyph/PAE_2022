@@ -206,7 +206,8 @@ public class RessourceOffre {
     //check id du token == id de l'offreur ?
 
     if (offreAvecModification.getObjetDTO().getDescription().isBlank()
-        || offreAvecModification.getPlageHoraire() // check de typeObjet ?? pas de modification mais pour être sur?
+        || offreAvecModification.getPlageHoraire()
+        // check de typeObjet ?? pas de modification mais pour être sur?
         .isBlank()) {
       throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
     }
