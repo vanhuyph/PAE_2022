@@ -122,10 +122,11 @@ public class OffreUCCImpl implements OffreUCC {
   }
 
   /**
-   * Modifie une offre et son objet correspondant
+   * Modifie une offre et son objet correspondant.
    *
-   * @param offreAvecModification :
+   * @param offreAvecModification : l'offre contenant les modifications
    * @return l'offre modifiée
+   * @throws BusinessException : lance une exception business si l'offre n'a pas pu être annulée
    */
   @Override
   public OffreDTO modifierOffre(OffreDTO offreAvecModification) {

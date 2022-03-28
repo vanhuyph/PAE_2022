@@ -193,6 +193,30 @@ public class OffreDAOImpl implements OffreDAO {
   }
 
   /**
+   * Modifie une offre.
+   *
+   * @param offreAvecModification : : l'offre contenant les modifications
+   * @return l'offre modifiée
+   * @throws FatalException si l'offre n'a pas pu être modifiée
+   */
+  @Override
+  public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
+    String requetePs = "UPDATE projet.offres SET plage_horaire = ? WHERE id_offre = ?;";
+    //returning l'offre modifié depuis la db ?
+    //impl version
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setString(1, offreAvecModification.getPlageHoraire());
+      ps.setInt(3, offreAvecModification.getIdOffre());
+      ps.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return offreAvecModification;
+  }
+
+  /**
    * Rempli une liste d'offres depuis un ResultSet.
    *
    * @param offreDTO : l'offre vide, qui va être remplie

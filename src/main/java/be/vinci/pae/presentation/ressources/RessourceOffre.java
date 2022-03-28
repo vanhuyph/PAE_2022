@@ -98,6 +98,7 @@ public class RessourceOffre {
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
   public OffreDTO annulerOffre(@PathParam("id") int id) {
+    //check id du token == id de l'offreur ?
     if (id <= 0) {
       throw new PresentationException("L'id de l'offre est incorrect", Status.BAD_REQUEST);
     }
@@ -202,9 +203,10 @@ public class RessourceOffre {
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
   public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
+    //check id du token == id de l'offreur ?
+
     if (offreAvecModification.getObjetDTO().getDescription().isBlank()
-        || offreAvecModification.getObjetDTO().getTypeObjet() == null
-        || offreAvecModification.getPlageHoraire()
+        || offreAvecModification.getPlageHoraire() // check de typeObjet ?? pas de modification mais pour être sur?
         .isBlank()) {
       throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
     }
