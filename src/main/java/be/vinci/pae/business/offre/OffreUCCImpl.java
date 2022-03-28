@@ -121,4 +121,27 @@ public class OffreUCCImpl implements OffreUCC {
     return liste;
   }
 
+  /**
+   * Modifie une offre et son objet correspondant
+   *
+   * @param offreAvecModification :
+   * @return l'offre modifiée
+   */
+  @Override
+  public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
+    serviceDAL.commencerTransaction();
+    ObjetDTO objet = objetDAO.modifierObjet(offreAvecModification.getObjetDTO());
+    if (objet == null) {
+      serviceDAL.retourEnArriereTransaction();
+      throw new BusinessException("L'objet n'a pas pu être modifiée");
+    }
+    OffreDTO offre = offreDAO.modifierOffre(offreAvecModification);
+    if (offre == null) {
+      serviceDAL.retourEnArriereTransaction();
+      throw new BusinessException("L'offre n'a pas pu être modifiée");
+    }
+    serviceDAL.commettreTransaction();
+    return offre;
+  }
+
 }

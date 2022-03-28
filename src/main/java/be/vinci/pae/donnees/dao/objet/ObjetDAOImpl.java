@@ -65,4 +65,27 @@ public class ObjetDAOImpl implements ObjetDAO {
     return objetDTO;
   }
 
+  /**
+   * Modifie un objet.
+   *
+   * @param objetAvecModification : l'objet avec les modifications
+   * @return objetDTO : l'objet modifié
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public ObjetDTO modifierObjet(ObjetDTO objetAvecModification) {
+    String requetePs = "UPDATE projet.objets SET description = ? , photo = ?  WHERE id_objet = ?;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setString(1, objetAvecModification.getEtatObjet());
+      ps.setString(2, objetAvecModification.getPhoto());
+      ps.setInt(3, objetAvecModification.getIdObjet());
+      ps.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return objetAvecModification;
+  }
+
 }

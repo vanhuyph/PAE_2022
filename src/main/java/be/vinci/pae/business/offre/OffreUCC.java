@@ -16,4 +16,5 @@ public interface OffreUCC {
 
   List<OffreDTO> offresPrecedentes(int idObjet);
 
+  OffreDTO modifierOffre(OffreDTO offreModifiee);
 }
