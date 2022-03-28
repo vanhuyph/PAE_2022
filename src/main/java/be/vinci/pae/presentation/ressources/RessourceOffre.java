@@ -169,8 +169,7 @@ public class RessourceOffre {
   @Autorisation
   public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
-    String nomFichier = fichierDisposition.getFileName();
-    String nomDencodage = UUID.randomUUID() + nomFichier;
+    String nomDencodage = UUID.randomUUID().toString();
     Files.copy(photo, Paths.get(Config.getPropriete("OneDrivePhotos") + nomDencodage),
         StandardCopyOption.REPLACE_EXISTING);
     return Response.ok(nomDencodage).build();
