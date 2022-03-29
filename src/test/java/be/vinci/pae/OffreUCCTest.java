@@ -11,6 +11,7 @@ import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import java.util.ArrayList;
 import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -107,12 +108,21 @@ public class OffreUCCTest {
   @DisplayName("Test raté : méthode annulerOffre renvoie null car l'offre n'est pas trouvable.")
   public void annulerOffreV1() {
     Mockito.when(objetDAO.miseAJourObjet(objetDTO1)).thenReturn(null);
+    Mockito.when(objetDAO.rechercheParId(objetDTO1)).thenReturn(null);
+    assertThrows(PasTrouveException.class, () -> offreUCC.annulerOffre(offreDTO1));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode annulerOffre renvoie null car l'offre n'est pas trouvable.")
+  public void annulerOffreV2() {
+    Mockito.when(objetDAO.miseAJourObjet(objetDTO1)).thenReturn(null);
+    Mockito.when(objetDAO.rechercheParId(objetDTO1)).thenReturn(objetDTO1);
     assertThrows(BusinessException.class, () -> offreUCC.annulerOffre(offreDTO1));
   }
 
   @Test
   @DisplayName("Test réussi : méthode annulerOffre renvoie l'offre annulée.")
-  public void annulerOffreV2() {
+  public void annulerOffreV3() {
     Mockito.when(objetDAO.miseAJourObjet(offreDTO1.getObjetDTO()))
         .thenReturn(offreDTO1.getObjetDTO());
     assertEquals(offreDTO1, offreUCC.annulerOffre(offreDTO1));
