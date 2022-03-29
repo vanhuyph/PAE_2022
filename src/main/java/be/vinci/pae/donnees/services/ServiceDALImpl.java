@@ -21,6 +21,7 @@ public class ServiceDALImpl implements ServiceDAL, ServiceBackendDAL {
     bds.setDriverClassName(Config.getPropriete("PostgresDriver"));
     bds.setUsername(Config.getPropriete("PostgresUtilisateur"));
     bds.setPassword(Config.getPropriete("PostgresMdp"));
+    bds.setMaxTotal(5);
   }
 
   /**
@@ -35,7 +36,7 @@ public class ServiceDALImpl implements ServiceDAL, ServiceBackendDAL {
     if (threadConnexion.get() == null) {
       throw new FatalException("Erreur connexion introuvable");
     }
-    PreparedStatement ps = null;
+    PreparedStatement ps;
     try {
       ps = threadConnexion.get().prepareStatement(requete);
       return ps;
@@ -73,14 +74,13 @@ public class ServiceDALImpl implements ServiceDAL, ServiceBackendDAL {
   @Override
   public void commettreTransaction() {
     Connection c = threadConnexion.get();
-    if (c == null) {
-      throw new FatalException("Pas de connexion: la transaction n'a pas été commencé");
-    }
-    try {
+    try (c) {
+      if (c == null) {
+        throw new FatalException("Pas de connexion : la transaction n'a pas été commencée");
+      }
       c.commit();
       bds.setDefaultAutoCommit(true);
       threadConnexion.remove();
-      c.close();
     } catch (SQLException e) {
       throw new FatalException("Erreur de commit", e);
     }
@@ -95,14 +95,13 @@ public class ServiceDALImpl implements ServiceDAL, ServiceBackendDAL {
   @Override
   public void retourEnArriereTransaction() {
     Connection c = threadConnexion.get();
-    if (c == null) {
-      throw new FatalException("Pas de connexion: la transaction n'a pas été commencé");
-    }
-    try {
+    try (c) {
+      if (c == null) {
+        throw new FatalException("Pas de connexion : la transaction n'a pas été commencée");
+      }
       c.rollback();
       bds.setDefaultAutoCommit(true);
       threadConnexion.remove();
-      c.close();
     } catch (SQLException e) {
       throw new FatalException("Erreur de retour en arrière", e);
     }

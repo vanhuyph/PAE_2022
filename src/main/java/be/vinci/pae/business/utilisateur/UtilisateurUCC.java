@@ -10,8 +10,6 @@ public interface UtilisateurUCC {
 
   UtilisateurDTO rechercheParPseudo(String pseudo);
 
-  UtilisateurDTO rechercheParPseudoInscription(String pseudo);
-
   UtilisateurDTO inscription(UtilisateurDTO utilisateurDTO);
 
   UtilisateurDTO confirmerInscription(int id, boolean estAdmin);
@@ -21,4 +19,5 @@ public interface UtilisateurUCC {
   List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription);
 
   UtilisateurDTO miseAJourInfo(UtilisateurDTO utilisateur);
+
 }

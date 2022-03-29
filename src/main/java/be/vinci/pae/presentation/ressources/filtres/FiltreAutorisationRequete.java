@@ -18,7 +18,6 @@ public class FiltreAutorisationRequete extends AutorisationAbstraite implements
 
   @Override
   public void filter(ContainerRequestContext requestContext) {
-
     UtilisateurDTO utilisateurAuthentifie = null;
     try {
       utilisateurAuthentifie = tokenDecode(requestContext);
@@ -31,7 +30,7 @@ public class FiltreAutorisationRequete extends AutorisationAbstraite implements
     }
     if (utilisateurAuthentifie == null) {
       requestContext.abortWith(Response.status(Status.FORBIDDEN)
-          .entity("Vous ne pouvez pas accéder a cette ressource").build());
+          .entity("Vous ne pouvez pas accéder à cette ressource").build());
     }
     requestContext.setProperty("utilisateur", utilisateurAuthentifie);
   }

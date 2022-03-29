@@ -30,9 +30,9 @@ public class FiltreAutorisationRequeteAdmin extends AutorisationAbstraite implem
     }
     if (utilisateurAuthentifie == null || !utilisateurAuthentifie.isEstAdmin()) {
       requestContext.abortWith(Response.status(Status.FORBIDDEN)
-          .entity("Vous ne pouvez pas accéder a cette ressource").build());
+          .entity("Vous ne pouvez pas accéder à cette ressource").build());
     }
     requestContext.setProperty("utilisateur", utilisateurAuthentifie);
-
   }
+
 }

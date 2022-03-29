@@ -13,6 +13,8 @@ public interface UtilisateurDAO {
 
   UtilisateurDTO confirmerInscription(int id, boolean estAdmin);
 
+  UtilisateurDTO modifierGsm(UtilisateurDTO utilisateurDTO);
+
   List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription);
 
   UtilisateurDTO refuserInscription(int id, String commentaire);

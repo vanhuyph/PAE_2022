@@ -45,4 +45,5 @@ public interface UtilisateurDTO {
   AdresseDTO getAdresse();
 
   void setAdresse(AdresseDTO adresse);
+
 }

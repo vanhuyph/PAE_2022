@@ -3,83 +3,104 @@ import PageConnexion from "../Pages/PageConnexion";
 import ComposantDeconnexion from "../Pages/ComposantDeconnexion";
 import PageInscription from "../Pages/PageInscription";
 import PageAdmin from "../Pages/PageAdmin";
+import PageOffrirObjet from "../Pages/PageOffrirObjet";
+import PageDetailsObjet from "../Pages/PageDetailsObjet";
 import PageProfil from "../Pages/PageProfil";
 
-// Configure your routes here
+// Configuration des routeurs ici
 const routes = {
   "/": PageAccueil,
   "/connexion": PageConnexion,
   "/deconnexion": ComposantDeconnexion,
   "/inscription": PageInscription,
   "/admin": PageAdmin,
+  "/offrirObjet": PageOffrirObjet,
+  "/objet": PageDetailsObjet,
   "/profil": PageProfil,
 };
 
 /**
- * Deal with call and auto-render of Functional Components following click events
- * on Navbar, Load / Refresh operations, Browser history operation (back or next) or redirections.
- * A Functional Component is responsible to auto-render itself : Pages, Header...
+ * Gère l'appel et le rendu automatique des composants fonctionnels suite à des événements de clics
+ * sur la navbar, aux opérations de chargement / rafraîchissement, l'historique du navigateur (retour or avant) ou redirections.
+ * Un composant fonctionnel est responsable de son auto-rendu : Pages, En-tête...
  */
 
 const Router = () => {
-  /* Manage click on the Navbar */
+  /* Gère le clic sur la navbar */
   let navbarWrapper = document.querySelector("#navbarWrapper");
   navbarWrapper.addEventListener("click", (e) => {
-    // To get a data attribute through the dataset object, get the property by the part of the attribute name after data- (note that dashes are converted to camelCase).
+    // Pour obtenir un attribut de données par l'intermédiaire de l'objet dataset, il faut obtenir la propriété par la partie du nom de l'attribut après data (notez que les tirets sont convertis en camelCase).
     let uri = e.target.dataset.uri;
-
     if (uri) {
       e.preventDefault();
-      /* use Web History API to add current page URL to the user's navigation history 
-       & set right URL in the browser (instead of "#") */
+      /* Utilise l'API Historique Web pour ajouter l'URL de la page actuelle à l'historique de navigation de l'utilisateur
+       & définir la bonne URL dans le navigateur (au lieu de "#") */
       window.history.pushState({}, uri, window.location.origin + uri);
-      /* render the requested component
-      NB : for the components that include JS, we want to assure that the JS included 
-      is not runned when the JS file is charged by the browser
-      therefore, those components have to be either a function or a class*/
+      /* Fait un rendu du composant demandé
+      NB : pour les composants qui incluent du JS, nous voulons nous assurer que le JS inclus
+      ne soit pas exécuté lorsque le fichier JS est chargé par le navigateur
+      donc, ces composants doivent être soit une fonction, soit une classe. */
       const componentToRender = routes[uri];
       if (routes[uri]) {
         componentToRender();
       } else {
-        throw Error("The " + uri + " ressource does not exist");
+        throw Error("La " + uri + " ressource n'existe pas");
       }
     }
   });
 
-  /* Route the right component when the page is loaded / refreshed */
+  /* Achemine le bon composant lorsque la page est chargée / rafraîchie */
   window.addEventListener("load", (e) => {
-    const componentToRender = routes[window.location.pathname];
+    let chemins = window.location.pathname.split("/")
+    const componentToRender = routes["/" + chemins[1]];
     if (!componentToRender) {
       throw Error(
-          "The " + window.location.pathname + " ressource does not exist."
+          "La " + window.location.pathname + " ressource n'existe pas"
       );
     }
-
-    componentToRender();
+    if (chemins[2]) {
+      componentToRender(chemins[2])
+    } else {
+      componentToRender();
+    }
   });
 
-  // Route the right component when the user use the browsing history
+  // Achemine le bon composant lorsque l'utilisateur utilise l'historique de navigation.
   window.addEventListener("popstate", () => {
-    const componentToRender = routes[window.location.pathname];
-    componentToRender();
+    let chemins = window.location.pathname.split("/")
+    const componentToRender = routes["/" + chemins[1]];
+    if (chemins[2]) {
+      componentToRender(chemins[2])
+    } else {
+      componentToRender();
+    }
   });
 };
 
 /**
- * Call and auto-render of Functional Components associated to the given URL
- * @param {*} uri - Provides an URL that is associated to a functional component in the
- * routes array of the Router
+ * Appel et fait un rendu automatique des composants fonctionnels associés à l'URL donnée.
+ * @param {*} uri - Fournit une URL associée à un composant fonctionnel dans le tableau
+ * tableau des routes du routeur
  */
 
-const Redirect = (uri) => {
-  // use Web History API to add current page URL to the user's navigation history & set right URL in the browser (instead of "#")
-  window.history.pushState({}, uri, window.location.origin + uri);
-  // render the requested component
+const Redirect = (uri, data) => {
+  // Utilise l'API Historique Web pour ajouter l'URL de la page actuelle à l'historique de navigation de l'utilisateur et définir la bonne URL dans le navigateur (au lieu de "#")
+  if (!data) {
+    window.history.pushState({}, uri, window.location.origin + uri);
+  } else {
+    window.history.pushState({}, uri + "/" + data,
+        window.location.origin + uri + "/" + data);
+  }
+  // Rend le composant demandé
   const componentToRender = routes[uri];
   if (routes[uri]) {
-    componentToRender();
+    if (!data) {
+      componentToRender()
+    } else {
+      componentToRender(data)
+    }
   } else {
-    throw Error("The " + uri + " ressource does not exist");
+    throw Error("La " + uri + " ressource n'existe pas");
   }
 };
 
