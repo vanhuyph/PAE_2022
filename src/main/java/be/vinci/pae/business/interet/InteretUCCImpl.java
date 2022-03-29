@@ -7,6 +7,7 @@ import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import jakarta.inject.Inject;
 import java.util.Date;
+import java.util.List;
 
 public class InteretUCCImpl implements InteretUCC {
 
@@ -53,20 +54,39 @@ public class InteretUCCImpl implements InteretUCC {
   /**
    * Récupère le nombre de personnes intéressées pour une offre.
    *
-   * @param id : l'id de l'offre dont les personnes sont intéressées
+   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
    * @return nbPersonnesInteressees : le nombre de personnes intéressées
-   * @throws BusinessException : est lancée si l'id de l'offre est incorrect
+   * @throws BusinessException : est lancée si l'id de l'objet est incorrect
    */
   @Override
-  public int nbPersonnesInteressees(int id) {
+  public int nbPersonnesInteressees(int idObjet) {
     serviceDAL.commencerTransaction();
-    if (id <= 0) {
+    if (idObjet <= 0) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'offre n'a pas pu être trouvée");
+      throw new BusinessException("L'objet n'a pas pu être trouvée");
     }
-    int nbPersonnesInteressees = interetDAO.nbPersonnesInteressees(id);
+    int nbPersonnesInteressees = interetDAO.nbPersonnesInteressees(idObjet);
     serviceDAL.commettreTransaction();
     return nbPersonnesInteressees;
+  }
+
+  /**
+   * Liste les interets.
+   *
+   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @return liste : la liste de toutes les interets
+   * @throws BusinessException : est lancée si l'id de l'objet est incorrect
+   */
+  @Override
+  public List<InteretDTO> listeDesPersonnesInteressees(int idObjet) {
+    serviceDAL.commencerTransaction();
+    if (idObjet <= 0) {
+      serviceDAL.retourEnArriereTransaction();
+      throw new BusinessException("l'objet n'a pas pu être trouvée");
+    }
+    List<InteretDTO> list = interetDAO.listeDesPersonnesInteressees(idObjet);
+    serviceDAL.commettreTransaction();
+    return list;
   }
 
 }

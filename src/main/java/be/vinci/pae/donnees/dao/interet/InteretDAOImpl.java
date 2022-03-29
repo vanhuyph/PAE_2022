@@ -1,6 +1,11 @@
 package be.vinci.pae.donnees.dao.interet;
 
+import be.vinci.pae.business.DomaineFactory;
+import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.interet.InteretDTO;
+import be.vinci.pae.business.objet.ObjetDTO;
+import be.vinci.pae.business.typeobjet.TypeObjetDTO;
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
@@ -8,11 +13,16 @@ import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InteretDAOImpl implements InteretDAO {
 
   @Inject
+  private DomaineFactory factory;
+  @Inject
   private ServiceBackendDAL serviceBackendDAL;
+
 
   /**
    * Ajoute un intérêt à l'objet.
@@ -38,6 +48,13 @@ public class InteretDAOImpl implements InteretDAO {
     return interetDTO;
   }
 
+  /**
+   * nombre de personnes intéressées pour une offre.
+   *
+   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @return nbPers : le nombre de personnes intéressées
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
   @Override
   public int nbPersonnesInteressees(int idObjet) {
     String requetePS = "SELECT COUNT(i.utilisateur) FROM projet.interets i WHERE i.objet = ?;";
@@ -57,4 +74,109 @@ public class InteretDAOImpl implements InteretDAO {
     return nbPers;
   }
 
+  /**
+   * Liste les interet de sa propre offre.
+   *
+   * @return liste : la liste des offres les plus récentes
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public List<InteretDTO> listeDesPersonnesInteressees(int idObjet) {
+    String requetePS = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
+        + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet, "
+        + "o.description, o.photo, i.date FROM projet.interets i, "
+        + "projet.utilisateurs u, projet.adresses a, projet.objets o, projet.types_objets t WHERE "
+        + "i.objet = ? AND o.id_objet = i.objet AND i.utilisateur = u.id_utilisateur AND "
+        + "t.id_type = o.type_objet AND a.id_adresse = u.adresse;";
+    InteretDTO interetDTO = factory.getInteret();
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
+      ps.setInt(1, idObjet);
+      List<InteretDTO> listeDesPersonnesInteressees =
+          remplirListInteretDepuisResulSet(interetDTO, ps);
+
+      return listeDesPersonnesInteressees;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Rempli une liste d'interet depuis un ResultSet.
+   *
+   * @param interetDTO : l'interet vide, qui va être remplie
+   * @param ps         : le PreparedStatement déjà mis en place
+   * @return liste : la liste remplie
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  private List<InteretDTO> remplirListInteretDepuisResulSet(InteretDTO interetDTO,
+      PreparedStatement ps) {
+    List<InteretDTO> liste = new ArrayList<>();
+    try (ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        interetDTO = remplirInteretDepuisResulSet(interetDTO, rs);
+        liste.add(interetDTO);
+        interetDTO = factory.getInteret();
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return liste;
+  }
+
+  /**
+   * Rempli les données de l'interet depuis un ResultSet.
+   *
+   * @param interetDTO : l'interet vide, qui va être rempli
+   * @param rs         : le Result Statement déjà préparé
+   * @return interetDTO : l'interet rempli
+   */
+  private InteretDTO remplirInteretDepuisResulSet(InteretDTO interetDTO, ResultSet rs) {
+    ObjetDTO objetDTO = factory.getObjet();
+    AdresseDTO adresseDTO = factory.getAdresse();
+    UtilisateurDTO interesse = factory.getUtilisateur();
+    TypeObjetDTO typeObjetDTO = factory.getTypeObjet();
+    try {
+      adresseDTO.setIdAdresse(rs.getInt(1));
+      adresseDTO.setRue(rs.getString(2));
+      adresseDTO.setNumero(rs.getInt(3));
+      adresseDTO.setBoite(rs.getString(4));
+      adresseDTO.setCodePostal(rs.getInt(5));
+      adresseDTO.setCommune(rs.getString(6));
+
+      interesse.setIdUtilisateur(rs.getInt(7));
+      interesse.setPseudo(rs.getString(8));
+      interesse.setNom(rs.getString(9));
+      interesse.setPrenom(rs.getString(10));
+      interesse.setMdp(rs.getString(11));
+      interesse.setGsm(rs.getString(12));
+      interesse.setEstAdmin(rs.getBoolean(13));
+      interesse.setEtatInscription(rs.getString(14));
+      interesse.setCommentaire(rs.getString(15));
+      interesse.setAdresse(adresseDTO);
+
+      typeObjetDTO.setIdType(rs.getInt(16));
+      typeObjetDTO.setNom(rs.getString(17));
+
+      objetDTO.setIdObjet(rs.getInt(18));
+      objetDTO.setEtatObjet(rs.getString(19));
+      objetDTO.setTypeObjet(typeObjetDTO);
+      objetDTO.setDescription(rs.getString(20));
+      objetDTO.setOffreur(null);
+      objetDTO.setReceveur(null);
+      objetDTO.setPhoto(rs.getString(21));
+
+      interetDTO.setUtilisateur(interesse);
+      interetDTO.setObjet(objetDTO);
+      interetDTO.setDateRdv(rs.getDate(22));
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return interetDTO;
+  }
 }

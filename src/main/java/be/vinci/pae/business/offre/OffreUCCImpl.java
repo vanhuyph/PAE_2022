@@ -103,6 +103,7 @@ public class OffreUCCImpl implements OffreUCC {
     return offre;
   }
 
+
   /**
    * Récupère les offres précédentes de l'objet avec l'id passé en paramètre.
    *

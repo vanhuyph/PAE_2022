@@ -132,7 +132,19 @@ VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h');
 INSERT INTO projet.offres
 VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h');
 
-SELECT u.id_utilisateur, u.pseudo, u.est_admin, u.etat_inscription, u.commentaire
+INSERT INTO projet.utilisateurs
+VALUES (DEFAULT, 'didi', 'didi', 'didi',
+        '$2a$10$HuP3EOr3NfjMNiFhCGAYf.QLfnQ7R5WGl.IokLtCp4UBo7svGNhBS', NULL, true, 4, 'Confirmé',
+        NULL);
+
+SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,
+        u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin,
+        u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet,
+        o.description, o.photo, i.date FROM projet.interets i,
+        projet.utilisateurs u, projet.adresses a, projet.objets o, projet.types_objets t WHERE a.id_adresse = u.adresse AND
+         i.objet = ? AND o.id_objet = i.objet AND i.utilisateur = u.id_utilisateur AND t.id_type = o.type_objet;
+
+/*SELECT u.id_utilisateur, u.pseudo, u.est_admin, u.etat_inscription, u.commentaire
 FROM projet.utilisateurs u
 ORDER BY u.est_admin, u.etat_inscription;
 
@@ -148,4 +160,4 @@ SELECT u.nom, o.description
 FROM projet.objets o,
      projet.utilisateurs u
 WHERE u.id_utilisateur = o.offreur
-ORDER BY u.nom, o.description;
+ORDER BY u.nom, o.description;*/
