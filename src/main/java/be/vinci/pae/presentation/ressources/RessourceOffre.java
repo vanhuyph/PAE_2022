@@ -87,21 +87,21 @@ public class RessourceOffre {
   /**
    * Annule une offre.
    *
-   * @param id : l'id de l'offre a annulé
+   * @param offreDTO : l'offre a annulé
    * @return offreDTO : l'offre annulée
    * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'annulation
    *                               a échoué
    */
   @PUT
-  @Path("annulerOffre/{id}")
+  @Path("annulerOffre")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @Autorisation
-  public OffreDTO annulerOffre(@PathParam("id") int id) {
-    if (id <= 0) {
+  //@Autorisation
+  public OffreDTO annulerOffre(OffreDTO offreDTO) {
+    if (offreDTO.getIdOffre() <= 0) {
       throw new PresentationException("L'id de l'offre est incorrect", Status.BAD_REQUEST);
     }
-    OffreDTO offreDTO = offreUCC.annulerOffre(id);
+    offreDTO = offreUCC.annulerOffre(offreDTO);
     if (offreDTO == null) {
       throw new PresentationException("L'annulation de l'offre a échoué", Status.BAD_REQUEST);
     }

@@ -39,7 +39,7 @@ public class InteretUCCImpl implements InteretUCC {
       interetDTO.setUtilisateur(utilisateurDAO.modifierGsm(interetDTO.getUtilisateur()));
     }
     interetDTO.getObjet().setEtatObjet("Intéressé");
-    objetDAO.changeEtatObjet(interetDTO.getObjet());
+    objetDAO.miseAJourObjet(interetDTO.getObjet());
     InteretDTO interet = interetDAO.ajouterInteret(interetDTO);
     if (interet == null || interet.getUtilisateur().getIdUtilisateur() <= 0 || interet.getObjet()
         .getIdObjet() <= 0) {

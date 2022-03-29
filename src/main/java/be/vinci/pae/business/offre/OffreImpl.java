@@ -18,6 +18,8 @@ public class OffreImpl implements Offre {
   private ObjetDTO objetDTO;
   @JsonView(Vues.Public.class)
   private String plageHoraire;
+  @JsonView(Vues.Public.class)
+  private int version;
 
   public int getIdOffre() {
     return idOffre;
@@ -51,6 +53,14 @@ public class OffreImpl implements Offre {
     this.plageHoraire = plageHoraire;
   }
 
+  public int getVersion() {
+    return version;
+  }
+
+  public void setVersion(int version) {
+    this.version = version;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -78,4 +88,9 @@ public class OffreImpl implements Offre {
         + '}';
   }
 
+  @Override
+  public OffreDTO changerEtatObjet(String etat) {
+    this.getObjetDTO().setEtatObjet(etat);
+    return this;
+  }
 }

@@ -82,6 +82,7 @@ public class ServiceDALImpl implements ServiceDAL, ServiceBackendDAL {
       bds.setDefaultAutoCommit(true);
       threadConnexion.remove();
     } catch (SQLException e) {
+      threadConnexion.remove();
       throw new FatalException("Erreur de commit", e);
     }
   }
@@ -103,6 +104,7 @@ public class ServiceDALImpl implements ServiceDAL, ServiceBackendDAL {
       bds.setDefaultAutoCommit(true);
       threadConnexion.remove();
     } catch (SQLException e) {
+      threadConnexion.remove();
       throw new FatalException("Erreur de retour en arrière", e);
     }
   }
