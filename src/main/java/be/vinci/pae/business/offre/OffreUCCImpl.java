@@ -5,6 +5,7 @@ import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import jakarta.inject.Inject;
 import java.util.List;
 
@@ -69,17 +70,28 @@ public class OffreUCCImpl implements OffreUCC {
   /**
    * Annuler une offre.
    *
-   * @param id : id de l'offre à annuler
+   * @param offreDTO : id de l'offre à annuler
    * @return l'offre annulée
    * @throws BusinessException : lance une exception business si l'offre n'a pas pu être annulée
    */
   @Override
-  public OffreDTO annulerOffre(int id) {
+  public OffreDTO annulerOffre(OffreDTO offreDTO) {
     serviceDAL.commencerTransaction();
-    OffreDTO offre = offreDAO.annulerOffre(id);
-    if (offre == null || offre.getIdOffre() <= 0) {
+    Offre offre;
+    try {
+      offre = (Offre) offreDTO;
+      offre.changerEtatObjet("Annulé");
+      ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
+      if (objet == null) {
+        ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
+        if (objetVerif == null) {
+          throw new PasTrouveException("L'objet n'existe pas");
+        }
+        throw new BusinessException("L'offre n'a pas pu être annulée.");
+      }
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'offre n'a pas pu être annulée.");
+      throw e;
     }
     serviceDAL.commettreTransaction();
     return offre;

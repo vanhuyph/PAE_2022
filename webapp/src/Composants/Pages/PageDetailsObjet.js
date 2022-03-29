@@ -199,7 +199,8 @@ const surDetailObjet = async (offre) => {
     let interet = {
       utilisateur: utilisateur,
       objet: offre.objetDTO,
-      dateRdv: date
+      dateRdv: date,
+      version: 1
     }
 
     // Vérifie si une disponibilité est introduite
@@ -366,12 +367,15 @@ const surDetailObjetProprio = async (offre) => {
   pageDiv.innerHTML = offrePage
 
   document.querySelector("#modifier-offre").addEventListener("click", () => {
+    console.log(offre)
     //surDetailObjetProprioModifier(offre)
   })
   document.querySelector("#annuler-offre").addEventListener("click", () => {
     const session = recupUtilisateurDonneesSession()
-    fetch("/api/offres/annulerOffre/" + offre.idOffre, {
+
+    fetch("/api/offres/annulerOffre", {
       method: "PUT",
+      body:JSON.stringify(offre),
       headers: {
         "Content-Type": "application/json",
         "Authorization": session.token,

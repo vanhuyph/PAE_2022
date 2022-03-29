@@ -29,4 +29,7 @@ public interface AdresseDTO {
 
   void setCommune(String commune);
 
+  int getVersion();
+
+  void setVersion(int version);
 }
