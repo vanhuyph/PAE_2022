@@ -87,7 +87,7 @@ public class OffreUCCImpl implements OffreUCC {
         if (objetVerif == null) {
           throw new PasTrouveException("L'objet n'existe pas");
         }
-        throw new BusinessException("L'offre n'a pas pu être annulée.");
+        throw new BusinessException("Données périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
