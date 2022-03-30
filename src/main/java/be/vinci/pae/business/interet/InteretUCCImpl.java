@@ -1,5 +1,6 @@
 package be.vinci.pae.business.interet;
 
+import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.donnees.dao.interet.InteretDAO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
@@ -73,18 +74,18 @@ public class InteretUCCImpl implements InteretUCC {
   /**
    * Liste les interets.
    *
-   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @param objetDTO : l'objet dont les personnes sont intéressées
    * @return liste : la liste de toutes les interets
    * @throws BusinessException : est lancée si l'id de l'objet est incorrect
    */
   @Override
-  public List<InteretDTO> listeDesPersonnesInteressees(int idObjet) {
+  public List<InteretDTO> listeDesPersonnesInteressees(ObjetDTO objetDTO) {
     serviceDAL.commencerTransaction();
-    if (idObjet <= 0) {
+    if (objetDTO == null) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("l'objet n'a pas pu être trouvée");
+      throw new BusinessException("l'objet est null");
     }
-    List<InteretDTO> list = interetDAO.listeDesPersonnesInteressees(idObjet);
+    List<InteretDTO> list = interetDAO.listeDesPersonnesInteressees(objetDTO);
     serviceDAL.commettreTransaction();
     return list;
   }

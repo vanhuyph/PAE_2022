@@ -192,6 +192,7 @@ public class OffreDAOImpl implements OffreDAO {
     return liste;
   }
 
+
   /**
    * Rempli une liste d'offres depuis un ResultSet.
    *

@@ -1,6 +1,7 @@
 package be.vinci.pae.business.offre;
 
 import be.vinci.pae.business.objet.ObjetDTO;
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
@@ -121,5 +122,20 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commettreTransaction();
     return liste;
   }
+
+  @Override
+  public OffreDTO indiquerMembreReceveur(OffreDTO offreDTO, UtilisateurDTO utilisateurDTO) {
+    serviceDAL.commencerTransaction();
+    offreDTO.getObjetDTO().setEtatObjet("Confirmé");
+    offreDTO.setObjetDTO(objetDAO.indiquerMembreReceveur(utilisateurDTO, offreDTO.getObjetDTO()));
+    if (offreDTO == null) {
+      serviceDAL.retourEnArriereTransaction();
+      throw new BusinessException("L'offre est null");
+    }
+
+    serviceDAL.commettreTransaction();
+    return offreDTO;
+  }
+
 
 }

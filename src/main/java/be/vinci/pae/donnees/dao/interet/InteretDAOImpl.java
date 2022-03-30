@@ -4,7 +4,6 @@ import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.interet.InteretDTO;
 import be.vinci.pae.business.objet.ObjetDTO;
-import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import be.vinci.pae.donnees.services.ServiceDAL;
@@ -81,17 +80,16 @@ public class InteretDAOImpl implements InteretDAO {
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public List<InteretDTO> listeDesPersonnesInteressees(int idObjet) {
+  public List<InteretDTO> listeDesPersonnesInteressees(ObjetDTO objetDTO) {
     String requetePS = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
         + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-        + "u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet, "
-        + "o.description, o.photo, i.date FROM projet.interets i, "
-        + "projet.utilisateurs u, projet.adresses a, projet.objets o, projet.types_objets t WHERE "
-        + "i.objet = ? AND o.id_objet = i.objet AND i.utilisateur = u.id_utilisateur AND "
-        + "t.id_type = o.type_objet AND a.id_adresse = u.adresse;";
+        + "u.etat_inscription, u.commentaire, i.date FROM projet.interets i, "
+        + "projet.utilisateurs u, projet.adresses a WHERE "
+        + "i.objet = ? AND i.utilisateur = u.id_utilisateur AND a.id_adresse = u.adresse;";
     InteretDTO interetDTO = factory.getInteret();
+    interetDTO.setObjet(objetDTO);
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
-      ps.setInt(1, idObjet);
+      ps.setInt(1, objetDTO.getIdObjet());
       List<InteretDTO> listeDesPersonnesInteressees =
           remplirListInteretDepuisResulSet(interetDTO, ps);
 
@@ -114,11 +112,13 @@ public class InteretDAOImpl implements InteretDAO {
   private List<InteretDTO> remplirListInteretDepuisResulSet(InteretDTO interetDTO,
       PreparedStatement ps) {
     List<InteretDTO> liste = new ArrayList<>();
+    ObjetDTO objetDTO = interetDTO.getObjet();
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
         interetDTO = remplirInteretDepuisResulSet(interetDTO, rs);
         liste.add(interetDTO);
         interetDTO = factory.getInteret();
+        interetDTO.setObjet(objetDTO);
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -135,10 +135,8 @@ public class InteretDAOImpl implements InteretDAO {
    * @return interetDTO : l'interet rempli
    */
   private InteretDTO remplirInteretDepuisResulSet(InteretDTO interetDTO, ResultSet rs) {
-    ObjetDTO objetDTO = factory.getObjet();
     AdresseDTO adresseDTO = factory.getAdresse();
     UtilisateurDTO interesse = factory.getUtilisateur();
-    TypeObjetDTO typeObjetDTO = factory.getTypeObjet();
     try {
       adresseDTO.setIdAdresse(rs.getInt(1));
       adresseDTO.setRue(rs.getString(2));
@@ -158,20 +156,8 @@ public class InteretDAOImpl implements InteretDAO {
       interesse.setCommentaire(rs.getString(15));
       interesse.setAdresse(adresseDTO);
 
-      typeObjetDTO.setIdType(rs.getInt(16));
-      typeObjetDTO.setNom(rs.getString(17));
-
-      objetDTO.setIdObjet(rs.getInt(18));
-      objetDTO.setEtatObjet(rs.getString(19));
-      objetDTO.setTypeObjet(typeObjetDTO);
-      objetDTO.setDescription(rs.getString(20));
-      objetDTO.setOffreur(null);
-      objetDTO.setReceveur(null);
-      objetDTO.setPhoto(rs.getString(21));
-
       interetDTO.setUtilisateur(interesse);
-      interetDTO.setObjet(objetDTO);
-      interetDTO.setDateRdv(rs.getDate(22));
+      interetDTO.setDateRdv(rs.getDate(16));
 
     } catch (SQLException e) {
       e.printStackTrace();

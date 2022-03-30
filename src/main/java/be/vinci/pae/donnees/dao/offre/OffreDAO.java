@@ -17,4 +17,7 @@ public interface OffreDAO {
 
   List<OffreDTO> offresPrecedentes(int idObjet);
 
+  OffreDTO indiquerMembreReceveur(String pseudo, int idObjet);
+
+
 }
