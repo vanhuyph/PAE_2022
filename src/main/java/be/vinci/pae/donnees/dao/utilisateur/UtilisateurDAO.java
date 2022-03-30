@@ -21,4 +21,6 @@ public interface UtilisateurDAO {
 
   UtilisateurDTO miseAJourInfo(UtilisateurDTO utilisateur);
 
+  List<UtilisateurDTO> rechercherMembres(String recherche);
+
 }

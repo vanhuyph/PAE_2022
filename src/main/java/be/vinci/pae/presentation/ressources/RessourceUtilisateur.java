@@ -24,6 +24,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response.Status;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.glassfish.jersey.server.ContainerRequest;
@@ -233,6 +234,17 @@ public class RessourceUtilisateur {
   public UtilisateurDTO voirProfilUtilisateur(@PathParam("pseudo") String pseudo) {
     UtilisateurDTO utilisateurDTO = utilisateurUCC.rechercheParPseudo(pseudo);
     return utilisateurDTO;
+  }
+
+  @GET
+  @Path("recherche/{recherche}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AutorisationAdmin
+  public List<UtilisateurDTO> rechercherMembres(@PathParam("recherche") String recherche) {
+    List<UtilisateurDTO> liste = new ArrayList<>();
+    liste = utilisateurUCC.rechercherMembres(recherche);
+    return liste;
   }
 
 }

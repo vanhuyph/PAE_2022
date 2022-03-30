@@ -261,6 +261,44 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
+   * Récupère tous les utilisateurs en fonction d'un critère de recherche (nom, code postal ou
+   * ville).
+   *
+   * @param recherche : le critère de recherche
+   * @return liste : la liste des utilisateurs correspondant au critère de recherche passé en
+   * paramètre
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public List<UtilisateurDTO> rechercherMembres(String recherche) {
+    String requetePs =
+        "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+            + "u.etat_inscription, u.commentaire, a.id_adresse, a.rue, a.numero, a.boite, "
+            + "a.code_postal, a.commune FROM projet.utilisateurs u "
+            + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+            + "WHERE lower(u.nom) LIKE lower(?) OR a.code_postal::TEXT LIKE ? OR lower(a.commune) "
+            + "LIKE lower(?);";
+    List<UtilisateurDTO> liste = new ArrayList<>();
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      recherche = '%' + recherche + '%';
+      ps.setString(1, recherche);
+      ps.setString(2, recherche);
+      ps.setString(3, recherche);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
+          remplirUtilisateursDepuisRS(rs, utilisateurDTO);
+          liste.add(utilisateurDTO);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return liste;
+  }
+
+  /**
    * Rempli les données de l'utilisateur depuis un ResultSet.
    *
    * @param rs             : le ResultSet
