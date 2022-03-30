@@ -46,6 +46,22 @@ public class AdresseDAOImpl implements AdresseDAO {
   }
 
   /**
+   * Met à jour l'adresse.
+   *
+   * @param adresseDTO : l'adresse à mettre à jour
+   * @return adresseDTO : l'adresse mise à jour
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public AdresseDTO miseAJourAdresse(AdresseDTO adresseDTO) {
+    PreparedStatement ps = serviceBackendDAL.getPs(
+        "UPDATE FROM projet.adresses SET rue = ?, numero = ?, boite = ?, code_postal = ?, "
+            + "commune = ? WHERE id_adresse = ?;");
+    return recupAdresseDTODepuisPs(adresseDTO, ps);
+  }
+
+
+  /**
    * Rempli les données de l'adresse depuis un ResultSet.
    *
    * @param ps      : le PreparedStatement

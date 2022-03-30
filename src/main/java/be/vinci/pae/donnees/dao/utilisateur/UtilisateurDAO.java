@@ -20,4 +20,5 @@ public interface UtilisateurDAO {
   UtilisateurDTO refuserInscription(int id, String commentaire);
 
   UtilisateurDTO miseAJourInfo(UtilisateurDTO utilisateur);
+
 }
