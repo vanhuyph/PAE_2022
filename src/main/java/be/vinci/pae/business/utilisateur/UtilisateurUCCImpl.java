@@ -81,26 +81,6 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   }
 
   /**
-   * Verifie si un utilisateur avec le pseudo passé en paramètre existe déjà lors de l'inscription.
-   *
-   * @param pseudo : le pseudo de l'utilisateur
-   * @return utilisateur : l'utilisateur vide si aucun utilisateur correspond au pseudo
-   * @throws ConflitException : est lancée si un utilisateur possède déjà le pseudo passé en
-   *                          paramètre
-   */
-  @Override
-  public UtilisateurDTO rechercheParPseudoInscription(String pseudo) {
-    serviceDAL.commencerTransaction();
-    UtilisateurDTO utilisateur = utilisateurDAO.rechercheParPseudo(pseudo);
-    if (utilisateur == null || utilisateur.getIdUtilisateur() > 0) {
-      serviceDAL.retourEnArriereTransaction();
-      throw new ConflitException("Ce pseudo existe déjà");
-    }
-    serviceDAL.commettreTransaction();
-    return utilisateur;
-  }
-
-  /**
    * Permet l'inscription d'un utilisateur.
    *
    * @param utilisateurDTO : l'utilisateur à inscrire
@@ -115,7 +95,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     utilisateur.setMdp(utilisateur.hashMdp(utilisateur.getMdp()));
     if (utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()).getIdUtilisateur() > 0) {
       serviceDAL.retourEnArriereTransaction();
-      throw new ConflitException("Ce pseudo déjà utilisé");
+      throw new ConflitException("Ce pseudo est déjà utilisé");
     }
     AdresseDTO adresseDTO = adresseDAO.ajouterAdresse(utilisateurDTO.getAdresse());
     if (adresseDTO == null) {
@@ -147,7 +127,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     UtilisateurDTO utilisateurDTO = utilisateurDAO.confirmerInscription(id, estAdmin);
     if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être confirmé");
+      throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être confirmée");
     }
     serviceDAL.commettreTransaction();
     return utilisateurDTO;
@@ -168,7 +148,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     UtilisateurDTO utilisateurDTO = utilisateurDAO.refuserInscription(id, commentaire);
     if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être refusé");
+      throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être refusée");
     }
     serviceDAL.commettreTransaction();
     return utilisateurDTO;

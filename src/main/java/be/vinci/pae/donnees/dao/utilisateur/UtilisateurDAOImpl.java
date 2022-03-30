@@ -30,20 +30,19 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-    PreparedStatement ps = serviceBackendDAL.getPs(
+    String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, a.id_adresse, a.rue, a.numero, a.boite, "
             + "a.code_postal, a.commune FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
-            + "WHERE u.pseudo = ?;");
-    try {
+            + "WHERE u.pseudo = ?;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, pseudo);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           utilisateurDTO = remplirUtilisateursDepuisRS(rs, utilisateurDTO);
         }
       }
-      ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
@@ -62,20 +61,19 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO rechercheParId(int id) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-    PreparedStatement ps = serviceBackendDAL.getPs(
+    String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire,  a.id_adresse, a.rue, a.numero, a.boite, "
             + "a.code_postal, a.commune FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
-            + "WHERE u.id_utilisateur = ?;");
-    try {
+            + "WHERE u.id_utilisateur = ?;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, id);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           utilisateurDTO = remplirUtilisateursDepuisRS(rs, utilisateurDTO);
         }
       }
-      ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
@@ -93,11 +91,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    */
   @Override
   public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
-    PreparedStatement ps = serviceBackendDAL.getPs(
-        "INSERT INTO projet.utilisateurs "
-            + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'en attente', NULL) RETURNING "
-            + "id_utilisateur, etat_inscription, commentaire;");
-    try {
+    String requetePs = "INSERT INTO projet.utilisateurs "
+        + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, 'En attente', NULL) RETURNING "
+        + "id_utilisateur, etat_inscription, commentaire;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, utilisateur.getPseudo());
       ps.setString(2, utilisateur.getNom());
       ps.setString(3, utilisateur.getPrenom());
@@ -110,7 +107,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
           utilisateur.setCommentaire(rs.getString(3));
         }
       }
-      ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
@@ -120,23 +116,22 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
-   * Met à jour l'état de l'inscription d'un utilisateur à "confirmé".
+   * Met à jour l'état de l'inscription d'un utilisateur à "Confirmé".
    *
    * @param id       : l'id de l'utilisateur
    * @param estAdmin : si l'utilisateur est admin
-   * @return utilisateurDTO : l'utilisateur avec l'état de son inscription à "confirmé"
+   * @return utilisateurDTO : l'utilisateur avec l'état de son inscription à "Confirmé"
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-    PreparedStatement ps = serviceBackendDAL.getPs(
-        "UPDATE projet.utilisateurs SET etat_inscription = ?, est_admin = ? "
-            + "WHERE id_utilisateur = ? "
-            + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
-            + "etat_inscription, commentaire, adresse;");
-    try {
-      ps.setString(1, "confirmé");
+    String requetePs = "UPDATE projet.utilisateurs SET etat_inscription = ?, est_admin = ? "
+        + "WHERE id_utilisateur = ? "
+        + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
+        + "etat_inscription, commentaire, adresse;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setString(1, "Confirmé");
       ps.setBoolean(2, estAdmin);
       ps.setInt(3, id);
       try (ResultSet rs = ps.executeQuery()) {
@@ -144,7 +139,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
           utilisateurDTO = remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
         }
       }
-      ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
@@ -154,7 +148,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
-   * Met à jour le commentaire et l'état de l'inscription d'un utilisateur à "refusé".
+   * Met à jour le commentaire et l'état de l'inscription d'un utilisateur à "Refusé".
    *
    * @param id          : l'id de l'utilisateur
    * @param commentaire : le commentaire que l'on va ajouter
@@ -164,13 +158,12 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO refuserInscription(int id, String commentaire) {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-    PreparedStatement ps = serviceBackendDAL.getPs(
-        "UPDATE projet.utilisateurs SET etat_inscription = ?, commentaire = ? "
-            + "WHERE id_utilisateur = ? "
-            + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
-            + "etat_inscription, commentaire, adresse;");
-    try {
-      ps.setString(1, "refusé");
+    String requetePs = "UPDATE projet.utilisateurs SET etat_inscription = ?, commentaire = ? "
+        + "WHERE id_utilisateur = ? "
+        + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, "
+        + "etat_inscription, commentaire, adresse;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setString(1, "Refusé");
       ps.setString(2, commentaire);
       ps.setInt(3, id);
       try (ResultSet rs = ps.executeQuery()) {
@@ -178,7 +171,26 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
           utilisateurDTO = remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
         }
       }
-      ps.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return utilisateurDTO;
+  }
+
+  @Override
+  public UtilisateurDTO modifierGsm(UtilisateurDTO utilisateurDTO) {
+    String requetePs = "UPDATE projet.utilisateurs SET gsm = ? WHERE id_utilisateur = ? "
+        + "RETURNING *;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setString(1, utilisateurDTO.getGsm());
+      ps.setInt(2, utilisateurDTO.getIdUtilisateur());
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          utilisateurDTO = remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
+        }
+      }
     } catch (SQLException e) {
       e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
@@ -224,22 +236,22 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
-    PreparedStatement ps = serviceBackendDAL.getPs(
+    String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, a.id_adresse, a.rue, a.numero, a.boite, "
             + "a.code_postal, a.commune FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
-            + "WHERE u.etat_inscription = ? ORDER BY u.pseudo;");
+            + "WHERE u.etat_inscription = ? ORDER BY u.pseudo;";
     List<UtilisateurDTO> liste = new ArrayList<>();
-    try {
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, etatInscription);
-      ResultSet rs = ps.executeQuery();
-      while (rs.next()) {
-        UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-        remplirUtilisateursDepuisRS(rs, utilisateurDTO);
-        liste.add(utilisateurDTO);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
+          remplirUtilisateursDepuisRS(rs, utilisateurDTO);
+          liste.add(utilisateurDTO);
+        }
       }
-      ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
@@ -266,7 +278,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       adresseDTO.setIdAdresse(rs.getInt(10));
       adresseDTO.setRue(rs.getString(11));
       adresseDTO.setNumero(rs.getInt(12));
-      adresseDTO.setBoite(rs.getInt(13));
+      adresseDTO.setBoite(rs.getString(13));
       adresseDTO.setCodePostal(rs.getInt(14));
       adresseDTO.setCommune(rs.getString(15));
       utilisateurDTO.setAdresse(adresseDTO);
@@ -294,19 +306,18 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
           rs.getString(5), rs.getString(6), rs.getBoolean(7),
           rs.getString(8), rs.getString(9));
       AdresseDTO adresseDTO = factory.getAdresse();
-      PreparedStatement ps = serviceBackendDAL.getPs(
-          "SELECT id_adresse, rue, numero, boite, code_postal, commune "
-              + "FROM projet.adresses WHERE id_adresse = ?;");
-      try {
+      String requetePs = "SELECT id_adresse, rue, numero, boite, code_postal, commune "
+          + "FROM projet.adresses WHERE id_adresse = ?;";
+      try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
         ps.setInt(1, rs.getInt(10));
         try (ResultSet rs1 = ps.executeQuery()) {
           while (rs1.next()) {
             adresseDTO = remplirAdresseDepuisRS(rs1, adresseDTO);
           }
         }
-        ps.close();
       } catch (SQLException e) {
         e.printStackTrace();
+        ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
         throw new FatalException(e.getMessage(), e);
       }
       utilisateurDTO.setAdresse(adresseDTO);
@@ -331,7 +342,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       adresseDTO.setIdAdresse(rs.getInt(1));
       adresseDTO.setRue(rs.getString(2));
       adresseDTO.setNumero(rs.getInt(3));
-      adresseDTO.setBoite(rs.getInt(4));
+      adresseDTO.setBoite(rs.getString(4));
       adresseDTO.setCodePostal(rs.getInt(5));
       adresseDTO.setCommune(rs.getString(6));
     } catch (SQLException e) {
@@ -373,6 +384,3 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
 }
-
-
-

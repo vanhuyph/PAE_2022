@@ -14,8 +14,12 @@ const Navbar = () => {
             </a>
             <ul class="nav-list">
                 <li><a href="#" data-uri="/">Accueil</a></li>
+<<<<<<< HEAD
                 <li><a href="#" data-uri="/">Créer une offre</a></li>
                 <li><a href="#" data-uri="/profil">Profil</a></li>
+=======
+                <li><a href="#" data-uri="/offrirObjet">Offrir un objet</a></li>
+>>>>>>> 7c87eaba1a636c9f1ce51d2578b509b32dcd7e5f
                 <li><a href="#" data-uri="/deconnexion">Se déconnecter</a></li>
             </ul>
             <div class="menu"></div>
@@ -31,8 +35,12 @@ const Navbar = () => {
             </a>
             <ul class="nav-list">
                 <li><a href="#" data-uri="/">Accueil</a></li>
+<<<<<<< HEAD
                 <li><a href="#" data-uri="/">Créer une offre</a></li>
                 <li><a href="#" data-uri="/profil">Profil</a></li>
+=======
+                <li><a href="#" data-uri="/offrirObjet">Offrir un objet</a></li>
+>>>>>>> 7c87eaba1a636c9f1ce51d2578b509b32dcd7e5f
                 <li><a href="#" data-uri="/admin">Admin</a></li>
                 <li><a href="#" data-uri="/deconnexion">Se déconnecter</a></li>
             </ul>

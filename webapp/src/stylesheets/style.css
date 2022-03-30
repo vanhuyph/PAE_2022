@@ -27,6 +27,18 @@ body{
 .modal,.modal .header, .modal .content{
     background-color: #e1e9f3 !important;
 }
+/*Cartes accueil*/
+.card{
+    background-color: #ecf5ff !important;
+    color: black;
+}
+/*Cartes accueil*/
+
+.container {
+    margin-top: 30px;
+}
+
+
 
 /* Modification UI */
 
@@ -152,6 +164,7 @@ body{
 
 .conteneur-modal.active{
     display: block;
+    z-index: 1;
 }
 .overlay{
     position: absolute;
@@ -416,6 +429,35 @@ Fin Message de bienvenue*/
         width: 150px;
     }
 
+}
+
+.propose{
+    margin-top: 15px;
+}
+
+.interet-marque{
+    color: green;
+}
+
+/*Popup intert bien marque*/
+.interet-popup{
+    background-color: #e1e9f3;
+    height: 50px;
+    width: 20%;
+    border-radius: 8px;
+    border: 1px solid limegreen;
+    position: absolute;
+    right: -300px;
+    top: 80px;
+    opacity: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.interet-popup .container-popup-interet{
+    padding: 10px;
 }
 
 .ui.checkbox input[type=checkbox]{

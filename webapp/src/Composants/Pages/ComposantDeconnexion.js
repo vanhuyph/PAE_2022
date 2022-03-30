@@ -8,4 +8,8 @@ const ComposantDeconnexion = () => {
   Redirect("/")
 }
 
+<<<<<<< HEAD
 export default ComposantDeconnexion;
+=======
+export default ComposantDeconnexion;
+>>>>>>> 7c87eaba1a636c9f1ce51d2578b509b32dcd7e5f

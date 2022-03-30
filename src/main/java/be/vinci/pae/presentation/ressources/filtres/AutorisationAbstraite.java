@@ -3,18 +3,15 @@ package be.vinci.pae.presentation.ressources.filtres;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.utilitaires.Config;
-import be.vinci.pae.utilitaires.exceptions.BusinessException;
-import be.vinci.pae.utilitaires.exceptions.FatalException;
+import be.vinci.pae.utilitaires.exceptions.NonAutoriseException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 
 public abstract class AutorisationAbstraite {
 
@@ -29,11 +26,8 @@ public abstract class AutorisationAbstraite {
    *
    * @param contexteRequete : contient dans le header le token en tant que "Authorization"
    * @return un utilisateur ou null si le token n'est pas présent
-   * @throws BusinessException : lancée si il y a un problème lors de la recherche de l'utilisateur
-   * @throws FatalException    : est lancée si il y a un problème côté serveur
    */
-  public UtilisateurDTO tokenDecode(ContainerRequestContext contexteRequete)
-      throws BusinessException, FatalException {
+  public UtilisateurDTO tokenDecode(ContainerRequestContext contexteRequete) {
     String token = contexteRequete.getHeaderString("Authorization");
     if (token == null) {
       contexteRequete.abortWith(Response.status(Response.Status.UNAUTHORIZED)
@@ -49,19 +43,16 @@ public abstract class AutorisationAbstraite {
    *
    * @param token : contient l'ID de l'utilisateur
    * @return un utilisateur ou null si l'utilisateur n'existe pas
-   * @throws BusinessException : lancée si il y a un problème lors de la recherche de l'utilisateur
-   * @throws FatalException    : est lancée si il y a un problème côté serveur
+   * @throws NonAutoriseException : est lancée si le token est expiré ou malformé
    */
-  public UtilisateurDTO siTokenDecode(String token) throws BusinessException, FatalException {
-    DecodedJWT tokenDecode = null;
+  public UtilisateurDTO siTokenDecode(String token) {
+    DecodedJWT tokenDecode;
     try {
       tokenDecode = this.jwtVerifier.verify(token);
     } catch (TokenExpiredException e) {
-      throw new WebApplicationException(Response.status(Status.UNAUTHORIZED)
-          .entity("Token expiré : " + e.getMessage()).type("text/plain").build());
+      throw new NonAutoriseException("Token expiré");
     } catch (Exception e) {
-      throw new WebApplicationException(Response.status(Status.UNAUTHORIZED)
-          .entity("Token malformé : " + e.getMessage()).type("text/plain").build());
+      throw new NonAutoriseException("Token malformé");
     }
     return utilisateurUCC.rechercheParId(tokenDecode.getClaim("utilisateur").asInt());
   }

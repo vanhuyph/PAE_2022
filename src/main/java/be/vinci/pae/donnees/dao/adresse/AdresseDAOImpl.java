@@ -24,6 +24,7 @@ public class AdresseDAOImpl implements AdresseDAO {
    */
   @Override
   public AdresseDTO ajouterAdresse(AdresseDTO adresseDTO) {
+<<<<<<< HEAD
     PreparedStatement ps = serviceBackendDAL.getPs(
         "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?)  RETURNING id_adresse, "
             + "rue, numero, boite, code_postal, commune;");
@@ -43,6 +44,27 @@ public class AdresseDAOImpl implements AdresseDAO {
         "UPDATE FROM projet.adresses SET rue = ?, numero = ?, boite = ?, code_postal = ?, "
             + "commune = ? WHERE id_adresse = ?;");
     return recupAdresseDTODepuisPs(adresseDTO, ps);
+=======
+    String requetePs = "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?) "
+        + "RETURNING id_adresse, rue, numero, boite, code_postal, commune;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setString(1, adresseDTO.getRue());
+      ps.setInt(2, adresseDTO.getNumero());
+      if (adresseDTO.getBoite().equals("") || adresseDTO.getBoite() == null) {
+        ps.setNull(3, Types.INTEGER);
+      } else {
+        ps.setString(3, adresseDTO.getBoite());
+      }
+      ps.setInt(4, adresseDTO.getCodePostal());
+      ps.setString(5, adresseDTO.getCommune());
+      adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, ps);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return adresseDTO;
+>>>>>>> 7c87eaba1a636c9f1ce51d2578b509b32dcd7e5f
   }
 
   /**
@@ -59,7 +81,7 @@ public class AdresseDAOImpl implements AdresseDAO {
         adresse.setIdAdresse(rs.getInt(1));
         adresse.setRue(rs.getString(2));
         adresse.setNumero(rs.getInt(3));
-        adresse.setBoite(rs.getInt(4));
+        adresse.setBoite(rs.getString(4));
         adresse.setCodePostal(rs.getInt(5));
         adresse.setCommune(rs.getString(6));
       }
