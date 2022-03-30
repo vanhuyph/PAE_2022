@@ -1,10 +1,12 @@
 package be.vinci.pae.business.interet;
 
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.interet.InteretDAO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import jakarta.inject.Inject;
 import java.util.Date;
 
@@ -29,22 +31,36 @@ public class InteretUCCImpl implements InteretUCC {
   @Override
   public InteretDTO creerUnInteret(InteretDTO interetDTO) {
     serviceDAL.commencerTransaction();
-    Date date = interetDTO.getDateRdv();
-    Date now = new Date();
-    if (date.before(now)) {
+    InteretDTO interet;
+    try {
+      Date date = interetDTO.getDateRdv();
+      Date now = new Date();
+      if (date.before(now)) {
+        throw new BusinessException("La date de rendez-vous ne peut pas être dans le passé");
+      }
+      if (!interetDTO.getUtilisateur().getGsm().isBlank()) {
+        UtilisateurDTO utilisateur = utilisateurDAO.modifierGsm(interetDTO.getUtilisateur());
+        if (utilisateur == null) {
+          UtilisateurDTO utilisateurVerif = utilisateurDAO.rechercheParId(
+              interetDTO.getUtilisateur().getIdUtilisateur());
+          if (utilisateurVerif == null) {
+            throw new PasTrouveException("L'utilisateur n'existe pas");
+          }
+          throw new BusinessException("Données sont périmées");
+        }
+        interetDTO.setUtilisateur(utilisateur);
+      }
+      Interet interetChange = (Interet) interetDTO;
+      interetChange.creerVersion();
+      interetChange.changerEtatObjet("Intéressé");
+      objetDAO.miseAJourObjet(interetChange.getObjet());
+      interet = interetDAO.ajouterInteret(interetChange);
+      if (interet == null) {
+        throw new BusinessException("L'intérêt n'a pas pu être créé.");
+      }
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("La date de rendez-vous ne peut pas être dans le passé");
-    }
-    if (!interetDTO.getUtilisateur().getGsm().isBlank()) {
-      interetDTO.setUtilisateur(utilisateurDAO.modifierGsm(interetDTO.getUtilisateur()));
-    }
-    interetDTO.getObjet().setEtatObjet("Intéressé");
-    objetDAO.changeEtatObjet(interetDTO.getObjet());
-    InteretDTO interet = interetDAO.ajouterInteret(interetDTO);
-    if (interet == null || interet.getUtilisateur().getIdUtilisateur() <= 0 || interet.getObjet()
-        .getIdObjet() <= 0) {
-      serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'intérêt n'a pas pu être créé.");
+      throw e;
     }
     serviceDAL.commettreTransaction();
     return interet;
@@ -60,11 +76,16 @@ public class InteretUCCImpl implements InteretUCC {
   @Override
   public int nbPersonnesInteressees(int id) {
     serviceDAL.commencerTransaction();
-    if (id <= 0) {
+    int nbPersonnesInteressees;
+    try {
+      if (id <= 0) {
+        throw new BusinessException("L'offre n'a pas pu être trouvée");
+      }
+      nbPersonnesInteressees = interetDAO.nbPersonnesInteressees(id);
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'offre n'a pas pu être trouvée");
+      throw e;
     }
-    int nbPersonnesInteressees = interetDAO.nbPersonnesInteressees(id);
     serviceDAL.commettreTransaction();
     return nbPersonnesInteressees;
   }

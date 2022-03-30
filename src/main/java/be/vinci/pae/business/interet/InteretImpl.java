@@ -17,6 +17,8 @@ public class InteretImpl implements Interet {
   private ObjetDTO objet;
   @JsonView(Vues.Public.class)
   private Date dateRdv;
+  @JsonView(Vues.Public.class)
+  private int version;
 
   public UtilisateurDTO getUtilisateur() {
     return utilisateur;
@@ -40,6 +42,14 @@ public class InteretImpl implements Interet {
 
   public void setDateRdv(Date dateRdv) {
     this.dateRdv = dateRdv;
+  }
+
+  public int getVersion() {
+    return version;
+  }
+
+  public void setVersion(int version) {
+    this.version = version;
   }
 
   @Override
@@ -69,4 +79,14 @@ public class InteretImpl implements Interet {
         + '}';
   }
 
+  @Override
+  public InteretDTO changerEtatObjet(String etat) {
+    this.getObjet().setEtatObjet(etat);
+    return this;
+  }
+
+  @Override
+  public void creerVersion() {
+    this.setVersion(1);
+  }
 }

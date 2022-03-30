@@ -24,6 +24,8 @@ public class ObjetImpl implements Objet {
   private UtilisateurDTO receveur;
   @JsonView(Vues.Public.class)//vérifier type d'objet
   private String photo;
+  @JsonView(Vues.Public.class)
+  private int version;
 
   public int getIdObjet() {
     return idObjet;
@@ -79,6 +81,14 @@ public class ObjetImpl implements Objet {
 
   public void setPhoto(String photo) {
     this.photo = photo;
+  }
+
+  public int getVersion() {
+    return version;
+  }
+
+  public void setVersion(int version) {
+    this.version = version;
   }
 
   @Override

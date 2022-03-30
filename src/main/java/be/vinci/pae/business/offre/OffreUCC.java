@@ -10,7 +10,7 @@ public interface OffreUCC {
 
   List<OffreDTO> listerOffresRecentes();
 
-  OffreDTO annulerOffre(int idOffre);
+  OffreDTO annulerOffre(OffreDTO offreDTO);
 
   OffreDTO rechercheParId(int id);
 
