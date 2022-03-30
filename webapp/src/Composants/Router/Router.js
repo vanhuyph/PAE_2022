@@ -3,12 +3,9 @@ import PageConnexion from "../Pages/PageConnexion";
 import ComposantDeconnexion from "../Pages/ComposantDeconnexion";
 import PageInscription from "../Pages/PageInscription";
 import PageAdmin from "../Pages/PageAdmin";
-<<<<<<< HEAD
-import PageProfil from "../Pages/PageProfil";
-=======
 import PageOffrirObjet from "../Pages/PageOffrirObjet";
 import PageDetailsObjet from "../Pages/PageDetailsObjet";
->>>>>>> 7c87eaba1a636c9f1ce51d2578b509b32dcd7e5f
+import PageProfil from "../Pages/PageProfil";
 
 // Configuration des routeurs ici
 const routes = {
@@ -17,12 +14,9 @@ const routes = {
   "/deconnexion": ComposantDeconnexion,
   "/inscription": PageInscription,
   "/admin": PageAdmin,
-<<<<<<< HEAD
-  "/profil": PageProfil,
-=======
   "/offrirObjet": PageOffrirObjet,
   "/objet": PageDetailsObjet,
->>>>>>> 7c87eaba1a636c9f1ce51d2578b509b32dcd7e5f
+  "/profil": PageProfil,
 };
 
 /**

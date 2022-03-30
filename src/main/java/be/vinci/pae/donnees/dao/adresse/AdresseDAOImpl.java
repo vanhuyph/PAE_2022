@@ -24,27 +24,6 @@ public class AdresseDAOImpl implements AdresseDAO {
    */
   @Override
   public AdresseDTO ajouterAdresse(AdresseDTO adresseDTO) {
-<<<<<<< HEAD
-    PreparedStatement ps = serviceBackendDAL.getPs(
-        "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?)  RETURNING id_adresse, "
-            + "rue, numero, boite, code_postal, commune;");
-    return recupAdresseDTODepuisPs(adresseDTO, ps);
-  }
-
-  /**
-   * Met à jour l'adresse.
-   *
-   * @param adresseDTO : l'adresse à mettre à jour
-   * @return adresseDTO : l'adresse mise à jour
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
-  @Override
-  public AdresseDTO miseAJourAdresse(AdresseDTO adresseDTO) {
-    PreparedStatement ps = serviceBackendDAL.getPs(
-        "UPDATE FROM projet.adresses SET rue = ?, numero = ?, boite = ?, code_postal = ?, "
-            + "commune = ? WHERE id_adresse = ?;");
-    return recupAdresseDTODepuisPs(adresseDTO, ps);
-=======
     String requetePs = "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?) "
         + "RETURNING id_adresse, rue, numero, boite, code_postal, commune;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
@@ -64,7 +43,6 @@ public class AdresseDAOImpl implements AdresseDAO {
       throw new FatalException(e.getMessage(), e);
     }
     return adresseDTO;
->>>>>>> 7c87eaba1a636c9f1ce51d2578b509b32dcd7e5f
   }
 
   /**
@@ -105,10 +83,10 @@ public class AdresseDAOImpl implements AdresseDAO {
     try {
       ps.setString(1, adresseDTO.getRue());
       ps.setInt(2, adresseDTO.getNumero());
-      if (adresseDTO.getBoite() == 0) {
+      if (adresseDTO.getBoite().equals("")) {
         ps.setNull(3, Types.INTEGER);
       } else {
-        ps.setInt(3, adresseDTO.getBoite());
+        ps.setString(3, adresseDTO.getBoite());
       }
       ps.setInt(4, adresseDTO.getCodePostal());
       ps.setString(5, adresseDTO.getCommune());

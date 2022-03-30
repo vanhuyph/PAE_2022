@@ -18,8 +18,6 @@ public interface UtilisateurUCC {
 
   List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription);
 
-<<<<<<< HEAD
   UtilisateurDTO miseAJourInfo(UtilisateurDTO utilisateur);
-=======
->>>>>>> 7c87eaba1a636c9f1ce51d2578b509b32dcd7e5f
+
 }
