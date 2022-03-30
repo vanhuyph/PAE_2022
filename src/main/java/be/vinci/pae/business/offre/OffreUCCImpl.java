@@ -28,16 +28,20 @@ public class OffreUCCImpl implements OffreUCC {
   @Override
   public OffreDTO creerOffre(OffreDTO offreDTO) {
     serviceDAL.commencerTransaction();
-    ObjetDTO objet = objetDAO.creerObjet(offreDTO.getObjetDTO());
-    if (objet == null) {
+    OffreDTO offre = null;
+    try {
+      ObjetDTO objet = objetDAO.creerObjet(offreDTO.getObjetDTO());
+      if (objet == null) {
+        throw new BusinessException("L'objet n'a pas pu être créée");
+      }
+      offreDTO.setObjetDTO(objet);
+      offre = offreDAO.creerOffre(offreDTO);
+      if (offre == null) {
+        throw new BusinessException("L'offre n'a pas pu être créée");
+      }
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'objet n'a pas pu être créée");
-    }
-    offreDTO.setObjetDTO(objet);
-    OffreDTO offre = offreDAO.creerOffre(offreDTO);
-    if (offre == null) {
-      serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'offre n'a pas pu être créée");
+      throw e;
     }
     serviceDAL.commettreTransaction();
     return offre;
@@ -50,7 +54,13 @@ public class OffreUCCImpl implements OffreUCC {
    */
   public List<OffreDTO> listerOffres() {
     serviceDAL.commencerTransaction();
-    List<OffreDTO> liste = offreDAO.listerOffres();
+    List<OffreDTO> liste = null;
+    try {
+      liste = offreDAO.listerOffres();
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
     serviceDAL.commettreTransaction();
     return liste;
   }
@@ -62,7 +72,13 @@ public class OffreUCCImpl implements OffreUCC {
    */
   public List<OffreDTO> listerOffresRecentes() {
     serviceDAL.commencerTransaction();
-    List<OffreDTO> liste = offreDAO.listerOffresRecentes();
+    List<OffreDTO> liste = null;
+    try {
+      liste = offreDAO.listerOffresRecentes();
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
     serviceDAL.commettreTransaction();
     return liste;
   }
@@ -106,10 +122,15 @@ public class OffreUCCImpl implements OffreUCC {
   @Override
   public OffreDTO rechercheParId(int idOffre) {
     serviceDAL.commencerTransaction();
-    OffreDTO offre = offreDAO.rechercheParId(idOffre);
-    if (offre == null || offre.getIdOffre() <= 0) {
+    OffreDTO offre = null;
+    try {
+      offre = offreDAO.rechercheParId(idOffre);
+      if (offre == null) {
+        throw new BusinessException("L'offre n'a pas pu être trouvée.");
+      }
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'offre n'a pas pu être trouvée.");
+      throw e;
     }
     serviceDAL.commettreTransaction();
     return offre;
@@ -124,11 +145,16 @@ public class OffreUCCImpl implements OffreUCC {
   @Override
   public List<OffreDTO> offresPrecedentes(int idObjet) {
     serviceDAL.commencerTransaction();
-    if (idObjet <= 0) {
+    List<OffreDTO> liste = null;
+    try {
+      if (idObjet <= 0) {
+        throw new BusinessException("L'id de l'objet est incorrect");
+      }
+      liste = offreDAO.offresPrecedentes(idObjet);
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'id de l'objet est incorrect");
+      throw e;
     }
-    List<OffreDTO> liste = offreDAO.offresPrecedentes(idObjet);
     serviceDAL.commettreTransaction();
     return liste;
   }

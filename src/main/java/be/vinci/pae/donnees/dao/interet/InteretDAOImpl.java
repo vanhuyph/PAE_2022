@@ -23,19 +23,24 @@ public class InteretDAOImpl implements InteretDAO {
    */
   @Override
   public InteretDTO ajouterInteret(InteretDTO interetDTO) {
-    String requetePs = "INSERT INTO projet.interets VALUES (?, ?, ?) RETURNING *;";
+    String requetePs = "INSERT INTO projet.interets VALUES (?, ?, ?, ?) RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       java.sql.Date dateRdvSQL = new java.sql.Date(interetDTO.getDateRdv().getTime());
       ps.setInt(1, interetDTO.getUtilisateur().getIdUtilisateur());
       ps.setInt(2, interetDTO.getObjet().getIdObjet());
       ps.setDate(3, dateRdvSQL);
-      ps.executeQuery();
+      ps.setInt(4, interetDTO.getVersion());
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return interetDTO;
+        } else {
+          return null;
+        }
+      }
     } catch (SQLException e) {
       e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
-    return interetDTO;
   }
 
   @Override

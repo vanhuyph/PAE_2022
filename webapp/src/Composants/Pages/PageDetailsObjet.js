@@ -199,8 +199,7 @@ const surDetailObjet = async (offre) => {
     let interet = {
       utilisateur: utilisateur,
       objet: offre.objetDTO,
-      dateRdv: date,
-      version: 1
+      dateRdv: date
     }
 
     // Vérifie si une disponibilité est introduite

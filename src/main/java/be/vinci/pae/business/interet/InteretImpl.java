@@ -79,4 +79,14 @@ public class InteretImpl implements Interet {
         + '}';
   }
 
+  @Override
+  public InteretDTO changerEtatObjet(String etat) {
+    this.getObjet().setEtatObjet(etat);
+    return this;
+  }
+
+  @Override
+  public void creerVersion() {
+    this.setVersion(1);
+  }
 }
