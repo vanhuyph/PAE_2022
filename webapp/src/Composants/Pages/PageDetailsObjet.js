@@ -366,12 +366,15 @@ const surDetailObjetProprio = async (offre) => {
   pageDiv.innerHTML = offrePage
 
   document.querySelector("#modifier-offre").addEventListener("click", () => {
+    console.log(offre)
     //surDetailObjetProprioModifier(offre)
   })
   document.querySelector("#annuler-offre").addEventListener("click", () => {
     const session = recupUtilisateurDonneesSession()
-    fetch("/api/offres/annulerOffre/" + offre.idOffre, {
+
+    fetch("/api/offres/annulerOffre", {
       method: "PUT",
+      body:JSON.stringify(offre),
       headers: {
         "Content-Type": "application/json",
         "Authorization": session.token,

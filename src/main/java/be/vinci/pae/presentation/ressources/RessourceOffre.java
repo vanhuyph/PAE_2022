@@ -2,6 +2,7 @@ package be.vinci.pae.presentation.ressources;
 
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.utilitaires.Config;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
@@ -87,21 +88,21 @@ public class RessourceOffre {
   /**
    * Annule une offre.
    *
-   * @param id : l'id de l'offre a annulé
+   * @param offreDTO : l'offre a annulé
    * @return offreDTO : l'offre annulée
    * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'annulation
    *                               a échoué
    */
   @PUT
-  @Path("annulerOffre/{id}")
+  @Path("annulerOffre")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public OffreDTO annulerOffre(@PathParam("id") int id) {
-    if (id <= 0) {
+  public OffreDTO annulerOffre(OffreDTO offreDTO) {
+    if (offreDTO.getIdOffre() <= 0) {
       throw new PresentationException("L'id de l'offre est incorrect", Status.BAD_REQUEST);
     }
-    OffreDTO offreDTO = offreUCC.annulerOffre(id);
+    offreDTO = offreUCC.annulerOffre(offreDTO);
     if (offreDTO == null) {
       throw new PresentationException("L'annulation de l'offre a échoué", Status.BAD_REQUEST);
     }
@@ -186,6 +187,32 @@ public class RessourceOffre {
   @Produces({"image/*"})
   public Response voirPhotoOffre(@PathParam("uuidPhoto") String uuidPhoto) {
     return Response.ok(new File(Config.getPropriete("OneDrivePhotos") + uuidPhoto)).build();
+  }
+
+  /**
+   * Indique un membre receveur et changer l'état de l'objet en confirmé.
+   *
+   * @param offreDTO       : l'offre pour laquelle on va mettre un receveur
+   * @param utilisateurDTO : le receveur
+   * @return offreDTO : l'offre annulée
+   * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'ajout d'un
+   *                               receveur a échoué
+   */
+  @PUT
+  @Path("indiquerMembreReceveur")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public OffreDTO indiquerMembreReceveur(OffreDTO offreDTO, UtilisateurDTO utilisateurDTO) {
+    if (offreDTO.getIdOffre() <= 0 || utilisateurDTO.getIdUtilisateur() <= 0) {
+      throw new PresentationException("L'id de l'offre ou de l'utilisateur est incorrect",
+          Status.BAD_REQUEST);
+    }
+    offreDTO = offreUCC.indiquerMembreReceveur(offreDTO, utilisateurDTO);
+    if (offreDTO == null) {
+      throw new PresentationException("L'ajout d'un receveur a échoué", Status.BAD_REQUEST);
+    }
+    return offreDTO;
   }
 
 }

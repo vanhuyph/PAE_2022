@@ -11,13 +11,8 @@ public interface OffreDAO {
 
   List<OffreDTO> listerOffresRecentes();
 
-  OffreDTO annulerOffre(int idOffre);
-
   OffreDTO rechercheParId(int id);
 
   List<OffreDTO> offresPrecedentes(int idObjet);
-
-  OffreDTO indiquerMembreReceveur(String pseudo, int idObjet);
-
 
 }

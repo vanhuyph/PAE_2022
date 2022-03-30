@@ -2,6 +2,7 @@ package be.vinci.pae.presentation.ressources;
 
 import be.vinci.pae.business.interet.InteretDTO;
 import be.vinci.pae.business.interet.InteretUCC;
+import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
 import jakarta.inject.Inject;
@@ -35,7 +36,7 @@ public class RessourceInteret {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public InteretDTO creetInteret(InteretDTO interetDTO) {
+  public InteretDTO creerInteret(InteretDTO interetDTO) {
     if (interetDTO.getObjet() == null || interetDTO.getUtilisateur() == null
         || interetDTO.getObjet().getIdObjet() < 1
         || interetDTO.getUtilisateur().getIdUtilisateur() < 1) {
@@ -74,18 +75,19 @@ public class RessourceInteret {
   /**
    * Liste les interets.
    *
+   * @param objetDTO : l'objet pour lequel les personnes ont marqué un interet
    * @return liste : la liste des interets
    */
   @GET
-  @Path("listeDesPersonnesInteressees/{id}")
+  @Path("listeDesPersonnesInteressees")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   //@Autorisation
-  public List<InteretDTO> listeDesPersonnesInteressees(@PathParam("id") int idObjet) {
-    if (idObjet <= 0) {
-      throw new PresentationException("L'id de l'objet est incorrect", Status.BAD_REQUEST);
+  public List<InteretDTO> listeDesPersonnesInteressees(ObjetDTO objetDTO) {
+    if (objetDTO == null) {
+      throw new PresentationException("Objet est null", Status.BAD_REQUEST);
     }
-    List<InteretDTO> list = interetUCC.listeDesPersonnesInteressees(idObjet);
+    List<InteretDTO> list = interetUCC.listeDesPersonnesInteressees(objetDTO);
     return list;
   }
 

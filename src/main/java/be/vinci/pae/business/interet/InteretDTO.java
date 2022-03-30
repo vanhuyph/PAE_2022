@@ -21,4 +21,8 @@ public interface InteretDTO {
 
   void setDateRdv(Date dateRdv);
 
+  int getVersion();
+
+  void setVersion(int version);
+
 }

@@ -30,6 +30,8 @@ public class UtilisateurImpl implements Utilisateur {
   private String commentaire;
   @JsonView(Vues.Internal.class)
   private AdresseDTO adresse;
+  @JsonView(Vues.Public.class)
+  private int version;
 
   @Override
   public int getIdUtilisateur() {
@@ -129,6 +131,16 @@ public class UtilisateurImpl implements Utilisateur {
   @Override
   public void setAdresse(AdresseDTO adresse) {
     this.adresse = adresse;
+  }
+
+  @Override
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
   }
 
   @Override

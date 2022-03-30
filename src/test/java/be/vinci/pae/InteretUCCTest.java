@@ -12,7 +12,9 @@ import be.vinci.pae.donnees.dao.interet.InteretDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeAll;
@@ -96,6 +98,14 @@ public class InteretUCCTest {
     int id = 1;
     Mockito.when(interetDAO.nbPersonnesInteressees(id)).thenReturn(1);
     assertEquals(1, interetUCC.nbPersonnesInteressees(id));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode listeDesPersonnesInteressees renvoie bien une liste")
+  public void testlisteDesPersonnesInteresseesV1() {
+    List<InteretDTO> liste = new ArrayList<>();
+    Mockito.when(interetDAO.listeDesPersonnesInteressees(interetDTO.getObjet())).thenReturn(liste);
+    assertEquals(liste, interetUCC.listeDesPersonnesInteressees(interetDTO.getObjet()));
   }
 
 }
