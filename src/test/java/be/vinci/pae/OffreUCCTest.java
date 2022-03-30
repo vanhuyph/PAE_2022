@@ -171,7 +171,7 @@ public class OffreUCCTest {
     assertEquals(liste, offreUCC.offresPrecedentes(id));
   }
 
-  @Test
+  /*@Test
   @DisplayName("Test réussi : méthode indiquerMembreReceveur renvoie l'offre confirmé.")
   public void testIndiquerMembreReceveurV1() {
     offreDTO1.setObjetDTO(objetDTO1);
@@ -179,6 +179,6 @@ public class OffreUCCTest {
     offreUCC.creerOffre(offreDTO1);
     offreDTO1 = offreUCC.indiquerMembreReceveur(offreDTO1, utilisateurDTO);
     assertEquals("Confirmé", offreDTO1.getObjetDTO().getEtatObjet());
-  }
+  }*/
 
 }
