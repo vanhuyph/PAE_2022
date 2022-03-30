@@ -32,8 +32,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, a.boite, "
-            + "a.code_postal, a.commune FROM projet.utilisateurs u "
+            + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, "
+            + "a.boite, a.code_postal, a.commune FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE u.pseudo = ?;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
@@ -63,8 +63,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, a.boite, "
-            + "a.code_postal, a.commune FROM projet.utilisateurs u "
+            + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, "
+            + "a.boite, a.code_postal, a.commune FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE u.id_utilisateur = ?;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
