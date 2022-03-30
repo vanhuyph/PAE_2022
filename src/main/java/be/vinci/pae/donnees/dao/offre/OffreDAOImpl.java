@@ -7,7 +7,6 @@ import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
-import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -41,16 +40,16 @@ public class OffreDAOImpl implements OffreDAO {
       ps.setTimestamp(2, sqlDate);
       ps.setString(3, offreDTO.getPlageHoraire());
       try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
+        if (rs.next()) {
           offreDTO.setIdOffre(rs.getInt(1));
+          return offreDTO;
+        } else {
+          return null;
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
-    return offreDTO;
   }
 
   /**
@@ -76,8 +75,6 @@ public class OffreDAOImpl implements OffreDAO {
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       liste = remplirListOffresDepuisResulSet(offreDTO, ps);
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return liste;
@@ -106,16 +103,16 @@ public class OffreDAOImpl implements OffreDAO {
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, idOffre);
       try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
+        if (rs.next()) {
           offreDTO = remplirOffreDepuisResultSet(offreDTO, rs);
+          return offreDTO;
+        } else {
+          return null;
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
-    return offreDTO;
   }
 
   /**
@@ -141,8 +138,6 @@ public class OffreDAOImpl implements OffreDAO {
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       liste = remplirListOffresDepuisResulSet(offreDTO, ps);
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return liste;
@@ -166,8 +161,6 @@ public class OffreDAOImpl implements OffreDAO {
       ps.setInt(1, idObjet);
       liste = remplirListOffresDepuisResulSet(offreDTO, ps);
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return liste;
@@ -190,8 +183,6 @@ public class OffreDAOImpl implements OffreDAO {
         offreDTO = factory.getOffre();
       }
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return liste;
@@ -248,8 +239,6 @@ public class OffreDAOImpl implements OffreDAO {
       offreDTO.setPlageHoraire(rs.getString(27));
       offreDTO.setVersion(rs.getInt(28));
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return offreDTO;
