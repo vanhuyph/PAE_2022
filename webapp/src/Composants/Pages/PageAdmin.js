@@ -156,9 +156,12 @@ const surListeAttente = (data) => {
     <div class="utilisateur">
         <form id="formulaire-confirme">
             <input id="id-utilisateur" type="hidden" value=${element.idUtilisateur}>
-            <p>${element.pseudo}</p>
-            <p>${element.nom}</p>
-            <p>${element.prenom}</p>
+            <p id="pseudo-utilisateur">${element.pseudo}</p>
+            <p id="nom-utilisateur">${element.nom}</p>
+            <p id="prenom-utilisateur">${element.prenom}</p>
+            <input id="gsm-utilisateur" type="hidden" value=${element.gsm}>
+            <input id="adresse-utilisateur" type="hidden" value="${element.adresse.idAdresse}">
+            <input id="version-utilisateur" type="hidden" value=${element.version}>
             <div class="est-admin">
               <div class="ui checkbox">
               <input id="check" type="checkbox">
@@ -184,21 +187,33 @@ const surListeAttente = (data) => {
   });
   liste += `</div>`;
   contenu.innerHTML = liste;
-
   document.querySelectorAll(".utilisateur").forEach((item) => {
     const session = recupUtilisateurDonneesSession();
-
     // Confirmation de l'utilisateur
     item.querySelector("#formulaire-confirme").addEventListener("submit",
         (e) => {
           e.preventDefault()
           const admin = item.querySelector("#check").checked
           const id = item.querySelector("#id-utilisateur").value
+          const pseudo = item.querySelector("#pseudo-utilisateur").innerHTML
+          const nom = item.querySelector("#nom-utilisateur").innerHTML
+          const prenom = item.querySelector("#prenom-utilisateur").innerHTML
+          const gsm = item.querySelector("#gsm-utilisateur").value
+          const adresse = item.querySelector("#adresse-utilisateur").value
+          const version = item.querySelector("#version-utilisateur").value
 
           let confirmation = {
-            estAdmin: admin
+            idUtilisateur : id,
+            pseudo : pseudo,
+            nom : nom,
+            prenom : prenom,
+            gsm : gsm,
+            adresse : {idAdresse : adresse},
+            estAdmin : admin,
+            version : version
           }
-          fetch("/api/utilisateurs/confirme/" + id, {
+          console.log(confirmation)
+          fetch("/api/utilisateurs/confirme", {
             method: "PUT",
             body: JSON.stringify(confirmation),
             headers: {
@@ -281,9 +296,12 @@ const surListeRefus = (data) => {
     <div class="utilisateur">
         <form id="formulaire-confirme">
             <input id="id-utilisateur" type="hidden" value=${element.idUtilisateur}>
-            <p>${element.pseudo}</p>
-            <p>${element.nom}</p>
-            <p>${element.prenom}</p>
+            <p id="pseudo-utilisateur">${element.pseudo}</p>
+            <p id="nom-utilisateur">${element.nom}</p>
+            <p id="prenom-utilisateur">${element.prenom}</p>
+            <input id="gsm-utilisateur" type="hidden" value=${element.gsm}>
+            <input id="adresse-utilisateur" type="hidden" value="${element.adresse.idAdresse}">
+            <input id="version-utilisateur" type="hidden" value=${element.version}>
             <div class="est-admin">
               <div class="ui checkbox">
                 <input id="check" type="checkbox">
@@ -310,10 +328,25 @@ const surListeRefus = (data) => {
           e.preventDefault()
           const admin = item.querySelector("#check").checked
           const id = item.querySelector("#id-utilisateur").value
+          const pseudo = item.querySelector("#pseudo-utilisateur").innerHTML
+          const nom = item.querySelector("#nom-utilisateur").innerHTML
+          const prenom = item.querySelector("#prenom-utilisateur").innerHTML
+          const gsm = item.querySelector("#gsm-utilisateur").value
+          const adresse = item.querySelector("#adresse-utilisateur").value
+          const version = item.querySelector("#version-utilisateur").value
+
           let confirmation = {
-            estAdmin: admin
+            idUtilisateur : id,
+            pseudo : pseudo,
+            nom : nom,
+            prenom : prenom,
+            gsm : gsm,
+            adresse : {idAdresse : adresse},
+            estAdmin : admin,
+            version : version
           }
-          fetch("/api/utilisateurs/confirme/" + id, {
+          console.log(confirmation)
+          fetch("/api/utilisateurs/confirme", {
             method: "PUT",
             body: JSON.stringify(confirmation),
             headers: {

@@ -12,7 +12,7 @@ public interface UtilisateurUCC {
 
   UtilisateurDTO inscription(UtilisateurDTO utilisateurDTO);
 
-  UtilisateurDTO confirmerInscription(int id, boolean estAdmin);
+  UtilisateurDTO confirmerInscription(UtilisateurDTO utilisateurDTO);
 
   UtilisateurDTO refuserInscription(int id, String commentaire);
 

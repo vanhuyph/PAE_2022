@@ -137,7 +137,7 @@ public class UtilisateurImpl implements Utilisateur {
   public int getVersion() {
     return version;
   }
-  
+
   @Override
   public void setVersion(int version) {
     this.version = version;
@@ -171,6 +171,16 @@ public class UtilisateurImpl implements Utilisateur {
   }
 
   @Override
+  public void premiereVersion() {
+    this.setVersion(1);
+  }
+
+  @Override
+  public void changerEtatInscription(String etat) {
+    this.setEtatInscription(etat);
+  }
+
+  @Override
   public String toString() {
     return "UtilisateurImpl{"
         + "idUtilisateur=" + idUtilisateur
@@ -183,6 +193,7 @@ public class UtilisateurImpl implements Utilisateur {
         + ", etatInscription='" + etatInscription + '\''
         + ", commentaire='" + commentaire + '\''
         + ", adresse=" + adresse.toString()
+        + ", version='" + version + '\''
         + '}';
   }
 

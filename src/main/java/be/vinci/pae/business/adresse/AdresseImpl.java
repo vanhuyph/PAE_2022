@@ -121,7 +121,12 @@ public class AdresseImpl implements AdresseDTO, Adresse {
         + ", boite=" + boite
         + ", codePostal=" + codePostal
         + ", commune='" + commune + '\''
+        + ", version='" + version + '\''
         + '}';
   }
 
+  @Override
+  public void premiereVersion() {
+    this.setVersion(1);
+  }
 }

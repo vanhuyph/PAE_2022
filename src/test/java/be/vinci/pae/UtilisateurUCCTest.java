@@ -150,18 +150,17 @@ public class UtilisateurUCCTest {
   @DisplayName("Test réussi : méthode confirmerInscription renvoie bien un utilisateur "
       + "avec son état d'inscription à confirmé mais ne le passe pas en admin.")
   public void testConfirmerInscriptionV1() {
-    int id = utilisateurDTO1.getIdUtilisateur();
-    Mockito.when(utilisateurDAO.confirmerInscription(id, false)).thenReturn(utilisateurDTO1);
-    assertEquals(utilisateurDTO1, utilisateurUCC.confirmerInscription(id, false));
+
+    Mockito.when(utilisateurDAO.confirmerInscription(utilisateurDTO1)).thenReturn(utilisateurDTO1);
+    assertEquals(utilisateurDTO1, utilisateurUCC.confirmerInscription(utilisateurDTO1));
   }
 
   @Test
   @DisplayName("Test réussi : méthode confirmerInscription renvoie bien un utilisateur "
       + "avec son état d'inscription à confirmé et le passe en admin.")
   public void testConfirmerInscriptionV2() {
-    int id = utilisateurDTO2.getIdUtilisateur();
-    Mockito.when(utilisateurDAO.confirmerInscription(id, true)).thenReturn(utilisateurDTO2);
-    assertEquals(utilisateurDTO2, utilisateurUCC.confirmerInscription(id, true));
+    Mockito.when(utilisateurDAO.confirmerInscription(utilisateurDTO2)).thenReturn(utilisateurDTO2);
+    assertEquals(utilisateurDTO2, utilisateurUCC.confirmerInscription(utilisateurDTO2));
   }
 
   @Test

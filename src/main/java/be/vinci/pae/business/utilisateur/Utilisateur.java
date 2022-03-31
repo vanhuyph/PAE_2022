@@ -9,4 +9,8 @@ public interface Utilisateur extends UtilisateurDTO {
 
   String hashMdp(String mdp);
 
+  void premiereVersion();
+
+  void changerEtatInscription(String etat);
+
 }

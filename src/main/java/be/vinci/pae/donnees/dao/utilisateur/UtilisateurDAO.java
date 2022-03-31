@@ -11,7 +11,7 @@ public interface UtilisateurDAO {
 
   UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur);
 
-  UtilisateurDTO confirmerInscription(int id, boolean estAdmin);
+  UtilisateurDTO confirmerInscription(UtilisateurDTO utilisateurDTO);
 
   UtilisateurDTO modifierGsm(UtilisateurDTO utilisateurDTO);
 

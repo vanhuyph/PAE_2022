@@ -6,4 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(as = UtilisateurImpl.class)
 public interface Adresse extends AdresseDTO {
 
+  void premiereVersion();
+
 }
