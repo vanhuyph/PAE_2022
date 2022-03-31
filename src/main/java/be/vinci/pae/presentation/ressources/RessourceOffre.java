@@ -186,6 +186,7 @@ public class RessourceOffre {
   @Path("/photos/{uuidPhoto}")
   @Produces({"image/*"})
   public Response voirPhotoOffre(@PathParam("uuidPhoto") String uuidPhoto) {
+    System.out.println(Config.getPropriete("OneDrivePhotos") + uuidPhoto);
     return Response.ok(new File(Config.getPropriete("OneDrivePhotos") + uuidPhoto)).build();
   }
 
@@ -206,9 +207,7 @@ public class RessourceOffre {
     //check id du token == id de l'offreur ?
 
     if (offreAvecModification.getObjetDTO().getDescription().isBlank()
-        || offreAvecModification.getPlageHoraire()
-        // check de typeObjet ?? pas de modification mais pour être sur?
-        .isBlank()) {
+        || offreAvecModification.getPlageHoraire().isBlank()) {
       throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
     }
     OffreDTO offreDTO = offreUCC.modifierOffre(offreAvecModification);

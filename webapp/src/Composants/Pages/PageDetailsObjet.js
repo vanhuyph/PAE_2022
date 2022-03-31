@@ -366,7 +366,7 @@ const surDetailObjetProprio = async (offre) => {
   pageDiv.innerHTML = offrePage
 
   document.querySelector("#modifier-offre").addEventListener("click", () => {
-    //surDetailObjetProprioModifier(offre)
+    surDetailObjetProprioModifier(offre)
   })
   document.querySelector("#annuler-offre").addEventListener("click", () => {
     const session = recupUtilisateurDonneesSession()
@@ -388,6 +388,19 @@ const surDetailObjetProprio = async (offre) => {
     .then(() => Redirect("/"))
   })
 }
+// Permet de prévisualiser la photo avant de l'upload
+const previsualiserPhoto = (e) => {
+  let image = document.getElementById("image")
+  const photo = document.getElementById("photo").files[0];
+  if (photo) {
+    // On change l'URL de l'image
+    image.src = URL.createObjectURL(photo)
+  }
+}
+const suppPhoto = () => {
+  let image = document.getElementById("image")
+  image.scrc="#"
+}
 
 const surDetailObjetProprioModifier = async (offre) => {
   let session = recupUtilisateurDonneesSession()
@@ -395,7 +408,6 @@ const surDetailObjetProprioModifier = async (offre) => {
   let nbInteressees = 0;
   let dateOffre = new Date(offre.dateOffre[0], offre.dateOffre[1] - 1,
       offre.dateOffre[2]).toLocaleDateString("fr-BE")
-
   await fetch(
       API_URL + 'interets/nbPersonnesInteresees/' + offre.objetDTO.idObjet, {
         method: "GET",
@@ -450,16 +462,27 @@ const surDetailObjetProprioModifier = async (offre) => {
   <form class="ui form">
     <div class="ui two column grid">
       <div class="column">
-        <img class="ui large rounded image" src="/api/offres/photos/${offre.objetDTO.photo}"/>
+      <div class="field">
+        <img src="/api/offres/photos/${offre.objetDTO.photo}" alt="" id="image" style="max-width: 500px; margin-top: 20px;" >
+
+        <form id="envoyerPhoto" class="ui form"  >
+          <input  name="ModifierPhoto" id="photo" type="file"/> <br/><br/>
+        </form>
+        <div class="column propose">
+            <p>Proposé par: ${offre.objetDTO.offreur.pseudo}</p>
+          </div>
+       </div>
+       <!-- <img class="ui large rounded image" src="/api/offres/photos/${offre.objetDTO.photo}"/>
         <div class="ui two column grid">
           <div class="column">
           <button>Modifier la photo</button>
+          <button id="supprimer-photo">Supprimer la photo</button>
           </div>
           <div class="column propose">
             <p>Proposé par: ${offre.objetDTO.offreur.pseudo}</p>
           </div>
         </div>
-      </div>
+      </div>-->
       <div class="ui two column grid caracteristique-objet">
         <div class="row">
           <div class="column">
@@ -512,14 +535,18 @@ const surDetailObjetProprioModifier = async (offre) => {
         <div class="ui bouttons">
           <button id="confirmer" type="submit" class="ui positive button">Confirmer</button>
           <button id="annuler" class="ui negative button">Annuler</button>
+         
         </div>
       </div>
       </div>
     </div>
   </form>
+   <button id="supprimerPhoto" class="ui negative button">Supprimer la photo</button>
   </div>
   `
   pageDiv.innerHTML = offrePage
+  let SuppPhoto = document.getElementById("supprimerPhoto")
+  SuppPhoto.addEventListener("click",suppPhoto)
 
   document.querySelector("#annuler").addEventListener("click", () => {
     surDetailObjetProprio(offre)
