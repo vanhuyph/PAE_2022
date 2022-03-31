@@ -25,6 +25,23 @@ public class ObjetImpl implements Objet {
   @JsonView(Vues.Public.class)//vérifier type d'objet
   private String photo;
 
+  /**
+   * Verifie si l'état de l'objet permet de le modifier ainsi que son offre
+   *
+   * @return true si l'objet peut être modifié false si non.
+   */
+  @Override
+  public boolean verifierEtatPourModificationOffre() {
+    if (this.etatObjet.equals("annulé")) {
+      return false;
+    }
+    if (this.etatObjet.equals("donné")) {
+      return false;
+    }
+
+    return true;
+  }
+
   public int getIdObjet() {
     return idObjet;
   }
@@ -110,5 +127,4 @@ public class ObjetImpl implements Objet {
         + ", photo= " + photo
         + '}';
   }
-
 }

@@ -5,4 +5,5 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(as = OffreImpl.class)
 public interface Offre extends OffreDTO {
 
+
 }

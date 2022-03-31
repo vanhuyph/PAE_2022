@@ -1,5 +1,6 @@
 package be.vinci.pae.business.offre;
 
+import be.vinci.pae.business.objet.Objet;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
@@ -131,10 +132,14 @@ public class OffreUCCImpl implements OffreUCC {
   @Override
   public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
     serviceDAL.commencerTransaction();
-    ObjetDTO objet = objetDAO.modifierObjet(offreAvecModification.getObjetDTO());
+    Objet objet = (Objet) objetDAO.modifierObjet(offreAvecModification.getObjetDTO());
     if (objet == null) {
       serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("L'objet n'a pas pu être modifiée");
+    }
+    if (objet.verifierEtatPourModificationOffre()) {
+      serviceDAL.retourEnArriereTransaction();
+      throw new BusinessException("L'objet est dans un état ne lui permettant pas d'être modifié");
     }
     OffreDTO offre = offreDAO.modifierOffre(offreAvecModification);
     if (offre == null) {

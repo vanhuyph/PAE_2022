@@ -78,4 +78,5 @@ public class OffreImpl implements Offre {
         + '}';
   }
 
+
 }
