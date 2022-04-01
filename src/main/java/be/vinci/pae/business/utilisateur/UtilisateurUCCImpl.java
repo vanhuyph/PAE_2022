@@ -195,8 +195,6 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
       if (utilisateur == null) {
         throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être refusée");
       }
-
-
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
