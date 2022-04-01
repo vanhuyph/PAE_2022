@@ -38,7 +38,6 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
@@ -58,7 +57,6 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
       typeObjetDTO.setIdType(rs.getInt(1));
       typeObjetDTO.setNom(rs.getString(2));
     } catch (SQLException e) {
-      e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }

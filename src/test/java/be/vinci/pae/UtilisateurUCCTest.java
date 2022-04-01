@@ -55,6 +55,7 @@ public class UtilisateurUCCTest {
     utilisateurDTO1 = domaineFactory.getUtilisateur();
     utilisateurDTO1.setIdUtilisateur(1);
     utilisateurDTO1.setPseudo("test1");
+    // mdp = test123
     utilisateurDTO1.setMdp("$2a$10$jAXbw66kyec1S8RV/pnwo.kuEnAbmIsP5h7463ZkxGJocnx1WzLUy");
     utilisateurDTO1.setEstAdmin(false);
     utilisateurDTO1.setEtatInscription("Confirmé");
@@ -140,7 +141,7 @@ public class UtilisateurUCCTest {
   public void testRechercheParPseudoV1() {
     String pseudo = "pseudoInexistant";
     Mockito.when(utilisateurDAO.rechercheParPseudo(pseudo)).thenReturn(null);
-    assertThrows(BusinessException.class, () -> utilisateurUCC.rechercheParPseudo(pseudo));
+    assertThrows(PasTrouveException.class, () -> utilisateurUCC.rechercheParPseudo(pseudo));
   }
 
   @Test

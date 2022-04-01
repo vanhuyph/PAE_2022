@@ -45,7 +45,6 @@ public class AdresseDAOImpl implements AdresseDAO {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
   }
@@ -83,7 +82,6 @@ public class AdresseDAOImpl implements AdresseDAO {
       adresse.setCodePostal(rs.getInt(5));
       adresse.setCommune(rs.getString(6));
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
     return adresse;

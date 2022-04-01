@@ -2,7 +2,6 @@ package be.vinci.pae.donnees.dao.interet;
 
 import be.vinci.pae.business.interet.InteretDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
-import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -38,7 +37,6 @@ public class InteretDAOImpl implements InteretDAO {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
   }
@@ -62,8 +60,6 @@ public class InteretDAOImpl implements InteretDAO {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return nbPers;

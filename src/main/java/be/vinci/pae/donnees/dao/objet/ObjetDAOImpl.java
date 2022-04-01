@@ -2,7 +2,6 @@ package be.vinci.pae.donnees.dao.objet;
 
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
-import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -41,8 +40,6 @@ public class ObjetDAOImpl implements ObjetDAO {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
   }
