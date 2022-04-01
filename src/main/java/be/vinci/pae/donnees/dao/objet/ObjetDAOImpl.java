@@ -74,7 +74,6 @@ public class ObjetDAOImpl implements ObjetDAO {
     }
   }
 
-
   /**
    * Met à jour l'objet.
    *

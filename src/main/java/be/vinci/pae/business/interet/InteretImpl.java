@@ -85,8 +85,4 @@ public class InteretImpl implements Interet {
     this.getObjet().setEtatObjet("Intéressé");
   }
 
-  @Override
-  public void premiereVersion() {
-    this.setVersion(1);
-  }
 }

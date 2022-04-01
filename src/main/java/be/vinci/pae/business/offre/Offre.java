@@ -5,11 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(as = OffreImpl.class)
 public interface Offre extends OffreDTO {
 
-  OffreDTO changerEtatObjet(String etat);
-
-  void premiereVersion();
-
   void offrirObjet();
 
   void annulerOffre();
+
 }

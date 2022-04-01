@@ -125,8 +125,4 @@ public class AdresseImpl implements AdresseDTO, Adresse {
         + '}';
   }
 
-  @Override
-  public void premiereVersion() {
-    this.setVersion(1);
-  }
 }

@@ -1,25 +1,20 @@
 import Navbar from "../Composants/Navbar/Navbar";
 import {API_URL} from "./serveur";
-import {
-  recupUtilisateurDonneesSession,
-  enleverDonneeSession,
-  creationDonneeSessionUtilisateur
-} from "./session";
+import {creationDonneeSessionUtilisateur} from "./session";
 
 let tokenLocal = null
 
 const VerifierTokenUtilisateur = (token, itemLocal) => {
-
   tokenLocal = itemLocal
-  fetch(API_URL+"utilisateurs/moi",{
-    method:"GET",
-    headers : {
-      "Content-Type":"application/json",
+  fetch(API_URL + "utilisateurs/moi", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
       "Authorization": token.token
     }
   })
   .then((reponse) => {
-    if(!reponse.ok){
+    if (!reponse.ok) {
       throw new Error(
           "Error code : " + reponse.status + " : " + reponse.statusText
       );
@@ -28,10 +23,10 @@ const VerifierTokenUtilisateur = (token, itemLocal) => {
   })
   .then((donnee) => surUtilisateurTrouve(donnee))
   .catch(err => surErreur(err))
-
 }
+
 const surUtilisateurTrouve = (donneeUtilisateur) => {
-  const utilisateur = {...donneeUtilisateur, isAutenticated:true}
+  const utilisateur = {...donneeUtilisateur, isAutenticated: true}
   creationDonneeSessionUtilisateur(utilisateur, tokenLocal)
   Navbar()
 }
@@ -48,6 +43,5 @@ const surErreur = (err) => {
   }
   messageErreur.innerText = erreurMessage;
 }
-
 
 export default VerifierTokenUtilisateur;

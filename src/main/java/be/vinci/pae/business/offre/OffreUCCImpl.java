@@ -1,6 +1,5 @@
 package be.vinci.pae.business.offre;
 
-import be.vinci.pae.business.objet.Objet;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
@@ -29,14 +28,12 @@ public class OffreUCCImpl implements OffreUCC {
   @Override
   public OffreDTO creerOffre(OffreDTO offreDTO) {
     serviceDAL.commencerTransaction();
-    OffreDTO offre = null;
+    OffreDTO offre;
     try {
-      ((Objet) offreDTO.getObjetDTO()).premiereVersion();
       ObjetDTO objet = objetDAO.creerObjet(offreDTO.getObjetDTO());
       if (objet == null) {
-        throw new BusinessException("L'objet n'a pas pu être créée");
+        throw new BusinessException("L'objet n'a pas pu être crée");
       }
-      ((Offre) offreDTO).premiereVersion();
       ((Offre) offreDTO).offrirObjet();
       offre = offreDAO.creerOffre(offreDTO);
       if (offre == null) {
@@ -57,7 +54,7 @@ public class OffreUCCImpl implements OffreUCC {
    */
   public List<OffreDTO> listerOffres() {
     serviceDAL.commencerTransaction();
-    List<OffreDTO> liste = null;
+    List<OffreDTO> liste;
     try {
       liste = offreDAO.listerOffres();
     } catch (Exception e) {
@@ -75,7 +72,7 @@ public class OffreUCCImpl implements OffreUCC {
    */
   public List<OffreDTO> listerOffresRecentes() {
     serviceDAL.commencerTransaction();
-    List<OffreDTO> liste = null;
+    List<OffreDTO> liste;
     try {
       liste = offreDAO.listerOffresRecentes();
     } catch (Exception e) {
@@ -90,8 +87,8 @@ public class OffreUCCImpl implements OffreUCC {
    * Annuler une offre.
    *
    * @param offreDTO : id de l'offre à annuler
-   * @return l'offre annulée
-   * @throws BusinessException : lance une exception business si l'offre n'a pas pu être annulée
+   * @return offreDTO : l'offre annulée
+   * @throws BusinessException : est lancée si l'offre n'a pas pu être annulée
    */
   @Override
   public OffreDTO annulerOffre(OffreDTO offreDTO) {
@@ -117,17 +114,17 @@ public class OffreUCCImpl implements OffreUCC {
   /**
    * Recherche une offre par son id.
    *
-   * @param idOffre id de l'offre recherchée
-   * @return l'offre correspondante  l'id idS
+   * @param idOffre : id de l'offre recherchée
+   * @return offre : l'offre correspondante à l'id passé en paramètre
    */
   @Override
   public OffreDTO rechercheParId(int idOffre) {
     serviceDAL.commencerTransaction();
-    OffreDTO offre = null;
+    OffreDTO offre;
     try {
       offre = offreDAO.rechercheParId(idOffre);
       if (offre == null) {
-        throw new BusinessException("L'offre n'a pas pu être trouvée.");
+        throw new BusinessException("L'offre n'a pas pu être trouvée");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
@@ -146,7 +143,7 @@ public class OffreUCCImpl implements OffreUCC {
   @Override
   public List<OffreDTO> offresPrecedentes(int idObjet) {
     serviceDAL.commencerTransaction();
-    List<OffreDTO> liste = null;
+    List<OffreDTO> liste;
     try {
       if (idObjet <= 0) {
         throw new BusinessException("L'id de l'objet est incorrect");
@@ -162,4 +159,5 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commettreTransaction();
     return liste;
   }
+
 }

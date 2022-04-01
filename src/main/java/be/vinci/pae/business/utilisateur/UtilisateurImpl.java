@@ -171,11 +171,6 @@ public class UtilisateurImpl implements Utilisateur {
   }
 
   @Override
-  public void premiereVersion() {
-    this.setVersion(1);
-  }
-
-  @Override
   public boolean mettreEnAttente() {
     String enAttente = "En attente";
     if (this.getEtatInscription() == null || !this.getEtatInscription().equals(enAttente)) {
@@ -206,7 +201,6 @@ public class UtilisateurImpl implements Utilisateur {
       return true;
     }
     return false;
-
   }
 
   @Override

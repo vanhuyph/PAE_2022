@@ -4,6 +4,7 @@ import {
 } from "../../utilitaires/session";
 import Navbar from "../Navbar/Navbar";
 import {Redirect} from "../Router/Router";
+import {API_URL} from "../../utilitaires/serveur";
 
 // Page d'accueil
 const PageAccueil = () => {
@@ -45,7 +46,7 @@ const PageAccueil = () => {
   const declencheurModal = document.querySelectorAll(".declencheur-modal")
 
   // Récupération de la liste des offres récentes
-  fetch("/api/offres/listerOffresRecentes", {
+  fetch(API_URL + "offres/listerOffresRecentes", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -71,7 +72,7 @@ const PageAccueil = () => {
       </div>
       `;
       pageDiv.innerHTML = pageAccueil;
-      fetch("/api/offres/listerOffres", {
+      fetch(API_URL + "offres/listerOffres", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -98,7 +99,10 @@ const surListeOffresRecentes = (data) => {
   const session = recupUtilisateurDonneesSession()
   let listeRecente = `<div class="ui cards">`;
   data.forEach((offre) => {
-    if (session && offre.objetDTO.etatObjet === "Annulé" && (session.utilisateur.estAdmin || (offre.objetDTO.offreur.idUtilisateur === session.utilisateur.idUtilisateur))){
+    if (session && offre.objetDTO.etatObjet === "Annulé"
+        && (session.utilisateur.estAdmin
+            || (offre.objetDTO.offreur.idUtilisateur
+                === session.utilisateur.idUtilisateur))) {
       listeRecente += `
       <a id="of" class="card" data-of="${offre.idOffre}">
         <div id=${offre.idOffre}></div>
@@ -111,7 +115,7 @@ const surListeOffresRecentes = (data) => {
         </div>
       </a>
     `;
-    }else if (offre.objetDTO.etatObjet !== "Annulé"){
+    } else if (offre.objetDTO.etatObjet !== "Annulé") {
       if (session) {
         listeRecente += `
       <a id="of" class="card" data-of="${offre.idOffre}">
@@ -150,7 +154,10 @@ const surListeOffres = (data) => {
   const session = recupUtilisateurDonneesSession()
   let liste = `<div class="ui link cards">`;
   data.forEach((offre) => {
-    if (session && offre.objetDTO.etatObjet === "Annulé" && (session.utilisateur.estAdmin || (offre.objetDTO.offreur.idUtilisateur === session.utilisateur.idUtilisateur))){
+    if (session && offre.objetDTO.etatObjet === "Annulé"
+        && (session.utilisateur.estAdmin
+            || (offre.objetDTO.offreur.idUtilisateur
+                === session.utilisateur.idUtilisateur))) {
       liste += `
       <a id="of" class="card" data-of="${offre.idOffre}">
         <div id=${offre.idOffre}></div>
@@ -163,7 +170,7 @@ const surListeOffres = (data) => {
         </div>
       </a>
     `;
-    }else if (offre.objetDTO.etatObjet !== "Annulé") {
+    } else if (offre.objetDTO.etatObjet !== "Annulé") {
       liste += `
       <a id="of" class="card" data-of="${offre.idOffre}">
         <div class="image">
@@ -178,7 +185,7 @@ const surListeOffres = (data) => {
   })
   liste += `</div>`;
   listeOffres.innerHTML = liste;
-  if (session){
+  if (session) {
     document.querySelectorAll("#of").forEach(offre => {
       offre.addEventListener("click", (e) => {
         Redirect("/objet", offre.getAttribute("data-of"))

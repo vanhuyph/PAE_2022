@@ -1,6 +1,7 @@
 import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import Navbar from "../Navbar/Navbar";
 import {Redirect} from "../Router/Router";
+import {API_URL} from "../../utilitaires/serveur";
 
 const formPhoto =
     `
@@ -72,7 +73,7 @@ const PageOffrirObjet = () => {
 
   if (session) {
     Navbar();
-    fetch("/api/typesObjet/liste", {
+    fetch(API_URL + "typesObjet/liste", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -131,7 +132,7 @@ const envoyerPhoto = async (e) => {
       Authorization: session.token
     },
   };
-  await fetch('/api/offres/telechargementPhoto', options).then((res) => {
+  await fetch(API_URL + 'offres/telechargementPhoto', options).then((res) => {
     if (!res.ok) {
       throw new Error(
           "Code d'erreur : " + res.status + " : " + res.statusText
@@ -192,7 +193,7 @@ const surOffrirObjet = async (e) => {
       plageHoraire: plageHoraire
     }
 
-    await fetch("/api/offres/creerOffre", {
+    await fetch(API_URL + "offres/creerOffre", {
       method: "POST",
       body: JSON.stringify(nouvelleOffre),
       headers: {

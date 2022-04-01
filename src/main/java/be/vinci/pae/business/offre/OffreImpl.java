@@ -90,17 +90,6 @@ public class OffreImpl implements Offre {
   }
 
   @Override
-  public OffreDTO changerEtatObjet(String etat) {
-    this.getObjetDTO().setEtatObjet(etat);
-    return this;
-  }
-
-  @Override
-  public void premiereVersion() {
-    this.setVersion(1);
-  }
-
-  @Override
   public void offrirObjet() {
     this.getObjetDTO().setEtatObjet("Offert");
   }

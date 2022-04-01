@@ -9,8 +9,6 @@ public interface Utilisateur extends UtilisateurDTO {
 
   String hashMdp(String mdp);
 
-  void premiereVersion();
-
   boolean mettreEnAttente();
 
   boolean confirmerInscription(boolean estAdmin);

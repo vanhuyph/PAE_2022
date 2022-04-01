@@ -144,6 +144,13 @@ public class OffreDAOImpl implements OffreDAO {
     return liste;
   }
 
+  /**
+   * Récupère les offres précédentes de l'objet avec l'id passé en paramètre.
+   *
+   * @param idObjet : l'id de l'objet à récupérer
+   * @return liste : la liste des offres précédentes de l'objet avec l'id passé en paramètre
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
   @Override
   public List<OffreDTO> offresPrecedentes(int idObjet) {
     String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"

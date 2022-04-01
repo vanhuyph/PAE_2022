@@ -1,6 +1,5 @@
 package be.vinci.pae.business.utilisateur;
 
-import be.vinci.pae.business.adresse.Adresse;
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
@@ -77,8 +76,8 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    *
    * @param pseudo : le pseudo de l'utilisateur
    * @return utilisateur : l'utilisateur possèdant l'id passé en paramètre
-   * @throws BusinessException : est lancée si l'utilisateur avec le pseudo passé en paramètre n'est
-   *                           pas trouvé
+   * @throws PasTrouveException : est lancée si l'utilisateur avec le pseudo passé en paramètre
+   *                            n'est pas trouvé
    */
   @Override
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
@@ -87,7 +86,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     try {
       utilisateur = utilisateurDAO.rechercheParPseudo(pseudo);
       if (utilisateur == null) {
-        throw new BusinessException("L'utilisateur n'existe pas");
+        throw new PasTrouveException("L'utilisateur n'existe pas");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
@@ -115,12 +114,10 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
       if (utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()) != null) {
         throw new ConflitException("Ce pseudo est déjà utilisé");
       }
-      ((Adresse) utilisateurDTO.getAdresse()).premiereVersion();
       AdresseDTO adresseDTO = adresseDAO.ajouterAdresse(utilisateurDTO.getAdresse());
       if (adresseDTO == null) {
-        throw new BusinessException("L'adresse n'a pas pu être ajoutée.");
+        throw new BusinessException("L'adresse n'a pas pu être ajoutée");
       }
-      ((Utilisateur) utilisateurDTO).premiereVersion();
       if (!((Utilisateur) utilisateurDTO).mettreEnAttente()) {
         throw new BusinessException("L'utilisateur est déjà en attente");
       }
@@ -143,8 +140,9 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @param id       : l'utilisateur que l'on veut confirmer
    * @param estAdmin : si l'utilisateur est admin ou non
    * @return utilisateurDTO : l'utilisateur avec son état d'inscription passé à "confirmé"
-   * @throws BusinessException : est lancée si l'état d'inscription de l'utilisateur n'a pas pu être
-   *                           confirmé
+   * @throws BusinessException  : est lancée si l'état d'inscription de l'utilisateur n'a pas pu
+   *                            être confirmé
+   * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas
    */
   @Override
   public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
@@ -176,8 +174,9 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @param id          : l'id de l'utilisateur que l'on veut refuser
    * @param commentaire : le commentaire de refus
    * @return utilisateurDTO : l'utilisateur avec l'inscription refusée
-   * @throws BusinessException : est lancée si l'état d'inscription de l'utilisateur n'a pas pu être
-   *                           refusé
+   * @throws BusinessException  : est lancée si l'état d'inscription de l'utilisateur n'a pas pu
+   *                            être refusé
+   * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas
    */
   @Override
   public UtilisateurDTO refuserInscription(int id, String commentaire) {

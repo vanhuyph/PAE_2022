@@ -122,8 +122,4 @@ public class ObjetImpl implements Objet {
         + '}';
   }
 
-  @Override
-  public void premiereVersion() {
-    this.setVersion(1);
-  }
 }

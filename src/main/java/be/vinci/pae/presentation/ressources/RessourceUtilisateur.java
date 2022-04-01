@@ -124,7 +124,6 @@ public class RessourceUtilisateur {
   @Produces(MediaType.APPLICATION_JSON)
   @AutorisationAdmin
   public UtilisateurDTO confirmerUtilisateur(JsonNode json, @PathParam("id") int id) {
-
     if (id < 1) {
       throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
