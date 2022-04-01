@@ -157,7 +157,7 @@ public class UtilisateurUCCTest {
   public void testConfirmerInscriptionV1() {
     int id = utilisateurDTO4.getIdUtilisateur();
     utilisateurDTO4.setEtatInscription("En attente");
-    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO4.getIdUtilisateur()))
+    Mockito.when(utilisateurDAO.rechercheParId(id))
         .thenReturn(utilisateurDTO4);
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO4)).thenReturn(utilisateurDTO4);
     assertEquals(utilisateurDTO4, utilisateurUCC.confirmerInscription(id, false));
@@ -169,7 +169,7 @@ public class UtilisateurUCCTest {
   public void testConfirmerInscriptionV2() {
     int id = utilisateurDTO4.getIdUtilisateur();
     utilisateurDTO4.setEtatInscription("En attente");
-    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO4.getIdUtilisateur()))
+    Mockito.when(utilisateurDAO.rechercheParId(id))
         .thenReturn(utilisateurDTO4);
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO4)).thenReturn(utilisateurDTO4);
     assertEquals(utilisateurDTO4, utilisateurUCC.confirmerInscription(id, true));

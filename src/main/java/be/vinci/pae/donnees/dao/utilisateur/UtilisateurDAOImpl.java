@@ -154,7 +154,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       throw new FatalException(e.getMessage(), e);
     }
   }
-  
+
 
   @Override
   public UtilisateurDTO modifierGsm(UtilisateurDTO utilisateurDTO) {
@@ -220,8 +220,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, a.boite, "
-            + "a.code_postal, a.commune FROM projet.utilisateurs u "
+            + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, "
+            + "a.boite, a.code_postal, a.commune FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE u.etat_inscription = ? ORDER BY u.pseudo;";
     List<UtilisateurDTO> liste = new ArrayList<>();
