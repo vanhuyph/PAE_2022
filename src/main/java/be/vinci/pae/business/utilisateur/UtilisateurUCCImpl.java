@@ -226,19 +226,28 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   /**
    * Met à jour les informations de l'utilisateur.
    *
-   * @param utilisateur : l'utilisateur à mettre à jour
+   * @param utilisateurDTO : l'utilisateur à mettre à jour
    * @return utilisateurDTO : l'utilisateur avec ses informations mises à jour
    */
   @Override
-  public UtilisateurDTO miseAJourInfo(UtilisateurDTO utilisateur) {
+  public UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateurDTO) {
     serviceDAL.commencerTransaction();
-    UtilisateurDTO utilisateurDTO = utilisateurDAO.miseAJourInfo(utilisateur);
-    if (utilisateurDTO == null) {
+    UtilisateurDTO utilisateur;
+    try {
+      adresseDAO.miseAJourAdresse(utilisateurDTO.getAdresse());
+      utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
+      if (utilisateur == null) {
+        if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {
+          throw new PasTrouveException("L'utilisateur n'existe pas");
+        }
+        throw new BusinessException("Données périmées");
+      }
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'utilisateur n'existe pas");
+      throw e;
     }
     serviceDAL.commettreTransaction();
-    return utilisateurDTO;
+    return utilisateur;
   }
 
 }

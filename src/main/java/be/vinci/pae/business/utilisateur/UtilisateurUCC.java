@@ -18,6 +18,5 @@ public interface UtilisateurUCC {
 
   List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription);
 
-  UtilisateurDTO miseAJourInfo(UtilisateurDTO utilisateur);
-
+  UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateur);
 }
