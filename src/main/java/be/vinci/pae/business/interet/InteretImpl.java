@@ -76,17 +76,17 @@ public class InteretImpl implements Interet {
         + "utilisateur=" + utilisateur
         + ", objet=" + objet
         + ", dateRdv=" + dateRdv
+        + "', version= " + version
         + '}';
   }
 
   @Override
-  public InteretDTO changerEtatObjet(String etat) {
-    this.getObjet().setEtatObjet(etat);
-    return this;
+  public void marquerInteretObjet() {
+    this.getObjet().setEtatObjet("Intéressé");
   }
 
   @Override
-  public void creerVersion() {
+  public void premiereVersion() {
     this.setVersion(1);
   }
 }

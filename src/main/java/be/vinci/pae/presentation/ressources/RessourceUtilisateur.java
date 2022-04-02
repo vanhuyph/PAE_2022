@@ -119,21 +119,20 @@ public class RessourceUtilisateur {
    * @throws PresentationException : est lancée s'il y a eu un problème dans la confirmation
    */
   @PUT
-  @Path("confirme")
+  @Path("confirme/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AutorisationAdmin
-  public UtilisateurDTO confirmerUtilisateur(UtilisateurDTO utilisateurDTO) {
-    if (utilisateurDTO.getIdUtilisateur() < 1) {
+  public UtilisateurDTO confirmerUtilisateur(JsonNode json, @PathParam("id") int id) {
+
+    if (id < 1) {
       throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
-    if (utilisateurDTO.getPseudo().isBlank() || utilisateurDTO.getNom().isBlank()
-        || utilisateurDTO.getPrenom().isBlank() || utilisateurDTO.getAdresse().getIdAdresse() < 1
-        || utilisateurDTO.getVersion() < 1) {
-      throw new PresentationException("Des informations sur l'utilisateur sont manquantes",
-          Status.BAD_REQUEST);
+    if (!json.hasNonNull("estAdmin")) {
+      throw new PresentationException("Information sur le role manquante", Status.BAD_REQUEST);
     }
-    UtilisateurDTO utilisateur = utilisateurUCC.confirmerInscription(utilisateurDTO);
+    boolean admin = json.get("estAdmin").asBoolean();
+    UtilisateurDTO utilisateur = utilisateurUCC.confirmerInscription(id, admin);
     return utilisateur;
   }
 

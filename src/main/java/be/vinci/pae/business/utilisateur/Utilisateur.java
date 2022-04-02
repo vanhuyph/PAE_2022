@@ -11,6 +11,10 @@ public interface Utilisateur extends UtilisateurDTO {
 
   void premiereVersion();
 
-  void changerEtatInscription(String etat);
+  boolean mettreEnAttente();
+
+  boolean confirmerInscription(boolean estAdmin);
+
+  boolean refuserInscription(String commentaire);
 
 }

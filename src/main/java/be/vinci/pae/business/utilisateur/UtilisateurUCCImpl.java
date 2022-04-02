@@ -121,7 +121,9 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
         throw new BusinessException("L'adresse n'a pas pu être ajoutée.");
       }
       ((Utilisateur) utilisateurDTO).premiereVersion();
-      ((Utilisateur) utilisateurDTO).changerEtatInscription("En attente");
+      if (!((Utilisateur) utilisateurDTO).mettreEnAttente()) {
+        throw new BusinessException("L'utilisateur est déjà en attente");
+      }
       utilisateurARenvoyer = utilisateurDAO.ajouterUtilisateur(utilisateurDTO);
       if (utilisateurARenvoyer == null) {
         throw new BusinessException("L'utilisateur n'a pas pu être ajouté");
@@ -138,23 +140,27 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * Confirme l'inscription d'un utilisateur et met son statut en Admin si l'information a été
    * renseigné.
    *
-   * @param utilisateurDTO : l'utilisateur que l'on veut confirmer
+   * @param id       : l'utilisateur que l'on veut confirmer
+   * @param estAdmin : si l'utilisateur est admin ou non
    * @return utilisateurDTO : l'utilisateur avec son état d'inscription passé à "confirmé"
    * @throws BusinessException : est lancée si l'état d'inscription de l'utilisateur n'a pas pu être
    *                           confirmé
    */
   @Override
-  public UtilisateurDTO confirmerInscription(UtilisateurDTO utilisateurDTO) {
+  public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
     serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateur;
     try {
-      utilisateurDTO.setEtatInscription("Confirmé");
-      utilisateur = utilisateurDAO.confirmerInscription(utilisateurDTO);
+      UtilisateurDTO utilisateurDTO = utilisateurDAO.rechercheParId(id);
+      if (utilisateurDTO == null) {
+        throw new PasTrouveException("L'utilisateur n'existe pas");
+      }
+      if (!((Utilisateur) utilisateurDTO).confirmerInscription(estAdmin)) {
+        throw new BusinessException("L'utilisateur est déjà confirmé");
+      }
+      utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
       if (utilisateur == null) {
-        if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {
-          throw new PasTrouveException("L'utilisateur n'existe pas");
-        }
-        throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être confirmée");
+        throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être confirmé");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
@@ -167,8 +173,8 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   /**
    * Refuse l'inscription d'un utilisateur accompagné d'un commentaire justifiant ce refus.
    *
-   * @param id          : l'id de l'utilisateur
-   * @param commentaire : le commentaire du refus
+   * @param id          : l'id de l'utilisateur que l'on veut refuser
+   * @param commentaire : le commentaire de refus
    * @return utilisateurDTO : l'utilisateur avec l'inscription refusée
    * @throws BusinessException : est lancée si l'état d'inscription de l'utilisateur n'a pas pu être
    *                           refusé
@@ -176,13 +182,27 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   @Override
   public UtilisateurDTO refuserInscription(int id, String commentaire) {
     serviceDAL.commencerTransaction();
-    UtilisateurDTO utilisateurDTO = utilisateurDAO.refuserInscription(id, commentaire);
-    if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
+    UtilisateurDTO utilisateur;
+    try {
+      UtilisateurDTO utilisateurDTO = utilisateurDAO.rechercheParId(id);
+      if (utilisateurDTO == null) {
+        throw new PasTrouveException("L'utilisateur n'existe pas");
+      }
+      if (!((Utilisateur) utilisateurDTO).refuserInscription(commentaire)) {
+        throw new BusinessException("L'utilisateur est déjà refusé");
+      }
+      utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
+      if (utilisateur == null) {
+        throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être refusée");
+      }
+
+
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être refusée");
+      throw e;
     }
     serviceDAL.commettreTransaction();
-    return utilisateurDTO;
+    return utilisateur;
   }
 
   /**
@@ -194,8 +214,14 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   @Override
   public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
     serviceDAL.commencerTransaction();
-    List<UtilisateurDTO> liste = utilisateurDAO.listerUtilisateursEtatsInscriptions(
-        etatInscription);
+    List<UtilisateurDTO> liste;
+    try {
+      liste = utilisateurDAO.listerUtilisateursEtatsInscriptions(
+          etatInscription);
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
     serviceDAL.commettreTransaction();
     return liste;
   }

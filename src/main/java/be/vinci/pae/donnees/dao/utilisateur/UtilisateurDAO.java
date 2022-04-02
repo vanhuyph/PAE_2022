@@ -11,14 +11,10 @@ public interface UtilisateurDAO {
 
   UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur);
 
-  UtilisateurDTO confirmerInscription(UtilisateurDTO utilisateurDTO);
+  UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateurDTO);
 
   UtilisateurDTO modifierGsm(UtilisateurDTO utilisateurDTO);
 
   List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription);
-
-  UtilisateurDTO refuserInscription(int id, String commentaire);
-
-  UtilisateurDTO miseAJourInfo(UtilisateurDTO utilisateur);
 
 }

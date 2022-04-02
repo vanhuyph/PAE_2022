@@ -159,9 +159,6 @@ const surListeAttente = (data) => {
             <p id="pseudo-utilisateur">${element.pseudo}</p>
             <p id="nom-utilisateur">${element.nom}</p>
             <p id="prenom-utilisateur">${element.prenom}</p>
-            <input id="gsm-utilisateur" type="hidden" value=${element.gsm}>
-            <input id="adresse-utilisateur" type="hidden" value="${element.adresse.idAdresse}">
-            <input id="version-utilisateur" type="hidden" value=${element.version}>
             <div class="est-admin">
               <div class="ui checkbox">
               <input id="check" type="checkbox">
@@ -195,25 +192,11 @@ const surListeAttente = (data) => {
           e.preventDefault()
           const admin = item.querySelector("#check").checked
           const id = item.querySelector("#id-utilisateur").value
-          const pseudo = item.querySelector("#pseudo-utilisateur").innerHTML
-          const nom = item.querySelector("#nom-utilisateur").innerHTML
-          const prenom = item.querySelector("#prenom-utilisateur").innerHTML
-          const gsm = item.querySelector("#gsm-utilisateur").value
-          const adresse = item.querySelector("#adresse-utilisateur").value
-          const version = item.querySelector("#version-utilisateur").value
-
           let confirmation = {
-            idUtilisateur : id,
-            pseudo : pseudo,
-            nom : nom,
-            prenom : prenom,
-            gsm : gsm,
-            adresse : {idAdresse : adresse},
             estAdmin : admin,
-            version : version
           }
           console.log(confirmation)
-          fetch("/api/utilisateurs/confirme", {
+          fetch("/api/utilisateurs/confirme/" + id, {
             method: "PUT",
             body: JSON.stringify(confirmation),
             headers: {
@@ -299,9 +282,6 @@ const surListeRefus = (data) => {
             <p id="pseudo-utilisateur">${element.pseudo}</p>
             <p id="nom-utilisateur">${element.nom}</p>
             <p id="prenom-utilisateur">${element.prenom}</p>
-            <input id="gsm-utilisateur" type="hidden" value=${element.gsm}>
-            <input id="adresse-utilisateur" type="hidden" value="${element.adresse.idAdresse}">
-            <input id="version-utilisateur" type="hidden" value=${element.version}>
             <div class="est-admin">
               <div class="ui checkbox">
                 <input id="check" type="checkbox">
@@ -328,25 +308,12 @@ const surListeRefus = (data) => {
           e.preventDefault()
           const admin = item.querySelector("#check").checked
           const id = item.querySelector("#id-utilisateur").value
-          const pseudo = item.querySelector("#pseudo-utilisateur").innerHTML
-          const nom = item.querySelector("#nom-utilisateur").innerHTML
-          const prenom = item.querySelector("#prenom-utilisateur").innerHTML
-          const gsm = item.querySelector("#gsm-utilisateur").value
-          const adresse = item.querySelector("#adresse-utilisateur").value
-          const version = item.querySelector("#version-utilisateur").value
 
           let confirmation = {
-            idUtilisateur : id,
-            pseudo : pseudo,
-            nom : nom,
-            prenom : prenom,
-            gsm : gsm,
-            adresse : {idAdresse : adresse},
             estAdmin : admin,
-            version : version
           }
           console.log(confirmation)
-          fetch("/api/utilisateurs/confirme", {
+          fetch("/api/utilisateurs/confirme/"+id, {
             method: "PUT",
             body: JSON.stringify(confirmation),
             headers: {

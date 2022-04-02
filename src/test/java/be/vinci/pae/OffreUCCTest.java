@@ -58,6 +58,7 @@ public class OffreUCCTest {
 
     offreDTO1 = domaineFactory.getOffre();
     offreDTO1.setIdOffre(1);
+    offreDTO1.setObjetDTO(objetDTO1);
     offreDTO1.setPlageHoraire("testPlageHoraire");
 
     offreDTO2 = domaineFactory.getOffre();
@@ -67,7 +68,8 @@ public class OffreUCCTest {
   @Test
   @DisplayName("Test raté : méthode creerObjet renvoie null car l'objet n'a pas été créé.")
   public void testCreerOffreV1() {
-    Mockito.when(objetDAO.creerObjet(objetDTO1)).thenReturn(null);
+    Mockito.when(objetDAO.creerObjet(offreDTO1.getObjetDTO())).thenReturn(null);
+    Mockito.when(offreDAO.creerOffre(offreDTO1)).thenReturn(null);
     assertThrows(BusinessException.class, () -> offreUCC.creerOffre(offreDTO1));
   }
 

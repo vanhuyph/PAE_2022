@@ -118,7 +118,12 @@ public class ObjetImpl implements Objet {
         + ", offreur= " + offreur
         + ", receveur= " + receveur
         + ", photo= " + photo
+        + ", version= " + version
         + '}';
   }
 
+  @Override
+  public void premiereVersion() {
+    this.setVersion(1);
+  }
 }

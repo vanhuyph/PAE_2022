@@ -195,7 +195,7 @@ const surDetailObjet = async (offre) => {
       ...session.utilisateur,
       gsm: document.getElementById("gsm-interet").value
     }
-
+    console.log(session.utilisateur)
     let interet = {
       utilisateur: utilisateur,
       objet: offre.objetDTO,

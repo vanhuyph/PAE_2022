@@ -120,26 +120,27 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
 
-  /**
-   * Met à jour l'état de l'inscription d'un utilisateur à "Confirmé".
-   *
-   * @param utilisateurDTO : l'utilisateur que l'on veut confirmer
-   * @return utilisateurDTO : l'utilisateur avec l'état de son inscription à "Confirmé"
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
   @Override
-  public UtilisateurDTO confirmerInscription(UtilisateurDTO utilisateurDTO) {
+  public UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateurDTO) {
     String requetePs =
-        "UPDATE projet.utilisateurs SET etat_inscription = ?, est_admin = ?, version = ?"
+        "UPDATE projet.utilisateurs SET pseudo = ?, nom = ?, prenom = ?, gsm = ?, est_admin = ?,"
+            + " etat_inscription = ?, commentaire = ?, adresse = ?, version = ?"
             + "WHERE id_utilisateur = ? AND version = ?"
             + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, adresse"
             + ", etat_inscription, commentaire, version;";
+
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      ps.setString(1, utilisateurDTO.getEtatInscription());
-      ps.setBoolean(2, utilisateurDTO.isEstAdmin());
-      ps.setInt(3, utilisateurDTO.getVersion() + 1);
-      ps.setInt(4, utilisateurDTO.getIdUtilisateur());
-      ps.setInt(5, utilisateurDTO.getVersion());
+      ps.setString(1, utilisateurDTO.getPseudo());
+      ps.setString(2, utilisateurDTO.getNom());
+      ps.setString(3, utilisateurDTO.getPrenom());
+      ps.setString(4, utilisateurDTO.getGsm());
+      ps.setBoolean(5, utilisateurDTO.isEstAdmin());
+      ps.setString(6, utilisateurDTO.getEtatInscription());
+      ps.setString(7, utilisateurDTO.getCommentaire());
+      ps.setInt(8, utilisateurDTO.getAdresse().getIdAdresse());
+      ps.setInt(9, utilisateurDTO.getVersion() + 1);
+      ps.setInt(10, utilisateurDTO.getIdUtilisateur());
+      ps.setInt(11, utilisateurDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           utilisateurDTO = remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
@@ -153,38 +154,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       throw new FatalException(e.getMessage(), e);
     }
   }
-
-  /**
-   * Met à jour le commentaire et l'état de l'inscription d'un utilisateur à "Refusé".
-   *
-   * @param id          : l'id de l'utilisateur
-   * @param commentaire : le commentaire que l'on va ajouter
-   * @return utilisateurDTO : l'utilisateur mis à jour
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
-  @Override
-  public UtilisateurDTO refuserInscription(int id, String commentaire) {
-    UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
-    String requetePs = "UPDATE projet.utilisateurs SET etat_inscription = ?, commentaire = ? "
-        + "WHERE id_utilisateur = ? "
-        + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, adresse "
-        + "etat_inscription, commentaire, version;";
-    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      ps.setString(1, "Refusé");
-      ps.setString(2, commentaire);
-      ps.setInt(3, id);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          utilisateurDTO = remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
-      throw new FatalException(e.getMessage(), e);
-    }
-    return utilisateurDTO;
-  }
+  
 
   @Override
   public UtilisateurDTO modifierGsm(UtilisateurDTO utilisateurDTO) {

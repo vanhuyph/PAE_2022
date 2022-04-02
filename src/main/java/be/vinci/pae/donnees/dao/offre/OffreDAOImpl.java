@@ -33,12 +33,13 @@ public class OffreDAOImpl implements OffreDAO {
    */
   @Override
   public OffreDTO creerOffre(OffreDTO offreDTO) {
-    String requetePs = "INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?) RETURNING *;";
+    String requetePs = "INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?, ?) RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       Timestamp sqlDate = Timestamp.valueOf(LocalDateTime.now());
       ps.setInt(1, offreDTO.getObjetDTO().getIdObjet());
       ps.setTimestamp(2, sqlDate);
       ps.setString(3, offreDTO.getPlageHoraire());
+      ps.setInt(4, offreDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           offreDTO.setIdOffre(rs.getInt(1));
@@ -154,7 +155,8 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-        + "WHERE of.id_objet = ?;";
+        + "WHERE of.id_objet = ?"
+        + "ORDER BY of.date_offre DESC;";
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {

@@ -1,5 +1,6 @@
 package be.vinci.pae.business.offre;
 
+import be.vinci.pae.business.objet.Objet;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
@@ -30,11 +31,13 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commencerTransaction();
     OffreDTO offre = null;
     try {
+      ((Objet) offreDTO.getObjetDTO()).premiereVersion();
       ObjetDTO objet = objetDAO.creerObjet(offreDTO.getObjetDTO());
       if (objet == null) {
         throw new BusinessException("L'objet n'a pas pu être créée");
       }
-      offreDTO.setObjetDTO(objet);
+      ((Offre) offreDTO).premiereVersion();
+      ((Offre) offreDTO).offrirObjet();
       offre = offreDAO.creerOffre(offreDTO);
       if (offre == null) {
         throw new BusinessException("L'offre n'a pas pu être créée");
@@ -93,13 +96,11 @@ public class OffreUCCImpl implements OffreUCC {
   @Override
   public OffreDTO annulerOffre(OffreDTO offreDTO) {
     serviceDAL.commencerTransaction();
-    Offre offre;
     try {
-      offre = (Offre) offreDTO;
-      offre.changerEtatObjet("Annulé");
-      ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
+      ((Offre) offreDTO).annulerOffre();
+      ObjetDTO objet = objetDAO.miseAJourObjet(offreDTO.getObjetDTO());
       if (objet == null) {
-        ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
+        ObjetDTO objetVerif = objetDAO.rechercheParId(offreDTO.getObjetDTO());
         if (objetVerif == null) {
           throw new PasTrouveException("L'objet n'existe pas");
         }
@@ -110,7 +111,7 @@ public class OffreUCCImpl implements OffreUCC {
       throw e;
     }
     serviceDAL.commettreTransaction();
-    return offre;
+    return offreDTO;
   }
 
   /**
@@ -151,6 +152,9 @@ public class OffreUCCImpl implements OffreUCC {
         throw new BusinessException("L'id de l'objet est incorrect");
       }
       liste = offreDAO.offresPrecedentes(idObjet);
+      if (liste.size() > 0) {
+        liste.remove(0);
+      }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
@@ -158,5 +162,4 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commettreTransaction();
     return liste;
   }
-
 }

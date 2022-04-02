@@ -5,4 +5,5 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(as = ObjetImpl.class)
 public interface Objet extends ObjetDTO {
 
+  void premiereVersion();
 }

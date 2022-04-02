@@ -112,7 +112,6 @@ public class AdresseDAOImpl implements AdresseDAO {
       ps.close();
     } catch (SQLException e) {
       e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return adresseDTO;

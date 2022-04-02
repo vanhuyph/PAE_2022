@@ -38,6 +38,7 @@ public class InteretUCCImpl implements InteretUCC {
       if (date.before(now)) {
         throw new BusinessException("La date de rendez-vous ne peut pas être dans le passé");
       }
+      System.out.println(interetDTO);
       if (!interetDTO.getUtilisateur().getGsm().isBlank()) {
         UtilisateurDTO utilisateur = utilisateurDAO.modifierGsm(interetDTO.getUtilisateur());
         if (utilisateur == null) {
@@ -48,13 +49,11 @@ public class InteretUCCImpl implements InteretUCC {
           }
           throw new BusinessException("Données sont périmées");
         }
-        interetDTO.setUtilisateur(utilisateur);
       }
-      Interet interetChange = (Interet) interetDTO;
-      interetChange.creerVersion();
-      interetChange.changerEtatObjet("Intéressé");
-      objetDAO.miseAJourObjet(interetChange.getObjet());
-      interet = interetDAO.ajouterInteret(interetChange);
+      ((Interet) interetDTO).premiereVersion();
+      ((Interet) interetDTO).marquerInteretObjet();
+      objetDAO.miseAJourObjet(interetDTO.getObjet());
+      interet = interetDAO.ajouterInteret(interetDTO);
       if (interet == null) {
         throw new BusinessException("L'intérêt n'a pas pu être créé.");
       }

@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public interface Interet extends InteretDTO {
 
   //Changer Etat objet
-  InteretDTO changerEtatObjet(String etat);
+  void marquerInteretObjet();
 
-  void creerVersion();
+  void premiereVersion();
 
 }

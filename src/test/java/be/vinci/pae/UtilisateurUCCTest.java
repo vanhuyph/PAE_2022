@@ -12,6 +12,7 @@ import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.ConflitException;
 import be.vinci.pae.utilitaires.exceptions.NonAutoriseException;
+import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import java.util.ArrayList;
 import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -34,6 +35,7 @@ public class UtilisateurUCCTest {
   private UtilisateurDTO utilisateurDTO1;
   private UtilisateurDTO utilisateurDTO2;
   private UtilisateurDTO utilisateurDTO3;
+  private UtilisateurDTO utilisateurDTO4;
 
   @BeforeAll
   void initTout() {
@@ -65,6 +67,9 @@ public class UtilisateurUCCTest {
 
     utilisateurDTO3 = domaineFactory.getUtilisateur();
     utilisateurDTO3.setIdUtilisateur(0);
+
+    utilisateurDTO4 = domaineFactory.getUtilisateur();
+    utilisateurDTO4.setIdUtilisateur(1);
   }
 
   @Test
@@ -106,7 +111,7 @@ public class UtilisateurUCCTest {
   public void testInscriptionV2() {
     utilisateurDTO1.setMdp("test123");
     Mockito.when(utilisateurDAO.rechercheParPseudo(utilisateurDTO1.getPseudo()))
-        .thenReturn(utilisateurDTO3);
+        .thenReturn(null);
     Mockito.when(adresseDAO.ajouterAdresse(adresseDTO)).thenReturn(adresseDTO);
     Mockito.when(utilisateurDAO.ajouterUtilisateur(utilisateurDTO1)).thenReturn(utilisateurDTO1);
     assertEquals(utilisateurDTO1, utilisateurUCC.inscription(utilisateurDTO1));
@@ -150,39 +155,85 @@ public class UtilisateurUCCTest {
   @DisplayName("Test réussi : méthode confirmerInscription renvoie bien un utilisateur "
       + "avec son état d'inscription à confirmé mais ne le passe pas en admin.")
   public void testConfirmerInscriptionV1() {
-
-    Mockito.when(utilisateurDAO.confirmerInscription(utilisateurDTO1)).thenReturn(utilisateurDTO1);
-    assertEquals(utilisateurDTO1, utilisateurUCC.confirmerInscription(utilisateurDTO1));
+    int id = utilisateurDTO4.getIdUtilisateur();
+    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO4.getIdUtilisateur()))
+        .thenReturn(utilisateurDTO4);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO4)).thenReturn(utilisateurDTO4);
+    assertEquals(utilisateurDTO1, utilisateurUCC.confirmerInscription(id, false));
   }
 
   @Test
   @DisplayName("Test réussi : méthode confirmerInscription renvoie bien un utilisateur "
       + "avec son état d'inscription à confirmé et le passe en admin.")
   public void testConfirmerInscriptionV2() {
-    Mockito.when(utilisateurDAO.confirmerInscription(utilisateurDTO2)).thenReturn(utilisateurDTO2);
-    assertEquals(utilisateurDTO2, utilisateurUCC.confirmerInscription(utilisateurDTO2));
+    int id = utilisateurDTO4.getIdUtilisateur();
+    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO4.getIdUtilisateur()))
+        .thenReturn(utilisateurDTO4);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO4)).thenReturn(utilisateurDTO4);
+    assertEquals(utilisateurDTO1, utilisateurUCC.confirmerInscription(id, true));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode confirmerInscription renvoie null car l'utilisateur n'existe "
+      + "pas")
+  public void testConfirmerInscriptionV3() {
+    int id = utilisateurDTO4.getIdUtilisateur();
+    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO4.getIdUtilisateur()))
+        .thenReturn(null);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO4)).thenReturn(null);
+    assertThrows(PasTrouveException.class,
+        () -> utilisateurUCC.confirmerInscription(id, false));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode confirmerInscription renvoie null car la confirmation "
+      + "n'a pas pu être faite")
+  public void testConfirmerInscriptionV4() {
+    int id = utilisateurDTO4.getIdUtilisateur();
+    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO4.getIdUtilisateur()))
+        .thenReturn(utilisateurDTO4);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO4)).thenReturn(null);
+    assertThrows(BusinessException.class,
+        () -> utilisateurUCC.confirmerInscription(id, false));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode refuserInscription renvoie null car l'utilisateur n'a "
+      + "pas pu être refusé")
+  public void testRefuserInscriptionV1() {
+    int id = utilisateurDTO4.getIdUtilisateur();
+    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO4.getIdUtilisateur()))
+        .thenReturn(utilisateurDTO4);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO4))
+        .thenReturn(null);
+    assertThrows(BusinessException.class, () ->
+        utilisateurUCC.refuserInscription(id, "Il faudra attendre quelques jours"));
   }
 
   @Test
   @DisplayName("Test raté : méthode refuserInscription renvoie null car l'utilisateur n'est "
       + "pas trouvable.")
-  public void testRefuserInscriptionV1() {
-    int id = utilisateurDTO2.getIdUtilisateur();
-    Mockito.when(utilisateurDAO.refuserInscription(id, "Je ne vous connais pas"))
+  public void testRefuserInscriptionV2() {
+    int id = utilisateurDTO4.getIdUtilisateur();
+    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO4.getIdUtilisateur()))
         .thenReturn(null);
-    assertThrows(BusinessException.class, () ->
-        utilisateurUCC.refuserInscription(id, "Je ne vous connais pas"));
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO4))
+        .thenReturn(null);
+    assertThrows(PasTrouveException.class, () ->
+        utilisateurUCC.refuserInscription(id, "Il faudra attendre quelques jours"));
   }
 
   @Test
   @DisplayName("Test réussi : méthode refuserInscription renvoie bien un utilisateur "
       + "avec son état d'inscription à refusé et un commentaire.")
-  public void testRefuserInscriptionV2() {
-    int id = utilisateurDTO2.getIdUtilisateur();
-    Mockito.when(utilisateurDAO.refuserInscription(id, "Je ne vous connais pas"))
-        .thenReturn(utilisateurDTO2);
-    assertEquals(utilisateurDTO2,
-        utilisateurUCC.refuserInscription(id, "Je ne vous connais pas"));
+  public void testRefuserInscriptionV3() {
+    int id = utilisateurDTO4.getIdUtilisateur();
+    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO4.getIdUtilisateur()))
+        .thenReturn(utilisateurDTO4);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO4))
+        .thenReturn(utilisateurDTO4);
+    assertEquals(utilisateurDTO4,
+        utilisateurUCC.refuserInscription(id, "Il faudra attendre quelques jours"));
   }
 
   @Test
