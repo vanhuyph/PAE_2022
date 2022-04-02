@@ -67,7 +67,10 @@ const surProfilUtilisateur = (data) => {
             </div>
             <div class="field">
               <label>Mot de passe</label>
-              <input type="password" disabled name="profil[mdp]" value="password">
+              <input type="password" disabled name="profil[mdp]" value="password" id="mdp-profil">
+            </div>
+            <div class="field">
+                <button id="changer-mdp-profil" class="ui button inverted secondary">Changer mot de passe</button>
             </div>
           </div>
           <div class="field">
@@ -108,6 +111,11 @@ const surProfilUtilisateur = (data) => {
   `
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = profil;
+
+  document.getElementById("changer-mdp-profil").addEventListener("click", (e) => {
+    e.preventDefault()
+    console.log("Chnager mdp")
+  })
 
   document.getElementById("modifier-profil").addEventListener("click", (e) => {
     e.preventDefault()
