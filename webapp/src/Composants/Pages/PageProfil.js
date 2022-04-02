@@ -2,29 +2,30 @@ import {recupUtilisateurDonneesSession} from '../../utilitaires/session'
 import {Redirect} from "../Router/Router";
 
 const PageProfil = () => {
-  let session = recupUtilisateurDonneesSession()
+    let session = recupUtilisateurDonneesSession()
 
-  if (!session) {
-    Redirect('/connexion')
-  }
-
-  let pseudo = session.utilisateur.pseudo;
-  fetch("/api/utilisateurs/" + pseudo, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: session.token
-    },
-  })
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error(
-          "Error code : " + response.status + " : " + response.statusText
-      );
+    if(!session){
+        Redirect('/connexion')
     }
-    return response.json();
-  })
-  .then((data) => surProfilUtilisateur(data))
+
+
+    let pseudo = session.utilisateur.pseudo;
+    fetch("/api/utilisateurs/" + pseudo, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(
+                "Error code : " + response.status + " : " + response.statusText
+            );
+        }
+        return response.json();
+    })
+    .then((data) => surProfilUtilisateur(data))
 }
 
 const surProfilUtilisateur = (data) => {
@@ -40,7 +41,7 @@ const surProfilUtilisateur = (data) => {
   let profil = `
   <div class="page-profil">
     <h2>Profil</h2>
-    <div class="ui form">
+    <form class="ui form">
       <div class="formulaire-profil">
         <div class="two fields">
           <div class="field">
@@ -66,10 +67,7 @@ const surProfilUtilisateur = (data) => {
             </div>
             <div class="field">
               <label>Mot de passe</label>
-              <input id="mdp-profil" type="password" disabled name="profil[mdp]" value="password">
-            </div>
-            <div class="field">
-                <button id="modifier-mdp-profil" class="ui button inverted secondary">Changer mot de passe</button>
+              <input type="password" disabled name="profil[mdp]" value="password">
             </div>
           </div>
           <div class="field">
@@ -105,7 +103,7 @@ const surProfilUtilisateur = (data) => {
           </div>
         </div>
       </div>
-    </div>
+    </form>
   </div>
   `
   const pageDiv = document.querySelector("#page");
@@ -213,16 +211,10 @@ const surModifierProfilUtilisateur = (data) => {
     nouveauGsm = null
   }
 
-  let nouvelleBoite = document.getElementById("boite").value
-
-  if(nouvelleBoite === ""){
-    nouvelleBoite = 0
-  }
-
   let nouvelleAdresse = {
     rue: document.getElementById("rue").value,
     numero: document.getElementById("numero").value,
-    boite: nouvelleBoite,
+    boite: document.getElementById("boite").value,
     codePostal: document.getElementById("code-postal").value,
     commune: document.getElementById("commune").value
   }
