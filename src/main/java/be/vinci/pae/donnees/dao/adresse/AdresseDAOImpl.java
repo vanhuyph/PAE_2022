@@ -22,7 +22,7 @@ public class AdresseDAOImpl implements AdresseDAO {
    * Recherche une adresse via un id dans la base de données.
    *
    * @param id : l'id de l'adresse
-   * @return
+   * @return adresseDTO : l'adresse récupérée
    * @throws FatalException : est lancée s'il y a un problème côté serveur
    */
   @Override
