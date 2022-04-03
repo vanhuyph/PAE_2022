@@ -104,8 +104,10 @@ public class InteretUCCTest {
   @DisplayName("Test réussi : méthode listeDesPersonnesInteressees renvoie bien une liste")
   public void testlisteDesPersonnesInteresseesV1() {
     List<InteretDTO> liste = new ArrayList<>();
-    Mockito.when(interetDAO.listeDesPersonnesInteressees(interetDTO.getObjet())).thenReturn(liste);
-    assertEquals(liste, interetUCC.listeDesPersonnesInteressees(interetDTO.getObjet()));
+    Mockito.when(interetDAO.listeDesPersonnesInteressees(interetDTO.getObjet().getIdObjet()))
+        .thenReturn(liste);
+    assertEquals(liste,
+        interetUCC.listeDesPersonnesInteressees(interetDTO.getObjet().getIdObjet()));
   }
 
 }

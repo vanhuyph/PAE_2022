@@ -1,7 +1,6 @@
 package be.vinci.pae.business.offre;
 
 import be.vinci.pae.business.objet.ObjetDTO;
-import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
@@ -165,21 +164,23 @@ public class OffreUCCImpl implements OffreUCC {
   /**
    * Confirmée une offre.
    *
-   * @param offreDTO       : l'offre à confirmer
-   * @param utilisateurDTO : le receveur de l'offre
+   * @param offreDTO : l'offre à confirmer
    * @return l'offre Confirmée
    * @throws BusinessException : lance une exception business si l'offre n'a pas pu être confirmée
    */
   @Override
-  public OffreDTO indiquerMembreReceveur(OffreDTO offreDTO, UtilisateurDTO utilisateurDTO) {
+  public OffreDTO indiquerMembreReceveur(OffreDTO offreDTO) {
     serviceDAL.commencerTransaction();
     Offre offre;
     try {
       offre = (Offre) offreDTO;
       offre.changerEtatObjet("Confirmé");
-      offre.getObjetDTO().setOffreur(utilisateurDTO);
       ObjetDTO objet = objetDAO.miseAJourObjet(offreDTO.getObjetDTO());
       if (objet == null) {
+        ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
+        if (objetVerif == null) {
+          throw new PasTrouveException("L'objet n'existe pas");
+        }
         throw new BusinessException("Données périmées");
       }
     } catch (Exception e) {
@@ -189,6 +190,4 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commettreTransaction();
     return offre;
   }
-
-
 }

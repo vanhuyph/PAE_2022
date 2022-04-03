@@ -2,7 +2,6 @@ package be.vinci.pae.presentation.ressources;
 
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
-import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.utilitaires.Config;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
@@ -69,6 +68,9 @@ public class RessourceOffre {
   @Autorisation
   public List<OffreDTO> listerOffres() {
     List<OffreDTO> liste = offreUCC.listerOffres();
+    if (liste == null) {
+      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
+    }
     return liste;
   }
 
@@ -82,6 +84,9 @@ public class RessourceOffre {
   @Produces(MediaType.APPLICATION_JSON)
   public List<OffreDTO> listerOffresRecent() {
     List<OffreDTO> liste = offreUCC.listerOffresRecentes();
+    if (liste == null) {
+      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
+    }
     return liste;
   }
 
@@ -192,8 +197,7 @@ public class RessourceOffre {
   /**
    * Indique un membre receveur et changer l'état de l'objet en confirmé.
    *
-   * @param offreDTO       : l'offre pour laquelle on va mettre un receveur
-   * @param utilisateurDTO : le receveur
+   * @param offreDTO : l'offre pour laquelle on va mettre à jour
    * @return offreDTO : l'offre annulée
    * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'ajout d'un
    *                               receveur a échoué
@@ -203,12 +207,13 @@ public class RessourceOffre {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public OffreDTO indiquerMembreReceveur(OffreDTO offreDTO, UtilisateurDTO utilisateurDTO) {
-    if (offreDTO.getIdOffre() <= 0 || utilisateurDTO.getIdUtilisateur() <= 0) {
+  public OffreDTO indiquerMembreReceveur(OffreDTO offreDTO) {
+    if (offreDTO.getIdOffre() <= 0
+        || offreDTO.getObjetDTO().getReceveur().getIdUtilisateur() <= 0) {
       throw new PresentationException("L'id de l'offre ou de l'utilisateur est incorrect",
           Status.BAD_REQUEST);
     }
-    offreDTO = offreUCC.indiquerMembreReceveur(offreDTO, utilisateurDTO);
+    offreDTO = offreUCC.indiquerMembreReceveur(offreDTO);
     if (offreDTO == null) {
       throw new PresentationException("L'ajout d'un receveur a échoué", Status.BAD_REQUEST);
     }

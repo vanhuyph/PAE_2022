@@ -1,7 +1,6 @@
 package be.vinci.pae.donnees.dao.interet;
 
 import be.vinci.pae.business.interet.InteretDTO;
-import be.vinci.pae.business.objet.ObjetDTO;
 import java.util.List;
 
 public interface InteretDAO {
@@ -10,6 +9,6 @@ public interface InteretDAO {
 
   int nbPersonnesInteressees(int idObjet);
 
-  List<InteretDTO> listeDesPersonnesInteressees(ObjetDTO objetDTO);
+  List<InteretDTO> listeDesPersonnesInteressees(int idObjet);
 
 }

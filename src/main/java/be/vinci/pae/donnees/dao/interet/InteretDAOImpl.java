@@ -81,23 +81,22 @@ public class InteretDAOImpl implements InteretDAO {
   /**
    * Liste les interet de sa propre offre.
    *
+   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
    * @return liste : la liste des offres les plus récentes
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public List<InteretDTO> listeDesPersonnesInteressees(ObjetDTO objetDTO) {
+  public List<InteretDTO> listeDesPersonnesInteressees(int idObjet) {
     String requetePS = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
         + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
         + "u.etat_inscription, u.commentaire, i.date FROM projet.interets i, "
         + "projet.utilisateurs u, projet.adresses a WHERE "
         + "i.objet = ? AND i.utilisateur = u.id_utilisateur AND a.id_adresse = u.adresse;";
     InteretDTO interetDTO = factory.getInteret();
-    interetDTO.setObjet(objetDTO);
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
-      ps.setInt(1, objetDTO.getIdObjet());
+      ps.setInt(1, idObjet);
       List<InteretDTO> listeDesPersonnesInteressees =
           remplirListInteretDepuisResulSet(interetDTO, ps);
-
       return listeDesPersonnesInteressees;
     } catch (SQLException e) {
       e.printStackTrace();
