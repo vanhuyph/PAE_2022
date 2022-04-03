@@ -220,4 +220,33 @@ public class RessourceOffre {
     return offreDTO;
   }
 
+  /**
+   * donner une offre.
+   *
+   * @param offreDTO : l'offre a donner
+   * @return offreDTO : l'offre donner
+   * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que la donation a
+   *                               échoué
+   */
+  @PUT
+  @Path("donnerOffre")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public OffreDTO donnerOffre(OffreDTO offreDTO) {
+    if (offreDTO.getIdOffre() <= 0
+        || offreDTO.getObjetDTO().getReceveur().getIdUtilisateur() <= 0 ||
+        offreDTO.getObjetDTO().getIdObjet() <= 0) {
+      throw new PresentationException("L'id de l'offre ou de l'objet est incorrect ou qu'il n'y a"
+          + " pas de receveur"
+          , Status.BAD_REQUEST);
+    }
+    offreDTO = offreUCC.annulerOffre(offreDTO);
+    if (offreDTO == null) {
+      throw new PresentationException("La donation de l'offre a échoué", Status.BAD_REQUEST);
+    }
+    return offreDTO;
+  }
+
+
 }
