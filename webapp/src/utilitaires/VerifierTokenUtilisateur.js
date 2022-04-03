@@ -10,7 +10,7 @@ const VerifierTokenUtilisateur = (token, itemLocal) => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": token.token
+      Authorization: token.token
     }
   })
   .then((reponse) => {

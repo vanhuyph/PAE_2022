@@ -144,53 +144,53 @@ const surModifierProfilUtilisateur = (data) => {
             <div class="two fields">
               <div class="field">
                 <label>Nom</label>
-                <input id="nom" type="text" name="profil[nom]" value=${data.nom}>
+                <input id="nom" type="text" name="nom" value="${data.nom}" onchange="console.log('lol')">
               </div>
               <div class="field">
                 <label>Prenom</label>
-                <input id="prenom" type="text" name="profil[Prenom]" value=${data.prenom}>
+                <input id="prenom" type="text" name="prenom" value="${data.prenom}">
               </div>
             </div>
             <div class="two fields">
               <div class="field">
                 <label>Pseudo</label>
-                <input id="pseudo" type="text" name="profil[pseudo]" value=${data.pseudo}>
+                <input id="pseudo" type="text" name="pseudo" value="${data.pseudo}">
               </div>
               <div class="field">
                 <label>GSM</label>
-                <input id="gsm" type="text" name="profil[gsm]" value=${gsm}>
+                <input id="gsm" type="text" name="gsm" value="${gsm}">
               </div>
             </div>
             <div class="field">
               <label>Mot de passe</label>
-              <input type="password" disabled name="profil[mdp]" value="password">
+              <input type="password" disabled name="mdp" value="password">
             </div>
           </div>
           <div class="field">
             <div class="rue">
             <div class="field">
               <label>Rue</label>
-              <input id="rue" type="text" name="profil[rue]" value=${data.adresse.rue}>
+              <input id="rue" type="text" name="rue" value="${data.adresse.rue}">
               </div>
             </div>
             <div class="two fields">
               <div class="field">
                 <label>Numéro</label>
-                <input id="numero" type="number" name="profil[numero]" value=${data.adresse.numero}>
+                <input id="numero" type="number" name="numero" value=${data.adresse.numero}>
               </div>
               <div class="field">
                 <label>Boite</label>
-                <input id="boite" type="number" name="profil[boite]" value=${boite}>
+                <input id="boite" type="number" name="boite" value="${boite}">
               </div>
             </div>
             <div class="two fields">
               <div class="field">
                 <label>Code postal</label>
-                <input id="code-postal" type="number" name="profil[codepostal]" value=${data.adresse.codePostal}>
+                <input id="code-postal" type="number" name="codepostal" value=${data.adresse.codePostal}>
               </div>
               <div class="field">
                 <label>Commune</label>
-                <input id="commune" type="text" name="profil[commune]" value=${data.adresse.commune}>
+                <input id="commune" type="text" name="commune" value="${data.adresse.commune}">
               </div>
             </div>
             <div class="field">
@@ -209,35 +209,46 @@ const surModifierProfilUtilisateur = (data) => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = profilModifier;
 
+  console.log(data)
   document.getElementById('annuler-modifier').addEventListener('click', () => {
     surProfilUtilisateur(data)
   })
 
-  let nouveauGsm = document.getElementById("gsm").value
 
-  if (nouveauGsm === ""){
-    nouveauGsm = null
-  }
-
-  let nouvelleAdresse = {
-    rue: document.getElementById("rue").value,
-    numero: document.getElementById("numero").value,
-    boite: document.getElementById("boite").value,
-    codePostal: document.getElementById("code-postal").value,
-    commune: document.getElementById("commune").value
-  }
-
-  let utilisateur = {
-    pseudo: document.getElementById("pseudo").value,
-    nom: document.getElementById("nom").value,
-    prenom: document.getElementById("prenom").value,
-    gsm: nouveauGsm,
-    adresse: nouvelleAdresse
-  }
 
   document.getElementById('formulaire-profil').addEventListener('submit', () => {
+    let nouveauGsm = document.getElementById("gsm").value
+
+    if (nouveauGsm === ""){
+      nouveauGsm = null
+    }
+
+    let nouvelleAdresse = {
+      idAdresse: data.adresse.idAdresse,
+      rue: document.getElementById("rue").value,
+      numero: document.getElementById("numero").value,
+      boite: document.getElementById("boite").value,
+      codePostal: document.getElementById("code-postal").value,
+      commune: document.getElementById("commune").value,
+      version: data.adresse.version
+    }
+
+    let utilisateur = {
+      idUtilisateur: data.idUtilisateur,
+      pseudo: document.getElementById("pseudo").value,
+      nom: document.getElementById("nom").value,
+      prenom: document.getElementById("prenom").value,
+      gsm: nouveauGsm,
+      estAdmin: data.estAdmin,
+      etatInscription: data.etatInscription,
+      commentaire: data.commentaire,
+      adresse: nouvelleAdresse,
+      version: data.version
+    }
+    console.log(document.getElementById("nom").value)
+
     let session = recupUtilisateurDonneesSession()
-    fetch("/api/utilisateurs/", {
+    fetch("/api/utilisateurs", {
       method: "PUT",
       body: JSON.stringify(utilisateur),
       headers: {

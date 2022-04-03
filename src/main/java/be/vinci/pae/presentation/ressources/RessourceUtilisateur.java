@@ -234,4 +234,26 @@ public class RessourceUtilisateur {
     return utilisateurDTO;
   }
 
+  /**
+   * Modifie le profil de l'utilisateur.
+   *
+   * @param utilisateurDTO : l'utilisateur modifié
+   * @return utilisateurDTO : l'utilisateur
+   */
+  @PUT
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  //@Autorisation
+  public UtilisateurDTO modifierProfilUtilisateur(UtilisateurDTO utilisateurDTO) {
+    if (utilisateurDTO.getPseudo().isBlank() || utilisateurDTO.getNom().isBlank()
+        || utilisateurDTO.getPrenom().isBlank() || utilisateurDTO.getAdresse().getRue().isBlank()
+        || utilisateurDTO.getAdresse().getNumero() < 1
+        || utilisateurDTO.getAdresse().getCodePostal() < 1 || utilisateurDTO.getAdresse()
+        .getCommune().isBlank()) {
+      throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
+    }
+    UtilisateurDTO utilisateur = utilisateurUCC.miseAJourUtilisateur(utilisateurDTO);
+    return utilisateur;
+  }
+
 }

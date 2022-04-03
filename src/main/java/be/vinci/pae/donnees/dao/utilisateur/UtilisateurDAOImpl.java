@@ -32,7 +32,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, "
-            + "a.boite, a.code_postal, a.commune FROM projet.utilisateurs u "
+            + "a.boite, a.code_postal, a.commune, a.version FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE u.pseudo = ?;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
@@ -63,7 +63,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, "
-            + "a.boite, a.code_postal, a.commune FROM projet.utilisateurs u "
+            + "a.boite, a.code_postal, a.commune, a.version FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE u.id_utilisateur = ?;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
@@ -120,8 +120,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateurDTO) {
     String requetePs =
         "UPDATE projet.utilisateurs SET pseudo = ?, nom = ?, prenom = ?, gsm = ?, est_admin = ?,"
-            + " etat_inscription = ?, commentaire = ?, adresse = ?, version = ?"
-            + "WHERE id_utilisateur = ? AND version = ?"
+            + " etat_inscription = ?, commentaire = ?, adresse = ?, version = ? "
+            + "WHERE id_utilisateur = ? AND version = ? "
             + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, adresse"
             + ", etat_inscription, commentaire, version;";
 
@@ -187,7 +187,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
             + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, "
-            + "a.boite, a.code_postal, a.commune FROM projet.utilisateurs u "
+            + "a.boite, a.code_postal, a.commune, a.version FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE u.etat_inscription = ? ORDER BY u.pseudo;";
     List<UtilisateurDTO> liste = new ArrayList<>();
@@ -227,6 +227,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       adresseDTO.setBoite(rs.getString(14));
       adresseDTO.setCodePostal(rs.getInt(15));
       adresseDTO.setCommune(rs.getString(16));
+      adresseDTO.setVersion(rs.getInt(17));
       utilisateurDTO.setAdresse(adresseDTO);
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);

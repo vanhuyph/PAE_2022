@@ -1,5 +1,6 @@
 package be.vinci.pae.donnees.dao.adresse;
 
+import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
@@ -13,6 +14,35 @@ public class AdresseDAOImpl implements AdresseDAO {
 
   @Inject
   private ServiceBackendDAL serviceBackendDAL;
+  @Inject
+  private DomaineFactory domaineFactory;
+
+
+  /**
+   * Recherche une adresse via un id dans la base de données.
+   *
+   * @param id : l'id de l'adresse
+   * @return
+   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   */
+  @Override
+  public AdresseDTO rechercheParId(int id) {
+    AdresseDTO adresseDTO = domaineFactory.getAdresse();
+    String requetePs = "SELECT id_adresse, rue, numero, boite, code_postal, commune, version "
+        + "FROM projet.adresses WHERE id_adresse = ?;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setInt(1, id);
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return remplirAdresseDepuisResultSet(adresseDTO, rs);
+        } else {
+          return null;
+        }
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
 
   /**
    * Ajoute une adresse dans la base de données.
@@ -41,9 +71,9 @@ public class AdresseDAOImpl implements AdresseDAO {
    */
   @Override
   public AdresseDTO miseAJourAdresse(AdresseDTO adresseDTO) {
-    String requetePs = "UPDATE FROM projet.adresses SET rue = ?, numero = ?, boite = ?, "
+    String requetePs = "UPDATE projet.adresses SET rue = ?, numero = ?, boite = ?, "
         + "code_postal = ?, commune = ?, version = ? WHERE id_adresse = ? AND version = ? "
-        + "RETURNING *;";
+        + "RETURNING id_adresse, rue, numero, boite, code_postal, commune, version;";
 
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       return recupAdresseDTODepuisPs(adresseDTO, ps);

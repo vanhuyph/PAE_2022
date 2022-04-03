@@ -234,13 +234,19 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateur;
     try {
-      adresseDAO.miseAJourAdresse(utilisateurDTO.getAdresse());
+      AdresseDTO adresseDTO = adresseDAO.miseAJourAdresse(utilisateurDTO.getAdresse());
+      if (adresseDTO == null) {
+        if (adresseDAO.rechercheParId(utilisateurDTO.getAdresse().getIdAdresse()) == null) {
+          throw new PasTrouveException("L'adresse n'existe pas");
+        }
+        throw new BusinessException("Données de l'adresse sont périmées");
+      }
       utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
       if (utilisateur == null) {
         if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {
           throw new PasTrouveException("L'utilisateur n'existe pas");
         }
-        throw new BusinessException("Données périmées");
+        throw new BusinessException("Données de l'utilisateur sont périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
