@@ -100,7 +100,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * Permet l'inscription d'un utilisateur.
    *
    * @param utilisateurDTO : l'utilisateur à inscrire
-   * @return utilisateur : l'utilisateur inscrit
+   * @return utilisateurARenvoyer : l'utilisateur inscrit
    * @throws ConflitException  : est lancée si un utilisateur possède déjà le pseudo
    * @throws BusinessException : est lancée si l'utilisateur/adresse n'a pas pu être ajouté
    */
@@ -139,7 +139,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    *
    * @param id       : l'utilisateur que l'on veut confirmer
    * @param estAdmin : si l'utilisateur est admin ou non
-   * @return utilisateurDTO : l'utilisateur avec son état d'inscription passé à "confirmé"
+   * @return utilisateur : l'utilisateur avec son état d'inscription passé à "confirmé"
    * @throws BusinessException  : est lancée si l'état d'inscription de l'utilisateur n'a pas pu
    *                            être confirmé
    * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas
@@ -173,7 +173,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    *
    * @param id          : l'id de l'utilisateur que l'on veut refuser
    * @param commentaire : le commentaire de refus
-   * @return utilisateurDTO : l'utilisateur avec l'inscription refusée
+   * @return utilisateur : l'utilisateur avec l'inscription refusée
    * @throws BusinessException  : est lancée si l'état d'inscription de l'utilisateur n'a pas pu
    *                            être refusé
    * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas
@@ -227,7 +227,10 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * Met à jour les informations de l'utilisateur.
    *
    * @param utilisateurDTO : l'utilisateur à mettre à jour
-   * @return utilisateurDTO : l'utilisateur avec ses informations mises à jour
+   * @return utilisateur : l'utilisateur avec ses informations mises à jour
+   * @throws PasTrouveException : est lancée si l'utilisateur ou l'adresse n'existe pas
+   * @throws BusinessException  : est lancée si les données de l'utilisateur ou de l'adresse sont
+   *                            périmées
    */
   @Override
   public UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateurDTO) {
@@ -247,6 +250,35 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
           throw new PasTrouveException("L'utilisateur n'existe pas");
         }
         throw new BusinessException("Données de l'utilisateur sont périmées");
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return utilisateur;
+  }
+
+  /**
+   * Met à jour le mot de passe de l'utilisateur.
+   *
+   * @param utilisateurDTO : l'utilisateur (avec le nouveau mdp) que l'on veut modifier
+   * @return utilisateur : l'utilisateur avec le mot de passe modifié
+   * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas
+   * @throws BusinessException  : est lancée si les données de l'utilisateur sont périmées
+   */
+  @Override
+  public UtilisateurDTO modifierMdp(UtilisateurDTO utilisateurDTO) {
+    serviceDAL.commencerTransaction();
+    UtilisateurDTO utilisateur;
+    try {
+      utilisateurDTO.setMdp(((Utilisateur) utilisateurDTO).hashMdp(utilisateurDTO.getMdp()));
+      utilisateur = utilisateurDAO.modifierMdp(utilisateurDTO);
+      if (utilisateur == null) {
+        if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {
+          throw new PasTrouveException("L'utilisateur n'existe pas");
+        }
+        throw new BusinessException("Données primées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();

@@ -15,6 +15,8 @@ public interface UtilisateurDAO {
 
   UtilisateurDTO modifierGsm(UtilisateurDTO utilisateurDTO);
 
+  UtilisateurDTO modifierMdp(UtilisateurDTO utilisateurDTO);
+
   List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription);
 
 }

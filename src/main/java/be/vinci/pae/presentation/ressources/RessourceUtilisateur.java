@@ -256,4 +256,24 @@ public class RessourceUtilisateur {
     return utilisateur;
   }
 
+  /**
+   * Modifie le mot de passe de l'utilisateur.
+   *
+   * @param utilisateurDTO : l'utilisateur avec le nouveau mdp
+   * @return utilisateurDTO : l'utilisateur
+   * @throws PresentationException : est lancée si le mot de passe est vide
+   */
+  @PUT
+  @Path("modifierMdp")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public UtilisateurDTO modifierMdpUtilisateur(UtilisateurDTO utilisateurDTO) {
+    if (utilisateurDTO.getMdp().isBlank()) {
+      throw new PresentationException("Mot de passe vide", Status.BAD_REQUEST);
+    }
+    UtilisateurDTO utilisateur = utilisateurUCC.modifierMdp(utilisateurDTO);
+    return utilisateur;
+  }
+
 }

@@ -151,6 +151,13 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
 
+  /**
+   * Modifie le gsm de l'utilisateur.
+   *
+   * @param utilisateurDTO : l'utilisateur (avec le nouveau gsm) que l'on veut modifier
+   * @return utilisateurDTO : l'utilisateur avec le nouveau gsm
+   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   */
   @Override
   public UtilisateurDTO modifierGsm(UtilisateurDTO utilisateurDTO) {
     String requetePs =
@@ -166,6 +173,34 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         if (rs.next()) {
           utilisateurDTO = remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
           return utilisateurDTO;
+        } else {
+          return null;
+        }
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Modifie le mot de passe de l'utilisateur.
+   *
+   * @param utilisateurDTO : l'utilisateur (avec le nouveau mdp) que l'on veut modifier
+   * @return utilisateurDTO : l'utilisateur avec le nouveau mot de passe
+   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   */
+  @Override
+  public UtilisateurDTO modifierMdp(UtilisateurDTO utilisateurDTO) {
+    String requtePs = "UPDATE projet.utilisateurs SET mdp = ?, version = ? "
+        + "WHERE id_utilisateur = ? AND version = ? RETURNING *;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requtePs)) {
+      ps.setString(1, utilisateurDTO.getMdp());
+      ps.setInt(2, utilisateurDTO.getVersion() + 1);
+      ps.setInt(3, utilisateurDTO.getIdUtilisateur());
+      ps.setInt(4, utilisateurDTO.getVersion());
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
         } else {
           return null;
         }

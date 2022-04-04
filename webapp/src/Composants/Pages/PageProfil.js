@@ -67,10 +67,31 @@ const surProfilUtilisateur = (data) => {
             </div>
             <div class="field">
               <label>Mot de passe</label>
-              <input type="password" disabled name="profil[mdp]" value="password" id="mdp-profil">
+              <input type="password" disabled value="password" id="mdp-profil">
             </div>
             <div class="field">
                 <button id="changer-mdp-profil" class="ui button inverted secondary">Changer mot de passe</button>
+            </div>
+            <div class="changer-mdp">
+             <div class="field">
+              <label>Mot de passe actuel</label>
+              <input type="password" name="profil[mdp]" id="mdp-actuel">
+             </div> 
+             <div class="field">
+              <label>Nouveau mot de passe</label>
+              <input type="password" name="nv-mdp" id="nv-mdp"> 
+             </div> 
+             <div class="field">
+              <label>Confirmer nouveau mot de passe</label>  
+              <input type="password" name="conf-mdp" id="conf-mdp">
+             </div>
+              <div class="two fields">
+              <div class="field">
+              </div>
+              <div class="field">
+                <button id="modifier-mdp" class="ui positive button">Modifier mot de passe</button>
+              </div>
+            </div>
             </div>
           </div>
           <div class="field">
@@ -114,7 +135,8 @@ const surProfilUtilisateur = (data) => {
 
   document.getElementById("changer-mdp-profil").addEventListener("click", (e) => {
     e.preventDefault()
-    console.log("Chnager mdp")
+    document.querySelector(".changer-mdp").classList.toggle("montrer-block")
+
   })
 
   document.getElementById("modifier-profil").addEventListener("click", (e) => {
