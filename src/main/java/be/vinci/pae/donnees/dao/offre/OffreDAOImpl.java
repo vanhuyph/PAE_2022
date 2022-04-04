@@ -201,6 +201,8 @@ public class OffreDAOImpl implements OffreDAO {
    */
   @Override
   public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
+    System.out.println("OffresDAO Modifier Offre ");
+
     String requetePs = "UPDATE projet.offres SET plage_horaire = ? WHERE id_offre = ?;";
     //returning l'offre modifié depuis la db ?
     //impl version

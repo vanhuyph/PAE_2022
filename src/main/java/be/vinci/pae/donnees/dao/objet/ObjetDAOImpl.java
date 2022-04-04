@@ -74,6 +74,8 @@ public class ObjetDAOImpl implements ObjetDAO {
    */
   @Override
   public ObjetDTO modifierObjet(ObjetDTO objetAvecModification) {
+    System.out.println("ObjetSDAO Modifier Offre ");
+
     String requetePs = "UPDATE projet.objets SET description = ? , photo = ?  WHERE id_objet = ?;";
     //returning l'objet modifié depuis la db ?
     //impl version

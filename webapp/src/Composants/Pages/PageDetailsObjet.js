@@ -399,9 +399,110 @@ const previsualiserPhoto = (e) => {
 }
 const suppPhoto = () => {
   let image = document.getElementById("image")
+  console.log("supprimer Photo")
   image.scrc="#"
 }
+const envoyerPhoto = async (e) => {
+  const session = recupUtilisateurDonneesSession();
+  let nomPhoto;
+  const fichierDEntree = document.getElementById("photo");
+  const formDonnee = new FormData();
+  formDonnee.append('photo', fichierDEntree.files[0]);
+  const options = {
+    method: 'POST',
+    body: formDonnee,
+    headers: {
+      Authorization: session.token
+    },
+  };
+  await fetch(API_URL+'offres/telechargementPhoto', options).then((res) => {
+    if (!res.ok) {
+      throw new Error(
+          "Code d'erreur : " + res.status + " : " + res.statusText
+      );
+    }
+    return res.text()
+  }).then((data) => {
+    nomPhoto = data.toString()
+  })
+  return nomPhoto;
+}
+const envoiModification = async ( offre) =>{
+  let session = recupUtilisateurDonneesSession()
+  console.log("envoie des modification s")
+  let description = document.querySelector("#description").value;
+  let plageHoraire = document.querySelector("#horaire").value;
+  let photo = document.querySelector("#image");
 
+/*  document.querySelector(".erreur-horaire").innerHTML = "";
+  document.querySelector(".erreur-description").innerHTML = "";
+  if (plageHoraire === "") {
+    document.querySelector(
+        ".erreur-horaire").innerHTML = "Votre plage horaire est vide";
+  }
+  if (description === "") {
+    document.querySelector(
+        ".erreur-description").innerHTML = "Votre description est vide";
+  }*/
+
+
+
+  let srcPhoto = photo.attributes.getNamedItem("src")
+  let nomPhoto = offre.objetDTO.photo;
+
+  let compNomPhoto = "/api/offres/photos/"+nomPhoto
+  console.log(srcPhoto.value+" photo déjà présente : "+compNomPhoto)
+  if (srcPhoto.value !== compNomPhoto){
+     nomPhoto = "donnamis.png"
+    if (srcPhoto.value !== "#"  ) {
+      console.log("envoie de la photo")
+
+      nomPhoto = await envoyerPhoto()
+    }
+  }else{
+    nomPhoto=offre.photo
+  }
+
+  if (description !== "" && plageHoraire !== "") {
+
+    let objetModifie = {
+      offreur: offre.offreur,
+      receveur: null,
+      typeObjet: {idType: offre.typeObjet},
+      description: description,
+      photo: nomPhoto //.toString()
+    }
+
+
+    let offreModifiee= {
+      objetDTO: objetModifie,
+      plageHoraire: plageHoraire
+    }
+
+  console.log("envoie de l'offre modifier")
+  await fetch(
+      API_URL + 'offres/modifierOffre/', {
+        method: "PUT",
+        body: JSON.stringify(offreModifiee),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: session.token,
+        },
+      })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code erreur : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+  })
+  .then((donnee) =>{
+    console.log("récupération de l'offre modifier "
+        + "et renvoie sur la page détails objet")
+    surDetailObjetProprio(donnee)
+  })
+  }
+}
 const surDetailObjetProprioModifier = async (offre) => {
   let session = recupUtilisateurDonneesSession()
   let pageDiv = document.querySelector("#page");
@@ -511,7 +612,7 @@ const surDetailObjetProprioModifier = async (offre) => {
         <div class="column">
         <div class="field">
           <h4>Description</h4>
-          <input type="text" value="${offre.objetDTO.description}"/>
+          <input id="description" type="text" value="${offre.objetDTO.description}"/>
         </div>
         </div>
         <div class="column">
@@ -523,7 +624,7 @@ const surDetailObjetProprioModifier = async (offre) => {
         <div class="column">
         <div class="field">
           <h4>Disponibilités de l'offreur</h4>
-          <input type="text" value="${offre.plageHoraire}"/>
+          <input id="horaire" type="text" value="${offre.plageHoraire}"/>
          </div>
         </div>
       </div>
@@ -548,8 +649,20 @@ const surDetailObjetProprioModifier = async (offre) => {
   let SuppPhoto = document.getElementById("supprimerPhoto")
   SuppPhoto.addEventListener("click",suppPhoto)
 
-  document.querySelector("#annuler").addEventListener("click", () => {
-    surDetailObjetProprio(offre)
+  let changerPhoto = document.getElementById("photo")
+  changerPhoto.addEventListener("change",previsualiserPhoto)
+
+  let confirmerModification = document.getElementById("confirmer")
+  confirmerModification.addEventListener("click", () =>{
+
+    envoiModification(offre)
+  })
+
+
+ let annulerMod =  document.getElementById("annuler")
+ annulerMod.addEventListener("click",()=>{
+
+   surDetailObjetProprio(offre)
   })
 }
 

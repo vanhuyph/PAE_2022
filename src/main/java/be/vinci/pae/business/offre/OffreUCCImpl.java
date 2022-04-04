@@ -131,6 +131,8 @@ public class OffreUCCImpl implements OffreUCC {
    */
   @Override
   public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
+    System.out.println("UCC Modifier Offre ");
+
     serviceDAL.commencerTransaction();
     Objet objet = (Objet) objetDAO.modifierObjet(offreAvecModification.getObjetDTO());
     if (objet == null) {
