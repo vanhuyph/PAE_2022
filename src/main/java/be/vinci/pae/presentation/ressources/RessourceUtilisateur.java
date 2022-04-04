@@ -259,20 +259,35 @@ public class RessourceUtilisateur {
   /**
    * Modifie le mot de passe de l'utilisateur.
    *
-   * @param utilisateurDTO : l'utilisateur avec le nouveau mdp
+   * @param idUtilisateur : l'id de l'utilisateur
+   * @param json          : json avec le mot de passe actuel et le nouveau mot de passe
    * @return utilisateurDTO : l'utilisateur
    * @throws PresentationException : est lancée si le mot de passe est vide
    */
   @PUT
-  @Path("modifierMdp")
+  @Path("modifierMdp/{idUtilisateur}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public UtilisateurDTO modifierMdpUtilisateur(UtilisateurDTO utilisateurDTO) {
-    if (utilisateurDTO.getMdp().isBlank()) {
-      throw new PresentationException("Mot de passe vide", Status.BAD_REQUEST);
+  public UtilisateurDTO modifierMdpUtilisateur(@PathParam("idUtilisateur") int idUtilisateur,
+      JsonNode json) {
+    if (idUtilisateur < 1) {
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
-    UtilisateurDTO utilisateur = utilisateurUCC.modifierMdp(utilisateurDTO);
+    if (!json.hasNonNull("mdpActuel") || json.get("mdpActuel").asText().isBlank()
+        || !json.hasNonNull("nouvMdp") || json.get("nouvMdp").asText().isBlank()
+        || !json.hasNonNull(
+        "confNouvMdp") || json.get("confNouvMdp").asText().isBlank()) {
+      throw new PresentationException("Des champs sont manquant", Status.BAD_REQUEST);
+    }
+    String mdpActuel = json.get("mdpActuel").asText();
+    String nouvMdp = json.get("nouvMdp").asText();
+    String confNouvMdp = json.get("confNouvMdp").asText();
+    if (!nouvMdp.equals(confNouvMdp)) {
+      throw new PresentationException("Confirmation du mot de passe est incorrecte",
+          Status.BAD_REQUEST);
+    }
+    UtilisateurDTO utilisateur = utilisateurUCC.modifierMdp(idUtilisateur, mdpActuel, nouvMdp);
     return utilisateur;
   }
 

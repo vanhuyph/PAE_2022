@@ -1,5 +1,6 @@
 import {recupUtilisateurDonneesSession} from '../../utilitaires/session'
 import {Redirect} from "../Router/Router";
+import {API_URL} from "../../utilitaires/serveur";
 
 const PageProfil = () => {
     let session = recupUtilisateurDonneesSession()
@@ -29,6 +30,7 @@ const PageProfil = () => {
 }
 
 const surProfilUtilisateur = (data) => {
+  let session = recupUtilisateurDonneesSession()
   let boite = ""
   let gsm = "Pas de numéro"
   if(data.adresse.boite !== 0){
@@ -74,22 +76,25 @@ const surProfilUtilisateur = (data) => {
             </div>
             <div class="changer-mdp">
              <div class="field">
-              <label>Mot de passe actuel</label>
-              <input type="password" name="profil[mdp]" id="mdp-actuel">
+              <label for="mdp-actuel">Mot de passe actuel</label>
+              <input type="password" name="mdp" id="mdp-actuel">
              </div> 
              <div class="field">
-              <label>Nouveau mot de passe</label>
+              <label for="nv-mdp">Nouveau mot de passe</label>
               <input type="password" name="nv-mdp" id="nv-mdp"> 
              </div> 
              <div class="field">
-              <label>Confirmer nouveau mot de passe</label>  
+              <label for="conf-mdp">Confirmer nouveau mot de passe</label>  
               <input type="password" name="conf-mdp" id="conf-mdp">
+             </div>
+             <div class="field">
+              <p class="message-erreur" id="mdp-erreur"></p>
              </div>
               <div class="two fields">
               <div class="field">
               </div>
               <div class="field">
-                <button id="modifier-mdp" class="ui positive button">Modifier mot de passe</button>
+                <button id="modifier-mdp" class="ui yellow button">Modifier mot de passe</button>
               </div>
             </div>
             </div>
@@ -135,8 +140,52 @@ const surProfilUtilisateur = (data) => {
 
   document.getElementById("changer-mdp-profil").addEventListener("click", (e) => {
     e.preventDefault()
+    let mdpActuel = document.querySelector("#mdp-actuel")
+    let nouvMdp = document.querySelector("#nv-mdp")
+    let confMdp = document.querySelector("#conf-mdp")
+    let msgErr = document.querySelector("#mdp-erreur")
+    mdpActuel.value = ""
+    nouvMdp.value = ""
+    confMdp.value = ""
+    msgErr.innerHTML = ""
     document.querySelector(".changer-mdp").classList.toggle("montrer-block")
+    document.querySelector("#modifier-mdp").addEventListener("click", (e) => {
+      e.preventDefault()
+      if (mdpActuel.value === "" || nouvMdp.value === "" || confMdp.value === ""){
+        msgErr.innerHTML = "Des champs sont manquant"
+      } else if(nouvMdp.value !== confMdp.value) {
+        msgErr.innerHTML = "Confirmation du nouveau mot de passe incorrecte"
+      }else {
 
+        let AEnvoyer = {
+          mdpActuel: mdpActuel.value,
+          nouvMdp: nouvMdp.value,
+          confNouvMdp: confMdp.value
+        }
+        fetch(API_URL + "/utilisateurs/modifierMdp/" + data.idUtilisateur, {
+          method: "PUT",
+          body: JSON.stringify(AEnvoyer),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token,
+          }
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+                "Error code : " + response.status + " : " + response.statusText
+                + " : " + response.text())
+          }
+          console.log(response)
+          return response.json()
+        })
+        .then((donnee) => surProfilUtilisateur(donnee))
+        .catch((err) => {
+          console.log(err)
+          document.querySelector("#mdp-erreur").innerHTML=err.message
+        })
+      }
+      })
   })
 
   document.getElementById("modifier-profil").addEventListener("click", (e) => {

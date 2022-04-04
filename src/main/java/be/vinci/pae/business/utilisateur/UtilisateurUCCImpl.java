@@ -262,22 +262,28 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   /**
    * Met à jour le mot de passe de l'utilisateur.
    *
-   * @param utilisateurDTO : l'utilisateur (avec le nouveau mdp) que l'on veut modifier
+   * @param id        : l'id de l'utilisateur
+   * @param mdpActuel : mot de passe actuel de l'utilisateur
+   * @param nouvMdp   : le nouveau mot de passe de l'utilisateur
    * @return utilisateur : l'utilisateur avec le mot de passe modifié
    * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas
    * @throws BusinessException  : est lancée si les données de l'utilisateur sont périmées
    */
   @Override
-  public UtilisateurDTO modifierMdp(UtilisateurDTO utilisateurDTO) {
+  public UtilisateurDTO modifierMdp(int id, String mdpActuel, String nouvMdp) {
     serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateur;
     try {
-      utilisateurDTO.setMdp(((Utilisateur) utilisateurDTO).hashMdp(utilisateurDTO.getMdp()));
-      utilisateur = utilisateurDAO.modifierMdp(utilisateurDTO);
+      Utilisateur utilisateurActuel = (Utilisateur) utilisateurDAO.rechercheParId(id);
+      if (utilisateurActuel == null) {
+        throw new PasTrouveException("L'utilisateur n'existe pas");
+      }
+      if (!utilisateurActuel.verifierMdp(mdpActuel)) {
+        throw new BusinessException("Mot de passe incorrect");
+      }
+      utilisateurActuel.setMdp(utilisateurActuel.hashMdp(nouvMdp));
+      utilisateur = utilisateurDAO.modifierMdp(utilisateurActuel);
       if (utilisateur == null) {
-        if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {
-          throw new PasTrouveException("L'utilisateur n'existe pas");
-        }
         throw new BusinessException("Données primées");
       }
     } catch (Exception e) {

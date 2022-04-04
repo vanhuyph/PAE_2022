@@ -20,5 +20,5 @@ public interface UtilisateurUCC {
 
   UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateur);
 
-  UtilisateurDTO modifierMdp(UtilisateurDTO utilisateurDTO);
+  UtilisateurDTO modifierMdp(int id, String mdpActuel, String nouvMdp);
 }
