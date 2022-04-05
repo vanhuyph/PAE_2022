@@ -250,8 +250,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * ville).
    *
    * @param recherche : le critère de recherche
-   * @return liste : la liste des utilisateurs correspondant au critère de recherche passé en
-   * paramètre
+   * @return liste : la liste des utilisateurs correspondant au critère de recherche
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override

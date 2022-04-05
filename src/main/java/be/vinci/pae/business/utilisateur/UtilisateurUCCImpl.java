@@ -298,8 +298,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * Liste tous les utilisateurs en fonction d'un critère de recherche (nom, code postal ou ville).
    *
    * @param recherche : le critère de recherche
-   * @return liste : la liste des utilisateurs correspondant au critère de recherche passé en
-   * paramètre
+   * @return liste : la liste des utilisateurs correspondant au critère de recherche
    */
   @Override
   public List<UtilisateurDTO> rechercherMembres(String recherche) {
