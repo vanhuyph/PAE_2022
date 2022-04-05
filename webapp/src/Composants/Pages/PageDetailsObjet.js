@@ -1,9 +1,15 @@
 import {API_URL} from "../../utilitaires/serveur";
 import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import {Redirect} from "../Router/Router";
+import Navbar from "../Navbar/Navbar";
 
 const PageDetailsObjet = (id) => {
   const session = recupUtilisateurDonneesSession()
+  //si offrir un objet
+  if (id === undefined){
+    PageOffrirObjet()
+    //si détails objet
+  }else{
   // Récupère l'objet
   fetch(API_URL + "offres/voirDetailsOffre/" + id, {
     method: "GET",
@@ -28,6 +34,7 @@ const PageDetailsObjet = (id) => {
       surDetailObjet(donnee)
     }
   })
+  }
 }
 const surDetailObjet = async (offre) => {
   // Page détails de l'objet
@@ -666,6 +673,230 @@ const surDetailObjetProprioModifier = async (offre) => {
   })
 }
 
+//enelever le p majuscule
+const PageOffrirObjet  = () => {
+  const pageDiv = document.querySelector("#page");
+  const session = recupUtilisateurDonneesSession();
+
+/* let formPhoto =
+      `
+
+    `*/
+  let typesObjet =
+      `
+        <select class="ui search dropdown " type="text" id="choixTypeObjet" className="type" >
+        </select>
+        <p class="message-erreur erreur-type"></p>
+    `
+  /*
+// Formulaire pour créer une offre
+  let pageOffrirObjet = `
+    <div class="page-offrirObjet ">
+    <h2>Offrir un objet</h2>
+    <div class="ui horizontal segments">
+    <div class="ui segment">
+    <form id="formulaire-offrirObjet" class="ui form">
+          <div class="description-conteneur field">
+          <label for="description">Description</label>
+              <input type="text" id="description" class="description ">
+              <p class="message-erreur erreur-description"></p>
+          </div>
+
+        <div class="field">
+          <label for="horaire">Plage horaire</label>
+          <div class="horaire-conteneur">
+              <input type="text" id="horaire" class="horaire">
+              <p class="message-erreur erreur-horaire"></p>
+          </div>
+        </div>
+         <div class="field">
+          <label for="type">Type</label>
+            ${typesObjet}
+        </div>
+        <div class=" tertiary inverted ">
+        <button class="ui  button " type="submit">Offrir l'objet</button>
+        </div>
+    </form>
+     </div>
+       <div class="ui  right floated segment">
+    <div class="">
+      ${formPhoto}
+      </div>
+    </div>
+    </div>
+    </div>
+    `*/
+  let pageoffrirObjet =
+      `
+<div class="ui container">
+ <h2>Offrir un objet</h2>
+    <div class="ui two column grid">
+      <div class="column">
+      <div class="field">
+        <img src="#" alt="" id="image" style="max-width: 500px; margin-top: 20px;" >
+        <div class="field">
+         <form id="envoyerPhoto" class="ui form"  >
+          <label>Sélectionner une photo</label>
+          <input  name="photo" id="photo" type="file"/> <br/><br/>
+         </form>
+        </div>  
+       </div>
+       <form id="formulaire-offrirObjet" class="ui form">
+      <div class="ui two column grid caracteristique-objet">
+        <div class="row">
+          <div class="column">
+            <h4>Type</h4>
+            <p>${typesObjet}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui two column grid">
+      <div class="row">
+        <div class="column">
+        <div class="field">
+          <h4>Description</h4>
+          <input id="description" type="text" />
+          <p class="message-erreur erreur-description"></p>
+        </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="column">
+        <div class="field">
+          <h4>Disponibilités </h4>
+          <input id="horaire" type="text"/>
+           <p class="message-erreur erreur-horaire"></p>
+         </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui two column grid">
+    <div class="column"></div>
+      <div class="column">
+      <div class="field">
+        <div class="ui bouttons">
+          <button type="submit" class="ui positive button">Offrir l'objet</button>         
+        </div>
+      </div>
+      </div>
+    </div>
+  </form>
+  </div>`
+
+  pageDiv.innerHTML=pageoffrirObjet
+  const formulairePhoto = document.getElementById("envoyerPhoto");
+  const photo = document.querySelector("#photo");
+  photo.addEventListener("change", previsualiserPhoto);
+  formulairePhoto.addEventListener("submit", envoyerPhoto);
+
+  const formOffrirObjet = document.querySelector("#formulaire-offrirObjet");
+  formOffrirObjet.addEventListener("submit",surOffrirObjet)
+
+  if (session) {
+    Navbar();
+    fetch("/api/typesObjet/liste", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token,
+      },
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+            "Code d'erreur : " + response.status + " : " + response.statusText
+        );
+      }
+      return response.json();
+    })
+    .then((data) => choixTypeObjet(data));
+    formOffrirObjet.addEventListener("submit", surOffrirObjet);
+  } else {
+    Redirect("/connexion");
+  }
+
+
+
+}
+const choixTypeObjet = (data) => {
+  let choixTypeObjet = document.querySelector("#choixTypeObjet");
+  if (data.length === 0 || !data) {
+    let listeVide = `Il n'y a aucun type d'objets`;
+    choixTypeObjet.innerHTML = listeVide;
+    return;
+  }
+  let liste = `<option value="empty" selected hidden=true>Sélectionner le type</option>`;
+  data.forEach((typeObjet) => {
+    liste += `<option value=${typeObjet.idType}>${typeObjet.nom}</option>`;
+  });
+  choixTypeObjet.innerHTML = liste;
+}
+const surOffrirObjet = async (e) => {
+  e.preventDefault();
+  let typeObjet = document.querySelector("#choixTypeObjet").value;
+  let description = document.querySelector("#description").value;
+  let plageHoraire = document.querySelector("#horaire").value;
+  let photo = document.querySelector("#image");
+
+  document.querySelector(".erreur-type").innerHTML = "";
+  document.querySelector(".erreur-description").innerHTML = "";
+  document.querySelector(".erreur-horaire").innerHTML = "";
+
+  if (description === "") {
+    document.querySelector(
+        ".erreur-description").innerHTML = "Votre description est vide";
+  }
+
+  if (plageHoraire === "") {
+    document.querySelector(
+        ".erreur-horaire").innerHTML = "Votre plage horaire est vide";
+  }
+
+  if (typeObjet === "empty") {
+    document.querySelector(
+        ".erreur-type").innerHTML = "Vous devez sélectionner un type";
+  }
+
+  const session = recupUtilisateurDonneesSession();
+  const offreur = session.utilisateur;
+  const srcPhoto = photo.attributes.getNamedItem("src")
+  let nomPhoto = "donnamis.png"
+  if (srcPhoto.value !== "#") {
+    nomPhoto = await envoyerPhoto()
+  }
+
+  if (description !== "" && plageHoraire !== "" && typeObjet !== "empty") {
+    let nouvelObjet = {
+      offreur: offreur,
+      receveur: null,
+      typeObjet: {idType: typeObjet},
+      description: description,
+      photo: nomPhoto.toString()
+    }
+
+    let nouvelleOffre = {
+      objetDTO: nouvelObjet,
+      plageHoraire: plageHoraire
+    }
+
+    await fetch("/api/offres/creerOffre", {
+      method: "POST",
+      body: JSON.stringify(nouvelleOffre),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token
+      },
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+            "Code d'erreur : " + response.status + " : " + response.statusText)
+      }
+      return response.json();
+    }).then((donnee) => Redirect("/"))
+  }
+}
 // Si erreur lors de la soumission du formulaire
 const surErreur = (err) => {
   let messageErreur = document.querySelector("#serveurErreur");
