@@ -35,4 +35,8 @@ public interface ObjetDTO {
 
   void setPhoto(String photo);
 
+  int getVersion();
+
+  void setVersion(int nVersion);
+
 }

@@ -24,6 +24,8 @@ public class ObjetImpl implements Objet {
   private UtilisateurDTO receveur;
   @JsonView(Vues.Public.class)//vérifier type d'objet
   private String photo;
+  @JsonView(Vues.Public.class)
+  private int version;
 
   /**
    * Verifie si l'état de l'objet permet de le modifier ainsi que son offre
@@ -99,6 +101,16 @@ public class ObjetImpl implements Objet {
   }
 
   @Override
+  public int getVersion() {
+    return this.version;
+  }
+
+  @Override
+  public void setVersion(int nVersion) {
+    this.version = nVersion;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -125,6 +137,7 @@ public class ObjetImpl implements Objet {
         + ", offreur= " + offreur
         + ", receveur= " + receveur
         + ", photo= " + photo
+        + ",version= " + version
         + '}';
   }
 }

@@ -497,6 +497,7 @@ const envoiModification = async ( offre) =>{
         },
       })
   .then((reponse) => {
+    console.log(reponse.ok)
     if (!reponse.ok) {
       throw new Error(
           "Code erreur : " + reponse.status + " : " + reponse.statusText
@@ -580,17 +581,10 @@ const surDetailObjetProprioModifier = async (offre) => {
             <p>Proposé par: ${offre.objetDTO.offreur.pseudo}</p>
           </div>
        </div>
-       <!-- <img class="ui large rounded image" src="/api/offres/photos/${offre.objetDTO.photo}"/>
-        <div class="ui two column grid">
-          <div class="column">
-          <button>Modifier la photo</button>
-          <button id="supprimer-photo">Supprimer la photo</button>
-          </div>
-          <div class="column propose">
+      
+      <div class="column propose">
             <p>Proposé par: ${offre.objetDTO.offreur.pseudo}</p>
           </div>
-        </div>
-      </div>-->
       <div class="ui two column grid caracteristique-objet">
         <div class="row">
           <div class="column">
@@ -649,7 +643,7 @@ const surDetailObjetProprioModifier = async (offre) => {
       </div>
     </div>
   </form>
-   <button id="supprimerPhoto" class="ui negative button">Supprimer la photo</button>
+   <button id="supprimerPhoto" class="ui negative  button">Supprimer la photo</button>
   </div>
   `
   pageDiv.innerHTML = offrePage
@@ -673,63 +667,22 @@ const surDetailObjetProprioModifier = async (offre) => {
   })
 }
 
-//enelever le p majuscule
-const PageOffrirObjet  = () => {
+//enlever async
+const PageOffrirObjet  = async  () => {
   const pageDiv = document.querySelector("#page");
   const session = recupUtilisateurDonneesSession();
-
-/* let formPhoto =
-      `
-
-    `*/
   let typesObjet =
       `
         <select class="ui search dropdown " type="text" id="choixTypeObjet" className="type" >
         </select>
         <p class="message-erreur erreur-type"></p>
     `
-  /*
-// Formulaire pour créer une offre
-  let pageOffrirObjet = `
-    <div class="page-offrirObjet ">
-    <h2>Offrir un objet</h2>
-    <div class="ui horizontal segments">
-    <div class="ui segment">
-    <form id="formulaire-offrirObjet" class="ui form">
-          <div class="description-conteneur field">
-          <label for="description">Description</label>
-              <input type="text" id="description" class="description ">
-              <p class="message-erreur erreur-description"></p>
-          </div>
 
-        <div class="field">
-          <label for="horaire">Plage horaire</label>
-          <div class="horaire-conteneur">
-              <input type="text" id="horaire" class="horaire">
-              <p class="message-erreur erreur-horaire"></p>
-          </div>
-        </div>
-         <div class="field">
-          <label for="type">Type</label>
-            ${typesObjet}
-        </div>
-        <div class=" tertiary inverted ">
-        <button class="ui  button " type="submit">Offrir l'objet</button>
-        </div>
-    </form>
-     </div>
-       <div class="ui  right floated segment">
-    <div class="">
-      ${formPhoto}
-      </div>
-    </div>
-    </div>
-    </div>
-    `*/
   let pageoffrirObjet =
       `
 <div class="ui container">
  <h2>Offrir un objet</h2>
+ <form id="formulaire-offrirObjet" class="ui form">
     <div class="ui two column grid">
       <div class="column">
       <div class="field">
@@ -741,7 +694,6 @@ const PageOffrirObjet  = () => {
          </form>
         </div>  
        </div>
-       <form id="formulaire-offrirObjet" class="ui form">
       <div class="ui two column grid caracteristique-objet">
         <div class="row">
           <div class="column">
@@ -785,17 +737,13 @@ const PageOffrirObjet  = () => {
   </div>`
 
   pageDiv.innerHTML=pageoffrirObjet
-  const formulairePhoto = document.getElementById("envoyerPhoto");
   const photo = document.querySelector("#photo");
-  photo.addEventListener("change", previsualiserPhoto);
-  formulairePhoto.addEventListener("submit", envoyerPhoto);
 
   const formOffrirObjet = document.querySelector("#formulaire-offrirObjet");
-  formOffrirObjet.addEventListener("submit",surOffrirObjet)
 
   if (session) {
     Navbar();
-    fetch("/api/typesObjet/liste", {
+     fetch("/api/typesObjet/liste", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -815,7 +763,9 @@ const PageOffrirObjet  = () => {
   } else {
     Redirect("/connexion");
   }
+   photo.addEventListener("change", previsualiserPhoto);
 
+  await formOffrirObjet.addEventListener("submit",surOffrirObjet)
 
 
 }
@@ -833,6 +783,7 @@ const choixTypeObjet = (data) => {
   choixTypeObjet.innerHTML = liste;
 }
 const surOffrirObjet = async (e) => {
+  console.log("sur offrir objet")
   e.preventDefault();
   let typeObjet = document.querySelector("#choixTypeObjet").value;
   let description = document.querySelector("#description").value;
@@ -897,7 +848,7 @@ const surOffrirObjet = async (e) => {
     }).then((donnee) => Redirect("/"))
   }
 }
-// Si erreur lors de la soumission du formulaire
+// Si erreur lors de la soumission du formulaire de modification
 const surErreur = (err) => {
   let messageErreur = document.querySelector("#serveurErreur");
   let erreurMessage = "";
