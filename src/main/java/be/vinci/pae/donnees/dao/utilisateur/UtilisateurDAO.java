@@ -19,10 +19,6 @@ public interface UtilisateurDAO {
 
   List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription);
 
-  UtilisateurDTO refuserInscription(int id, String commentaire);
-
-  UtilisateurDTO miseAJourInfo(UtilisateurDTO utilisateur);
-
   List<UtilisateurDTO> rechercherMembres(String recherche);
 
 }

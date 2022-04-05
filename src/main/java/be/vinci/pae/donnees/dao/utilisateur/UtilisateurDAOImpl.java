@@ -4,7 +4,6 @@ import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
-import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -117,11 +116,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
-   * Met à jour l'état de l'inscription d'un utilisateur à "Confirmé".
+   * Met à jour les informations de l'utilisateur
    *
-   * @param id       : l'id de l'utilisateur
-   * @param estAdmin : si l'utilisateur est admin
-   * @return utilisateurDTO : l'utilisateur avec l'état de son inscription à "Confirmé"
+   * @param utilisateurDTO : l'utilisateur à changer les informations
+   * @return utilisateurDTO : l'utilisateur avec ses informations modifiées
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
@@ -132,7 +130,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
             + "WHERE id_utilisateur = ? AND version = ? "
             + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, adresse"
             + ", etat_inscription, commentaire, version;";
-
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, utilisateurDTO.getPseudo());
       ps.setString(2, utilisateurDTO.getNom());
@@ -261,8 +258,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public List<UtilisateurDTO> rechercherMembres(String recherche) {
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, a.id_adresse, a.rue, a.numero, a.boite, "
-            + "a.code_postal, a.commune FROM projet.utilisateurs u "
+            + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, "
+            + "a.boite, a.code_postal, a.commune, a.version FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE lower(u.nom) LIKE lower(?) OR a.code_postal::TEXT LIKE ? OR lower(a.commune) "
             + "LIKE lower(?);";
