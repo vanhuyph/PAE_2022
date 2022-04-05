@@ -46,17 +46,14 @@ public class InteretUCCImpl implements InteretUCC {
           if (utilisateurVerif == null) {
             throw new PasTrouveException("L'utilisateur n'existe pas");
           }
-          throw new BusinessException("Données sont périmées");
+          throw new BusinessException("Données périmées");
         }
-        interetDTO.setUtilisateur(utilisateur);
       }
-      Interet interetChange = (Interet) interetDTO;
-      interetChange.creerVersion();
-      interetChange.changerEtatObjet("Intéressé");
-      objetDAO.miseAJourObjet(interetChange.getObjet());
-      interet = interetDAO.ajouterInteret(interetChange);
+      ((Interet) interetDTO).marquerInteretObjet();
+      objetDAO.miseAJourObjet(interetDTO.getObjet());
+      interet = interetDAO.ajouterInteret(interetDTO);
       if (interet == null) {
-        throw new BusinessException("L'intérêt n'a pas pu être créé.");
+        throw new BusinessException("L'intérêt n'a pas pu être créé");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();

@@ -32,4 +32,5 @@ public interface AdresseDTO {
   int getVersion();
 
   void setVersion(int version);
+
 }

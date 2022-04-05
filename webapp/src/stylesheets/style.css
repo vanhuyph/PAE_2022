@@ -375,9 +375,6 @@ Fin Message de bienvenue*/
     margin: 0 10px;
     width: 70% !important;
 }
-.montrer-block{
-    display: block;
-}
 
 .est-admin {
     width: 71.45px;
@@ -500,9 +497,31 @@ Fin Message de bienvenue*/
     margin-bottom: 17px;
 }
 
+.changer-mdp{
+    display: none;
+    margin-top: 30px;
+    border: 1px solid #bfc6ce;
+    border-radius: 10px;
+    padding: 25px;
+}
+.changer-mdp .field:nth-child(2){
+    margin: 20px 5px !important;
+}
+.changer-mdp .fields{
+    margin: 0 !important;
+    margin-top: 20px !important;
+}
+.changer-mdp .fields .field{
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
 /* Fin page profil */
 
 
+.montrer-block{
+    display: block;
+}
 @media screen and (max-width: 340px) {
     #choix-demande button{
         width: 120px;

@@ -2,7 +2,6 @@ package be.vinci.pae.donnees.dao.interet;
 
 import be.vinci.pae.business.interet.InteretDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
-import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -38,11 +37,17 @@ public class InteretDAOImpl implements InteretDAO {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
   }
 
+  /**
+   * Récupère le nombre de personnes intéressées de l'objet avec l'id passé en paramètre.
+   *
+   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @return nbPers : le nombre de personnes intéressées
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
   @Override
   public int nbPersonnesInteressees(int idObjet) {
     String requetePS = "SELECT COUNT(i.utilisateur) FROM projet.interets i WHERE i.objet = ?;";
@@ -55,8 +60,6 @@ public class InteretDAOImpl implements InteretDAO {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return nbPers;

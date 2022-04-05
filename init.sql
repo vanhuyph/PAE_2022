@@ -71,30 +71,30 @@ CREATE TABLE projet.offres
 );
 
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Rue de l’Eglise', 11, 'B1', 4987, 'Stoumont',1);
+VALUES (DEFAULT, 'Rue de l’Eglise', 11, 'B1', 4987, 'Stoumont',0);
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Rue de Renkin', 7, NULL, 4800, 'Verviers',1);
+VALUES (DEFAULT, 'Rue de Renkin', 7, NULL, 4800, 'Verviers',0);
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Rue Haute Folie', 6, 'A103', 4800, 'Verviers',1);
+VALUES (DEFAULT, 'Rue Haute Folie', 6, 'A103', 4800, 'Verviers',0);
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Haut-Vinâve', 13, NULL, 4845, 'Jalhay',1);
+VALUES (DEFAULT, 'Haut-Vinâve', 13, NULL, 4845, 'Jalhay',0);
 
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'caro', 'Line', 'Caroline',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 1, 'Refusé',
-        'Il faudra patienter un jour ou deux.',1);
+        'Il faudra patienter un jour ou deux.',0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'achil', 'Ile', 'Achille',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 2,
-        'En attente', NULL,1);
+        'En attente', NULL,0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bazz', 'Ile', 'Basile',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 3, 'Confirmé',
-        NULL,1);
+        NULL,0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bri', 'Lehmann', 'Brigitte',
         '$2a$10$W0IiogOO7ef5/Kw.GdmEkO46mtg6VSeDsV5SYc4Dzmp4XnnOBUAkC', NULL, true, 4, 'Confirmé',
-        NULL,1);
+        NULL,0);
 
 INSERT INTO projet.types_objets
 VALUES (DEFAULT, 'Accessoires pour animaux domestiques');
@@ -136,6 +136,7 @@ INSERT INTO projet.offres
 VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h',1);
 INSERT INTO projet.offres
 VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h',1);
+
 
 SELECT u.id_utilisateur, u.pseudo, u.est_admin, u.etat_inscription, u.commentaire
 FROM projet.utilisateurs u

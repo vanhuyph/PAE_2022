@@ -1,33 +1,36 @@
 import {recupUtilisateurDonneesSession} from '../../utilitaires/session'
 import {Redirect} from "../Router/Router";
+import {API_URL} from "../../utilitaires/serveur";
 
 const PageProfil = () => {
-  let session = recupUtilisateurDonneesSession()
+    let session = recupUtilisateurDonneesSession()
 
-  if (!session) {
-    Redirect('/connexion')
-  }
-
-  let pseudo = session.utilisateur.pseudo;
-  fetch("/api/utilisateurs/" + pseudo, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: session.token
-    },
-  })
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error(
-          "Error code : " + response.status + " : " + response.statusText
-      );
+    if(!session){
+        Redirect('/connexion')
     }
-    return response.json();
-  })
-  .then((data) => surProfilUtilisateur(data))
+
+
+    let pseudo = session.utilisateur.pseudo;
+    fetch("/api/utilisateurs/" + pseudo, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(
+                "Error code : " + response.status + " : " + response.statusText
+            );
+        }
+        return response.json();
+    })
+    .then((data) => surProfilUtilisateur(data))
 }
 
 const surProfilUtilisateur = (data) => {
+  let session = recupUtilisateurDonneesSession()
   let boite = ""
   let gsm = "Pas de numéro"
   if(data.adresse.boite !== 0){
@@ -40,7 +43,7 @@ const surProfilUtilisateur = (data) => {
   let profil = `
   <div class="page-profil">
     <h2>Profil</h2>
-    <div class="ui form">
+    <form class="ui form">
       <div class="formulaire-profil">
         <div class="two fields">
           <div class="field">
@@ -66,10 +69,34 @@ const surProfilUtilisateur = (data) => {
             </div>
             <div class="field">
               <label>Mot de passe</label>
-              <input id="mdp-profil" type="password" disabled name="profil[mdp]" value="password">
+              <input type="password" disabled value="password" id="mdp-profil">
             </div>
             <div class="field">
-                <button id="modifier-mdp-profil" class="ui button inverted secondary">Changer mot de passe</button>
+                <button id="changer-mdp-profil" class="ui button inverted secondary">Changer mot de passe</button>
+            </div>
+            <div class="changer-mdp">
+             <div class="field">
+              <label for="mdp-actuel">Mot de passe actuel</label>
+              <input type="password" name="mdp" id="mdp-actuel">
+             </div> 
+             <div class="field">
+              <label for="nv-mdp">Nouveau mot de passe</label>
+              <input type="password" name="nv-mdp" id="nv-mdp"> 
+             </div> 
+             <div class="field">
+              <label for="conf-mdp">Confirmer nouveau mot de passe</label>  
+              <input type="password" name="conf-mdp" id="conf-mdp">
+             </div>
+             <div class="field">
+              <p class="message-erreur" id="mdp-erreur"></p>
+             </div>
+              <div class="two fields">
+              <div class="field">
+              </div>
+              <div class="field">
+                <button id="modifier-mdp" class="ui yellow button">Modifier mot de passe</button>
+              </div>
+            </div>
             </div>
           </div>
           <div class="field">
@@ -105,11 +132,61 @@ const surProfilUtilisateur = (data) => {
           </div>
         </div>
       </div>
-    </div>
+    </form>
   </div>
   `
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = profil;
+
+  document.getElementById("changer-mdp-profil").addEventListener("click", (e) => {
+    e.preventDefault()
+    let mdpActuel = document.querySelector("#mdp-actuel")
+    let nouvMdp = document.querySelector("#nv-mdp")
+    let confMdp = document.querySelector("#conf-mdp")
+    let msgErr = document.querySelector("#mdp-erreur")
+    mdpActuel.value = ""
+    nouvMdp.value = ""
+    confMdp.value = ""
+    msgErr.innerHTML = ""
+    document.querySelector(".changer-mdp").classList.toggle("montrer-block")
+    document.querySelector("#modifier-mdp").addEventListener("click", (e) => {
+      e.preventDefault()
+      if (mdpActuel.value === "" || nouvMdp.value === "" || confMdp.value === ""){
+        msgErr.innerHTML = "Des champs sont manquant"
+      } else if(nouvMdp.value !== confMdp.value) {
+        msgErr.innerHTML = "Confirmation du nouveau mot de passe incorrecte"
+      }else {
+
+        let AEnvoyer = {
+          mdpActuel: mdpActuel.value,
+          nouvMdp: nouvMdp.value,
+          confNouvMdp: confMdp.value
+        }
+        fetch(API_URL + "/utilisateurs/modifierMdp/" + data.idUtilisateur, {
+          method: "PUT",
+          body: JSON.stringify(AEnvoyer),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token,
+          }
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+                "Error code : " + response.status + " : " + response.statusText
+                + " : " + response.text())
+          }
+          console.log(response)
+          return response.json()
+        })
+        .then((donnee) => surProfilUtilisateur(donnee))
+        .catch((err) => {
+          console.log(err)
+          document.querySelector("#mdp-erreur").innerHTML=err.message
+        })
+      }
+      })
+  })
 
   document.getElementById("modifier-profil").addEventListener("click", (e) => {
     e.preventDefault()
@@ -138,53 +215,53 @@ const surModifierProfilUtilisateur = (data) => {
             <div class="two fields">
               <div class="field">
                 <label>Nom</label>
-                <input id="nom" type="text" name="profil[nom]" value=${data.nom}>
+                <input id="nom" type="text" name="nom" value="${data.nom}" onchange="console.log('lol')">
               </div>
               <div class="field">
                 <label>Prenom</label>
-                <input id="prenom" type="text" name="profil[Prenom]" value=${data.prenom}>
+                <input id="prenom" type="text" name="prenom" value="${data.prenom}">
               </div>
             </div>
             <div class="two fields">
               <div class="field">
                 <label>Pseudo</label>
-                <input id="pseudo" type="text" name="profil[pseudo]" value=${data.pseudo}>
+                <input id="pseudo" type="text" name="pseudo" value="${data.pseudo}">
               </div>
               <div class="field">
                 <label>GSM</label>
-                <input id="gsm" type="text" name="profil[gsm]" value=${gsm}>
+                <input id="gsm" type="text" name="gsm" value="${gsm}">
               </div>
             </div>
             <div class="field">
               <label>Mot de passe</label>
-              <input type="password" disabled name="profil[mdp]" value="password">
+              <input type="password" disabled name="mdp" value="password">
             </div>
           </div>
           <div class="field">
             <div class="rue">
             <div class="field">
               <label>Rue</label>
-              <input id="rue" type="text" name="profil[rue]" value=${data.adresse.rue}>
+              <input id="rue" type="text" name="rue" value="${data.adresse.rue}">
               </div>
             </div>
             <div class="two fields">
               <div class="field">
                 <label>Numéro</label>
-                <input id="numero" type="number" name="profil[numero]" value=${data.adresse.numero}>
+                <input id="numero" type="number" name="numero" value=${data.adresse.numero}>
               </div>
               <div class="field">
                 <label>Boite</label>
-                <input id="boite" type="number" name="profil[boite]" value=${boite}>
+                <input id="boite" type="number" name="boite" value="${boite}">
               </div>
             </div>
             <div class="two fields">
               <div class="field">
                 <label>Code postal</label>
-                <input id="code-postal" type="number" name="profil[codepostal]" value=${data.adresse.codePostal}>
+                <input id="code-postal" type="number" name="codepostal" value=${data.adresse.codePostal}>
               </div>
               <div class="field">
                 <label>Commune</label>
-                <input id="commune" type="text" name="profil[commune]" value=${data.adresse.commune}>
+                <input id="commune" type="text" name="commune" value="${data.adresse.commune}">
               </div>
             </div>
             <div class="field">
@@ -203,41 +280,46 @@ const surModifierProfilUtilisateur = (data) => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = profilModifier;
 
+  console.log(data)
   document.getElementById('annuler-modifier').addEventListener('click', () => {
     surProfilUtilisateur(data)
   })
 
-  let nouveauGsm = document.getElementById("gsm").value
 
-  if (nouveauGsm === ""){
-    nouveauGsm = null
-  }
-
-  let nouvelleBoite = document.getElementById("boite").value
-
-  if(nouvelleBoite === ""){
-    nouvelleBoite = 0
-  }
-
-  let nouvelleAdresse = {
-    rue: document.getElementById("rue").value,
-    numero: document.getElementById("numero").value,
-    boite: nouvelleBoite,
-    codePostal: document.getElementById("code-postal").value,
-    commune: document.getElementById("commune").value
-  }
-
-  let utilisateur = {
-    pseudo: document.getElementById("pseudo").value,
-    nom: document.getElementById("nom").value,
-    prenom: document.getElementById("prenom").value,
-    gsm: nouveauGsm,
-    adresse: nouvelleAdresse
-  }
 
   document.getElementById('formulaire-profil').addEventListener('submit', () => {
+    let nouveauGsm = document.getElementById("gsm").value
+
+    if (nouveauGsm === ""){
+      nouveauGsm = null
+    }
+
+    let nouvelleAdresse = {
+      idAdresse: data.adresse.idAdresse,
+      rue: document.getElementById("rue").value,
+      numero: document.getElementById("numero").value,
+      boite: document.getElementById("boite").value,
+      codePostal: document.getElementById("code-postal").value,
+      commune: document.getElementById("commune").value,
+      version: data.adresse.version
+    }
+
+    let utilisateur = {
+      idUtilisateur: data.idUtilisateur,
+      pseudo: document.getElementById("pseudo").value,
+      nom: document.getElementById("nom").value,
+      prenom: document.getElementById("prenom").value,
+      gsm: nouveauGsm,
+      estAdmin: data.estAdmin,
+      etatInscription: data.etatInscription,
+      commentaire: data.commentaire,
+      adresse: nouvelleAdresse,
+      version: data.version
+    }
+    console.log(document.getElementById("nom").value)
+
     let session = recupUtilisateurDonneesSession()
-    fetch("/api/utilisateurs/", {
+    fetch("/api/utilisateurs", {
       method: "PUT",
       body: JSON.stringify(utilisateur),
       headers: {

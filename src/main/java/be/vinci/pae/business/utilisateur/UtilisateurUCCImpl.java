@@ -7,6 +7,7 @@ import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.ConflitException;
 import be.vinci.pae.utilitaires.exceptions.NonAutoriseException;
+import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import jakarta.inject.Inject;
 import java.util.List;
 
@@ -30,11 +31,16 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   @Override
   public UtilisateurDTO connexion(String pseudo, String mdp) {
     serviceDAL.commencerTransaction();
-    Utilisateur utilisateur = (Utilisateur) utilisateurDAO.rechercheParPseudo(pseudo);
-    if (utilisateur == null || utilisateur.getIdUtilisateur() < 1 || !utilisateur.verifierMdp(
-        mdp)) {
+    Utilisateur utilisateur;
+    try {
+      utilisateur = (Utilisateur) utilisateurDAO.rechercheParPseudo(pseudo);
+      if (utilisateur == null || !utilisateur.verifierMdp(
+          mdp)) {
+        throw new NonAutoriseException("Pseudo ou mot de passe incorrect");
+      }
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new NonAutoriseException("Pseudo ou mot de passe incorrect");
+      throw e;
     }
     serviceDAL.commettreTransaction();
     return utilisateur;
@@ -51,10 +57,15 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   @Override
   public UtilisateurDTO rechercheParId(int id) {
     serviceDAL.commencerTransaction();
-    UtilisateurDTO utilisateur = utilisateurDAO.rechercheParId(id);
-    if (utilisateur == null || utilisateur.getIdUtilisateur() < 1) {
+    UtilisateurDTO utilisateur;
+    try {
+      utilisateur = utilisateurDAO.rechercheParId(id);
+      if (utilisateur == null) {
+        throw new BusinessException("L'utilisateur n'existe pas");
+      }
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'utilisateur n'existe pas");
+      throw e;
     }
     serviceDAL.commettreTransaction();
     return utilisateur;
@@ -65,16 +76,21 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    *
    * @param pseudo : le pseudo de l'utilisateur
    * @return utilisateur : l'utilisateur possèdant l'id passé en paramètre
-   * @throws BusinessException : est lancée si l'utilisateur avec le pseudo passé en paramètre n'est
-   *                           pas trouvé
+   * @throws PasTrouveException : est lancée si l'utilisateur avec le pseudo passé en paramètre
+   *                            n'est pas trouvé
    */
   @Override
   public UtilisateurDTO rechercheParPseudo(String pseudo) {
     serviceDAL.commencerTransaction();
-    UtilisateurDTO utilisateur = utilisateurDAO.rechercheParPseudo(pseudo);
-    if (utilisateur == null || utilisateur.getIdUtilisateur() < 1) {
+    UtilisateurDTO utilisateur;
+    try {
+      utilisateur = utilisateurDAO.rechercheParPseudo(pseudo);
+      if (utilisateur == null) {
+        throw new PasTrouveException("L'utilisateur n'existe pas");
+      }
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'utilisateur n'existe pas");
+      throw e;
     }
     serviceDAL.commettreTransaction();
     return utilisateur;
@@ -84,28 +100,34 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * Permet l'inscription d'un utilisateur.
    *
    * @param utilisateurDTO : l'utilisateur à inscrire
-   * @return utilisateur : l'utilisateur inscrit
+   * @return utilisateurARenvoyer : l'utilisateur inscrit
    * @throws ConflitException  : est lancée si un utilisateur possède déjà le pseudo
    * @throws BusinessException : est lancée si l'utilisateur/adresse n'a pas pu être ajouté
    */
   @Override
   public UtilisateurDTO inscription(UtilisateurDTO utilisateurDTO) {
     serviceDAL.commencerTransaction();
-    Utilisateur utilisateur = (Utilisateur) utilisateurDTO;
-    utilisateur.setMdp(utilisateur.hashMdp(utilisateur.getMdp()));
-    if (utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()).getIdUtilisateur() > 0) {
+    UtilisateurDTO utilisateurARenvoyer;
+    try {
+      Utilisateur utilisateur = (Utilisateur) utilisateurDTO;
+      utilisateur.setMdp(utilisateur.hashMdp(utilisateur.getMdp()));
+      if (utilisateurDAO.rechercheParPseudo(utilisateurDTO.getPseudo()) != null) {
+        throw new ConflitException("Ce pseudo est déjà utilisé");
+      }
+      AdresseDTO adresseDTO = adresseDAO.ajouterAdresse(utilisateurDTO.getAdresse());
+      if (adresseDTO == null) {
+        throw new BusinessException("L'adresse n'a pas pu être ajoutée");
+      }
+      if (!((Utilisateur) utilisateurDTO).mettreEnAttente()) {
+        throw new BusinessException("L'utilisateur est déjà en attente");
+      }
+      utilisateurARenvoyer = utilisateurDAO.ajouterUtilisateur(utilisateurDTO);
+      if (utilisateurARenvoyer == null) {
+        throw new BusinessException("L'utilisateur n'a pas pu être ajouté");
+      }
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new ConflitException("Ce pseudo est déjà utilisé");
-    }
-    AdresseDTO adresseDTO = adresseDAO.ajouterAdresse(utilisateurDTO.getAdresse());
-    if (adresseDTO == null) {
-      serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'adresse n'a pas pu être ajoutée.");
-    }
-    UtilisateurDTO utilisateurARenvoyer = utilisateurDAO.ajouterUtilisateur(utilisateurDTO);
-    if (utilisateurARenvoyer == null) {
-      serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'utilisateur n'a pas pu être ajouté");
+      throw e;
     }
     serviceDAL.commettreTransaction();
     return utilisateurARenvoyer;
@@ -115,43 +137,69 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * Confirme l'inscription d'un utilisateur et met son statut en Admin si l'information a été
    * renseigné.
    *
-   * @param id       :       l'id de l'utilisateur
-   * @param estAdmin : si l'utilisateur est admin
-   * @return utilisateurDTO : l'utilisateur avec son état d'inscription passé à "confirmé"
-   * @throws BusinessException : est lancée si l'état d'inscription de l'utilisateur n'a pas pu être
-   *                           confirmé
+   * @param id       : l'utilisateur que l'on veut confirmer
+   * @param estAdmin : si l'utilisateur est admin ou non
+   * @return utilisateur : l'utilisateur avec son état d'inscription passé à "confirmé"
+   * @throws BusinessException  : est lancée si l'état d'inscription de l'utilisateur n'a pas pu
+   *                            être confirmé
+   * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas
    */
   @Override
   public UtilisateurDTO confirmerInscription(int id, boolean estAdmin) {
     serviceDAL.commencerTransaction();
-    UtilisateurDTO utilisateurDTO = utilisateurDAO.confirmerInscription(id, estAdmin);
-    if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
+    UtilisateurDTO utilisateur;
+    try {
+      UtilisateurDTO utilisateurDTO = utilisateurDAO.rechercheParId(id);
+      if (utilisateurDTO == null) {
+        throw new PasTrouveException("L'utilisateur n'existe pas");
+      }
+      if (!((Utilisateur) utilisateurDTO).confirmerInscription(estAdmin)) {
+        throw new BusinessException("L'utilisateur est déjà confirmé");
+      }
+      utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
+      if (utilisateur == null) {
+        throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être confirmé");
+      }
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être confirmée");
+      throw e;
     }
     serviceDAL.commettreTransaction();
-    return utilisateurDTO;
+    return utilisateur;
   }
 
   /**
    * Refuse l'inscription d'un utilisateur accompagné d'un commentaire justifiant ce refus.
    *
-   * @param id          : l'id de l'utilisateur
-   * @param commentaire : le commentaire du refus
-   * @return utilisateurDTO : l'utilisateur avec l'inscription refusée
-   * @throws BusinessException : est lancée si l'état d'inscription de l'utilisateur n'a pas pu être
-   *                           refusé
+   * @param id          : l'id de l'utilisateur que l'on veut refuser
+   * @param commentaire : le commentaire de refus
+   * @return utilisateur : l'utilisateur avec l'inscription refusée
+   * @throws BusinessException  : est lancée si l'état d'inscription de l'utilisateur n'a pas pu
+   *                            être refusé
+   * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas
    */
   @Override
   public UtilisateurDTO refuserInscription(int id, String commentaire) {
     serviceDAL.commencerTransaction();
-    UtilisateurDTO utilisateurDTO = utilisateurDAO.refuserInscription(id, commentaire);
-    if (utilisateurDTO == null || utilisateurDTO.getIdUtilisateur() < 1) {
+    UtilisateurDTO utilisateur;
+    try {
+      UtilisateurDTO utilisateurDTO = utilisateurDAO.rechercheParId(id);
+      if (utilisateurDTO == null) {
+        throw new PasTrouveException("L'utilisateur n'existe pas");
+      }
+      if (!((Utilisateur) utilisateurDTO).refuserInscription(commentaire)) {
+        throw new BusinessException("L'utilisateur est déjà refusé");
+      }
+      utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
+      if (utilisateur == null) {
+        throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être refusée");
+      }
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'inscription de l'utilisateur n'a pas pu être refusée");
+      throw e;
     }
     serviceDAL.commettreTransaction();
-    return utilisateurDTO;
+    return utilisateur;
   }
 
   /**
@@ -163,8 +211,14 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   @Override
   public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
     serviceDAL.commencerTransaction();
-    List<UtilisateurDTO> liste = utilisateurDAO.listerUtilisateursEtatsInscriptions(
-        etatInscription);
+    List<UtilisateurDTO> liste;
+    try {
+      liste = utilisateurDAO.listerUtilisateursEtatsInscriptions(
+          etatInscription);
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
     serviceDAL.commettreTransaction();
     return liste;
   }
@@ -172,19 +226,72 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   /**
    * Met à jour les informations de l'utilisateur.
    *
-   * @param utilisateur : l'utilisateur à mettre à jour
-   * @return utilisateurDTO : l'utilisateur avec ses informations mises à jour
+   * @param utilisateurDTO : l'utilisateur à mettre à jour
+   * @return utilisateur : l'utilisateur avec ses informations mises à jour
+   * @throws PasTrouveException : est lancée si l'utilisateur ou l'adresse n'existe pas
+   * @throws BusinessException  : est lancée si les données de l'utilisateur ou de l'adresse sont
+   *                            périmées
    */
   @Override
-  public UtilisateurDTO miseAJourInfo(UtilisateurDTO utilisateur) {
+  public UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateurDTO) {
     serviceDAL.commencerTransaction();
-    UtilisateurDTO utilisateurDTO = utilisateurDAO.miseAJourInfo(utilisateur);
-    if (utilisateurDTO == null) {
+    UtilisateurDTO utilisateur;
+    try {
+      AdresseDTO adresseDTO = adresseDAO.miseAJourAdresse(utilisateurDTO.getAdresse());
+      if (adresseDTO == null) {
+        if (adresseDAO.rechercheParId(utilisateurDTO.getAdresse().getIdAdresse()) == null) {
+          throw new PasTrouveException("L'adresse n'existe pas");
+        }
+        throw new BusinessException("Données de l'adresse sont périmées");
+      }
+      utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
+      if (utilisateur == null) {
+        if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {
+          throw new PasTrouveException("L'utilisateur n'existe pas");
+        }
+        throw new BusinessException("Données de l'utilisateur sont périmées");
+      }
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'utilisateur n'existe pas");
+      throw e;
     }
     serviceDAL.commettreTransaction();
-    return utilisateurDTO;
+    return utilisateur;
+  }
+
+  /**
+   * Met à jour le mot de passe de l'utilisateur.
+   *
+   * @param id        : l'id de l'utilisateur
+   * @param mdpActuel : mot de passe actuel de l'utilisateur
+   * @param nouvMdp   : le nouveau mot de passe de l'utilisateur
+   * @return utilisateur : l'utilisateur avec le mot de passe modifié
+   * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas
+   * @throws BusinessException  : est lancée si les données de l'utilisateur sont périmées
+   */
+  @Override
+  public UtilisateurDTO modifierMdp(int id, String mdpActuel, String nouvMdp) {
+    serviceDAL.commencerTransaction();
+    UtilisateurDTO utilisateur;
+    try {
+      Utilisateur utilisateurActuel = (Utilisateur) utilisateurDAO.rechercheParId(id);
+      if (utilisateurActuel == null) {
+        throw new PasTrouveException("L'utilisateur n'existe pas");
+      }
+      if (!utilisateurActuel.verifierMdp(mdpActuel)) {
+        throw new BusinessException("Mot de passe incorrect");
+      }
+      utilisateurActuel.setMdp(utilisateurActuel.hashMdp(nouvMdp));
+      utilisateur = utilisateurDAO.modifierMdp(utilisateurActuel);
+      if (utilisateur == null) {
+        throw new BusinessException("Données primées");
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return utilisateur;
   }
 
   /**

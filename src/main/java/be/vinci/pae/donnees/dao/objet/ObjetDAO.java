@@ -9,4 +9,5 @@ public interface ObjetDAO {
   ObjetDTO rechercheParId(ObjetDTO objetDTO);
 
   ObjetDTO miseAJourObjet(ObjetDTO objetDTO);
+
 }

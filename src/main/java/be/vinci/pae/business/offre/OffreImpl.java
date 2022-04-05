@@ -83,14 +83,19 @@ public class OffreImpl implements Offre {
     return "Offre{"
         + "id offre= " + idOffre
         + ", date offre= " + dateOffre
-        + ", objetDTO= " + objetDTO.toString()
+        + ", objetDTO= " + objetDTO
         + ", plage horaire= " + plageHoraire
+        + ", version= " + version
         + '}';
   }
 
   @Override
-  public OffreDTO changerEtatObjet(String etat) {
-    this.getObjetDTO().setEtatObjet(etat);
-    return this;
+  public void offrirObjet() {
+    this.getObjetDTO().setEtatObjet("Offert");
+  }
+
+  @Override
+  public void annulerOffre() {
+    this.getObjetDTO().setEtatObjet("Annulé");
   }
 }

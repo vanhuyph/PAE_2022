@@ -118,6 +118,7 @@ public class ObjetImpl implements Objet {
         + ", offreur= " + offreur
         + ", receveur= " + receveur
         + ", photo= " + photo
+        + ", version= " + version
         + '}';
   }
 

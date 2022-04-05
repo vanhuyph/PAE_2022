@@ -1,8 +1,8 @@
 package be.vinci.pae.donnees.dao.adresse;
 
+import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
-import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -14,6 +14,35 @@ public class AdresseDAOImpl implements AdresseDAO {
 
   @Inject
   private ServiceBackendDAL serviceBackendDAL;
+  @Inject
+  private DomaineFactory domaineFactory;
+
+
+  /**
+   * Recherche une adresse via un id dans la base de données.
+   *
+   * @param id : l'id de l'adresse
+   * @return adresseDTO : l'adresse récupérée
+   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   */
+  @Override
+  public AdresseDTO rechercheParId(int id) {
+    AdresseDTO adresseDTO = domaineFactory.getAdresse();
+    String requetePs = "SELECT id_adresse, rue, numero, boite, code_postal, commune, version "
+        + "FROM projet.adresses WHERE id_adresse = ?;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setInt(1, id);
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return remplirAdresseDepuisResultSet(adresseDTO, rs);
+        } else {
+          return null;
+        }
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
 
   /**
    * Ajoute une adresse dans la base de données.
@@ -24,25 +53,13 @@ public class AdresseDAOImpl implements AdresseDAO {
    */
   @Override
   public AdresseDTO ajouterAdresse(AdresseDTO adresseDTO) {
-    String requetePs = "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?) "
-        + "RETURNING id_adresse, rue, numero, boite, code_postal, commune;";
+    String requetePs = "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?, ?) "
+        + "RETURNING id_adresse, rue, numero, boite, code_postal, commune, version;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      ps.setString(1, adresseDTO.getRue());
-      ps.setInt(2, adresseDTO.getNumero());
-      if (adresseDTO.getBoite().equals("") || adresseDTO.getBoite() == null) {
-        ps.setNull(3, Types.INTEGER);
-      } else {
-        ps.setString(3, adresseDTO.getBoite());
-      }
-      ps.setInt(4, adresseDTO.getCodePostal());
-      ps.setString(5, adresseDTO.getCommune());
-      adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, ps);
+      return recupAdresseDTODepuisPs(adresseDTO, ps);
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
-    return adresseDTO;
   }
 
   /**
@@ -54,34 +71,36 @@ public class AdresseDAOImpl implements AdresseDAO {
    */
   @Override
   public AdresseDTO miseAJourAdresse(AdresseDTO adresseDTO) {
-    PreparedStatement ps = serviceBackendDAL.getPs(
-        "UPDATE FROM projet.adresses SET rue = ?, numero = ?, boite = ?, code_postal = ?, "
-            + "commune = ? WHERE id_adresse = ?;");
-    return recupAdresseDTODepuisPs(adresseDTO, ps);
-  }
+    String requetePs = "UPDATE projet.adresses SET rue = ?, numero = ?, boite = ?, "
+        + "code_postal = ?, commune = ?, version = ? WHERE id_adresse = ? AND version = ? "
+        + "RETURNING id_adresse, rue, numero, boite, code_postal, commune, version;";
 
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      return recupAdresseDTODepuisPs(adresseDTO, ps);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
 
   /**
    * Rempli les données de l'adresse depuis un ResultSet.
    *
-   * @param ps      : le PreparedStatement
+   * @param rs      : le ResultSet
    * @param adresse : l'adresse vide, qui va être rempli
    * @return adresse : l'adresse rempli
    * @throws FatalException : est lancée s'il y a un problème côté serveur
    */
-  private AdresseDTO remplirAdresseDepuisResultSet(AdresseDTO adresse, PreparedStatement ps) {
-    try (ResultSet rs = ps.executeQuery()) {
-      while (rs.next()) {
-        adresse.setIdAdresse(rs.getInt(1));
-        adresse.setRue(rs.getString(2));
-        adresse.setNumero(rs.getInt(3));
-        adresse.setBoite(rs.getString(4));
-        adresse.setCodePostal(rs.getInt(5));
-        adresse.setCommune(rs.getString(6));
-      }
+  private AdresseDTO remplirAdresseDepuisResultSet(AdresseDTO adresse, ResultSet rs) {
+    try {
+      adresse.setIdAdresse(rs.getInt(1));
+      adresse.setRue(rs.getString(2));
+      adresse.setNumero(rs.getInt(3));
+      adresse.setBoite(rs.getString(4));
+      adresse.setCodePostal(rs.getInt(5));
+      adresse.setCommune(rs.getString(6));
+      adresse.setVersion(rs.getInt(7));
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return adresse;
@@ -99,21 +118,28 @@ public class AdresseDAOImpl implements AdresseDAO {
     try {
       ps.setString(1, adresseDTO.getRue());
       ps.setInt(2, adresseDTO.getNumero());
-      if (adresseDTO.getBoite().equals("")) {
+      if (adresseDTO.getBoite() == null || adresseDTO.getBoite().isBlank()) {
         ps.setNull(3, Types.INTEGER);
       } else {
         ps.setString(3, adresseDTO.getBoite());
       }
       ps.setInt(4, adresseDTO.getCodePostal());
       ps.setString(5, adresseDTO.getCommune());
-      adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, ps);
-      ps.close();
+      ps.setInt(6, adresseDTO.getVersion() + 1);
+      ps.setInt(7, adresseDTO.getIdAdresse());
+      ps.setInt(8, adresseDTO.getVersion());
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, rs);
+          return adresseDTO;
+        } else {
+          return null;
+        }
+      }
     } catch (SQLException e) {
       e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
-    return adresseDTO;
   }
 
 }

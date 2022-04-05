@@ -4,6 +4,7 @@ import {
 } from "../../utilitaires/session"
 import {Redirect} from "../Router/Router";
 import Navbar from "../Navbar/Navbar";
+import {API_URL} from "../../utilitaires/serveur";
 
 // Page de connexion
 let pageCon = `
@@ -78,7 +79,7 @@ const surConnexion = (e) => {
 
     // Remember me
     let souvenir = document.querySelector("#souvenir").checked
-    fetch("/api/utilisateurs/connexion", {
+    fetch(API_URL + "utilisateurs/connexion", {
       method: "POST",
       body: JSON.stringify(utilisateur),
       headers: {

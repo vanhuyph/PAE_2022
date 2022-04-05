@@ -125,16 +125,15 @@ public class RessourceUtilisateur {
   @Produces(MediaType.APPLICATION_JSON)
   @AutorisationAdmin
   public UtilisateurDTO confirmerUtilisateur(JsonNode json, @PathParam("id") int id) {
-    if (!json.hasNonNull("estAdmin")) {
-      throw new PresentationException("Information si l'utilisateur est admin ou non",
-          Status.BAD_REQUEST);
-    }
     if (id < 1) {
       throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
-    boolean estAdmin = json.get("estAdmin").asBoolean();
-    UtilisateurDTO utilisateurDTO = utilisateurUCC.confirmerInscription(id, estAdmin);
-    return utilisateurDTO;
+    if (!json.hasNonNull("estAdmin")) {
+      throw new PresentationException("Information sur le role manquante", Status.BAD_REQUEST);
+    }
+    boolean admin = json.get("estAdmin").asBoolean();
+    UtilisateurDTO utilisateur = utilisateurUCC.confirmerInscription(id, admin);
+    return utilisateur;
   }
 
   /**
@@ -245,6 +244,63 @@ public class RessourceUtilisateur {
     List<UtilisateurDTO> liste = new ArrayList<>();
     liste = utilisateurUCC.rechercherMembres(recherche);
     return liste;
+  }
+
+  /**
+   * Modifie le profil de l'utilisateur.
+   *
+   * @param utilisateurDTO : l'utilisateur modifié
+   * @return utilisateurDTO : l'utilisateur
+   */
+  @PUT
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  //@Autorisation
+  public UtilisateurDTO modifierProfilUtilisateur(UtilisateurDTO utilisateurDTO) {
+    if (utilisateurDTO.getPseudo().isBlank() || utilisateurDTO.getNom().isBlank()
+        || utilisateurDTO.getPrenom().isBlank() || utilisateurDTO.getAdresse().getRue().isBlank()
+        || utilisateurDTO.getAdresse().getNumero() < 1
+        || utilisateurDTO.getAdresse().getCodePostal() < 1 || utilisateurDTO.getAdresse()
+        .getCommune().isBlank()) {
+      throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
+    }
+    UtilisateurDTO utilisateur = utilisateurUCC.miseAJourUtilisateur(utilisateurDTO);
+    return utilisateur;
+  }
+
+  /**
+   * Modifie le mot de passe de l'utilisateur.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur
+   * @param json          : json avec le mot de passe actuel et le nouveau mot de passe
+   * @return utilisateurDTO : l'utilisateur
+   * @throws PresentationException : est lancée si le mot de passe est vide
+   */
+  @PUT
+  @Path("modifierMdp/{idUtilisateur}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public UtilisateurDTO modifierMdpUtilisateur(@PathParam("idUtilisateur") int idUtilisateur,
+      JsonNode json) {
+    if (idUtilisateur < 1) {
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
+    }
+    if (!json.hasNonNull("mdpActuel") || json.get("mdpActuel").asText().isBlank()
+        || !json.hasNonNull("nouvMdp") || json.get("nouvMdp").asText().isBlank()
+        || !json.hasNonNull(
+        "confNouvMdp") || json.get("confNouvMdp").asText().isBlank()) {
+      throw new PresentationException("Des champs sont manquant", Status.BAD_REQUEST);
+    }
+    String mdpActuel = json.get("mdpActuel").asText();
+    String nouvMdp = json.get("nouvMdp").asText();
+    String confNouvMdp = json.get("confNouvMdp").asText();
+    if (!nouvMdp.equals(confNouvMdp)) {
+      throw new PresentationException("Confirmation du mot de passe est incorrecte",
+          Status.BAD_REQUEST);
+    }
+    UtilisateurDTO utilisateur = utilisateurUCC.modifierMdp(idUtilisateur, mdpActuel, nouvMdp);
+    return utilisateur;
   }
 
 }
