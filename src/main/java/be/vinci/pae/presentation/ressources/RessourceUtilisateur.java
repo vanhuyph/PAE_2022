@@ -235,6 +235,13 @@ public class RessourceUtilisateur {
     return utilisateurDTO;
   }
 
+  /**
+   * Liste tous les utilisateurs en fonction d'un critère de recherche (nom, code postal ou ville).
+   *
+   * @param recherche : le critère de recherche
+   * @return liste : la liste des utilisateurs correspondant au critère de recherche passé en
+   * paramètre
+   */
   @GET
   @Path("recherche/{recherche}")
   @Consumes(MediaType.APPLICATION_JSON)

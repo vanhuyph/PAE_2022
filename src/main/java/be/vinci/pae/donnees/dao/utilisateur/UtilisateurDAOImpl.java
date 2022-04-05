@@ -116,7 +116,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
-   * Met à jour les informations de l'utilisateur
+   * Met à jour les informations de l'utilisateur.
    *
    * @param utilisateurDTO : l'utilisateur à changer les informations
    * @return utilisateurDTO : l'utilisateur avec ses informations modifiées
