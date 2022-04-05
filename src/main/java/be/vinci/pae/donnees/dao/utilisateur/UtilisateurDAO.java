@@ -21,4 +21,6 @@ public interface UtilisateurDAO {
 
   List<UtilisateurDTO> rechercherMembres(String recherche);
 
+  int nbreObjets(int idUtilisateur, String etatObjet);
+
 }

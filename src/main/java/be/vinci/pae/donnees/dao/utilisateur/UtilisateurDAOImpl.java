@@ -276,10 +276,37 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
     return liste;
+  }
+
+  /**
+   * Récupère le nombre d'objets selon l'état par l'utilisateur dont l'id est passé en paramètre.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur dont on veut connaître le compte de ses objets
+   *                      selon l'état
+   * @param etatObjet     : l'état de l'objet
+   * @return nbreObjets : le nombre d'objets
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public int nbreObjets(int idUtilisateur, String etatObjet) {
+    String requete = "SELECT COUNT (o.id_objet) FROM projet.utilisateurs u, projet.objets o WHERE "
+        + "u.id_utilisateur = o.offreur AND u.id_utilisateur = ? AND o.etat_objet = ?;";
+    int nbreObjets = 0;
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requete)) {
+      ps.setInt(1, idUtilisateur);
+      ps.setString(2, etatObjet);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          nbreObjets = rs.getInt(1);
+        }
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+    return nbreObjets;
   }
 
   /**

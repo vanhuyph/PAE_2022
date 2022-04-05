@@ -24,4 +24,6 @@ public interface UtilisateurUCC {
 
   List<UtilisateurDTO> rechercherMembres(String recherche);
 
+  int nbreObjets(int idUtilisateur, String etatObjet);
+
 }

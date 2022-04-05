@@ -24,7 +24,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response.Status;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.glassfish.jersey.server.ContainerRequest;
@@ -247,7 +246,7 @@ public class RessourceUtilisateur {
   @Produces(MediaType.APPLICATION_JSON)
   @AutorisationAdmin
   public List<UtilisateurDTO> rechercherMembres(@PathParam("recherche") String recherche) {
-    List<UtilisateurDTO> liste = new ArrayList<>();
+    List<UtilisateurDTO> liste;
     liste = utilisateurUCC.rechercherMembres(recherche);
     return liste;
   }
@@ -261,7 +260,7 @@ public class RessourceUtilisateur {
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  //@Autorisation
+  @Autorisation
   public UtilisateurDTO modifierProfilUtilisateur(UtilisateurDTO utilisateurDTO) {
     if (utilisateurDTO.getPseudo().isBlank() || utilisateurDTO.getNom().isBlank()
         || utilisateurDTO.getPrenom().isBlank() || utilisateurDTO.getAdresse().getRue().isBlank()
@@ -307,6 +306,26 @@ public class RessourceUtilisateur {
     }
     UtilisateurDTO utilisateur = utilisateurUCC.modifierMdp(idUtilisateur, mdpActuel, nouvMdp);
     return utilisateur;
+  }
+
+  /**
+   * Récupère le nombre d'objets offerts par l'utilisateur dont l'id est passé en paramètre.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur
+   * @return nbreObjets : le nombre d'objets offerts
+   * @throws PresentationException : est lancée si l'id de l'utilisateur est incorrect
+   */
+  @GET
+  @Path("nbreObjetsOfferts/{idUtilisateur}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AutorisationAdmin
+  public int nbreObjetsOfferts(@PathParam("idUtilisateur") int idUtilisateur) {
+    if (idUtilisateur <= 0) {
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
+    }
+    int nbreObjets = utilisateurUCC.nbreObjets(idUtilisateur, "Offert");
+    return nbreObjets;
   }
 
 }
