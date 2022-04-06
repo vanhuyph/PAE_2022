@@ -23,4 +23,7 @@ public interface OffreDTO {
 
   void setPlageHoraire(String plageHoraire);
 
+  int getVersion();
+
+  void setVersion(int nVersion);
 }

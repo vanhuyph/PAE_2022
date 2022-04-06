@@ -87,26 +87,26 @@ public class RessourceOffre {
   /**
    * Annule une offre.
    *
-   * @param id : l'id de l'offre a annulé
+   * @param offreDTO : l'offre a annulé
    * @return offreDTO : l'offre annulée
    * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'annulation
    *                               a échoué
    */
   @PUT
-  @Path("annulerOffre/{id}")
+  @Path("annulerOffre")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public OffreDTO annulerOffre(@PathParam("id") int id) {
+  public OffreDTO annulerOffre(OffreDTO offreDTO) {
     //check id du token == id de l'offreur ?
-    if (id <= 0) {
+    if (offreDTO.getIdOffre() <= 0) {
       throw new PresentationException("L'id de l'offre est incorrect", Status.BAD_REQUEST);
     }
-    OffreDTO offreDTO = offreUCC.annulerOffre(id);
-    if (offreDTO == null) {
+    OffreDTO offreAnnulée = offreUCC.annulerOffre(offreDTO);
+    if (offreAnnulée == null) {
       throw new PresentationException("L'annulation de l'offre a échoué", Status.BAD_REQUEST);
     }
-    return offreDTO;
+    return offreAnnulée;
   }
 
   /**
@@ -187,7 +187,7 @@ public class RessourceOffre {
   @Path("/photos/{uuidPhoto}")
   @Produces({"image/*"})
   public Response voirPhotoOffre(@PathParam("uuidPhoto") String uuidPhoto) {
- 
+
     return Response.ok(new File(Config.getPropriete("OneDrivePhotos") + uuidPhoto)).build();
   }
 

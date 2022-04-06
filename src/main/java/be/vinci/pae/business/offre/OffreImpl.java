@@ -18,6 +18,16 @@ public class OffreImpl implements Offre {
   private ObjetDTO objetDTO;
   @JsonView(Vues.Public.class)
   private String plageHoraire;
+  @JsonView(Vues.Public.class)
+  private int version;
+  
+  public int getVersion() {
+    return version;
+  }
+
+  public void setVersion(int version) {
+    this.version = version;
+  }
 
   public int getIdOffre() {
     return idOffre;

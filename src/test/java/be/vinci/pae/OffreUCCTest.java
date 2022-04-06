@@ -106,17 +106,17 @@ public class OffreUCCTest {
   @Test
   @DisplayName("Test raté : méthode annulerOffre renvoie null car l'offre n'est pas trouvable.")
   public void annulerOffreV1() {
-    int id = -1;
-    Mockito.when(offreDAO.annulerOffre(id)).thenReturn(null);
-    assertThrows(BusinessException.class, () -> offreUCC.annulerOffre(id));
+    OffreDTO offre = domaineFactory.getOffre();
+    offre.setIdOffre(-1);
+    Mockito.when(offreDAO.annulerOffre(offre)).thenReturn(null);
+    assertThrows(BusinessException.class, () -> offreUCC.annulerOffre(offre));
   }
 
   @Test
   @DisplayName("Test réussi : méthode annulerOffre renvoie l'offre annulée.")
   public void annulerOffreV2() {
-    int id = offreDTO1.getIdOffre();
-    Mockito.when(offreDAO.annulerOffre(id)).thenReturn(offreDTO1);
-    assertEquals(offreDTO1, offreUCC.annulerOffre(id));
+    Mockito.when(offreDAO.annulerOffre(offreDTO1)).thenReturn(offreDTO1);
+    assertEquals(offreDTO1, offreUCC.annulerOffre(offreDTO1));
   }
 
   @Test

@@ -34,12 +34,13 @@ public class OffreDAOImpl implements OffreDAO {
    */
   @Override
   public OffreDTO creerOffre(OffreDTO offreDTO) {
-    String requetePs = "INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?) RETURNING *;";
+    String requetePs = "INSERT INTO projet.offres VALUES (DEFAULT, ?, ?, ?,?) RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       Timestamp sqlDate = Timestamp.valueOf(LocalDateTime.now());
       ps.setInt(1, offreDTO.getObjetDTO().getIdObjet());
       ps.setTimestamp(2, sqlDate);
       ps.setString(3, offreDTO.getPlageHoraire());
+      ps.setInt(4, 1);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           offreDTO.setIdOffre(rs.getInt(1));
@@ -85,18 +86,18 @@ public class OffreDAOImpl implements OffreDAO {
   /**
    * Annule l'offre.
    *
-   * @param id : est l'id de l'offre qu'on veut annulé
+   * @param offreDTO : l'offre qu'on veut annuler
    * @return : un offreDTO avec seulement un id de l'offre annulé
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public OffreDTO annulerOffre(int id) {
-    OffreDTO offreDTO = factory.getOffre();
-    String requetePs = "UPDATE projet.objets SET etat_objet = 'Annulé' WHERE id_objet = ?;";
+  public OffreDTO annulerOffre(OffreDTO offreDTO) {
+    String requetePs = "UPDATE projet.objets SET etat_objet = 'Annulé',version=? WHERE id_objet = ?;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      ps.setInt(1, id);
+      ps.setInt(1, offreDTO.getVersion() + 1);
+      ps.setInt(2, offreDTO.getIdOffre());
       ps.execute();
-      offreDTO.setIdOffre(id);
+
     } catch (SQLException e) {
       e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
@@ -203,11 +204,12 @@ public class OffreDAOImpl implements OffreDAO {
   public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
     System.out.println("OffresDAO Modifier Offre ");
 
-    String requetePs = "UPDATE projet.offres SET plage_horaire = ? WHERE id_offre = ?;";
+    String requetePs = "UPDATE projet.offres SET plage_horaire = ? , version = ? WHERE id_offre = ?;";
     //returning l'offre modifié depuis la db ?
     //impl version
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, offreAvecModification.getPlageHoraire());
+      ps.setInt(2, offreAvecModification.getVersion() + 1);
       ps.setInt(3, offreAvecModification.getIdOffre());
       ps.execute();
     } catch (SQLException e) {
