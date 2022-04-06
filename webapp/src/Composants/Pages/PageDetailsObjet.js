@@ -404,10 +404,16 @@ const previsualiserPhoto = (e) => {
     image.src = URL.createObjectURL(photo)
   }
 }
-const suppPhoto = () => {
+const suppPhoto = (e) => {
+  e.preventDefault()
   let image = document.getElementById("image")
-  console.log("supprimer Photo")
-  image.scrc="#"
+  let entreeFichier = document.getElementById("photo")
+  //supprime le fichier du form
+  entreeFichier.value = ''
+  console.log("supprimer Photo : "+image.src)
+  //supprime la vue de la photo
+  image.src="#"
+  console.log(image.src)
 }
 const envoyerPhoto = async (e) => {
   const session = recupUtilisateurDonneesSession();
@@ -659,10 +665,10 @@ const surDetailObjetProprioModifier = async (offre) => {
     envoiModification(offre)
   })
 
-
  let annulerMod =  document.getElementById("annuler")
- annulerMod.addEventListener("click",()=>{
 
+  annulerMod.addEventListener("click",()=>{
+    console.log("annuler Mod")
    surDetailObjetProprio(offre)
   })
 }
