@@ -144,8 +144,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setInt(11, utilisateurDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          utilisateurDTO = remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
-          return utilisateurDTO;
+          return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
         } else {
           return null;
         }
@@ -175,8 +174,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setInt(4, utilisateurDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          utilisateurDTO = remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
-          return utilisateurDTO;
+          return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
         } else {
           return null;
         }
@@ -319,7 +317,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    */
   private UtilisateurDTO remplirUtilisateursDepuisRS(ResultSet rs, UtilisateurDTO utilisateurDTO) {
     try {
-      utilisateurDTO = remplirUtilisateurSansAdresse(utilisateurDTO, rs.getInt(1),
+      remplirUtilisateurSansAdresse(utilisateurDTO, rs.getInt(1),
           rs.getString(2), rs.getString(3), rs.getString(4),
           rs.getString(5), rs.getString(6), rs.getBoolean(7),
           rs.getString(8), rs.getString(9), rs.getInt(10));
@@ -349,7 +347,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   private UtilisateurDTO remplirUtilisateursDepuisRSSansAdresse(ResultSet rs,
       UtilisateurDTO utilisateurDTO) {
     try {
-      utilisateurDTO = remplirUtilisateurSansAdresse(utilisateurDTO, rs.getInt(1),
+      remplirUtilisateurSansAdresse(utilisateurDTO, rs.getInt(1),
           rs.getString(2), rs.getString(3), rs.getString(4),
           rs.getString(5), rs.getString(6), rs.getBoolean(7),
           rs.getString(9), rs.getString(10), rs.getInt(11));
@@ -360,7 +358,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
         ps.setInt(1, rs.getInt(8));
         try (ResultSet rs1 = ps.executeQuery()) {
           while (rs1.next()) {
-            adresseDTO = remplirAdresseDepuisRS(rs1, adresseDTO);
+            remplirAdresseDepuisRS(rs1, adresseDTO);
           }
         }
       } catch (SQLException e) {
@@ -410,7 +408,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @param commentaire     : le commentaire de refus concernant l'inscription de l'utilisateur
    * @return utilisateurDTO  : l'utilisateur rempli
    */
-  private UtilisateurDTO remplirUtilisateurSansAdresse(UtilisateurDTO utilisateurDTO, int id,
+  private void remplirUtilisateurSansAdresse(UtilisateurDTO utilisateurDTO, int id,
       String pseudo, String nom, String prenom, String mdp, String gsm, boolean estAdmin,
       String etatInscription, String commentaire, int version) {
     utilisateurDTO.setIdUtilisateur(id);
@@ -423,7 +421,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     utilisateurDTO.setEtatInscription(etatInscription);
     utilisateurDTO.setCommentaire(commentaire);
     utilisateurDTO.setVersion(version);
-    return utilisateurDTO;
   }
 
 }

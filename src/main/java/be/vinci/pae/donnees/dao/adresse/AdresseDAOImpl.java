@@ -56,20 +56,11 @@ public class AdresseDAOImpl implements AdresseDAO {
     String requetePs = "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?, ?) "
         + "RETURNING id_adresse, rue, numero, boite, code_postal, commune, version;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      ps.setString(1, adresseDTO.getRue());
-      ps.setInt(2, adresseDTO.getNumero());
-      if (adresseDTO.getBoite() == null || adresseDTO.getBoite().isBlank()) {
-        ps.setNull(3, Types.INTEGER);
-      } else {
-        ps.setString(3, adresseDTO.getBoite());
-      }
-      ps.setInt(4, adresseDTO.getCodePostal());
-      ps.setString(5, adresseDTO.getCommune());
+      remplirPsSansVersion(adresseDTO, ps);
       ps.setInt(6, adresseDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, rs);
-          return adresseDTO;
+          return remplirAdresseDepuisResultSet(adresseDTO, rs);
         } else {
           return null;
         }
@@ -95,7 +86,6 @@ public class AdresseDAOImpl implements AdresseDAO {
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       return recupAdresseDTODepuisPs(adresseDTO, ps);
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
   }
@@ -124,14 +114,13 @@ public class AdresseDAOImpl implements AdresseDAO {
   }
 
   /**
-   * Récupère une adresseDTO depuis un PreparedStatement.
+   * Rempli le PreparedStatement de l'adresse sans la colonne version.
    *
-   * @param adresseDTO : l'adresse à récupérer
-   * @param ps         : le PreparedStatement
-   * @return adresseDTO : l'adresse récupéré
+   * @param adresseDTO : l'adresse qui contient les attributs à placer dans le PreparedStatement
+   * @param ps         : le PreparedStatement à remplir
    * @throws FatalException : est lancée s'il y a un problème côté serveur
    */
-  private AdresseDTO recupAdresseDTODepuisPs(AdresseDTO adresseDTO, PreparedStatement ps) {
+  private void remplirPsSansVersion(AdresseDTO adresseDTO, PreparedStatement ps) {
     try {
       ps.setString(1, adresseDTO.getRue());
       ps.setInt(2, adresseDTO.getNumero());
@@ -142,20 +131,35 @@ public class AdresseDAOImpl implements AdresseDAO {
       }
       ps.setInt(4, adresseDTO.getCodePostal());
       ps.setString(5, adresseDTO.getCommune());
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Récupère une adresseDTO depuis un PreparedStatement.
+   *
+   * @param adresseDTO : l'adresse à récupérer
+   * @param ps         : le PreparedStatement
+   * @return adresseDTO : l'adresse récupéré
+   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   */
+  private AdresseDTO recupAdresseDTODepuisPs(AdresseDTO adresseDTO, PreparedStatement ps) {
+    try {
+      remplirPsSansVersion(adresseDTO, ps);
       ps.setInt(6, adresseDTO.getVersion() + 1);
       ps.setInt(7, adresseDTO.getIdAdresse());
       ps.setInt(8, adresseDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, rs);
-          return adresseDTO;
+          return remplirAdresseDepuisResultSet(adresseDTO, rs);
         } else {
           return null;
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
   }
+
 }

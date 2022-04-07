@@ -33,7 +33,7 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           TypeObjetDTO typeObjetCourant = factory.getTypeObjet();
-          typeObjetCourant = remplirTypeObjetDepuisResulSet(typeObjetCourant, rs);
+          remplirTypeObjetDepuisResulSet(typeObjetCourant, rs);
           liste.add(typeObjetCourant);
         }
       }

@@ -105,8 +105,7 @@ public class OffreDAOImpl implements OffreDAO {
       ps.setInt(1, idOffre);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          offreDTO = remplirOffreDepuisResultSet(offreDTO, rs);
-          return offreDTO;
+          return remplirOffreDepuisResultSet(offreDTO, rs);
         } else {
           return null;
         }
@@ -187,7 +186,7 @@ public class OffreDAOImpl implements OffreDAO {
     List<OffreDTO> liste = new ArrayList<>();
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
-        offreDTO = remplirOffreDepuisResultSet(offreDTO, rs);
+        remplirOffreDepuisResultSet(offreDTO, rs);
         liste.add(offreDTO);
         offreDTO = factory.getOffre();
       }
