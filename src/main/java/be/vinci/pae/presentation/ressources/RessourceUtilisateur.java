@@ -221,16 +221,16 @@ public class RessourceUtilisateur {
   /**
    * Récupère l'utilisateur pour visualiser son profil.
    *
-   * @param pseudo : le pseudo de l'utilisateur
+   * @param idUtilisateur : l'id de l'utilisateur
    * @return utilisateurDTO : l'utilisateur
    */
   @GET
-  @Path("{pseudo}")
+  @Path("{idUtilisateur}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public UtilisateurDTO voirProfilUtilisateur(@PathParam("pseudo") String pseudo) {
-    UtilisateurDTO utilisateurDTO = utilisateurUCC.rechercheParPseudo(pseudo);
+  public UtilisateurDTO voirProfilUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
+    UtilisateurDTO utilisateurDTO = utilisateurUCC.rechercheParId(idUtilisateur);
     return utilisateurDTO;
   }
 

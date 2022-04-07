@@ -3,41 +3,40 @@ import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
 
 const PageProfil = () => {
-    let session = recupUtilisateurDonneesSession()
+  let session = recupUtilisateurDonneesSession()
 
-    if(!session){
-        Redirect('/connexion')
+  if (!session) {
+    Redirect('/connexion')
+  }
+
+  let idUtilisateur = session.utilisateur.idUtilisateur;
+  fetch(API_URL + "utilisateurs/" + idUtilisateur, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token
+    },
+  })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(
+          "Error code : " + response.status + " : " + response.statusText
+      );
     }
-
-
-    let pseudo = session.utilisateur.pseudo;
-    fetch("/api/utilisateurs/" + pseudo, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: session.token
-        },
-    })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error(
-                "Error code : " + response.status + " : " + response.statusText
-            );
-        }
-        return response.json();
-    })
-    .then((data) => surProfilUtilisateur(data))
+    return response.json();
+  })
+  .then((data) => surProfilUtilisateur(data))
 }
 
 const surProfilUtilisateur = (data) => {
   let session = recupUtilisateurDonneesSession()
   let boite = ""
   let gsm = "Pas de numéro"
-  if(data.adresse.boite){
+  if (data.adresse.boite) {
     boite = data.adresse.boite
   }
-  if(data.adresse.gsm){
-    gsm = data.adresse.gsm
+  if (data.gsm) {
+    gsm = data.gsm
   }
 
   let profil = `
@@ -138,55 +137,61 @@ const surProfilUtilisateur = (data) => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = profil;
 
-  document.getElementById("changer-mdp-profil").addEventListener("click", (e) => {
-    e.preventDefault()
-    let mdpActuel = document.querySelector("#mdp-actuel")
-    let nouvMdp = document.querySelector("#nv-mdp")
-    let confMdp = document.querySelector("#conf-mdp")
-    let msgErr = document.querySelector("#mdp-erreur")
-    mdpActuel.value = ""
-    nouvMdp.value = ""
-    confMdp.value = ""
-    msgErr.innerHTML = ""
-    document.querySelector(".changer-mdp").classList.toggle("montrer-block")
-    document.querySelector("#modifier-mdp").addEventListener("click", (e) => {
-      e.preventDefault()
-      if (mdpActuel.value === "" || nouvMdp.value === "" || confMdp.value === ""){
-        msgErr.innerHTML = "Des champs sont manquant"
-      } else if(nouvMdp.value !== confMdp.value) {
-        msgErr.innerHTML = "Confirmation du nouveau mot de passe incorrecte"
-      }else {
+  document.getElementById("changer-mdp-profil").addEventListener("click",
+      (e) => {
+        e.preventDefault()
+        let mdpActuel = document.querySelector("#mdp-actuel")
+        let nouvMdp = document.querySelector("#nv-mdp")
+        let confMdp = document.querySelector("#conf-mdp")
+        let msgErr = document.querySelector("#mdp-erreur")
+        mdpActuel.value = ""
+        nouvMdp.value = ""
+        confMdp.value = ""
+        msgErr.innerHTML = ""
+        document.querySelector(".changer-mdp").classList.toggle("montrer-block")
+        document.querySelector("#modifier-mdp").addEventListener("click",
+            (e) => {
+              e.preventDefault()
+              if (mdpActuel.value === "" || nouvMdp.value === ""
+                  || confMdp.value === "") {
+                msgErr.innerHTML = "Des champs sont manquant"
+              } else if (nouvMdp.value !== confMdp.value) {
+                msgErr.innerHTML = "Confirmation du nouveau mot de passe incorrecte"
+              } else {
 
-        let AEnvoyer = {
-          mdpActuel: mdpActuel.value,
-          nouvMdp: nouvMdp.value,
-          confNouvMdp: confMdp.value
-        }
-        fetch(API_URL + "/utilisateurs/modifierMdp/" + data.idUtilisateur, {
-          method: "PUT",
-          body: JSON.stringify(AEnvoyer),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: session.token,
-          }
-        })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(
-                "Error code : " + response.status + " : " + response.statusText
-                + " : " + response.text())
-          }
-          console.log(response)
-          return response.json()
-        })
-        .then((donnee) => surProfilUtilisateur(donnee))
-        .catch((err) => {
-          console.log(err)
-          document.querySelector("#mdp-erreur").innerHTML=err.message
-        })
-      }
+                let AEnvoyer = {
+                  mdpActuel: mdpActuel.value,
+                  nouvMdp: nouvMdp.value,
+                  confNouvMdp: confMdp.value
+                }
+                fetch(
+                    API_URL + "/utilisateurs/modifierMdp/" + data.idUtilisateur,
+                    {
+                      method: "PUT",
+                      body: JSON.stringify(AEnvoyer),
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: session.token,
+                      }
+                    })
+                .then((response) => {
+                  if (!response.ok) {
+                    throw new Error(
+                        "Error code : " + response.status + " : "
+                        + response.statusText
+                        + " : " + response.text())
+                  }
+                  console.log(response)
+                  return response.json()
+                })
+                .then((donnee) => surProfilUtilisateur(donnee))
+                .catch((err) => {
+                  console.log(err)
+                  document.querySelector("#mdp-erreur").innerHTML = err.message
+                })
+              }
+            })
       })
-  })
 
   document.getElementById("modifier-profil").addEventListener("click", (e) => {
     e.preventDefault()
@@ -198,11 +203,11 @@ const surProfilUtilisateur = (data) => {
 const surModifierProfilUtilisateur = (data) => {
   let boite = ""
   let gsm = ""
-  if(data.adresse.boite){
+  if (data.adresse.boite) {
     boite = data.adresse.boite
   }
-  if(data.adresse.gsm){
-    gsm = data.adresse.gsm
+  if (data.gsm) {
+    gsm = data.gsm
   }
 
   let profilModifier = `
@@ -285,58 +290,59 @@ const surModifierProfilUtilisateur = (data) => {
     surProfilUtilisateur(data)
   })
 
+  document.getElementById('formulaire-profil').addEventListener('submit',
+      (e) => {
+        e.preventDefault();
+        let nouveauGsm = document.getElementById("gsm").value
 
+        if (nouveauGsm === "") {
+          nouveauGsm = null
+        }
 
-  document.getElementById('formulaire-profil').addEventListener('submit', () => {
-    let nouveauGsm = document.getElementById("gsm").value
+        let nouvelleAdresse = {
+          idAdresse: data.adresse.idAdresse,
+          rue: document.getElementById("rue").value,
+          numero: document.getElementById("numero").value,
+          boite: document.getElementById("boite").value,
+          codePostal: document.getElementById("code-postal").value,
+          commune: document.getElementById("commune").value,
+          version: data.adresse.version
+        }
 
-    if (nouveauGsm === ""){
-      nouveauGsm = null
-    }
+        let utilisateur = {
+          idUtilisateur: data.idUtilisateur,
+          pseudo: document.getElementById("pseudo").value,
+          nom: document.getElementById("nom").value,
+          prenom: document.getElementById("prenom").value,
+          gsm: nouveauGsm,
+          estAdmin: data.estAdmin,
+          etatInscription: data.etatInscription,
+          commentaire: data.commentaire,
+          adresse: nouvelleAdresse,
+          version: data.version
+        }
+        console.log(document.getElementById("nom").value)
 
-    let nouvelleAdresse = {
-      idAdresse: data.adresse.idAdresse,
-      rue: document.getElementById("rue").value,
-      numero: document.getElementById("numero").value,
-      boite: document.getElementById("boite").value,
-      codePostal: document.getElementById("code-postal").value,
-      commune: document.getElementById("commune").value,
-      version: data.adresse.version
-    }
-
-    let utilisateur = {
-      idUtilisateur: data.idUtilisateur,
-      pseudo: document.getElementById("pseudo").value,
-      nom: document.getElementById("nom").value,
-      prenom: document.getElementById("prenom").value,
-      gsm: nouveauGsm,
-      estAdmin: data.estAdmin,
-      etatInscription: data.etatInscription,
-      commentaire: data.commentaire,
-      adresse: nouvelleAdresse,
-      version: data.version
-    }
-    console.log(document.getElementById("nom").value)
-
-    let session = recupUtilisateurDonneesSession()
-    fetch("/api/utilisateurs", {
-      method: "PUT",
-      body: JSON.stringify(utilisateur),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: session.token,
-      }
-    })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(
-            "Error code : " + response.status + " : " + response.statusText + " : " + response.text())
-      }
-      console.log(response)
-      return response.json()
-    })
-    .then((donnee) => surProfilUtilisateur(donnee))
-  })
+        let session = recupUtilisateurDonneesSession()
+        fetch("/api/utilisateurs", {
+          method: "PUT",
+          body: JSON.stringify(utilisateur),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token,
+          }
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+                "Error code : " + response.status + " : " + response.statusText
+                + " : " + response.text())
+          }
+          console.log(response)
+          return response.json()
+        })
+        .then((donnee) => Redirect("/profil"))
+      })
 }
 
 export default PageProfil
