@@ -170,9 +170,11 @@ public class RessourceOffre {
   public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
     String nomDencodage = UUID.randomUUID().toString();
-    Files.copy(photo, Paths.get(Config.getPropriete("OneDrivePhotos") + nomDencodage),
+    String nomFichier =
+        nomDencodage + "." + fichierDisposition.getFileName().split("\\.(?=[^\\.]+$)")[1];
+    Files.copy(photo, Paths.get(Config.getPropriete("OneDrivePhotos") + nomFichier),
         StandardCopyOption.REPLACE_EXISTING);
-    return Response.ok(nomDencodage).build();
+    return Response.ok(nomFichier).build();
   }
 
   /**

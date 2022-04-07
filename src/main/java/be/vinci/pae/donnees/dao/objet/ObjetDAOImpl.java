@@ -44,7 +44,6 @@ public class ObjetDAOImpl implements ObjetDAO {
     }
   }
 
-
   /**
    * Recherche l'objet en fonction de son id.
    *
