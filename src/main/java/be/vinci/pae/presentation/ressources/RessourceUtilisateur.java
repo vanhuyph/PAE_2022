@@ -269,8 +269,7 @@ public class RessourceUtilisateur {
         .getCommune().isBlank()) {
       throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
     }
-    UtilisateurDTO utilisateur = utilisateurUCC.miseAJourUtilisateur(utilisateurDTO);
-    return utilisateur;
+    return utilisateurUCC.miseAJourUtilisateur(utilisateurDTO);
   }
 
   /**
@@ -304,8 +303,7 @@ public class RessourceUtilisateur {
       throw new PresentationException("Confirmation du mot de passe est incorrecte",
           Status.BAD_REQUEST);
     }
-    UtilisateurDTO utilisateur = utilisateurUCC.modifierMdp(idUtilisateur, mdpActuel, nouvMdp);
-    return utilisateur;
+    return utilisateurUCC.modifierMdp(idUtilisateur, mdpActuel, nouvMdp);
   }
 
   /**
@@ -324,8 +322,7 @@ public class RessourceUtilisateur {
     if (idUtilisateur <= 0) {
       throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
-    int nbreObjets = utilisateurUCC.nbreObjets(idUtilisateur, "Offert");
-    return nbreObjets;
+    return utilisateurUCC.nbreObjets(idUtilisateur, "Offert");
   }
 
 }
