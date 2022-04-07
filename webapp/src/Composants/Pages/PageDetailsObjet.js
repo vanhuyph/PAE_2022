@@ -404,6 +404,7 @@ const previsualiserPhoto = (e) => {
     image.src = URL.createObjectURL(photo)
   }
 }
+//a ajouter a offrir un objet
 const suppPhoto = (e) => {
   e.preventDefault()
   let image = document.getElementById("image")
@@ -440,9 +441,10 @@ const envoyerPhoto = async (e) => {
   })
   return nomPhoto;
 }
-const envoiModification = async ( offre) =>{
+const envoiModification =  async ( offre) =>{
+   //e.preventDefault()
   let session = recupUtilisateurDonneesSession()
-  console.log("envoie des modification s")
+  console.log("envoie des modifications")
   let description = document.querySelector("#description").value;
   let plageHoraire = document.querySelector("#horaire").value;
   let photo = document.querySelector("#image");
@@ -464,7 +466,7 @@ const envoiModification = async ( offre) =>{
   let nomPhoto = offre.objetDTO.photo;
 
   let compNomPhoto = "/api/offres/photos/"+nomPhoto
-  console.log(srcPhoto.value+" photo déjà présente : "+compNomPhoto)
+
   if (srcPhoto.value !== compNomPhoto){
      nomPhoto = "donnamis.png"
     if (srcPhoto.value !== "#"  ) {
@@ -473,6 +475,7 @@ const envoiModification = async ( offre) =>{
       nomPhoto = await envoyerPhoto()
     }
   }else{
+    console.log("pas de changement de photo")
     nomPhoto=offre.photo
   }
 
@@ -493,15 +496,16 @@ const envoiModification = async ( offre) =>{
     }
 
   console.log("envoie de l'offre modifier")
-  await fetch(
-      API_URL + 'offres/modifierOffre/', {
-        method: "PUT",
-        body: JSON.stringify(offreModifiee),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: session.token,
-        },
-      })
+  const options ={
+    method: "PUT",
+    body: JSON.stringify(offreModifiee),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token,
+    },
+  }
+       fetch(
+      API_URL+'offres/modifierOffre',options )
   .then((reponse) => {
     console.log(reponse.ok)
     if (!reponse.ok) {
@@ -662,7 +666,7 @@ const surDetailObjetProprioModifier = async (offre) => {
   let confirmerModification = document.getElementById("confirmer")
   confirmerModification.addEventListener("click", () =>{
 
-    envoiModification(offre)
+      envoiModification(offre)
   })
 
  let annulerMod =  document.getElementById("annuler")
@@ -674,7 +678,7 @@ const surDetailObjetProprioModifier = async (offre) => {
 }
 
 //enlever async
-const PageOffrirObjet  = async  () => {
+const PageOffrirObjet  =   () => {
   const pageDiv = document.querySelector("#page");
   const session = recupUtilisateurDonneesSession();
   let typesObjet =
@@ -770,8 +774,8 @@ const PageOffrirObjet  = async  () => {
     Redirect("/connexion");
   }
    photo.addEventListener("change", previsualiserPhoto);
-
-  await formOffrirObjet.addEventListener("submit",surOffrirObjet)
+//await
+   formOffrirObjet.addEventListener("submit",surOffrirObjet)
 
 
 }
