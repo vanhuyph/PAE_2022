@@ -1,5 +1,6 @@
 import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import {Redirect} from "../Router/Router";
+import {API_URL} from "../../utilitaires/serveur";
 
 const barVertical = `
 <div id="bar-vertical" class="ui left sidebar visible vertical menu">
@@ -89,7 +90,7 @@ const PageAdmin = () => {
 // Récupération des utilisateurs en attente
 const recupEnAttente = () => {
   const session = recupUtilisateurDonneesSession();
-  fetch("/api/utilisateurs/attente", {
+  fetch(API_URL + "utilisateurs/attente", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -109,7 +110,7 @@ const recupEnAttente = () => {
 // Récupération des utilisateurs refusés
 const recupRefuse = () => {
   const session = recupUtilisateurDonneesSession();
-  fetch("/api/utilisateurs/refuse", {
+  fetch(API_URL + "utilisateurs/refuse", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -156,9 +157,9 @@ const surListeAttente = (data) => {
     <div class="utilisateur">
         <form id="formulaire-confirme">
             <input id="id-utilisateur" type="hidden" value=${element.idUtilisateur}>
-            <p>${element.pseudo}</p>
-            <p>${element.nom}</p>
-            <p>${element.prenom}</p>
+            <p id="pseudo-utilisateur">${element.pseudo}</p>
+            <p id="nom-utilisateur">${element.nom}</p>
+            <p id="prenom-utilisateur">${element.prenom}</p>
             <div class="est-admin">
               <div class="ui checkbox">
               <input id="check" type="checkbox">
@@ -184,21 +185,19 @@ const surListeAttente = (data) => {
   });
   liste += `</div>`;
   contenu.innerHTML = liste;
-
   document.querySelectorAll(".utilisateur").forEach((item) => {
     const session = recupUtilisateurDonneesSession();
-
     // Confirmation de l'utilisateur
     item.querySelector("#formulaire-confirme").addEventListener("submit",
         (e) => {
           e.preventDefault()
           const admin = item.querySelector("#check").checked
           const id = item.querySelector("#id-utilisateur").value
-
           let confirmation = {
-            estAdmin: admin
+            estAdmin: admin,
           }
-          fetch("/api/utilisateurs/confirme/" + id, {
+          console.log(confirmation)
+          fetch(API_URL + "utilisateurs/confirme/" + id, {
             method: "PUT",
             body: JSON.stringify(confirmation),
             headers: {
@@ -224,7 +223,6 @@ const surListeAttente = (data) => {
       // Afficher la div de refus
       const refus = item.querySelector(".raison-refus")
       refus.classList.toggle("montrer-block")
-
       const refusForm = refus.querySelector("#refus-form")
       refusForm.addEventListener("submit", (e) => {
         e.preventDefault()
@@ -233,7 +231,7 @@ const surListeAttente = (data) => {
         const refus = {
           commentaire: commentaire
         }
-        fetch("/api/utilisateurs/refuse/" + id, {
+        fetch(API_URL + "utilisateurs/refuse/" + id, {
           method: "PUT",
           body: JSON.stringify(refus),
           headers: {
@@ -281,9 +279,9 @@ const surListeRefus = (data) => {
     <div class="utilisateur">
         <form id="formulaire-confirme">
             <input id="id-utilisateur" type="hidden" value=${element.idUtilisateur}>
-            <p>${element.pseudo}</p>
-            <p>${element.nom}</p>
-            <p>${element.prenom}</p>
+            <p id="pseudo-utilisateur">${element.pseudo}</p>
+            <p id="nom-utilisateur">${element.nom}</p>
+            <p id="prenom-utilisateur">${element.prenom}</p>
             <div class="est-admin">
               <div class="ui checkbox">
                 <input id="check" type="checkbox">
@@ -310,10 +308,12 @@ const surListeRefus = (data) => {
           e.preventDefault()
           const admin = item.querySelector("#check").checked
           const id = item.querySelector("#id-utilisateur").value
+
           let confirmation = {
-            estAdmin: admin
+            estAdmin: admin,
           }
-          fetch("/api/utilisateurs/confirme/" + id, {
+          console.log(confirmation)
+          fetch(API_URL + "utilisateurs/confirme/" + id, {
             method: "PUT",
             body: JSON.stringify(confirmation),
             headers: {

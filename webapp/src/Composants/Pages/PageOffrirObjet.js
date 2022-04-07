@@ -1,6 +1,7 @@
 import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import Navbar from "../Navbar/Navbar";
 import {Redirect} from "../Router/Router";
+import {API_URL} from "../../utilitaires/serveur";
 
 const formPhoto =
     `
@@ -72,7 +73,7 @@ const PageOffrirObjet = () => {
 
   if (session) {
     Navbar();
-    fetch("/api/typesObjet/liste", {
+    fetch(API_URL + "typesObjet/liste", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -94,6 +95,7 @@ const PageOffrirObjet = () => {
   }
 }
 
+// Permet l'affichage de la liste des types d'objets
 const choixTypeObjet = (data) => {
   let choixTypeObjet = document.querySelector("#choixTypeObjet");
   if (data.length === 0 || !data) {
@@ -118,6 +120,7 @@ const previsualiserPhoto = (e) => {
   }
 }
 
+// Permet l'envoie de la photo vers le backend
 const envoyerPhoto = async (e) => {
   const session = recupUtilisateurDonneesSession();
   let nomPhoto;
@@ -131,7 +134,7 @@ const envoyerPhoto = async (e) => {
       Authorization: session.token
     },
   };
-  await fetch('/api/offres/telechargementPhoto', options).then((res) => {
+  await fetch(API_URL + 'offres/telechargementPhoto', options).then((res) => {
     if (!res.ok) {
       throw new Error(
           "Code d'erreur : " + res.status + " : " + res.statusText
@@ -155,6 +158,7 @@ const surOffrirObjet = async (e) => {
   document.querySelector(".erreur-description").innerHTML = "";
   document.querySelector(".erreur-horaire").innerHTML = "";
 
+  // Vérification si des champs sont manquants
   if (description === "") {
     document.querySelector(
         ".erreur-description").innerHTML = "Votre description est vide";
@@ -192,7 +196,8 @@ const surOffrirObjet = async (e) => {
       plageHoraire: plageHoraire
     }
 
-    await fetch("/api/offres/creerOffre", {
+    // Fetch pour créer l'offre
+    await fetch(API_URL + "offres/creerOffre", {
       method: "POST",
       body: JSON.stringify(nouvelleOffre),
       headers: {

@@ -18,4 +18,12 @@ public interface UtilisateurUCC {
 
   List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription);
 
+  UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateur);
+
+  UtilisateurDTO modifierMdp(int id, String mdpActuel, String nouvMdp);
+
+  List<UtilisateurDTO> rechercherMembres(String recherche);
+
+  int nbreObjets(int idUtilisateur, String etatObjet);
+
 }
