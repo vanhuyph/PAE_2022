@@ -37,6 +37,6 @@ public interface ObjetDTO {
 
   int getVersion();
 
-  void setVersion(int nVersion);
+  void setVersion(int version);
 
 }

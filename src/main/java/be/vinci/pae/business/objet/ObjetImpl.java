@@ -100,14 +100,12 @@ public class ObjetImpl implements Objet {
     this.photo = photo;
   }
 
-  @Override
   public int getVersion() {
-    return this.version;
+    return version;
   }
 
-  @Override
-  public void setVersion(int nVersion) {
-    this.version = nVersion;
+  public void setVersion(int version) {
+    this.version = version;
   }
 
   @Override
@@ -137,7 +135,8 @@ public class ObjetImpl implements Objet {
         + ", offreur= " + offreur
         + ", receveur= " + receveur
         + ", photo= " + photo
-        + ",version= " + version
+        + ", version= " + version
         + '}';
   }
+
 }

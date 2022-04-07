@@ -46,4 +46,8 @@ public interface UtilisateurDTO {
 
   void setAdresse(AdresseDTO adresse);
 
+  int getVersion();
+
+  void setVersion(int version);
+
 }

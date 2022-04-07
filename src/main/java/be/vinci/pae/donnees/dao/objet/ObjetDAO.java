@@ -6,7 +6,8 @@ public interface ObjetDAO {
 
   ObjetDTO creerObjet(ObjetDTO objetDTO);
 
-  ObjetDTO changeEtatObjet(ObjetDTO objetDTO);
+  ObjetDTO rechercheParId(ObjetDTO objetDTO);
 
-  ObjetDTO modifierObjet(ObjetDTO objetAvecModification);
+  ObjetDTO miseAJourObjet(ObjetDTO objetDTO);
+
 }
