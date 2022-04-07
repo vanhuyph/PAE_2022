@@ -173,7 +173,7 @@ public class OffreUCCImpl implements OffreUCC {
     System.out.println("UCC Modifier Offre ");
 
     serviceDAL.commencerTransaction();
-    Objet objet = (Objet) objetDAO.modifierObjet(offreAvecModification.getObjetDTO());
+    Objet objet = (Objet) objetDAO.miseAJourObjet(offreAvecModification.getObjetDTO());
     if (objet == null) {
       serviceDAL.retourEnArriereTransaction();
       throw new BusinessException("L'objet n'a pas pu être modifiée");
