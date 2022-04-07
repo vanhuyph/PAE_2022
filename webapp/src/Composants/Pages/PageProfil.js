@@ -4,13 +4,12 @@ import {API_URL} from "../../utilitaires/serveur";
 
 const PageProfil = () => {
   let session = recupUtilisateurDonneesSession()
-
   if (!session) {
     Redirect('/connexion')
   }
 
   let idUtilisateur = session.utilisateur.idUtilisateur;
-  fetch(API_URL + "utilisateurs/" + idUtilisateur, {
+  fetch(API_URL + "utilisateurs/voirProfil/" + idUtilisateur, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -28,9 +27,10 @@ const PageProfil = () => {
   .then((data) => surProfilUtilisateur(data))
 }
 
+// Affichage profil de l'utilisateur avec ses informations
 const surProfilUtilisateur = (data) => {
   let session = recupUtilisateurDonneesSession()
-  let boite = ""
+  let boite = "Pas de boite"
   let gsm = "Pas de numéro"
   if (data.adresse.boite) {
     boite = data.adresse.boite
@@ -41,7 +41,7 @@ const surProfilUtilisateur = (data) => {
 
   let profil = `
   <div class="page-profil">
-    <h2>Profil</h2>
+    <h2>Mon profil</h2>
     <form class="ui form">
       <div class="formulaire-profil">
         <div class="two fields">
@@ -52,7 +52,7 @@ const surProfilUtilisateur = (data) => {
                 <p>${data.nom}</p>
               </div>
               <div class="field">
-                <label>Prenom</label>
+                <label>Prénom</label>
                 <p>${data.prenom}</p>
               </div>
             </div>
@@ -126,7 +126,7 @@ const surProfilUtilisateur = (data) => {
               </div>
             </div>
             <div class="field">
-                <button id="modifier-profil" class="ui button inverted secondary">Modifier le profil</button>
+                <button id="modifier-profil" class="ui button inverted secondary">Modifier profil</button>
             </div>
           </div>
         </div>
@@ -137,6 +137,7 @@ const surProfilUtilisateur = (data) => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = profil;
 
+  // Changement du mdp de l'utilisateur
   document.getElementById("changer-mdp-profil").addEventListener("click",
       (e) => {
         e.preventDefault()
@@ -154,21 +155,20 @@ const surProfilUtilisateur = (data) => {
               e.preventDefault()
               if (mdpActuel.value === "" || nouvMdp.value === ""
                   || confMdp.value === "") {
-                msgErr.innerHTML = "Des champs sont manquant"
+                msgErr.innerHTML = "Des champs sont manquants"
               } else if (nouvMdp.value !== confMdp.value) {
-                msgErr.innerHTML = "Confirmation du nouveau mot de passe incorrecte"
+                msgErr.innerHTML = "Les mots de passe ne correspondent pas"
               } else {
-
-                let AEnvoyer = {
+                let aEnvoyer = {
                   mdpActuel: mdpActuel.value,
                   nouvMdp: nouvMdp.value,
                   confNouvMdp: confMdp.value
                 }
                 fetch(
-                    API_URL + "/utilisateurs/modifierMdp/" + data.idUtilisateur,
+                    API_URL + "utilisateurs/modifierMdp/" + data.idUtilisateur,
                     {
                       method: "PUT",
-                      body: JSON.stringify(AEnvoyer),
+                      body: JSON.stringify(aEnvoyer),
                       headers: {
                         "Content-Type": "application/json",
                         Authorization: session.token,
@@ -197,9 +197,9 @@ const surProfilUtilisateur = (data) => {
     e.preventDefault()
     surModifierProfilUtilisateur(data)
   })
-
 }
 
+// Affiche les inputs pour pouvoir changer les informations du profil
 const surModifierProfilUtilisateur = (data) => {
   let boite = ""
   let gsm = ""
@@ -210,9 +210,9 @@ const surModifierProfilUtilisateur = (data) => {
     gsm = data.gsm
   }
 
-  let profilModifier = `
+  let profilModifie = `
   <div class="page-profil">
-    <h2>Profil</h2>
+    <h2>Modification du profil</h2>
     <form id="formulaire-profil" class="ui form">
       <div>
         <div class="two fields">
@@ -220,10 +220,10 @@ const surModifierProfilUtilisateur = (data) => {
             <div class="two fields">
               <div class="field">
                 <label>Nom</label>
-                <input id="nom" type="text" name="nom" value="${data.nom}" onchange="console.log('lol')">
+                <input id="nom" type="text" name="nom" value="${data.nom}">
               </div>
               <div class="field">
-                <label>Prenom</label>
+                <label>Prénom</label>
                 <input id="prenom" type="text" name="prenom" value="${data.prenom}">
               </div>
             </div>
@@ -270,6 +270,9 @@ const surModifierProfilUtilisateur = (data) => {
               </div>
             </div>
             <div class="field">
+              <p class="message-erreur" id="profil-erreur"></p>
+             </div>
+            <div class="field">
               <div class="ui buttons">
                   <button id="confirmer-modifier" type="submit" class="ui green button">Modifier</button>
                   <button id="annuler-modifier" class="ui red button">Annuler</button>
@@ -281,20 +284,18 @@ const surModifierProfilUtilisateur = (data) => {
     </form>
   </div>
   `
-
   const pageDiv = document.querySelector("#page");
-  pageDiv.innerHTML = profilModifier;
-
-  console.log(data)
+  pageDiv.innerHTML = profilModifie;
+  // Lors du clique sur le bouton annuler, renvoie vers le profil de l'utilisateur
   document.getElementById('annuler-modifier').addEventListener('click', () => {
     surProfilUtilisateur(data)
   })
 
+  // Soumet les nouveaux changements du profil
   document.getElementById('formulaire-profil').addEventListener('submit',
       (e) => {
         e.preventDefault();
         let nouveauGsm = document.getElementById("gsm").value
-
         if (nouveauGsm === "") {
           nouveauGsm = null
         }
@@ -321,10 +322,9 @@ const surModifierProfilUtilisateur = (data) => {
           adresse: nouvelleAdresse,
           version: data.version
         }
-        console.log(document.getElementById("nom").value)
 
         let session = recupUtilisateurDonneesSession()
-        fetch("/api/utilisateurs", {
+        fetch(API_URL + "utilisateurs", {
           method: "PUT",
           body: JSON.stringify(utilisateur),
           headers: {
@@ -342,7 +342,22 @@ const surModifierProfilUtilisateur = (data) => {
           return response.json()
         })
         .then((donnee) => Redirect("/profil"))
+        .catch(err => surErreur(err))
       })
+}
+
+// Si erreur dans le fetch
+const surErreur = (err) => {
+  let messageErreur = document.querySelector("#profil-erreur");
+  let erreurMessage = "";
+  if (err.message.includes("400")) {
+    erreurMessage = "Des champs ne peuvent pas être vides";
+  } else if (err.message.includes("409")) {
+    erreurMessage = "Ce pseudo est déjà utilisé";
+  } else {
+    erreurMessage = err.message;
+  }
+  messageErreur.innerText = erreurMessage;
 }
 
 export default PageProfil

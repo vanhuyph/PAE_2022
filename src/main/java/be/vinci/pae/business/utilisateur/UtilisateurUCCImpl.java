@@ -237,6 +237,12 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateur;
     try {
+      UtilisateurDTO utilisateurDTO1 = utilisateurDAO.rechercheParPseudo(
+          utilisateurDTO.getPseudo());
+      if (utilisateurDTO1 != null
+          && utilisateurDTO1.getIdUtilisateur() != utilisateurDTO.getIdUtilisateur()) {
+        throw new ConflitException("Ce pseudo existe déjà");
+      }
       AdresseDTO adresseDTO = adresseDAO.miseAJourAdresse(utilisateurDTO.getAdresse());
       if (adresseDTO == null) {
         if (adresseDAO.rechercheParId(utilisateurDTO.getAdresse().getIdAdresse()) == null) {
@@ -260,10 +266,10 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   }
 
   /**
-   * Met à jour le mot de passe de l'utilisateur.
+   * Change le mot de passe de l'utilisateur.
    *
-   * @param id        : l'id de l'utilisateur
-   * @param mdpActuel : mot de passe actuel de l'utilisateur
+   * @param id        : l'id de l'utilisateur à qui l'on veut changer le mot de passe
+   * @param mdpActuel : le mot de passe actuel de l'utilisateur
    * @param nouvMdp   : le nouveau mot de passe de l'utilisateur
    * @return utilisateur : l'utilisateur avec le mot de passe modifié
    * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas

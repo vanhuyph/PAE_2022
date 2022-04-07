@@ -221,11 +221,11 @@ public class RessourceUtilisateur {
   /**
    * Récupère l'utilisateur pour visualiser son profil.
    *
-   * @param idUtilisateur : l'id de l'utilisateur
-   * @return utilisateurDTO : l'utilisateur
+   * @param idUtilisateur : l'id de l'utilisateur à récupérer
+   * @return utilisateurDTO : l'utilisateur que l'on veut visualiser son profil
    */
   @GET
-  @Path("{idUtilisateur}")
+  @Path("voirProfil/{idUtilisateur}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation

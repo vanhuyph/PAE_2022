@@ -95,6 +95,7 @@ const PageOffrirObjet = () => {
   }
 }
 
+// Permet l'affichage de la liste des types d'objets
 const choixTypeObjet = (data) => {
   let choixTypeObjet = document.querySelector("#choixTypeObjet");
   if (data.length === 0 || !data) {
@@ -119,6 +120,7 @@ const previsualiserPhoto = (e) => {
   }
 }
 
+// Permet l'envoie de la photo vers le backend
 const envoyerPhoto = async (e) => {
   const session = recupUtilisateurDonneesSession();
   let nomPhoto;
@@ -156,6 +158,7 @@ const surOffrirObjet = async (e) => {
   document.querySelector(".erreur-description").innerHTML = "";
   document.querySelector(".erreur-horaire").innerHTML = "";
 
+  // Vérification si des champs sont manquants
   if (description === "") {
     document.querySelector(
         ".erreur-description").innerHTML = "Votre description est vide";
@@ -193,6 +196,7 @@ const surOffrirObjet = async (e) => {
       plageHoraire: plageHoraire
     }
 
+    // Fetch pour créer l'offre
     await fetch(API_URL + "offres/creerOffre", {
       method: "POST",
       body: JSON.stringify(nouvelleOffre),

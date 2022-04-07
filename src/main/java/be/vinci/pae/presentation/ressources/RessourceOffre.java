@@ -87,7 +87,7 @@ public class RessourceOffre {
   /**
    * Annule une offre.
    *
-   * @param offreDTO : l'offre a annulé
+   * @param offreDTO : l'offre à annuler
    * @return offreDTO : l'offre annulée
    * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'annulation
    *                               a échoué
@@ -96,7 +96,7 @@ public class RessourceOffre {
   @Path("annulerOffre")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  //@Autorisation
+  @Autorisation
   public OffreDTO annulerOffre(OffreDTO offreDTO) {
     if (offreDTO.getIdOffre() <= 0) {
       throw new PresentationException("L'id de l'offre est incorrect", Status.BAD_REQUEST);
@@ -178,7 +178,7 @@ public class RessourceOffre {
   }
 
   /**
-   * Voir la photo d'une offre.
+   * Permet de voir la photo d'une offre.
    *
    * @param uuidPhoto : nom du fichier sur le serveur
    * @return une réponse contenant la photo
