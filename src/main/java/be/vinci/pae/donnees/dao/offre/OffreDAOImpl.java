@@ -194,7 +194,6 @@ public class OffreDAOImpl implements OffreDAO {
       ps.execute();
     } catch (SQLException e) {
       e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return offreAvecModification;
