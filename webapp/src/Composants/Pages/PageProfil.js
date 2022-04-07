@@ -33,7 +33,7 @@ const surProfilUtilisateur = (data) => {
   let session = recupUtilisateurDonneesSession()
   let boite = ""
   let gsm = "Pas de numéro"
-  if(data.adresse.boite !== 0){
+  if(data.adresse.boite){
     boite = data.adresse.boite
   }
   if(data.adresse.gsm){
@@ -198,7 +198,7 @@ const surProfilUtilisateur = (data) => {
 const surModifierProfilUtilisateur = (data) => {
   let boite = ""
   let gsm = ""
-  if(data.adresse.boite !== 0){
+  if(data.adresse.boite){
     boite = data.adresse.boite
   }
   if(data.adresse.gsm){
