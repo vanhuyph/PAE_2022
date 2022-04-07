@@ -366,7 +366,7 @@ const surDetailObjetProprio = async (offre) => {
 
   document.querySelector("#modifier-offre").addEventListener("click", () => {
     console.log(offre)
-    //surDetailObjetProprioModifier(offre)
+    surDetailObjetProprioModifier(offre)
   })
   document.querySelector("#annuler-offre").addEventListener("click", () => {
     const session = recupUtilisateurDonneesSession()
