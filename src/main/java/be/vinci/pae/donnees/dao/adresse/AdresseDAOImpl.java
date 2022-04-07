@@ -56,7 +56,7 @@ public class AdresseDAOImpl implements AdresseDAO {
     String requetePs = "INSERT INTO projet.adresses VALUES (DEFAULT, ?, ?, ?, ?, ?, ?) "
         + "RETURNING id_adresse, rue, numero, boite, code_postal, commune, version;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      return recupAdresseDTODepuisPs(adresseDTO, ps);
+      return recupAdresseDTODepuisPsAjout(adresseDTO, ps);
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);
     }
@@ -128,6 +128,32 @@ public class AdresseDAOImpl implements AdresseDAO {
       ps.setInt(6, adresseDTO.getVersion() + 1);
       ps.setInt(7, adresseDTO.getIdAdresse());
       ps.setInt(8, adresseDTO.getVersion());
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, rs);
+          return adresseDTO;
+        } else {
+          return null;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  private AdresseDTO recupAdresseDTODepuisPsAjout(AdresseDTO adresseDTO, PreparedStatement ps) {
+    try {
+      ps.setString(1, adresseDTO.getRue());
+      ps.setInt(2, adresseDTO.getNumero());
+      if (adresseDTO.getBoite() == null || adresseDTO.getBoite().isBlank()) {
+        ps.setNull(3, Types.INTEGER);
+      } else {
+        ps.setString(3, adresseDTO.getBoite());
+      }
+      ps.setInt(4, adresseDTO.getCodePostal());
+      ps.setString(5, adresseDTO.getCommune());
+      ps.setInt(6, adresseDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           adresseDTO = remplirAdresseDepuisResultSet(adresseDTO, rs);
