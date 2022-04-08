@@ -34,14 +34,8 @@ public class ObjetImpl implements Objet {
    */
   @Override
   public boolean verifierEtatPourModificationOffre() {
-    if (this.etatObjet.equals("annulé")) {
-      return false;
-    }
-    if (this.etatObjet.equals("donné")) {
-      return false;
-    }
-
-    return true;
+    return this.etatObjet != null && !this.etatObjet.equals("Annulé") && !this.etatObjet.equals(
+        "Donné");
   }
 
   public int getIdObjet() {

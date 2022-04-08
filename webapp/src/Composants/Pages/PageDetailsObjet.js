@@ -194,7 +194,6 @@ const surDetailObjet = async (offre) => {
       ...session.utilisateur,
       gsm: document.getElementById("gsm-interet").value
     }
-    console.log(session.utilisateur)
     let interet = {
       utilisateur: utilisateur,
       objet: offre.objetDTO,
@@ -365,7 +364,6 @@ const surDetailObjetProprio = async (offre) => {
   pageDiv.innerHTML = offrePage
 
   document.querySelector("#modifier-offre").addEventListener("click", () => {
-    console.log(offre)
     surDetailObjetProprioModifier(offre)
   })
   document.querySelector("#annuler-offre").addEventListener("click", () => {
@@ -452,10 +450,11 @@ const surDetailObjetProprioModifier = async (offre) => {
   <form class="ui form">
     <div class="ui two column grid">
       <div class="column">
-        <img class="ui large rounded image" src="/api/offres/photos/${offre.objetDTO.photo}"/>
-        <div class="ui two column grid">
-          <div class="column">
-          <button>Modifier la photo</button>
+        <img class="ui large rounded image" id="image" src="/api/offres/photos/${offre.objetDTO.photo}"/>
+        
+        <div class="ui two column grid" style="margin-top: 5px">
+          <div class="column field">
+            <input  name="ModifierPhoto" id="photo" type="file"/>
           </div>
           <div class="column propose">
             <p>Proposé par: ${offre.objetDTO.offreur.pseudo}</p>
@@ -490,7 +489,7 @@ const surDetailObjetProprioModifier = async (offre) => {
         <div class="column">
         <div class="field">
           <h4>Description</h4>
-          <input type="text" value="${offre.objetDTO.description}"/>
+          <input type="text" value="${offre.objetDTO.description}" id="description"/>
         </div>
         </div>
         <div class="column">
@@ -502,7 +501,7 @@ const surDetailObjetProprioModifier = async (offre) => {
         <div class="column">
         <div class="field">
           <h4>Disponibilités de l'offreur</h4>
-          <input type="text" value="${offre.plageHoraire}"/>
+          <input type="text" value="${offre.plageHoraire}" id="horaire"/>
          </div>
         </div>
       </div>
@@ -523,9 +522,119 @@ const surDetailObjetProprioModifier = async (offre) => {
   `
   pageDiv.innerHTML = offrePage
 
+
+  let changerPhoto = document.getElementById("photo")
+  changerPhoto.addEventListener("change",previsualiserPhoto)
+  document.getElementById("confirmer").addEventListener("click", (e) =>{
+    e.preventDefault()
+    envoiModification(offre)
+  })
   document.querySelector("#annuler").addEventListener("click", () => {
     surDetailObjetProprio(offre)
   })
+}
+const envoiModification =  async ( offre) =>{
+  let session = recupUtilisateurDonneesSession()
+  let description = document.querySelector("#description").value;
+  let plageHoraire = document.querySelector("#horaire").value;
+  let photo = document.querySelector("#image");
+
+
+  let srcPhoto = photo.attributes.getNamedItem("src")
+  let nomPhoto = offre.objetDTO.photo;
+
+  let compNomPhoto = API_URL +"offres/photos/"+nomPhoto
+
+  if (srcPhoto.value !== compNomPhoto){
+    nomPhoto = "donnamis.png"
+    if (srcPhoto.value !== "#"  ) {
+
+      nomPhoto = await envoyerPhoto()
+    }
+  }
+
+  if (description !== "" && plageHoraire !== "") {
+
+    let objetModifie = {
+      idObjet: offre.objetDTO.idObjet,
+      offreur: offre.objetDTO.offreur,
+      receveur: null,
+      typeObjet: {
+        idType: offre.objetDTO.typeObjet.idType,
+        nom: offre.objetDTO.typeObjet.nom
+      },
+      etatObjet: offre.objetDTO.etatObjet,
+      description: description,
+      photo: nomPhoto, //.toString()
+      version: offre.objetDTO.version
+    }
+
+    let offreModifiee= {
+      idOffre: offre.idOffre,
+      objetDTO: objetModifie,
+      plageHoraire: plageHoraire,
+      dateOffre: offre.dateOffre,
+      version: offre.version
+    }
+
+    const options ={
+      method: "PUT",
+      body: JSON.stringify(offreModifiee),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token,
+      },
+    }
+    fetch(
+        API_URL+'offres/modifierOffre',options )
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code erreur : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      return reponse.json()
+    })
+    .then((donnee) =>{
+      surDetailObjetProprio(donnee)
+    })
+  }
+}
+// Permet de prévisualiser la photo avant de l'upload
+const previsualiserPhoto = (e) => {
+  let image = document.getElementById("image")
+  const photo = document.getElementById("photo").files[0];
+  if (photo) {
+    // On change l'URL de l'image
+    image.src = URL.createObjectURL(photo)
+  }
+}
+
+// Permet l'envoie de la photo vers le backend
+const envoyerPhoto = async (e) => {
+  const session = recupUtilisateurDonneesSession();
+  let nomPhoto;
+  const fichierDEntree = document.getElementById("photo");
+  const formDonnee = new FormData();
+  formDonnee.append('photo', fichierDEntree.files[0]);
+  const options = {
+    method: 'POST',
+    body: formDonnee,
+    headers: {
+      Authorization: session.token
+    },
+  };
+  await fetch(API_URL + 'offres/telechargementPhoto', options).then((res) => {
+    if (!res.ok) {
+      throw new Error(
+          "Code d'erreur : " + res.status + " : " + res.statusText
+      );
+    }
+    return res.text()
+  }).then((data) => {
+    nomPhoto = data.toString()
+  })
+  return nomPhoto;
 }
 
 // Si erreur lors de la soumission du formulaire

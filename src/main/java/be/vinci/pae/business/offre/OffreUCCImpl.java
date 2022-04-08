@@ -170,22 +170,30 @@ public class OffreUCCImpl implements OffreUCC {
    */
   @Override
   public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
-    System.out.println("UCC Modifier Offre ");
-
     serviceDAL.commencerTransaction();
-    Objet objet = (Objet) objetDAO.miseAJourObjet(offreAvecModification.getObjetDTO());
-    if (objet == null) {
+    OffreDTO offre;
+    try {
+      if (!((Objet) offreAvecModification.getObjetDTO()).verifierEtatPourModificationOffre()) {
+        throw new BusinessException(
+            "L'objet est dans un état ne lui permettant pas d'être modifié");
+      }
+      ObjetDTO objet = objetDAO.miseAJourObjet(offreAvecModification.getObjetDTO());
+      if (objet == null) {
+        if (objetDAO.rechercheParId(offreAvecModification.getObjetDTO()) == null) {
+          throw new PasTrouveException("L'objet n'existe pas");
+        }
+        throw new BusinessException("Données de l'objet sont périmées");
+      }
+      offre = offreDAO.modifierOffre(offreAvecModification);
+      if (offre == null) {
+        if (offreDAO.rechercheParId(offreAvecModification.getIdOffre()) == null) {
+          throw new PasTrouveException("L'offre n'existe pas");
+        }
+        throw new BusinessException("Données de l'offre sont périmées");
+      }
+    } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'objet n'a pas pu être modifiée");
-    }
-    if (objet.verifierEtatPourModificationOffre()) {
-      serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'objet est dans un état ne lui permettant pas d'être modifié");
-    }
-    OffreDTO offre = offreDAO.modifierOffre(offreAvecModification);
-    if (offre == null) {
-      serviceDAL.retourEnArriereTransaction();
-      throw new BusinessException("L'offre n'a pas pu être modifiée");
+      throw e;
     }
     serviceDAL.commettreTransaction();
     return offre;

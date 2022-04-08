@@ -183,20 +183,28 @@ public class OffreDAOImpl implements OffreDAO {
    */
   @Override
   public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
-    System.out.println("OffresDAO Modifier Offre ");
 
-    String requetePs = "UPDATE projet.offres SET plage_horaire = ? WHERE id_offre = ?;";
+    String requetePs = "UPDATE projet.offres SET plage_horaire = ?, version = ? "
+        + "WHERE id_offre = ? AND version = ?"
+        + "RETURNING id_offre, date_offre, plage_horaire, version;";
     //returning l'offre modifié depuis la db ?
     //impl version
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, offreAvecModification.getPlageHoraire());
+      ps.setInt(2, offreAvecModification.getVersion() + 1);
       ps.setInt(3, offreAvecModification.getIdOffre());
-      ps.execute();
+      ps.setInt(4, offreAvecModification.getVersion());
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return remplirOffrePourUpdate(offreAvecModification, rs);
+        } else {
+          return null;
+        }
+      }
     } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
-    return offreAvecModification;
   }
 
   /**
@@ -277,4 +285,22 @@ public class OffreDAOImpl implements OffreDAO {
     return offreDTO;
   }
 
+  /**
+   * Rempli les données de l'offre depuis un ResultSet.
+   *
+   * @param offreDTO : l'offre vide, qui va être rempli
+   * @param rs       : le Result Statement déjà préparé
+   * @return offreDTO : l'offre rempli
+   */
+  private OffreDTO remplirOffrePourUpdate(OffreDTO offreDTO, ResultSet rs) {
+    try {
+      offreDTO.setIdOffre(rs.getInt(1));
+      offreDTO.setDateOffre(rs.getTimestamp(2).toLocalDateTime());
+      offreDTO.setPlageHoraire(rs.getString(3));
+      offreDTO.setVersion(rs.getInt(4));
+      return offreDTO;
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
 }
