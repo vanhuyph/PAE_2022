@@ -9,5 +9,5 @@ public interface Interet extends InteretDTO {
   InteretDTO changerEtatObjet(String etat);
 
   void creerVersion();
-
+  
 }

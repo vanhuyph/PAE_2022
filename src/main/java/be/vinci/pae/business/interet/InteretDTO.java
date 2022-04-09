@@ -21,6 +21,10 @@ public interface InteretDTO {
 
   void setDateRdv(Date dateRdv);
 
+  boolean isVue();
+
+  void setVue(boolean vue);
+
   int getVersion();
 
   void setVersion(int version);

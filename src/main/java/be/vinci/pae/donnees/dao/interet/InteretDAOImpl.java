@@ -9,6 +9,7 @@ import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,13 +33,14 @@ public class InteretDAOImpl implements InteretDAO {
    */
   @Override
   public InteretDTO ajouterInteret(InteretDTO interetDTO) {
-    String requetePs = "INSERT INTO projet.interets VALUES (?, ?, ?, ?) RETURNING *;";
+    String requetePs = "INSERT INTO projet.interets VALUES (?, ?, ?, ?, ?) RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       java.sql.Date dateRdvSQL = new java.sql.Date(interetDTO.getDateRdv().getTime());
       ps.setInt(1, interetDTO.getUtilisateur().getIdUtilisateur());
       ps.setInt(2, interetDTO.getObjet().getIdObjet());
       ps.setDate(3, dateRdvSQL);
-      ps.setInt(4, interetDTO.getVersion());
+      ps.setBoolean(4, interetDTO.isVue());
+      ps.setInt(5, interetDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           return interetDTO;
@@ -89,18 +91,57 @@ public class InteretDAOImpl implements InteretDAO {
   public List<InteretDTO> listeDesPersonnesInteressees(int idObjet) {
     String requetePS = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
         + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-        + "u.etat_inscription, u.commentaire, i.date FROM projet.interets i, "
+        + "u.etat_inscription, u.commentaire, i.vue, i.date FROM projet.interets i, "
         + "projet.utilisateurs u, projet.adresses a WHERE "
-        + "i.objet = ? AND i.utilisateur = u.id_utilisateur AND a.id_adresse = u.adresse;";
+        + "i.objet = ? AND i.utilisateur = u.id_utilisateur AND a.id_adresse = u.adresse "
+        + "AND i.vue = 'false';";
     InteretDTO interetDTO = factory.getInteret();
+    ObjetDTO objetDTO = factory.getObjet();
+    objetDTO.setIdObjet(idObjet);
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
       ps.setInt(1, idObjet);
+      interetDTO.setObjet(objetDTO);
       List<InteretDTO> listeDesPersonnesInteressees =
           remplirListInteretDepuisResulSet(interetDTO, ps);
       return listeDesPersonnesInteressees;
     } catch (SQLException e) {
       e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Met à jour l'interet.
+   *
+   * @param interetDTO : l'interet à mettre a jour
+   * @return interetDTO : l'interet mit à jour
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public InteretDTO miseAJourInteret(InteretDTO interetDTO) {
+    String requetePs = "UPDATE projet.interets SET date = ?, vue = ?, "
+        + "version = ? WHERE version = ? AND utilisateur = ? AND objet = ? "
+        + "RETURNING utilisateur, objet, version;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setDate(1, (Date) interetDTO.getDateRdv());
+      ps.setBoolean(2, interetDTO.isVue());
+      ps.setInt(3, interetDTO.getVersion() + 1);
+      ps.setInt(4, interetDTO.getVersion());
+      ps.setInt(5, interetDTO.getUtilisateur().getIdUtilisateur());
+      ps.setInt(6, interetDTO.getObjet().getIdObjet());
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          interetDTO.getUtilisateur().setIdUtilisateur(rs.getInt(1));
+          interetDTO.getObjet().setIdObjet(rs.getInt(2));
+          interetDTO.setVersion(rs.getInt(3));
+          return interetDTO;
+        } else {
+          return null;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
   }
@@ -116,13 +157,11 @@ public class InteretDAOImpl implements InteretDAO {
   private List<InteretDTO> remplirListInteretDepuisResulSet(InteretDTO interetDTO,
       PreparedStatement ps) {
     List<InteretDTO> liste = new ArrayList<>();
-    ObjetDTO objetDTO = interetDTO.getObjet();
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
         interetDTO = remplirInteretDepuisResulSet(interetDTO, rs);
         liste.add(interetDTO);
         interetDTO = factory.getInteret();
-        interetDTO.setObjet(objetDTO);
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -161,7 +200,8 @@ public class InteretDAOImpl implements InteretDAO {
       interesse.setAdresse(adresseDTO);
 
       interetDTO.setUtilisateur(interesse);
-      interetDTO.setDateRdv(rs.getDate(16));
+      interetDTO.setVue(rs.getBoolean(16));
+      interetDTO.setDateRdv(rs.getDate(17));
 
     } catch (SQLException e) {
       e.printStackTrace();

@@ -18,6 +18,8 @@ public class InteretImpl implements Interet {
   @JsonView(Vues.Public.class)
   private Date dateRdv;
   @JsonView(Vues.Public.class)
+  private boolean vue;
+  @JsonView(Vues.Public.class)
   private int version;
 
   public UtilisateurDTO getUtilisateur() {
@@ -42,6 +44,14 @@ public class InteretImpl implements Interet {
 
   public void setDateRdv(Date dateRdv) {
     this.dateRdv = dateRdv;
+  }
+
+  public boolean isVue() {
+    return vue;
+  }
+
+  public void setVue(boolean vue) {
+    this.vue = vue;
   }
 
   public int getVersion() {
@@ -76,6 +86,8 @@ public class InteretImpl implements Interet {
         + "utilisateur=" + utilisateur
         + ", objet=" + objet
         + ", dateRdv=" + dateRdv
+        + ", vue =" + vue
+        + ", version=" + version
         + '}';
   }
 

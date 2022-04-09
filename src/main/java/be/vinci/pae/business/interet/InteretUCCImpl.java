@@ -8,6 +8,7 @@ import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import jakarta.inject.Inject;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -95,18 +96,25 @@ public class InteretUCCImpl implements InteretUCC {
    * Liste les interets.
    *
    * @param idObjet : l'id de l'objet dont les personnes sont intéressées
-   * @return liste : la liste de toutes les interets
+   * @return listeInteret : la liste de toutes les interets qu'on n'a pas encore vue
    * @throws BusinessException : est lancée si l'id de l'objet est incorrect
    */
   @Override
   public List<InteretDTO> listeDesPersonnesInteressees(int idObjet) {
     serviceDAL.commencerTransaction();
-    List<InteretDTO> list = null;
+    List<InteretDTO> listTemp = null;
+    List<InteretDTO> list = new ArrayList<>();
     try {
       if (idObjet <= 0) {
         throw new BusinessException("L'id de l'objet est incorrect");
       }
-      list = interetDAO.listeDesPersonnesInteressees(idObjet);
+      listTemp = interetDAO.listeDesPersonnesInteressees(idObjet);
+      for (int i = 0; i < listTemp.size(); i++) {
+        listTemp.get(i).setVue(true);
+        InteretDTO interetDTO = interetDAO.miseAJourInteret(listTemp.get(i));
+        list.add(interetDTO);
+
+      }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
