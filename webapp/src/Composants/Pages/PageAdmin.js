@@ -6,8 +6,8 @@ const barVertical = `
 <div id="bar-vertical" class="ui left sidebar visible vertical menu">
 <h2 class="ui large header">Admin</h2>
   <div class="contenu-bar-vert">
-    <a class="item active">Inscription</a>
-    <a class="item">Membres</a>
+    <a class="item active" id="inscriptions">Inscription</a>
+    <a class="item" id="membres">Membres</a>
   </div>
 </div>
 `
@@ -15,15 +15,14 @@ const barHori = `
 <div id="bar-hori">
   <h2 class="ui large header">Admin</h2>
   <div id="choix-page" class="ui buttons">
-    <button class="ui active button">Inscription</button>
-    <button class="ui button">Membres</button>
+    <button class="ui active button" id="inscriptions">Inscription</button>
+    <button class="ui button" id="membres">Membres</button>
   </div>
 </div>
 `
 
 // Contenu pricipal de la page
 const pricipal = `
-<div id="principal">
   <div id="choix-demande" class="ui buttons">
     <button id="demandes" class="ui positive button">Demandes</button>
     <button id="refus" class="ui button">Refus</button>
@@ -31,7 +30,12 @@ const pricipal = `
   <div id="contenu">
     
   </div>
-</div>
+`
+
+const pageMembres =`
+<div class="rechercher-membre">
+        <input id="autoComplete" type="search">
+    </div>
 `
 
 const page = `
@@ -39,8 +43,11 @@ const page = `
   <div id="bar">
     ${barVertical}
   </div>
+ <div id="principal"> 
   ${pricipal}
+ </div>
 </div>
+
 `
 
 const PageAdmin = () => {
@@ -52,6 +59,7 @@ const PageAdmin = () => {
     pageDiv.innerHTML = page;
 
     // Gestion responsive avec la barre verticale pour pc et horizontale pour mobile
+    /*
     if (window.innerWidth < 576) {
       document.getElementById("bar").innerHTML = barHori;
     } else {
@@ -63,28 +71,52 @@ const PageAdmin = () => {
       } else {
         document.getElementById("bar").innerHTML = barVertical;
       }
-    };
+    };*/
 
-    // Récupération des utilisateurs en attente
-    recupEnAttente()
-    const demandesPage = document.querySelector("#demandes")
-    const refusPage = document.querySelector("#refus")
-    const contenu = document.querySelector("#contenu")
-    const demandes = "<h2>Liste des demandes d'inscriptions</h2>"
-    contenu.innerHTML = demandes
+    afficherDemandes()
+    const listeInscriptions = document.querySelector("#inscriptions")
+    const listeMembres = document.querySelector("#membres")
+    listeInscriptions.addEventListener("click", () => {
+      listeMembres.classList.remove("active")
+      listeInscriptions.classList.add("active")
+      afficherDemandes()
+    })
+    listeMembres.addEventListener("click", () => {
+      listeInscriptions.classList.remove("active")
+      listeMembres.classList.add("active")
+      afficherMembres()
+    })
 
-    // Changement contenu pricipal
-    demandesPage.addEventListener("click", () => {
-      refusPage.classList.remove("positive")
-      demandesPage.classList.add("positive")
-      recupEnAttente()
-    })
-    refusPage.addEventListener("click", () => {
-      demandesPage.classList.remove("positive")
-      refusPage.classList.add("positive")
-      recupRefuse()
-    })
   }
+}
+
+const afficherDemandes = () => {
+  const principal= document.querySelector("#principal")
+  principal.innerHTML = pricipal
+  // Récupération des utilisateurs en attente
+  recupEnAttente()
+  const demandesPage = document.querySelector("#demandes")
+  const refusPage = document.querySelector("#refus")
+  const contenu = document.querySelector("#contenu")
+  const demandes = "<h2>Liste des demandes d'inscriptions</h2>"
+  contenu.innerHTML = demandes
+
+  // Changement contenu pricipal
+  demandesPage.addEventListener("click", () => {
+    refusPage.classList.remove("positive")
+    demandesPage.classList.add("positive")
+    recupEnAttente()
+  })
+  refusPage.addEventListener("click", () => {
+    demandesPage.classList.remove("positive")
+    refusPage.classList.add("positive")
+    recupRefuse()
+  })
+}
+
+const afficherMembres = () => {
+  const principal= document.querySelector("#principal")
+  principal.innerHTML = pageMembres
 }
 
 // Récupération des utilisateurs en attente
