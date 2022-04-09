@@ -35,7 +35,7 @@ public class InteretDAOImpl implements InteretDAO {
   public InteretDTO ajouterInteret(InteretDTO interetDTO) {
     String requetePs = "INSERT INTO projet.interets VALUES (?, ?, ?, ?, ?) RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      java.sql.Date dateRdvSQL = new java.sql.Date(interetDTO.getDateRdv().getTime());
+      Date dateRdvSQL = new Date(interetDTO.getDateRdv().getTime());
       ps.setInt(1, interetDTO.getUtilisateur().getIdUtilisateur());
       ps.setInt(2, interetDTO.getObjet().getIdObjet());
       ps.setDate(3, dateRdvSQL);
