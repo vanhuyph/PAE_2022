@@ -362,13 +362,15 @@ const surDetailObjetProprio = async (offre) => {
   </div>
   `
   pageDiv.innerHTML = offrePage
-
+  if (offre.objetDTO.etatObjet === "Annulé") {
+    document.querySelector("#modifier-offre").classList.add("disabled");
+    document.querySelector("#annuler-offre").classList.add("disabled");
+  }
   document.querySelector("#modifier-offre").addEventListener("click", () => {
     surDetailObjetProprioModifier(offre)
   })
   document.querySelector("#annuler-offre").addEventListener("click", () => {
     const session = recupUtilisateurDonneesSession()
-
     fetch(API_URL + "offres/annulerOffre", {
       method: "PUT",
       body: JSON.stringify(offre),
@@ -451,7 +453,6 @@ const surDetailObjetProprioModifier = async (offre) => {
     <div class="ui two column grid">
       <div class="column">
         <img class="ui large rounded image" id="image" src="/api/offres/photos/${offre.objetDTO.photo}"/>
-        
         <div class="ui two column grid" style="margin-top: 5px">
           <div class="column field">
             <input  name="ModifierPhoto" id="photo" type="file"/>
@@ -468,7 +469,7 @@ const surDetailObjetProprioModifier = async (offre) => {
             <p>${offre.objetDTO.typeObjet.nom}</p>
           </div>
           <div class="column">
-            <h4>Etat de l'objet</h4>
+            <h4>État de l'objet</h4>
             <p>${offre.objetDTO.etatObjet}</p>
           </div>
         </div>
@@ -510,6 +511,7 @@ const surDetailObjetProprioModifier = async (offre) => {
     <div class="column"></div>
       <div class="column">
       <div class="field">
+      <div id="modifier-erreur" class="message-erreur"></div>
         <div class="ui bouttons">
           <button id="confirmer" type="submit" class="ui positive button">Confirmer</button>
           <button id="annuler" class="ui negative button">Annuler</button>
@@ -521,11 +523,9 @@ const surDetailObjetProprioModifier = async (offre) => {
   </div>
   `
   pageDiv.innerHTML = offrePage
-
-
   let changerPhoto = document.getElementById("photo")
-  changerPhoto.addEventListener("change",previsualiserPhoto)
-  document.getElementById("confirmer").addEventListener("click", (e) =>{
+  changerPhoto.addEventListener("change", previsualiserPhoto)
+  document.getElementById("confirmer").addEventListener("click", (e) => {
     e.preventDefault()
     envoiModification(offre)
   })
@@ -533,28 +533,23 @@ const surDetailObjetProprioModifier = async (offre) => {
     surDetailObjetProprio(offre)
   })
 }
-const envoiModification =  async ( offre) =>{
+
+const envoiModification = async (offre) => {
   let session = recupUtilisateurDonneesSession()
   let description = document.querySelector("#description").value;
   let plageHoraire = document.querySelector("#horaire").value;
   let photo = document.querySelector("#image");
-
-
   let srcPhoto = photo.attributes.getNamedItem("src")
   let nomPhoto = offre.objetDTO.photo;
+  let compNomPhoto = API_URL + "offres/photos/" + nomPhoto
 
-  let compNomPhoto = API_URL +"offres/photos/"+nomPhoto
-
-  if (srcPhoto.value !== compNomPhoto){
+  if (srcPhoto.value !== compNomPhoto) {
     nomPhoto = "donnamis.png"
-    if (srcPhoto.value !== "#"  ) {
-
+    if (srcPhoto.value !== "#") {
       nomPhoto = await envoyerPhoto()
     }
   }
-
   if (description !== "" && plageHoraire !== "") {
-
     let objetModifie = {
       idObjet: offre.objetDTO.idObjet,
       offreur: offre.objetDTO.offreur,
@@ -565,11 +560,11 @@ const envoiModification =  async ( offre) =>{
       },
       etatObjet: offre.objetDTO.etatObjet,
       description: description,
-      photo: nomPhoto, //.toString()
+      photo: nomPhoto,
       version: offre.objetDTO.version
     }
 
-    let offreModifiee= {
+    let offreModifiee = {
       idOffre: offre.idOffre,
       objetDTO: objetModifie,
       plageHoraire: plageHoraire,
@@ -577,7 +572,7 @@ const envoiModification =  async ( offre) =>{
       version: offre.version
     }
 
-    const options ={
+    const options = {
       method: "PUT",
       body: JSON.stringify(offreModifiee),
       headers: {
@@ -586,7 +581,7 @@ const envoiModification =  async ( offre) =>{
       },
     }
     fetch(
-        API_URL+'offres/modifierOffre',options )
+        API_URL + 'offres/modifierOffre', options)
     .then((reponse) => {
       if (!reponse.ok) {
         throw new Error(
@@ -595,9 +590,12 @@ const envoiModification =  async ( offre) =>{
       }
       return reponse.json()
     })
-    .then((donnee) =>{
+    .then((donnee) => {
       surDetailObjetProprio(donnee)
     })
+  } else {
+    let messageErreur = document.querySelector("#modifier-erreur");
+    messageErreur.innerHTML = "Des champs ne peuvent pas être vides";
   }
 }
 // Permet de prévisualiser la photo avant de l'upload

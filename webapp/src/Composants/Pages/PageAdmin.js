@@ -21,8 +21,8 @@ const barHori = `
 </div>
 `
 
-// Contenu pricipal de la page
-const pricipal = `
+// Contenu principal de la page
+const pagePrincipal = `
   <div id="choix-demande" class="ui buttons">
     <button id="demandes" class="ui positive button">Demandes</button>
     <button id="refus" class="ui button">Refus</button>
@@ -32,7 +32,7 @@ const pricipal = `
   </div>
 `
 
-const pageMembres =`
+const pageMembres = `
 <div class="rechercher-membre">
         <input id="autoComplete" type="search">
     </div>
@@ -44,7 +44,7 @@ const page = `
     ${barVertical}
   </div>
  <div id="principal"> 
-  ${pricipal}
+  ${pagePrincipal}
  </div>
 </div>
 
@@ -91,8 +91,8 @@ const PageAdmin = () => {
 }
 
 const afficherDemandes = () => {
-  const principal= document.querySelector("#principal")
-  principal.innerHTML = pricipal
+  const principal = document.querySelector("#principal")
+  principal.innerHTML = pagePrincipal
   // Récupération des utilisateurs en attente
   recupEnAttente()
   const demandesPage = document.querySelector("#demandes")
@@ -101,7 +101,7 @@ const afficherDemandes = () => {
   const demandes = "<h2>Liste des demandes d'inscriptions</h2>"
   contenu.innerHTML = demandes
 
-  // Changement contenu pricipal
+  // Changement contenu principal
   demandesPage.addEventListener("click", () => {
     refusPage.classList.remove("positive")
     demandesPage.classList.add("positive")
@@ -115,7 +115,7 @@ const afficherDemandes = () => {
 }
 
 const afficherMembres = () => {
-  const principal= document.querySelector("#principal")
+  const principal = document.querySelector("#principal")
   principal.innerHTML = pageMembres
 }
 
