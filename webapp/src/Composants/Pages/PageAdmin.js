@@ -1,6 +1,7 @@
 import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
+import autocomplete from 'autocompleter';
 
 const barVertical = `
 <div id="bar-vertical" class="ui left sidebar visible vertical menu">
@@ -34,8 +35,13 @@ const pagePrincipal = `
 
 const pageMembres = `
 <div class="rechercher-membre">
-        <input id="autoComplete" type="search">
-    </div>
+  <form id="rechercherMembre">
+    <input id="autoComplete" type="search">
+  </form>
+  <div id="contenu">
+  
+  </div>
+</div>
 `
 
 const page = `
@@ -115,8 +121,118 @@ const afficherDemandes = () => {
 }
 
 const afficherMembres = () => {
-  const principal = document.querySelector("#principal")
+  const session = recupUtilisateurDonneesSession()
+  const principal= document.querySelector("#principal")
   principal.innerHTML = pageMembres
+
+  var recherche = [];
+  fetch(API_URL + "utilisateurs/confirme", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token,
+    },
+  })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(
+          "Code d'erreur : " + response.status + " : " + response.statusText);
+    }
+    return response.json();
+  })
+  .then((donnees) =>  {
+    donnees.forEach((u) => {
+      if(recherche.findIndex(l => l.label===u.nom) === -1){
+        recherche.push({label: u.nom})
+      }
+      if(recherche.findIndex(l => l.label===u.adresse.commune) === -1){
+        recherche.push({label: u.adresse.commune})
+      }
+      if(recherche.findIndex(l => l.label===u.adresse.codePostal) === -1){
+        recherche.push({label: u.adresse.codePostal.toString()})
+      }
+    })
+    surListeConfirme(donnees)
+  })
+
+  var input = document.getElementById("autoComplete");
+
+  autocomplete({
+    input: input,
+    minLength: 1,
+    fetch: function(text, update) {
+      text = text.toLowerCase();
+      // you can also use AJAX requests instead of preloaded data
+      var suggestions = recherche.filter(n => n.label.toLowerCase().startsWith(text))
+      update(suggestions);
+    },
+    onSelect: function(item) {
+      input.value = item.label;
+    },
+  });
+
+  document.getElementById("rechercherMembre").addEventListener("submit", envoyerRecherche)
+}
+const envoyerRecherche = (e) => {
+  e.preventDefault()
+  let session = recupUtilisateurDonneesSession()
+  let rechercher = document.getElementById("autoComplete").value
+  if(rechercher !== ""){
+    fetch(API_URL + "utilisateurs/recherche/"+rechercher, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token,
+      },
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+            "Code d'erreur : " + response.status + " : " + response.statusText);
+      }
+      return response.json();
+    })
+    .then((donnees) => {
+      console.log(donnees)
+      surListeConfirme(donnees)
+    })
+  } else {
+    fetch(API_URL + "utilisateurs/confirme", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token,
+      },
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+            "Code d'erreur : " + response.status + " : " + response.statusText);
+      }
+      return response.json();
+    })
+    .then((donnees) => surListeConfirme(donnees))
+  }
+}
+
+const surListeConfirme = (donnees) => {
+  console.log("liste conf")
+  let contenu = document.getElementById("contenu")
+  let liste = `<div class="liste-utilisateurs">`
+  donnees.forEach((utilisateur) => {
+    liste+= `
+    <div class="utilisateur">
+      <div class="nom-prenom">
+        <p>${utilisateur.nom}</p> 
+        <p>${utilisateur.prenom}</p>
+      </div>
+      <div><p>${utilisateur.pseudo}</p></div>
+    </div>
+    `
+  })
+  liste += `</div>`
+  contenu.innerHTML = liste
+
 }
 
 // Récupération des utilisateurs en attente

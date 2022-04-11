@@ -219,6 +219,22 @@ public class RessourceUtilisateur {
   }
 
   /**
+   * Liste tous les utilisateurs avec une inscription à l'état "en attente".
+   *
+   * @return liste : la liste des utilisateurs avec une inscription en attente
+   */
+  @GET
+  @Path("confirme")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AutorisationAdmin
+  public List<UtilisateurDTO> listerInscriptionsConfirme() {
+    List<UtilisateurDTO> liste;
+    liste = utilisateurUCC.listerUtilisateursEtatsInscriptions("Confirmé");
+    return liste;
+  }
+
+  /**
    * Récupère l'utilisateur pour visualiser son profil.
    *
    * @param idUtilisateur : l'id de l'utilisateur à récupérer
