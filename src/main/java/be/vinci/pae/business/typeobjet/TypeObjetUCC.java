@@ -6,6 +6,6 @@ public interface TypeObjetUCC {
 
   List<TypeObjetDTO> listerTypeObjet();
 
-  String creerTypeObjet(String nom);
+  TypeObjetDTO creerTypeObjet(TypeObjetDTO typeObjetDTO);
 
 }

@@ -29,12 +29,13 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
   public List<TypeObjetDTO> listerTypeObjet() {
     String requetePs = "SELECT * FROM projet.types_objets;";
     List<TypeObjetDTO> liste = new ArrayList<>();
+    TypeObjetDTO typeObjet;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           TypeObjetDTO typeObjetCourant = factory.getTypeObjet();
-          remplirTypeObjetDepuisResulSet(typeObjetCourant, rs);
-          liste.add(typeObjetCourant);
+
+          liste.add(remplirTypeObjetDepuisResulSet(typeObjetCourant, rs));
         }
       }
     } catch (SQLException e) {
@@ -45,16 +46,17 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
   }
 
   @Override
-  public String creerTypeObjet(String nom) {
-    String requetePs = "INSERT INTO projet.type_objets"
-            + " VALUES (DEFAULT, ?) RETURNING nom";
+  public TypeObjetDTO creerTypeObjet(TypeObjetDTO typeObjetDTO) {
+    String requetePs = "INSERT INTO projet.types_objets"
+        + " VALUES (DEFAULT, ?) RETURNING *";
 
     String nomDb = null;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      ps.setString(1, nom);
+      ps.setString(1, typeObjetDTO.getNom());
       try (ResultSet rs = ps.executeQuery()) {
-        while(rs.next()) {
-           nomDb = rs.getString(1);
+        while (rs.next()) {
+          typeObjetDTO.setIdType(rs.getInt(1));
+          typeObjetDTO.setNom(rs.getString(2));
         }
       }
     } catch (SQLException e) {
@@ -62,9 +64,8 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
-    return nomDb;
+    return typeObjetDTO;
   }
-
 
 
   /**

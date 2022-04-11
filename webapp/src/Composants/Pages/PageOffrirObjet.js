@@ -17,7 +17,7 @@ const formPhoto =
     `
 const typesObjet =
     `
-        <select class="ui search dropdown " type="text" id="choixTypeObjet" className="type" >
+        <select id="choixTypeObjet" >
         </select>
         <p class="message-erreur erreur-type"></p>
     `
@@ -41,7 +41,7 @@ const pageOffrirObjet = `
               <p class="message-erreur erreur-horaire"></p>
           </div>
         </div>
-         <div class="field">
+         <div class="field" id="typeObjet">
           <label for="type">Type</label>
             ${typesObjet}
         </div>
@@ -69,49 +69,158 @@ const PageOffrirObjet = () => {
 
   formulairePhoto.addEventListener("submit", envoyerPhoto);
   photo.addEventListener("change", previsualiserPhoto);
-  const formOffrirObjet = document.querySelector("#formulaire-offrirObjet");
 
   if (session) {
-    Navbar();
-    fetch(API_URL + "typesObjet/liste", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: session.token,
-      },
-    })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(
-            "Code d'erreur : " + response.status + " : " + response.statusText
-        );
-      }
-      return response.json();
-    })
-    .then((data) => choixTypeObjet(data));
-    formOffrirObjet.addEventListener("submit", surOffrirObjet);
+    Navbar()
+    afficherTypeObjet()
+
   } else {
     Redirect("/connexion");
   }
 }
 
+const afficherTypeObjet = () => {
+  const session = recupUtilisateurDonneesSession();
+  const formOffrirObjet = document.querySelector("#formulaire-offrirObjet");
+
+  fetch(API_URL + "typesObjet/liste", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token,
+    },
+  })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(
+          "Code d'erreur : " + response.status + " : " + response.statusText
+      );
+    }
+    return response.json();
+  })
+  .then((data) => choixTypeObjet(data));
+
+  formOffrirObjet.addEventListener("submit", surOffrirObjet);
+}
+
 // Permet l'affichage de la liste des types d'objets
 const choixTypeObjet = (data) => {
-  let choixTypeObjet = document.querySelector("#choixTypeObjet");
+  let choixTypeObjet = document.querySelector("#choixTypeObjet")
   if (data.length === 0 || !data) {
-    let listeVide = `Il n'y a aucun type d'objets`;
-    choixTypeObjet.innerHTML = listeVide;
+
+    choixTypeObjet.innerHTML = `Il n'y a aucun type d'objets`
     return;
   }
-  let liste = `<option value="empty" selected hidden=true>Sélectionner le type</option>`;
+  let liste = `<option value="empty" selected hidden>Sélectionner le type</option>
+    <option value="nouveauType">Créer un nouveau type</option>`
   data.forEach((typeObjet) => {
-    liste += `<option value=${typeObjet.idType}>${typeObjet.nom}</option>`;
+    liste += `<option value=${typeObjet.idType}>${typeObjet.nom}</option>`
   });
   choixTypeObjet.innerHTML = liste;
+  choixTypeObjet.addEventListener("change", surChoixTypeObjet)
+}
+
+//Permet la visualition de créer un nouveau type d'objet
+const surChoixTypeObjet = () => {
+  const choixTypeObjet = document.querySelector("#choixTypeObjet")
+  let typeObjet = document.querySelector("#typeObjet")
+  const formCreerType = document.querySelector("#formCreerType")
+  console.log("formCreerType :" + formCreerType)
+  console.log("clic sur surChoixTypeObjet")
+  console.log("value clic :" + choixTypeObjet.value)
+  if (choixTypeObjet.value === "nouveauType"){
+    console.log("in the if of surChoixTypeObjet")
+    typeObjet.innerHTML += `<div id="formCreerType">
+
+      <div >
+        <label for="nom">Nom du nouveau type de l'objet</label>
+        <input type="text" id="nomType">
+          <p class="message-erreur erreur-nomType"></p>
+      </div>
+
+      <div>
+        <button id="buttonCreerType">Créer nouveau type</button>
+      </div>
+      </div> `;
+    console.log("in the if of surChoixTypeObjet fin")
+
+    const buttonCreerType = document.querySelector("#buttonCreerType")
+    buttonCreerType.addEventListener("click", surCreerTypeObjet)
+    console.log("choixtypeobjetvalue"+choixTypeObjet.value)
+    choixTypeObjet.value = "nouveauType"
+    console.log("choixtypeobjetvalue"+choixTypeObjet.value)
+  } else {
+    console.log("in the else of surChoixTypeObjet")
+  }
+
+
+}
+
+//Permet la création d'un nouveau type d'objet
+
+//a empecher de pouvoir créer des types deja existants
+const surCreerTypeObjet = async (e) => {
+  e.preventDefault();
+  let nomTypeRecu = "vide";
+  let nomNouveauType = document.querySelector("#nomType").value;
+  let choixTypeObjet = document.querySelector("#choixTypeObjet")
+  document.querySelector(".erreur-nomType").innerHTML = "";
+
+  if (nomNouveauType === "") {
+    document.querySelector(
+        ".erreur-nomType").innerHTML = "Votre nouveau type d'objet est vide";
+  }else{
+
+    console.log("click pour sur creerType");
+    const session = recupUtilisateurDonneesSession();
+    const nomType = document.getElementById("nomType");
+
+    console.log("nom type sur creer type:" + nomType.value)
+
+    let typeObjetDTO = {
+      idType: null,
+      nom: nomType.value
+    }
+    const options = {
+      method: 'POST',
+      body: JSON.stringify(typeObjetDTO),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token
+      },
+    };
+    await fetch('/api/typesObjet/creerTypeObjet', options).then((res) => {
+      if (!res.ok) {
+        throw new Error(
+            "Code d'erreur : " + res.status + " : " + res.statusText
+        );
+      }
+
+      return res.json();
+
+    }).then((data) => {
+      afficherTypeObjet()
+      const formCreerType = document.querySelector("#formCreerType")
+      formCreerType.innerHTML=``
+      nomTypeRecu = data.toString()
+      console.log("type of choixtypeobjet.value"+ typeof choixTypeObjet.value);
+      console.log("choixtypeobjet.value"+ choixTypeObjet.value);
+      console.log(data.idType);
+      choixTypeObjet.value = data.idType.toString()  //je n'arrive pas à select le nouveau type
+      console.log("type of choixtypeobjet.value"+ typeof choixTypeObjet.value);
+      console.log("choixtypeobjet.value"+ choixTypeObjet.value);
+
+      console.log("choix type objet: "+choixTypeObjet.value)
+    })
+
+  }
+
+  return nomTypeRecu;
+
 }
 
 // Permet de prévisualiser la photo avant de l'upload
-const previsualiserPhoto = (e) => {
+const previsualiserPhoto = () => {
   var image = document.getElementById("image")
   const photo = document.getElementById("photo").files[0];
   if (photo) {
@@ -121,7 +230,7 @@ const previsualiserPhoto = (e) => {
 }
 
 // Permet l'envoie de la photo vers le backend
-const envoyerPhoto = async (e) => {
+const envoyerPhoto = async () => {
   const session = recupUtilisateurDonneesSession();
   let nomPhoto;
   const fichierDEntree = document.getElementById("photo");
@@ -131,6 +240,7 @@ const envoyerPhoto = async (e) => {
     method: 'POST',
     body: formDonnee,
     headers: {
+      "Content-Type": "application/json",
       Authorization: session.token
     },
   };
@@ -210,8 +320,9 @@ const surOffrirObjet = async (e) => {
         throw new Error(
             "Code d'erreur : " + response.status + " : " + response.statusText)
       }
+      Redirect("/")
       return response.json();
-    }).then((donnee) => Redirect("/"))
+    })
   }
 }
 
