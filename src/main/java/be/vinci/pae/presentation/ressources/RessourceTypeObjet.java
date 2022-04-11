@@ -38,7 +38,12 @@ public class RessourceTypeObjet {
     return typesObjet;
   }
 
-
+  /**
+   * Creer un nouveau type d'objet.
+   *
+   * @param typeObjetDTO : type d'objet recu du formulaire créer un type d'objet
+   * @return typeObjetDTO : le type d'objet créé
+   */
   @POST
   @Path("/creerTypeObjet")
   @Consumes(MediaType.APPLICATION_JSON)

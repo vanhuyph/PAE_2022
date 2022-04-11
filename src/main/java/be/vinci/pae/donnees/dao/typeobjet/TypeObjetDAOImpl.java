@@ -29,7 +29,7 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
   public List<TypeObjetDTO> listerTypeObjet() {
     String requetePs = "SELECT * FROM projet.types_objets;";
     List<TypeObjetDTO> liste = new ArrayList<>();
-    TypeObjetDTO typeObjet;
+
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
@@ -50,7 +50,6 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
     String requetePs = "INSERT INTO projet.types_objets"
         + " VALUES (DEFAULT, ?) RETURNING *";
 
-    String nomDb = null;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, typeObjetDTO.getNom());
       try (ResultSet rs = ps.executeQuery()) {
