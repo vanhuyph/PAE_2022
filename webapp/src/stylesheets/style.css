@@ -519,6 +519,66 @@ Fin Message de bienvenue*/
 /* Fin page profil */
 
 
+/* Membre page admin*/
+.rechercher-membre{
+    text-align: center;
+    padding-top: 30px;
+}
+#rechercherMembre{
+    width: 50%;
+    margin: auto;
+    margin-top: 50px;
+}
+#rechercherMembre input{
+    text-align: center;
+    width: 100%;
+    height: 35px;
+}
+.autocomplete{
+    text-align: center;
+    margin-top: 5px;
+    border: 1px solid #75b1d6;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #dce3ec;
+}
+.autocomplete div{
+    padding: 4px 8px;
+    margin: 3px 0;
+    cursor: pointer;
+}
+.autocomplete div:hover{
+    background-color: #bfc6ce;
+    border-radius: 10px;
+}
+.autocomplete .selected{
+    background-color: #2ba3ff;
+    border-radius: 10px;
+    color: white;
+}
+.admin-membre, .utilisateur-objets-spe{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.admin-membre{
+    width: 100%;
+
+}
+.utilisateur .utilisateur-nom-prenom, .utilisateur-pseudo{
+    width: 10%;
+}
+.utilisateur-objets{
+    text-align: center;
+    width: 32%;
+}
+.utilisateur-objets strong, .utilisateur-objets p{
+    display: inline;
+    margin: 2px;
+}
+
+/* Membre page admin*/
+
 .montrer-block{
     display: block;
 }

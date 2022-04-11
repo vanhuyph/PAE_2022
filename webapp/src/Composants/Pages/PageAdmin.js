@@ -35,9 +35,14 @@ const pagePrincipal = `
 
 const pageMembres = `
 <div class="rechercher-membre">
-  <form id="rechercherMembre">
-    <input id="autoComplete" type="search">
-  </form>
+  <h2>Membres</h2>
+  <div class="form-recherche">
+    <form id="rechercherMembre" class="ui form">
+    <div class="field">
+      <input id="autoComplete" type="search">
+    </div>
+    </form>
+  </div>
   <div id="contenu">
   
   </div>
@@ -220,13 +225,28 @@ const surListeConfirme = (donnees) => {
   let contenu = document.getElementById("contenu")
   let liste = `<div class="liste-utilisateurs">`
   donnees.forEach((utilisateur) => {
+    let objetsOfferts = 0
+    let objetsDonnes = 0
+    let objetsRecu = 0
+    let objetsAb = 0
     liste+= `
     <div class="utilisateur">
-      <div class="nom-prenom">
-        <p>${utilisateur.nom}</p> 
-        <p>${utilisateur.prenom}</p>
+      <div class="admin-membre">
+        <div class="utilisateur-nom-prenom">
+          <p>${utilisateur.nom}</p> 
+          <p>${utilisateur.prenom}</p>
+        </div>
+        <div class="utilisateur-pseudo"><p>${utilisateur.pseudo}</p></div>
+        <div class="utilisateur-objets">
+        <h4>Nombre d'objets</h4>
+          <div class="utilisateur-objets-spe">
+            <div><strong>Offerts:</strong><p>${objetsOfferts}</p></div>
+            <div><strong>Donnés:</strong><p>${objetsDonnes}</p></div>
+            <div><strong>Reçu:</strong><p>${objetsRecu}</p></div>
+            <div><strong>Abandonnés:</strong><p>${objetsAb}</p></div>
+          </div>
+        </div>
       </div>
-      <div><p>${utilisateur.pseudo}</p></div>
     </div>
     `
   })
