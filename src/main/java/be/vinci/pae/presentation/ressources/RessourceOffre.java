@@ -87,21 +87,21 @@ public class RessourceOffre {
   /**
    * Annule une offre.
    *
-   * @param id : l'id de l'offre a annulé
+   * @param offreDTO : l'offre à annuler
    * @return offreDTO : l'offre annulée
    * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'annulation
    *                               a échoué
    */
   @PUT
-  @Path("annulerOffre/{id}")
+  @Path("annulerOffre")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public OffreDTO annulerOffre(@PathParam("id") int id) {
-    if (id <= 0) {
+  public OffreDTO annulerOffre(OffreDTO offreDTO) {
+    if (offreDTO.getIdOffre() <= 0) {
       throw new PresentationException("L'id de l'offre est incorrect", Status.BAD_REQUEST);
     }
-    OffreDTO offreDTO = offreUCC.annulerOffre(id);
+    offreDTO = offreUCC.annulerOffre(offreDTO);
     if (offreDTO == null) {
       throw new PresentationException("L'annulation de l'offre a échoué", Status.BAD_REQUEST);
     }
@@ -170,13 +170,15 @@ public class RessourceOffre {
   public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
     String nomDencodage = UUID.randomUUID().toString();
-    Files.copy(photo, Paths.get(Config.getPropriete("OneDrivePhotos") + nomDencodage),
+    String nomFichier =
+        nomDencodage + "." + fichierDisposition.getFileName().split("\\.(?=[^\\.]+$)")[1];
+    Files.copy(photo, Paths.get(Config.getPropriete("OneDrivePhotos") + nomFichier),
         StandardCopyOption.REPLACE_EXISTING);
-    return Response.ok(nomDencodage).build();
+    return Response.ok(nomFichier).build();
   }
 
   /**
-   * Voir la photo d'une offre.
+   * Permet de voir la photo d'une offre.
    *
    * @param uuidPhoto : nom du fichier sur le serveur
    * @return une réponse contenant la photo

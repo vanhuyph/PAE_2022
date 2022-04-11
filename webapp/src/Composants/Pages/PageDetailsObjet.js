@@ -68,7 +68,6 @@ const surDetailObjet = async (offre) => {
       })
   .then((reponse) => {
     if (!reponse.ok) {
-      //message echec?
       throw new Error(
           "Code erreur : " + reponse.status + " : " + reponse.statusText
       );
@@ -195,7 +194,7 @@ const surDetailObjet = async (offre) => {
       ...session.utilisateur,
       gsm: document.getElementById("gsm-interet").value
     }
-
+    console.log(session.utilisateur)
     let interet = {
       utilisateur: utilisateur,
       objet: offre.objetDTO,
@@ -366,12 +365,15 @@ const surDetailObjetProprio = async (offre) => {
   pageDiv.innerHTML = offrePage
 
   document.querySelector("#modifier-offre").addEventListener("click", () => {
+    console.log(offre)
     //surDetailObjetProprioModifier(offre)
   })
   document.querySelector("#annuler-offre").addEventListener("click", () => {
     const session = recupUtilisateurDonneesSession()
-    fetch("/api/offres/annulerOffre/" + offre.idOffre, {
+
+    fetch(API_URL + "offres/annulerOffre", {
       method: "PUT",
+      body: JSON.stringify(offre),
       headers: {
         "Content-Type": "application/json",
         "Authorization": session.token,

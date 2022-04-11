@@ -8,7 +8,6 @@ import java.util.Date;
 @JsonDeserialize(as = InteretImpl.class)
 public interface InteretDTO {
 
-
   UtilisateurDTO getUtilisateur();
 
   void setUtilisateur(UtilisateurDTO idUtilisateurInteresse);
@@ -20,5 +19,9 @@ public interface InteretDTO {
   Date getDateRdv();
 
   void setDateRdv(Date dateRdv);
+
+  int getVersion();
+
+  void setVersion(int version);
 
 }

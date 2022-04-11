@@ -33,12 +33,11 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           TypeObjetDTO typeObjetCourant = factory.getTypeObjet();
-          typeObjetCourant = remplirTypeObjetDepuisResulSet(typeObjetCourant, rs);
+          remplirTypeObjetDepuisResulSet(typeObjetCourant, rs);
           liste.add(typeObjetCourant);
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
@@ -81,7 +80,6 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
       typeObjetDTO.setIdType(rs.getInt(1));
       typeObjetDTO.setNom(rs.getString(2));
     } catch (SQLException e) {
-      e.printStackTrace();
       ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
