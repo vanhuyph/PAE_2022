@@ -16,7 +16,7 @@ const formPhoto =
     `
 const typesObjet =
     `
-        <select class="ui search dropdown " type="text" id="choixTypeObjet" className="type" >
+        <select class="ui search dropdown" id="choixTypeObjet" className="type" >
         </select>
         <p class="message-erreur erreur-type"></p>
     `
@@ -40,7 +40,7 @@ const pageOffrirObjet = `
               <p class="message-erreur erreur-horaire"></p>
           </div>
         </div>
-         <div class="field">
+         <div class="field" id="typeObjet">
           <label for="type">Type</label>
             ${typesObjet}
         </div>
@@ -101,15 +101,102 @@ const choixTypeObjet = (data) => {
     choixTypeObjet.innerHTML = listeVide;
     return;
   }
-  let liste = `<option value="empty" selected hidden=true>Sélectionner le type</option>`;
+  let liste = `<option value="empty" selected hidden=true>Sélectionner le type</option>
+
+  <option value="nouveauType">Créer un nouveau type</option>`;
   data.forEach((typeObjet) => {
     liste += `<option value=${typeObjet.idType}>${typeObjet.nom}</option>`;
   });
   choixTypeObjet.innerHTML = liste;
+  choixTypeObjet.addEventListener("change", surChoixTypeObjet);
+}
+
+const surChoixTypeObjet = (e) => {
+  e.preventDefault();
+  const choixTypeObjet = document.querySelector("#choixTypeObjet")
+  let typeObjet = document.querySelector("#typeObjet");
+  console.log("clic sur surChoixTypeObjet");
+  console.log("value clic :" + choixTypeObjet.value);
+  if (choixTypeObjet.value === "nouveauType"){
+    console.log("in the if of surChoixTypeObjet");
+    typeObjet.innerHTML += `<div id="formCreerType">
+
+      <div class="nom-conteneur field">
+        <label for="nom">Nom du nouveau type de l'objet</label>
+        <input type="text" id="nomType" class="nomType">
+          <p class="message-erreur erreur-nomType"></p>
+      </div>
+
+      <div class="ui  button ">
+        <button class="ui  button " type="button" id="buttonCreerType">Créer nouveau type</button>
+      </div>
+      </div> `;
+    console.log("in the if of surChoixTypeObjet fin");
+
+    const buttonCreerType = document.querySelector("#buttonCreerType");
+    buttonCreerType.addEventListener("click", surCreerType);
+  } else {
+    console.log("in the else of surChoixTypeObjet")
+    const formCreerType = document.querySelector("#formCreerType");
+    console.log("formCreerType :" + formCreerType);
+    if (formCreerType) {
+
+      formCreerType.hidden=true;
+    }
+
+  }
+
+
+}
+
+
+
+
+
+const surCreerType = async (e) => {
+  e.preventDefault();
+  let nomTypeRecu = "vide";
+  let nomNouveauType = document.querySelector("#nomType").value;
+
+  document.querySelector(".erreur-nomType").innerHTML = "";
+
+  if (nomNouveauType === "") {
+    document.querySelector(
+        ".erreur-nomType").innerHTML = "Votre nouveau type d'objet est vide";
+  }else{
+
+    console.log("click pour sur creerType");
+    const session = recupUtilisateurDonneesSession();
+    const nomType = document.getElementById("nomType");
+
+    console.log("nom type sur creer type:" + nomType.value)
+
+
+    const options = {
+      method: 'POST',
+      body: nomType.value,
+      headers: {
+        Authorization: session.token
+      },
+    };
+    await fetch('/api/typesObjet/creerType', options).then((res) => {
+      if (!res.ok) {
+        throw new Error(
+            "Code d'erreur : " + res.status + " : " + res.statusText
+        );
+      }
+      return res.text()
+    }).then((data) => {
+      nomTypeRecu = data.toString()
+    })
+
+  }
+  return nomTypeRecu;
+
 }
 
 // Permet de prévisualiser la photo avant de l'upload
-const previsualiserPhoto = (e) => {
+const previsualiserPhoto = () => {
   var image = document.getElementById("image")
   const photo = document.getElementById("photo").files[0];
   if (photo) {
@@ -118,7 +205,7 @@ const previsualiserPhoto = (e) => {
   }
 }
 
-const envoyerPhoto = async (e) => {
+const envoyerPhoto = async () => {
   const session = recupUtilisateurDonneesSession();
   let nomPhoto;
   const fichierDEntree = document.getElementById("photo");
@@ -145,6 +232,7 @@ const envoyerPhoto = async (e) => {
 }
 
 const surOffrirObjet = async (e) => {
+
   e.preventDefault();
   let typeObjet = document.querySelector("#choixTypeObjet").value;
   let description = document.querySelector("#description").value;

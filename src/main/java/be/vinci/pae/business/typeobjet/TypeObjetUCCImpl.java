@@ -25,4 +25,11 @@ public class TypeObjetUCCImpl implements TypeObjetUCC {
     return liste;
   }
 
+  @Override
+  public String creerTypeObjet(String nom) {
+    serviceDAL.commencerTransaction();
+    String nomNouveauTypeObjet = typeObjetDAO.creerTypeObjet(nom);
+    serviceDAL.commettreTransaction();
+    return nomNouveauTypeObjet;
+  }
 }

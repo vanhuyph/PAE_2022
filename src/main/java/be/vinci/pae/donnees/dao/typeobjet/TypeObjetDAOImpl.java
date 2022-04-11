@@ -45,6 +45,29 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
     return liste;
   }
 
+  @Override
+  public String creerTypeObjet(String nom) {
+    String requetePs = "INSERT INTO projet.type_objets"
+            + " VALUES (DEFAULT, ?) RETURNING nom";
+
+    String nomDb = null;
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setString(1, nom);
+      try (ResultSet rs = ps.executeQuery()) {
+        while(rs.next()) {
+           nomDb = rs.getString(1);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return nomDb;
+  }
+
+
+
   /**
    * Rempli les données du type d'objet depuis un ResultSet.
    *

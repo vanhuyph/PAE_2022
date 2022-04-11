@@ -7,4 +7,6 @@ public interface TypeObjetDAO {
 
   List<TypeObjetDTO> listerTypeObjet();
 
+  String creerTypeObjet(String nom);
+
 }
