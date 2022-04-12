@@ -153,7 +153,7 @@ const afficherMembres = () => {
       if (recherche.findIndex(l => l.label === u.adresse.commune) === -1) {
         recherche.push({label: u.adresse.commune})
       }
-      if (recherche.findIndex(l => l.label === u.adresse.codePostal) === -1) {
+      if (recherche.findIndex(l => l.label === u.adresse.codePostal.toString()) === -1) {
         recherche.push({label: u.adresse.codePostal.toString()})
       }
     })
