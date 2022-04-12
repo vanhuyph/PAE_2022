@@ -35,7 +35,7 @@ const pagePrincipal = `
 
 const pageMembres = `
 <div class="rechercher-membre">
-  <h2>Membres</h2>
+  <h2>Recherche sur les membres</h2>
   <div class="form-recherche">
     <form id="rechercherMembre" class="ui form">
     <div class="field">
@@ -127,7 +127,7 @@ const afficherDemandes = () => {
 
 const afficherMembres = () => {
   const session = recupUtilisateurDonneesSession()
-  const principal= document.querySelector("#principal")
+  const principal = document.querySelector("#principal")
   principal.innerHTML = pageMembres
 
   var recherche = [];
@@ -145,15 +145,15 @@ const afficherMembres = () => {
     }
     return response.json();
   })
-  .then((donnees) =>  {
+  .then((donnees) => {
     donnees.forEach((u) => {
-      if(recherche.findIndex(l => l.label===u.nom) === -1){
+      if (recherche.findIndex(l => l.label === u.nom) === -1) {
         recherche.push({label: u.nom})
       }
-      if(recherche.findIndex(l => l.label===u.adresse.commune) === -1){
+      if (recherche.findIndex(l => l.label === u.adresse.commune) === -1) {
         recherche.push({label: u.adresse.commune})
       }
-      if(recherche.findIndex(l => l.label===u.adresse.codePostal) === -1){
+      if (recherche.findIndex(l => l.label === u.adresse.codePostal) === -1) {
         recherche.push({label: u.adresse.codePostal.toString()})
       }
     })
@@ -165,25 +165,27 @@ const afficherMembres = () => {
   autocomplete({
     input: input,
     minLength: 1,
-    fetch: function(text, update) {
+    fetch: function (text, update) {
       text = text.toLowerCase();
       // you can also use AJAX requests instead of preloaded data
-      var suggestions = recherche.filter(n => n.label.toLowerCase().startsWith(text))
+      var suggestions = recherche.filter(
+          n => n.label.toLowerCase().startsWith(text))
       update(suggestions);
     },
-    onSelect: function(item) {
+    onSelect: function (item) {
       input.value = item.label;
     },
   });
 
-  document.getElementById("rechercherMembre").addEventListener("submit", envoyerRecherche)
+  document.getElementById("rechercherMembre").addEventListener("submit",
+      envoyerRecherche)
 }
 const envoyerRecherche = (e) => {
   e.preventDefault()
   let session = recupUtilisateurDonneesSession()
   let rechercher = document.getElementById("autoComplete").value
-  if(rechercher !== ""){
-    fetch(API_URL + "utilisateurs/recherche/"+rechercher, {
+  if (rechercher !== "") {
+    fetch(API_URL + "utilisateurs/recherche/" + rechercher, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -221,15 +223,15 @@ const envoyerRecherche = (e) => {
 }
 
 const surListeConfirme = (donnees) => {
-  console.log("liste conf")
   let contenu = document.getElementById("contenu")
   let liste = `<div class="liste-utilisateurs">`
+
   donnees.forEach((utilisateur) => {
     let objetsOfferts = 0
     let objetsDonnes = 0
-    let objetsRecu = 0
-    let objetsAb = 0
-    liste+= `
+    let objetsRecus = 0
+    let objetsAbandonnes = 0
+    liste += `
     <div class="utilisateur">
       <div class="admin-membre">
         <div class="utilisateur-nom-prenom">
@@ -240,10 +242,10 @@ const surListeConfirme = (donnees) => {
         <div class="utilisateur-objets">
         <h4>Nombre d'objets</h4>
           <div class="utilisateur-objets-spe">
-            <div><strong>Offerts:</strong><p>${objetsOfferts}</p></div>
-            <div><strong>Donnés:</strong><p>${objetsDonnes}</p></div>
-            <div><strong>Reçu:</strong><p>${objetsRecu}</p></div>
-            <div><strong>Abandonnés:</strong><p>${objetsAb}</p></div>
+            <div><strong>Offerts : </strong><p>${objetsOfferts}</p></div>
+            <div><strong>Donnés : </strong><p>${objetsDonnes}</p></div>
+            <div><strong>Reçus : </strong><p>${objetsRecus}</p></div>
+            <div><strong>Abandonnés : </strong><p>${objetsAbandonnes}</p></div>
           </div>
         </div>
       </div>
@@ -252,7 +254,6 @@ const surListeConfirme = (donnees) => {
   })
   liste += `</div>`
   contenu.innerHTML = liste
-
 }
 
 // Récupération des utilisateurs en attente

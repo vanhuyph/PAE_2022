@@ -341,4 +341,42 @@ public class RessourceUtilisateur {
     return utilisateurUCC.nbreObjets(idUtilisateur, "Offert");
   }
 
+  /**
+   * Récupère le nombre d'objets donnés par l'utilisateur dont l'id est passé en paramètre.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur
+   * @return nbreObjets : le nombre d'objets donnés
+   * @throws PresentationException : est lancée si l'id de l'utilisateur est incorrect
+   */
+  @GET
+  @Path("nbreObjetsDonnes/{idUtilisateur}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AutorisationAdmin
+  public int nbreObjetsDonnes(@PathParam("idUtilisateur") int idUtilisateur) {
+    if (idUtilisateur <= 0) {
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
+    }
+    return utilisateurUCC.nbreObjets(idUtilisateur, "Donné");
+  }
+
+  /**
+   * Récupère le nombre d'objets reçus par l'utilisateur dont l'id est passé en paramètre.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur
+   * @return nbreObjets : le nombre d'objets reçus
+   * @throws PresentationException : est lancée si l'id de l'utilisateur est incorrect
+   */
+  @GET
+  @Path("nbreObjetsRecus/{idUtilisateur}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AutorisationAdmin
+  public int nbreObjetsRecus(@PathParam("idUtilisateur") int idUtilisateur) {
+    if (idUtilisateur <= 0) {
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
+    }
+    return utilisateurUCC.nbreObjets(idUtilisateur, "Reçu");
+  }
+
 }
