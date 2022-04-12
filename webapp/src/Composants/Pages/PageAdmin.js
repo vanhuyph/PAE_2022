@@ -222,15 +222,78 @@ const envoyerRecherche = (e) => {
   }
 }
 
-const surListeConfirme = (donnees) => {
+const surListeConfirme = async (donnees) => {
+  const session = recupUtilisateurDonneesSession()
   let contenu = document.getElementById("contenu")
   let liste = `<div class="liste-utilisateurs">`
 
-  donnees.forEach((utilisateur) => {
+  contenu.innerHTML = `<div class="chargement-membres">
+    <div class="ui text active centred inline loader">Chargement de la liste des membres</div>
+</div>`
+
+  for (const utilisateur of donnees) {
     let objetsOfferts = 0
     let objetsDonnes = 0
     let objetsRecus = 0
     let objetsAbandonnes = 0
+
+    //recupérer le nombres d'objets offerts
+    await fetch(
+        API_URL + 'utilisateurs/nbreObjetsOfferts/' + utilisateur.idUtilisateur, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token,
+          },
+        })
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code erreur : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      return reponse.json();
+    })
+    .then((nbInt) => objetsOfferts = nbInt)
+
+    //recupérer le nombres d'objets données
+    await fetch(
+        API_URL + 'utilisateurs/nbreObjetsDonnes/' + utilisateur.idUtilisateur, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token,
+          },
+        })
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code erreur : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      return reponse.json();
+    })
+    .then((nbInt) => objetsDonnes = nbInt)
+
+    //récuperer le nombres d'objets reçu
+    await fetch(
+        API_URL + 'utilisateurs/nbreObjetsRecus/' + utilisateur.idUtilisateur, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token,
+          },
+        })
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code erreur : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      return reponse.json();
+    })
+    .then((nbInt) => objetsRecus = nbInt)
+
     liste += `
     <div class="utilisateur">
       <div class="admin-membre">
@@ -251,7 +314,7 @@ const surListeConfirme = (donnees) => {
       </div>
     </div>
     `
-  })
+  }
   liste += `</div>`
   contenu.innerHTML = liste
 }
