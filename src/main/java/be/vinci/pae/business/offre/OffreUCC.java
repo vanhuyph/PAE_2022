@@ -20,4 +20,6 @@ public interface OffreUCC {
 
   OffreDTO donnerOffre(OffreDTO offreDTO);
 
+  List<OffreDTO> mesOffres(int idUtilisateur);
+
 }

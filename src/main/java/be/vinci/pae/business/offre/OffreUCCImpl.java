@@ -227,4 +227,25 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commettreTransaction();
     return offre;
   }
+
+  /**
+   * Liste ces propres offres.
+   *
+   * @param idUtilisateur : l'utilisateur pour lequel on cherche ces offres
+   * @return liste : la liste de toutes ces offres
+   */
+  public List<OffreDTO> mesOffres(int idUtilisateur) {
+    serviceDAL.commencerTransaction();
+    List<OffreDTO> liste = null;
+    try {
+      liste = offreDAO.mesOffres(idUtilisateur);
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return liste;
+  }
+
+
 }

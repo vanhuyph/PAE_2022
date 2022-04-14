@@ -232,7 +232,7 @@ public class RessourceOffre {
   @Path("donnerOffre")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @Autorisation
+  //@Autorisation
   public OffreDTO donnerOffre(OffreDTO offreDTO) {
     if (offreDTO.getIdOffre() <= 0
         || offreDTO.getObjetDTO().getReceveur().getIdUtilisateur() <= 0 ||
@@ -241,12 +241,32 @@ public class RessourceOffre {
           + " pas de receveur"
           , Status.BAD_REQUEST);
     }
-    offreDTO = offreUCC.annulerOffre(offreDTO);
+    offreDTO = offreUCC.donnerOffre(offreDTO);
     if (offreDTO == null) {
       throw new PresentationException("La donation de l'offre a échoué", Status.BAD_REQUEST);
     }
     return offreDTO;
   }
 
+  /**
+   * Liste les offres.
+   *
+   * @param idUtilisateur : l'utilisateur pour lequel on cherche ces offres
+   * @return liste : la liste de ces offres
+   */
+  @GET
+  @Path("/mesOffres/{idUtilisateur}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<OffreDTO> mesOffres(@PathParam("idUtilisateur") int idUtilisateur) {
+    if (idUtilisateur <= 0) {
+      throw new PresentationException("L'id de l'utilisateur est incorrect", Status.BAD_REQUEST);
+    }
+    List<OffreDTO> liste = offreUCC.mesOffres(idUtilisateur);
+    if (liste == null) {
+      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
+    }
+    return liste;
+  }
 
 }

@@ -78,16 +78,17 @@ public class RessourceInteret {
    * @return liste : la liste des interets
    */
   @GET
-  @Path("listeDesPersonnesInteressees")
+  @Path("/listeDesPersonnesInteressees/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  //@Autorisation
-  public List<InteretDTO> listeDesPersonnesInteressees(int idObjet) {
+  @Autorisation
+  public List<InteretDTO> listeDesPersonnesInteressees(@PathParam("id") int idObjet) {
     if (idObjet <= 0) {
       throw new PresentationException("L'id de l'objet est incorrect", Status.BAD_REQUEST);
     }
     List<InteretDTO> list = interetUCC.listeDesPersonnesInteressees(idObjet);
     return list;
   }
+
 
 }
