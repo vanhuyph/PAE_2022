@@ -113,6 +113,11 @@ const surListeOffresRecentes = (data) => {
           <h4 class="header">Description</h4>
            <p>${offre.objetDTO.description}</p>
         </div>
+         <div class="extra content">
+          <span class="right floated">
+            Statut : ${offre.objetDTO.etatObjet}
+          </span>
+        </div>
       </a>
     `;
     } else if (offre.objetDTO.etatObjet !== "Annulé") {
@@ -127,6 +132,11 @@ const surListeOffresRecentes = (data) => {
           <h4 class="header">Description</h4>
            <p>${offre.objetDTO.description}</p>
         </div>
+         <div class="extra content">
+          <span class="right floated">
+            Statut : ${offre.objetDTO.etatObjet}
+          </span>
+        </div>
       </a>
     `;
       } else {
@@ -138,6 +148,11 @@ const surListeOffresRecentes = (data) => {
         <div class="content">
           <h4 class="header">Description</h4>
            <p>${offre.objetDTO.description}</p>
+        </div>
+         <div class="extra content">
+          <span class="right floated">
+            Statut : ${offre.objetDTO.etatObjet}
+          </span>
         </div>
       </div>
     `;
@@ -168,6 +183,11 @@ const surListeOffres = (data) => {
           <h4 class="header">Description</h4>
            <p>${offre.objetDTO.description}</p>
         </div>
+         <div class="extra content">
+          <span class="right floated">
+            Statut : ${offre.objetDTO.etatObjet}
+          </span>
+        </div>
       </a>
     `;
     } else if (offre.objetDTO.etatObjet !== "Annulé") {
@@ -179,6 +199,11 @@ const surListeOffres = (data) => {
         <div class="content">
           <h4 class="header">Description</h4>
            <p>${offre.objetDTO.description}</p>
+        </div>
+        <div class="extra content">
+          <span class="right floated">
+            Statut : ${offre.objetDTO.etatObjet}
+          </span>
         </div>
       </a>`;
     }
