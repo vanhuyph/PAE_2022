@@ -15,4 +15,6 @@ public interface InteretDAO {
 
   InteretDTO miseAJourInteret(InteretDTO interetDTO);
 
+  int supprimerInteret(int idObjet);
+
 }

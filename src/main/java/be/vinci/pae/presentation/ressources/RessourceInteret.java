@@ -91,6 +91,7 @@ public class RessourceInteret {
   }
 
 
+<<<<<<< HEAD
   /**
    * Liste les interets.
    *
@@ -111,4 +112,6 @@ public class RessourceInteret {
   }
 
 
+=======
+>>>>>>> d459ea97ebcd08d96980fa79fc18657cc2287e12
 }
