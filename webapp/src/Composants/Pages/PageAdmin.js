@@ -138,12 +138,12 @@ const afficherMembres = () => {
       Authorization: session.token,
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : " + response.statusText);
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
     }
-    return response.json();
+    return reponse.json();
   })
   .then((donnees) => {
     donnees.forEach((u) => {
@@ -153,7 +153,8 @@ const afficherMembres = () => {
       if (recherche.findIndex(l => l.label === u.adresse.commune) === -1) {
         recherche.push({label: u.adresse.commune})
       }
-      if (recherche.findIndex(l => l.label === u.adresse.codePostal.toString()) === -1) {
+      if (recherche.findIndex(l => l.label === u.adresse.codePostal.toString())
+          === -1) {
         recherche.push({label: u.adresse.codePostal.toString()})
       }
     })
@@ -165,9 +166,9 @@ const afficherMembres = () => {
   autocomplete({
     input: input,
     minLength: 1,
+    emptyMsg: "Recherche non trouvée",
     fetch: function (text, update) {
       text = text.toLowerCase();
-      // you can also use AJAX requests instead of preloaded data
       var suggestions = recherche.filter(
           n => n.label.toLowerCase().startsWith(text))
       update(suggestions);
@@ -192,12 +193,12 @@ const envoyerRecherche = (e) => {
         Authorization: session.token,
       },
     })
-    .then((response) => {
-      if (!response.ok) {
+    .then((reponse) => {
+      if (!reponse.ok) {
         throw new Error(
-            "Code d'erreur : " + response.status + " : " + response.statusText);
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
       }
-      return response.json();
+      return reponse.json();
     })
     .then((donnees) => {
       console.log(donnees)
@@ -211,12 +212,12 @@ const envoyerRecherche = (e) => {
         Authorization: session.token,
       },
     })
-    .then((response) => {
-      if (!response.ok) {
+    .then((reponse) => {
+      if (!reponse.ok) {
         throw new Error(
-            "Code d'erreur : " + response.status + " : " + response.statusText);
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
       }
-      return response.json();
+      return reponse.json();
     })
     .then((donnees) => surListeConfirme(donnees))
   }
@@ -237,9 +238,10 @@ const surListeConfirme = async (donnees) => {
     let objetsRecus = 0
     let objetsAbandonnes = 0
 
-    //recupérer le nombres d'objets offerts
+    // Récupère le nombre d'objets offerts
     await fetch(
-        API_URL + 'utilisateurs/nbreObjetsOfferts/' + utilisateur.idUtilisateur, {
+        API_URL + 'utilisateurs/nbreObjetsOfferts/' + utilisateur.idUtilisateur,
+        {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -256,9 +258,10 @@ const surListeConfirme = async (donnees) => {
     })
     .then((nbInt) => objetsOfferts = nbInt)
 
-    //recupérer le nombres d'objets données
+    // Récupère le nombre d'objets donnés
     await fetch(
-        API_URL + 'utilisateurs/nbreObjetsDonnes/' + utilisateur.idUtilisateur, {
+        API_URL + 'utilisateurs/nbreObjetsDonnes/' + utilisateur.idUtilisateur,
+        {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -275,7 +278,7 @@ const surListeConfirme = async (donnees) => {
     })
     .then((nbInt) => objetsDonnes = nbInt)
 
-    //récuperer le nombres d'objets reçu
+    // Récupère le nombre d'objets reçus
     await fetch(
         API_URL + 'utilisateurs/nbreObjetsRecus/' + utilisateur.idUtilisateur, {
           method: "GET",
@@ -329,12 +332,12 @@ const recupEnAttente = () => {
       Authorization: session.token,
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : " + response.statusText);
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
     }
-    return response.json();
+    return reponse.json();
   })
   .then((data) => surListeAttente(data))
 }
@@ -349,12 +352,12 @@ const recupRefuse = () => {
       Authorization: session.token,
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : " + response.statusText);
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
     }
-    return response.json();
+    return reponse.json();
   })
   .then((data) => surListeRefus(data))
 }
