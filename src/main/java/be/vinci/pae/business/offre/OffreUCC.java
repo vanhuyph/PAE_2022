@@ -18,4 +18,8 @@ public interface OffreUCC {
 
   OffreDTO indiquerMembreReceveur(OffreDTO offreDTO);
 
+  OffreDTO donnerOffre(OffreDTO offreDTO);
+
+  List<OffreDTO> mesOffres(int idUtilisateur);
+
 }

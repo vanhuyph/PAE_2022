@@ -1,6 +1,7 @@
 package be.vinci.pae.business.offre;
 
 import be.vinci.pae.business.objet.ObjetDTO;
+import be.vinci.pae.donnees.dao.interet.InteretDAO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
@@ -15,6 +16,8 @@ public class OffreUCCImpl implements OffreUCC {
   OffreDAO offreDAO;
   @Inject
   ObjetDAO objetDAO;
+  @Inject
+  InteretDAO interetDAO;
   @Inject
   ServiceDAL serviceDAL;
 
@@ -118,7 +121,8 @@ public class OffreUCCImpl implements OffreUCC {
    * Recherche une offre par son id.
    *
    * @param idOffre id de l'offre recherchée
-   * @return l'offre correspondante  l'id idS
+   * @return l'offre correspondante à l'id passer en paramétre
+   * @throws BusinessException : lance une exception business si l'id de l'offre est incorrect
    */
   @Override
   public OffreDTO rechercheParId(int idOffre) {
@@ -143,6 +147,7 @@ public class OffreUCCImpl implements OffreUCC {
    *
    * @param idObjet : l'id de l'objet à récupérer
    * @return liste : la liste des offres précédentes de l'objet avec l'id passé en paramètre
+   * @throws BusinessException : lance une exception business si l'id de l'objet est incorrect
    */
   @Override
   public List<OffreDTO> offresPrecedentes(int idObjet) {
@@ -190,4 +195,57 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commettreTransaction();
     return offre;
   }
+
+  /**
+   * donner une offre.
+   *
+   * @param offreDTO : id de l'offre à donner
+   * @return l'offre donnée
+   * @throws BusinessException : lance une exception business si l'offre n'a pas pu être donnée ou
+   *                           l'id de l'objet est incorrect
+   */
+  @Override
+  public OffreDTO donnerOffre(OffreDTO offreDTO) {
+    serviceDAL.commencerTransaction();
+    Offre offre;
+    try {
+      offre = (Offre) offreDTO;
+      offre.changerEtatObjet("Donné");
+      ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
+      int idObjet = interetDAO.supprimerInteret(offreDTO.getObjetDTO().getIdObjet());
+      if (objet == null || idObjet <= 0) {
+        ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
+        if (objetVerif == null) {
+          throw new PasTrouveException("L'objet n'existe pas");
+        }
+        throw new BusinessException("Données périmées ou l'id de l'objet est incorrect");
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return offre;
+  }
+
+  /**
+   * Liste ces propres offres.
+   *
+   * @param idUtilisateur : l'utilisateur pour lequel on cherche ces offres
+   * @return liste : la liste de toutes ces offres
+   */
+  public List<OffreDTO> mesOffres(int idUtilisateur) {
+    serviceDAL.commencerTransaction();
+    List<OffreDTO> liste = null;
+    try {
+      liste = offreDAO.mesOffres(idUtilisateur);
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return liste;
+  }
+
+
 }
