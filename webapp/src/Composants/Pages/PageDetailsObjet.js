@@ -214,14 +214,14 @@ const surDetailObjet = async (offre) => {
           Authorization: session.token,
         },
       })
-      .then((response) => {
-        if (!response.ok) {
+      .then((reponse) => {
+        if (!reponse.ok) {
           document.querySelector("#marquer-interet").classList.remove("loading")
           throw new Error(
-              "Code d'erreur : " + response.status + " : " + response.statusText
+              "Code d'erreur : " + reponse.status + " : " + reponse.statusText
           );
         }
-        return response.json();
+        return reponse.json();
       }).then(() => {
         let premierInter = setInterval(() => {
           document.querySelector("#marquer-interet").classList.remove("loading")
@@ -379,13 +379,13 @@ const surDetailObjetProprio = async (offre) => {
         "Authorization": session.token,
       },
     })
-    .then((response) => {
-      if (!response.ok) {
+    .then((reponse) => {
+      if (!reponse.ok) {
         throw new Error(
-            "Code d'erreur : " + response.status + " : " + response.statusText
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText
         );
       }
-      return response.json();
+      return reponse.json();
     })
     .then(() => Redirect("/"))
   })

@@ -141,13 +141,13 @@ const surInscription = (e) => {
         "Content-Type": "application/json",
       }
     })
-    .then((response) => {
-      if (!response.ok) {
+    .then((reponse) => {
+      if (!reponse.ok) {
         throw new Error(
-            "Code d'erreur : " + response.status + " : " + response.statusText
-            + " : " + response.text())
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+            + " : " + reponse.text())
       }
-      return response.json()
+      return reponse.json()
     })
     .then((donnee) => surInscrUtilisateur(donnee))
     .catch(err => surErreur(err))

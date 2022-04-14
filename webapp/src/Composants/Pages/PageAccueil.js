@@ -51,12 +51,12 @@ const PageAccueil = () => {
     headers: {
       "Content-Type": "application/json",
     },
-  }).then((response) => {
-    if (!response.ok) {
+  }).then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : " + response.statusText);
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
     }
-    return response.json();
+    return reponse.json();
   }).then((data) => surListeOffresRecentes(data))
 
   if (session) {
@@ -78,13 +78,13 @@ const PageAccueil = () => {
           "Content-Type": "application/json",
           Authorization: session.token
         },
-      }).then((response) => {
-        if (!response.ok) {
+      }).then((reponse) => {
+        if (!reponse.ok) {
           throw new Error(
-              "Code d'erreur : " + response.status + " : " + response.statusText
+              "Code d'erreur : " + reponse.status + " : " + reponse.statusText
           );
         }
-        return response.json();
+        return reponse.json();
       }).then((data) => surListeOffres(data))
     }
   }
