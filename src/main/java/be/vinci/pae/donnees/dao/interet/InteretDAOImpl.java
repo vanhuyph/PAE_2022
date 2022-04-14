@@ -123,17 +123,17 @@ public class InteretDAOImpl implements InteretDAO {
     InteretDTO interetDTO = factory.getInteret();
     ObjetDTO objetDTO = factory.getObjet();
     objetDTO.setIdObjet(idObjet);
+    List<InteretDTO> listeDesPersonnesInteressees;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
       ps.setInt(1, idObjet);
       interetDTO.setObjet(objetDTO);
-      List<InteretDTO> listeDesPersonnesInteressees =
+      listeDesPersonnesInteressees =
           remplirListInteretDepuisResulSet(interetDTO, ps);
-      return listeDesPersonnesInteressees;
     } catch (SQLException e) {
       e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
+    return listeDesPersonnesInteressees;
   }
 
   /**
@@ -153,17 +153,17 @@ public class InteretDAOImpl implements InteretDAO {
     InteretDTO interetDTO = factory.getInteret();
     ObjetDTO objetDTO = factory.getObjet();
     objetDTO.setIdObjet(idObjet);
+    List<InteretDTO> listeDesPersonnesInteressees;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
       ps.setInt(1, idObjet);
       interetDTO.setObjet(objetDTO);
-      List<InteretDTO> listeDesPersonnesInteressees =
+      listeDesPersonnesInteressees =
           remplirListInteretDepuisResulSet(interetDTO, ps);
-      return listeDesPersonnesInteressees;
     } catch (SQLException e) {
       e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
+    return listeDesPersonnesInteressees;
   }
 
   /**

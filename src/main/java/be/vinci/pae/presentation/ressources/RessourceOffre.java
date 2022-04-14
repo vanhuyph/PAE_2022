@@ -235,11 +235,10 @@ public class RessourceOffre {
   //@Autorisation
   public OffreDTO donnerOffre(OffreDTO offreDTO) {
     if (offreDTO.getIdOffre() <= 0
-        || offreDTO.getObjetDTO().getReceveur().getIdUtilisateur() <= 0 ||
-        offreDTO.getObjetDTO().getIdObjet() <= 0) {
+        || offreDTO.getObjetDTO().getReceveur().getIdUtilisateur() <= 0
+        || offreDTO.getObjetDTO().getIdObjet() <= 0) {
       throw new PresentationException("L'id de l'offre ou de l'objet est incorrect ou qu'il n'y a"
-          + " pas de receveur"
-          , Status.BAD_REQUEST);
+          + " pas de receveur", Status.BAD_REQUEST);
     }
     offreDTO = offreUCC.donnerOffre(offreDTO);
     if (offreDTO == null) {
