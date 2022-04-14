@@ -55,6 +55,31 @@ public class InteretDAOImpl implements InteretDAO {
   }
 
   /**
+   * supprimer les intérêts de l'objet.
+   *
+   * @param idObjet : l'id de l'objet pour lequel on va supprimé les interets
+   * @return interetDTO : interetDTO rempli
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public int supprimerInteret(int idObjet) {
+    String requetePs = "DELETE FROM interets WHERE objet = ? ";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setInt(1, idObjet);
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return idObjet;
+        } else {
+          return 0;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  /**
    * nombre de personnes intéressées pour une offre.
    *
    * @param idObjet : l'id de l'objet dont les personnes sont intéressées
@@ -239,4 +264,6 @@ public class InteretDAOImpl implements InteretDAO {
     }
     return interetDTO;
   }
+
+
 }

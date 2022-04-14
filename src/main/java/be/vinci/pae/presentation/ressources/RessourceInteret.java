@@ -90,6 +90,7 @@ public class RessourceInteret {
     return list;
   }
 
+
   /**
    * Liste les interets.
    *
@@ -108,5 +109,6 @@ public class RessourceInteret {
     List<InteretDTO> list = interetUCC.listeDesPersonnesInteresseesVue(idObjet);
     return list;
   }
+
 
 }

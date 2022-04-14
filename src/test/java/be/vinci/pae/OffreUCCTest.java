@@ -175,10 +175,29 @@ public class OffreUCCTest {
   @DisplayName("Test réussi : méthode indiquerMembreReceveur renvoie l'offre confirmé.")
   public void testIndiquerMembreReceveurV1() {
     offreDTO1.setObjetDTO(objetDTO1);
-    Mockito.when(offreUCC.creerOffre(offreDTO1)).thenReturn(offreDTO1);
-    offreUCC.creerOffre(offreDTO1);
-    offreDTO1 = offreUCC.indiquerMembreReceveur(offreDTO1, utilisateurDTO);
-    assertEquals("Confirmé", offreDTO1.getObjetDTO().getEtatObjet());
+    assertEquals("confirmé",
+        offreUCC.indiquerMembreReceveur(offreDTO1).getObjetDTO().getEtatObjet());
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode donnerOffre renvoie l'offre donné.")
+  public void testdonnerOffreV1() {
+    objetDTO1.setReceveur(utilisateurDTO);
+    offreDTO1.setObjetDTO(objetDTO1);
+    Mockito.when(objetDAO.creerObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO1);
+    Mockito.when(offreDAO.creerOffre(offreDTO1)).thenReturn(offreDTO1);
+    Mockito.when(offreUCC.donnerOffre(offreDTO1)).thenReturn(offreDTO1);
+    assertEquals("Donné", offreDTO1.getObjetDTO().getEtatObjet());
   }*/
+
+  @Test
+  @DisplayName("Test réussi : méthode mesOffres renvoie bien une liste.")
+  public void testMesOffresV1() {
+    int id = utilisateurDTO.getIdUtilisateur();
+    List<OffreDTO> liste = new ArrayList<>();
+    Mockito.when(offreDAO.mesOffres(id)).thenReturn(liste);
+    assertEquals(liste, offreUCC.mesOffres(id));
+  }
+
 
 }
