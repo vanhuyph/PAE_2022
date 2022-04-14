@@ -84,7 +84,38 @@ public class InteretDAOImpl implements InteretDAO {
    * Liste les interet de sa propre offre.
    *
    * @param idObjet : l'id de l'objet dont les personnes sont intéressées
-   * @return liste : la liste des offres les plus récentes
+   * @return liste : la liste de toutes les interets qu'on n'a pas encore vue
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public List<InteretDTO> listeDesPersonnesInteresseesVue(int idObjet) {
+    String requetePS = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
+        + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, i.vue, i.date FROM projet.interets i, "
+        + "projet.utilisateurs u, projet.adresses a WHERE "
+        + "i.objet = ? AND i.utilisateur = u.id_utilisateur AND a.id_adresse = u.adresse "
+        + "AND i.vue = 'false';";
+    InteretDTO interetDTO = factory.getInteret();
+    ObjetDTO objetDTO = factory.getObjet();
+    objetDTO.setIdObjet(idObjet);
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
+      ps.setInt(1, idObjet);
+      interetDTO.setObjet(objetDTO);
+      List<InteretDTO> listeDesPersonnesInteressees =
+          remplirListInteretDepuisResulSet(interetDTO, ps);
+      return listeDesPersonnesInteressees;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Liste les interet de sa propre offre.
+   *
+   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @return liste : la liste de toutes les interets
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
@@ -93,8 +124,7 @@ public class InteretDAOImpl implements InteretDAO {
         + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
         + "u.etat_inscription, u.commentaire, i.vue, i.date FROM projet.interets i, "
         + "projet.utilisateurs u, projet.adresses a WHERE "
-        + "i.objet = ? AND i.utilisateur = u.id_utilisateur AND a.id_adresse = u.adresse "
-        + "AND i.vue = 'false';";
+        + "i.objet = ? AND i.utilisateur = u.id_utilisateur AND a.id_adresse = u.adresse;";
     InteretDTO interetDTO = factory.getInteret();
     ObjetDTO objetDTO = factory.getObjet();
     objetDTO.setIdObjet(idObjet);

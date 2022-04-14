@@ -96,11 +96,35 @@ public class InteretUCCImpl implements InteretUCC {
    * Liste les interets.
    *
    * @param idObjet : l'id de l'objet dont les personnes sont intéressées
-   * @return listeInteret : la liste de toutes les interets qu'on n'a pas encore vue
+   * @return listeInteret : la liste de toutes les interets
    * @throws BusinessException : est lancée si l'id de l'objet est incorrect
    */
   @Override
   public List<InteretDTO> listeDesPersonnesInteressees(int idObjet) {
+    serviceDAL.commencerTransaction();
+    List<InteretDTO> list;
+    try {
+      if (idObjet <= 0) {
+        throw new BusinessException("L'id de l'objet est incorrect");
+      }
+      list = interetDAO.listeDesPersonnesInteressees(idObjet);
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return list;
+  }
+
+  /**
+   * Liste les interets.
+   *
+   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @return listeInteret : la liste de toutes les interets qu'on n'a pas encore vue
+   * @throws BusinessException : est lancée si l'id de l'objet est incorrect
+   */
+  @Override
+  public List<InteretDTO> listeDesPersonnesInteresseesVue(int idObjet) {
     serviceDAL.commencerTransaction();
     List<InteretDTO> listTemp = null;
     List<InteretDTO> list = new ArrayList<>();
@@ -108,7 +132,7 @@ public class InteretUCCImpl implements InteretUCC {
       if (idObjet <= 0) {
         throw new BusinessException("L'id de l'objet est incorrect");
       }
-      listTemp = interetDAO.listeDesPersonnesInteressees(idObjet);
+      listTemp = interetDAO.listeDesPersonnesInteresseesVue(idObjet);
       for (int i = 0; i < listTemp.size(); i++) {
         listTemp.get(i).setVue(true);
         InteretDTO interetDTO = interetDAO.miseAJourInteret(listTemp.get(i));

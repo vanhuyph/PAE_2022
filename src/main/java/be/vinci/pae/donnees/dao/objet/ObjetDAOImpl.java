@@ -2,7 +2,6 @@ package be.vinci.pae.donnees.dao.objet;
 
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
-import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -24,24 +23,25 @@ public class ObjetDAOImpl implements ObjetDAO {
    */
   @Override
   public ObjetDTO creerObjet(ObjetDTO objetDTO) {
-    String requetePs = "INSERT INTO projet.objets VALUES (DEFAULT, 'Offert', ?, ?, ?, null, ?) "
+    String requetePs = "INSERT INTO projet.objets VALUES (DEFAULT, 'Offert', ?, ?, ?, null, ?, ?) "
         + "RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, objetDTO.getTypeObjet().getIdType());
       ps.setString(2, objetDTO.getDescription());
       ps.setInt(3, objetDTO.getOffreur().getIdUtilisateur());
       ps.setString(4, objetDTO.getPhoto());
+      ps.setInt(5, objetDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
+        if (rs.next()) {
           objetDTO.setIdObjet(rs.getInt(1));
+          return objetDTO;
+        } else {
+          return null;
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
-    return objetDTO;
   }
 
 

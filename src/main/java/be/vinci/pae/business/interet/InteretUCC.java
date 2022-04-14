@@ -10,4 +10,6 @@ public interface InteretUCC {
 
   List<InteretDTO> listeDesPersonnesInteressees(int idObjet);
 
+  List<InteretDTO> listeDesPersonnesInteresseesVue(int idObjet);
+
 }
