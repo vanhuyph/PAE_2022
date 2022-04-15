@@ -187,8 +187,6 @@ public class OffreDAOImpl implements OffreDAO {
     String requetePs = "UPDATE projet.offres SET plage_horaire = ?, version = ? "
         + "WHERE id_offre = ? AND version = ?"
         + "RETURNING id_offre, date_offre, plage_horaire, version;";
-    //returning l'offre modifié depuis la db ?
-    //impl version
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, offreAvecModification.getPlageHoraire());
       ps.setInt(2, offreAvecModification.getVersion() + 1);

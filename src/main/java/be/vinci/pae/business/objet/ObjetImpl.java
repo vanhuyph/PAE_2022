@@ -22,7 +22,7 @@ public class ObjetImpl implements Objet {
   private UtilisateurDTO offreur;
   @JsonView(Vues.Public.class)
   private UtilisateurDTO receveur;
-  @JsonView(Vues.Public.class)//vérifier type d'objet
+  @JsonView(Vues.Public.class)
   private String photo;
   @JsonView(Vues.Public.class)
   private int version;
