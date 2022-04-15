@@ -607,7 +607,7 @@ Fin Message de bienvenue*/
 #liste-offres, #liste-offres-recentes{
     margin: auto;
     padding: 10px;
-    width: 85%;
+    width: 100%;
     max-width: 1000px;
 }
 .cards{
