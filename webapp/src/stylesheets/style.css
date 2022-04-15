@@ -28,6 +28,7 @@ body{
     background-color: #e1e9f3 !important;
 }
 /*Cartes accueil*/
+
 .card{
     background-color: #ecf5ff !important;
     color: black;
@@ -581,6 +582,42 @@ Fin Message de bienvenue*/
 }
 
 /* Membre page admin*/
+
+/*Accueil*/
+#rechercherObjet{
+    width: 100%;
+    margin: 40px auto;
+}
+#rechercherObjet .field {
+    width: 60%;
+    margin: auto !important;
+}
+#rechercherObjet .field #recherche-objet{
+    width: 85% !important;
+}
+#rechercherObjet .field button {
+    cursor: pointer;
+    margin: 0 !important;
+    width: 40px;
+    padding: 6.5px;
+    background: #dbe3ec !important;
+    border: 1px solid #bfc6ce;
+    border-radius: 10px !important;
+}
+#liste-offres, #liste-offres-recentes{
+    margin: auto;
+    padding: 10px;
+    width: 75%;
+}
+.cards{
+    justify-content: space-between;
+    margin: 0 !important;
+}
+
+.cards:after{
+    display: none !important;
+}
+/*Accueil*/
 
 .montrer-block{
     display: block;

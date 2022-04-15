@@ -212,4 +212,21 @@ public class RessourceOffre {
     return offreUCC.modifierOffre(offreAvecModification);
   }
 
+  /**
+   * Liste toutes les offres en fonction d'un critère de recherche (nom, type, état).
+   *
+   * @param recherche : le critère de recherche
+   * @return liste : la liste des offres correspondant au critère de recherche
+   */
+  @GET
+  @Path("recherche/{recherche}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<OffreDTO> rechercherOffres(@PathParam("recherche") String recherche) {
+    List<OffreDTO> liste;
+    liste = offreUCC.rechercherOffre(recherche);
+    return liste;
+  }
+
 }
