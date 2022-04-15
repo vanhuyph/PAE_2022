@@ -5,6 +5,7 @@ import {
 import Navbar from "../Navbar/Navbar";
 import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
+import rechecheIcon from "../../img/search.svg"
 
 // Page d'accueil
 const PageAccueil = () => {
@@ -68,6 +69,12 @@ const PageAccueil = () => {
       pageAccueil += `
       <div class="offres">
         <h2>Toutes les offres</h2>
+        <form id="rechercherObjet" class="ui form">
+          <div class="field">
+            <input id="recherche-objet" type="search" placeholder="Recherche par : nom du membre, type, état">
+            <button type="submit" class="button"><img src=${rechecheIcon} alt="recheche icon" height="20px"></button>
+          </div>
+        </form>
         <div id="liste-offres"> </div>
       </div>
       `;
@@ -91,13 +98,59 @@ const PageAccueil = () => {
   declencheurModal.forEach(decl => decl.addEventListener("click", () => {
     conteneurModal.classList.toggle("active")
   }))
+  document.querySelector("#rechercherObjet").addEventListener("submit", (e) => {
+    e.preventDefault()
+    rechercheObjet()
+  })
 };
+
+const rechercheObjet = () => {
+  const session = recupUtilisateurDonneesSession()
+  const recherche = document.querySelector("#recherche-objet").value
+  const listeOffres = document.getElementById("liste-offres");
+  listeOffres.innerHTML = `<div class="chargement-offres">
+    <div class="ui text active centered inline loader">Chargement de la liste d'offres</div>
+</div>`
+
+  if (recherche !== "") {
+    fetch(API_URL + "offres/recherche/" + recherche, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token
+      },
+    }).then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      return reponse.json();
+    }).then((data) => surListeOffres(data))
+  } else {
+    fetch(API_URL + "offres/listerOffres", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token
+      },
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error(
+            "Code d'erreur : " + response.status + " : " + response.statusText
+        );
+      }
+      return response.json();
+    }).then((data) => surListeOffres(data))
+  }
+
+}
 
 // Affichage d'une liste des offres les plus récentes
 const surListeOffresRecentes = (data) => {
   const listeOffresRecentes = document.getElementById("liste-offres-recentes");
   const session = recupUtilisateurDonneesSession()
-  let listeRecente = `<div class="ui cards">`;
+  let listeRecente = `<div class="ui three cards">`;
   data.forEach((offre) => {
     if (session && offre.objetDTO.etatObjet === "Annulé"
         && (session.utilisateur.estAdmin
@@ -167,13 +220,14 @@ const surListeOffresRecentes = (data) => {
 const surListeOffres = (data) => {
   const listeOffres = document.getElementById("liste-offres");
   const session = recupUtilisateurDonneesSession()
-  let liste = `<div class="ui link cards">`;
-  data.forEach((offre) => {
-    if (session && offre.objetDTO.etatObjet === "Annulé"
-        && (session.utilisateur.estAdmin
-            || (offre.objetDTO.offreur.idUtilisateur
-                === session.utilisateur.idUtilisateur))) {
-      liste += `
+  if (data.length > 0) {
+    let liste = `<div class="ui three link cards">`;
+    data.forEach((offre) => {
+      if (session && offre.objetDTO.etatObjet === "Annulé"
+          && (session.utilisateur.estAdmin
+              || (offre.objetDTO.offreur.idUtilisateur
+                  === session.utilisateur.idUtilisateur))) {
+        liste += `
       <a id="of" class="card" data-of="${offre.idOffre}">
         <div id=${offre.idOffre}></div>
         <div class="image">
@@ -190,8 +244,8 @@ const surListeOffres = (data) => {
         </div>
       </a>
     `;
-    } else if (offre.objetDTO.etatObjet !== "Annulé") {
-      liste += `
+      } else if (offre.objetDTO.etatObjet !== "Annulé") {
+        liste += `
       <a id="of" class="card" data-of="${offre.idOffre}">
         <div class="image">
           <img src="/api/offres/photos/${offre.objetDTO.photo}">
@@ -206,16 +260,23 @@ const surListeOffres = (data) => {
           </span>
         </div>
       </a>`;
-    }
-  })
-  liste += `</div>`;
-  listeOffres.innerHTML = liste;
-  if (session) {
-    document.querySelectorAll("#of").forEach(offre => {
-      offre.addEventListener("click", (e) => {
-        Redirect("/objet", offre.getAttribute("data-of"))
-      })
+      }
     })
+    liste += `</div>`;
+    listeOffres.innerHTML = liste;
+    if (session) {
+      document.querySelectorAll("#of").forEach(offre => {
+        offre.addEventListener("click", (e) => {
+          Redirect("/objet", offre.getAttribute("data-of"))
+        })
+      })
+    }
+  } else {
+    listeOffres.innerHTML = `
+<div class="ui basic center aligned segment">
+<p >Pas de résultat correspondant à votre recherche</p>
+</div>
+`
   }
 };
 

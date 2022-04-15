@@ -199,4 +199,24 @@ public class OffreUCCImpl implements OffreUCC {
     return offre;
   }
 
+  /**
+   * Liste toutes les offres en fonction d'un critère de recherche (nom, type, etat).
+   *
+   * @param recherche : le critère de recherche
+   * @return liste : la liste des offres correspondant au critère de recherche
+   */
+  @Override
+  public List<OffreDTO> rechercherOffre(String recherche) {
+    serviceDAL.commencerTransaction();
+    List<OffreDTO> liste;
+    try {
+      liste = offreDAO.rechercherOffres(recherche);
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return liste;
+
+  }
 }

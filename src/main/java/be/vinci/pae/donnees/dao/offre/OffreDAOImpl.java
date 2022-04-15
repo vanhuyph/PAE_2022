@@ -208,6 +208,46 @@ public class OffreDAOImpl implements OffreDAO {
   }
 
   /**
+   * Récupère tous les offres en fonctions d'un critère de recherche (nom, type de l'objet ou l'etat
+   * de l'objet.
+   *
+   * @param recherche : le critère de recherche
+   * @return liste : la liste des offres correspondant au critères de recherche
+   * @throws FatalException = est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public List<OffreDTO> rechercherOffres(String recherche) {
+    String requetePs =
+        "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
+            + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+            + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
+            + "o.etat_objet, o.description, o.photo, o.version, of.id_offre, of.date_offre, "
+            + "of.plage_horaire, of.version "
+            + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
+            + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
+            + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+            + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
+            + "WHERE (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
+            + "OR o.etat_objet = 'Annulé') "
+            + "AND (lower(u.nom) LIKE lower(?) "
+            + "OR lower(t.nom) LIKE lower(?) OR lower(o.etat_objet) "
+            + "LIKE lower(?))"
+            + "ORDER BY of.date_offre DESC";
+    OffreDTO offreDTO = factory.getOffre();
+    List<OffreDTO> liste;
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      recherche = "%" + recherche + "%";
+      ps.setString(1, recherche);
+      ps.setString(2, recherche);
+      ps.setString(3, recherche);
+      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+    return liste;
+  }
+
+  /**
    * Rempli une liste d'offres depuis un ResultSet.
    *
    * @param offreDTO : l'offre vide, qui va être remplie
