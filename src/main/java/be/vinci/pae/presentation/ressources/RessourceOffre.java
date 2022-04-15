@@ -190,4 +190,26 @@ public class RessourceOffre {
     return Response.ok(new File(Config.getPropriete("OneDrivePhotos") + uuidPhoto)).build();
   }
 
+  /**
+   * Modifie un ou plusieurs détails de l'offre.
+   *
+   * @param offreAvecModification : l'offre avec les modifications
+   * @return l'offre modifiée
+   * @throws PresentationException : est lancée s'il y a eu un problème lors de la modification de
+   *                               l'offre
+   */
+  @PUT
+  @Path("/modifierOffre")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
+    //check id du token == id de l'offreur ?
+    if (offreAvecModification.getObjetDTO().getDescription().isBlank()
+        || offreAvecModification.getPlageHoraire().isBlank()) {
+      throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
+    }
+    return offreUCC.modifierOffre(offreAvecModification);
+  }
+
 }

@@ -1,13 +1,14 @@
 import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
+import autocomplete from 'autocompleter';
 
 const barVertical = `
 <div id="bar-vertical" class="ui left sidebar visible vertical menu">
 <h2 class="ui large header">Admin</h2>
   <div class="contenu-bar-vert">
-    <a class="item active">Inscription</a>
-    <a class="item">Membres</a>
+    <a class="item active" id="inscriptions">Inscription</a>
+    <a class="item" id="membres">Membres</a>
   </div>
 </div>
 `
@@ -15,21 +16,35 @@ const barHori = `
 <div id="bar-hori">
   <h2 class="ui large header">Admin</h2>
   <div id="choix-page" class="ui buttons">
-    <button class="ui active button">Inscription</button>
-    <button class="ui button">Membres</button>
+    <button class="ui active button" id="inscriptions">Inscription</button>
+    <button class="ui button" id="membres">Membres</button>
   </div>
 </div>
 `
 
-// Contenu pricipal de la page
-const pricipal = `
-<div id="principal">
+// Contenu principal de la page
+const pagePrincipal = `
   <div id="choix-demande" class="ui buttons">
     <button id="demandes" class="ui positive button">Demandes</button>
     <button id="refus" class="ui button">Refus</button>
   </div>
   <div id="contenu">
     
+  </div>
+`
+
+const pageMembres = `
+<div class="rechercher-membre">
+  <h2>Recherche sur les membres</h2>
+  <div class="form-recherche">
+    <form id="rechercherMembre" class="ui form">
+    <div class="field">
+      <input id="autoComplete" type="search">
+    </div>
+    </form>
+  </div>
+  <div id="contenu">
+  
   </div>
 </div>
 `
@@ -39,8 +54,11 @@ const page = `
   <div id="bar">
     ${barVertical}
   </div>
-  ${pricipal}
+ <div id="principal"> 
+  ${pagePrincipal}
+ </div>
 </div>
+
 `
 
 const PageAdmin = () => {
@@ -52,6 +70,7 @@ const PageAdmin = () => {
     pageDiv.innerHTML = page;
 
     // Gestion responsive avec la barre verticale pour pc et horizontale pour mobile
+    /*
     if (window.innerWidth < 576) {
       document.getElementById("bar").innerHTML = barHori;
     } else {
@@ -63,28 +82,244 @@ const PageAdmin = () => {
       } else {
         document.getElementById("bar").innerHTML = barVertical;
       }
-    };
+    };*/
 
-    // Récupération des utilisateurs en attente
-    recupEnAttente()
-    const demandesPage = document.querySelector("#demandes")
-    const refusPage = document.querySelector("#refus")
-    const contenu = document.querySelector("#contenu")
-    const demandes = "<h2>Liste des demandes d'inscriptions</h2>"
-    contenu.innerHTML = demandes
+    afficherDemandes()
+    const listeInscriptions = document.querySelector("#inscriptions")
+    const listeMembres = document.querySelector("#membres")
+    listeInscriptions.addEventListener("click", () => {
+      listeMembres.classList.remove("active")
+      listeInscriptions.classList.add("active")
+      afficherDemandes()
+    })
+    listeMembres.addEventListener("click", () => {
+      listeInscriptions.classList.remove("active")
+      listeMembres.classList.add("active")
+      afficherMembres()
+    })
 
-    // Changement contenu pricipal
-    demandesPage.addEventListener("click", () => {
-      refusPage.classList.remove("positive")
-      demandesPage.classList.add("positive")
-      recupEnAttente()
-    })
-    refusPage.addEventListener("click", () => {
-      demandesPage.classList.remove("positive")
-      refusPage.classList.add("positive")
-      recupRefuse()
-    })
   }
+}
+
+const afficherDemandes = () => {
+  const principal = document.querySelector("#principal")
+  principal.innerHTML = pagePrincipal
+  // Récupération des utilisateurs en attente
+  recupEnAttente()
+  const demandesPage = document.querySelector("#demandes")
+  const refusPage = document.querySelector("#refus")
+  const contenu = document.querySelector("#contenu")
+  const demandes = "<h2>Liste des demandes d'inscriptions</h2>"
+  contenu.innerHTML = demandes
+
+  // Changement contenu principal
+  demandesPage.addEventListener("click", () => {
+    refusPage.classList.remove("positive")
+    demandesPage.classList.add("positive")
+    recupEnAttente()
+  })
+  refusPage.addEventListener("click", () => {
+    demandesPage.classList.remove("positive")
+    refusPage.classList.add("positive")
+    recupRefuse()
+  })
+}
+
+const afficherMembres = () => {
+  const session = recupUtilisateurDonneesSession()
+  const principal = document.querySelector("#principal")
+  principal.innerHTML = pageMembres
+
+  var recherche = [];
+  fetch(API_URL + "utilisateurs/confirme", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token,
+    },
+  })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+    }
+    return reponse.json();
+  })
+  .then((donnees) => {
+    donnees.forEach((u) => {
+      if (recherche.findIndex(l => l.label === u.nom) === -1) {
+        recherche.push({label: u.nom})
+      }
+      if (recherche.findIndex(l => l.label === u.adresse.commune) === -1) {
+        recherche.push({label: u.adresse.commune})
+      }
+      if (recherche.findIndex(l => l.label === u.adresse.codePostal.toString())
+          === -1) {
+        recherche.push({label: u.adresse.codePostal.toString()})
+      }
+    })
+    surListeConfirme(donnees)
+  })
+
+  var input = document.getElementById("autoComplete");
+
+  autocomplete({
+    input: input,
+    minLength: 1,
+    emptyMsg: "Recherche non trouvée",
+    fetch: function (text, update) {
+      text = text.toLowerCase();
+      var suggestions = recherche.filter(
+          n => n.label.toLowerCase().startsWith(text))
+      update(suggestions);
+    },
+    onSelect: function (item) {
+      input.value = item.label;
+    },
+  });
+
+  document.getElementById("rechercherMembre").addEventListener("submit",
+      envoyerRecherche)
+}
+const envoyerRecherche = (e) => {
+  e.preventDefault()
+  let session = recupUtilisateurDonneesSession()
+  let rechercher = document.getElementById("autoComplete").value
+  if (rechercher !== "") {
+    fetch(API_URL + "utilisateurs/recherche/" + rechercher, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token,
+      },
+    })
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+      }
+      return reponse.json();
+    })
+    .then((donnees) => {
+      console.log(donnees)
+      surListeConfirme(donnees)
+    })
+  } else {
+    fetch(API_URL + "utilisateurs/confirme", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token,
+      },
+    })
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+      }
+      return reponse.json();
+    })
+    .then((donnees) => surListeConfirme(donnees))
+  }
+}
+
+const surListeConfirme = async (donnees) => {
+  const session = recupUtilisateurDonneesSession()
+  let contenu = document.getElementById("contenu")
+  let liste = `<div class="liste-utilisateurs">`
+
+  contenu.innerHTML = `<div class="chargement-membres">
+    <div class="ui text active centred inline loader">Chargement de la liste des membres</div>
+</div>`
+
+  for (const utilisateur of donnees) {
+    let objetsOfferts = 0
+    let objetsDonnes = 0
+    let objetsRecus = 0
+    let objetsAbandonnes = 0
+
+    // Récupère le nombre d'objets offerts
+    await fetch(
+        API_URL + 'utilisateurs/nbreObjetsOfferts/' + utilisateur.idUtilisateur,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token,
+          },
+        })
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code erreur : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      return reponse.json();
+    })
+    .then((nbInt) => objetsOfferts = nbInt)
+
+    // Récupère le nombre d'objets donnés
+    await fetch(
+        API_URL + 'utilisateurs/nbreObjetsDonnes/' + utilisateur.idUtilisateur,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token,
+          },
+        })
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code erreur : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      return reponse.json();
+    })
+    .then((nbInt) => objetsDonnes = nbInt)
+
+    // Récupère le nombre d'objets reçus
+    await fetch(
+        API_URL + 'utilisateurs/nbreObjetsRecus/' + utilisateur.idUtilisateur, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token,
+          },
+        })
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code erreur : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      return reponse.json();
+    })
+    .then((nbInt) => objetsRecus = nbInt)
+
+    liste += `
+    <div class="utilisateur">
+      <div class="admin-membre">
+        <div class="utilisateur-nom-prenom">
+          <p>${utilisateur.nom}</p> 
+          <p>${utilisateur.prenom}</p>
+        </div>
+        <div class="utilisateur-pseudo"><p>${utilisateur.pseudo}</p></div>
+        <div class="utilisateur-objets">
+        <h4>Nombre d'objets</h4>
+          <div class="utilisateur-objets-spe">
+            <div><strong>Offerts : </strong><p>${objetsOfferts}</p></div>
+            <div><strong>Donnés : </strong><p>${objetsDonnes}</p></div>
+            <div><strong>Reçus : </strong><p>${objetsRecus}</p></div>
+            <div><strong>Abandonnés : </strong><p>${objetsAbandonnes}</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    `
+  }
+  liste += `</div>`
+  contenu.innerHTML = liste
 }
 
 // Récupération des utilisateurs en attente
@@ -97,12 +332,12 @@ const recupEnAttente = () => {
       Authorization: session.token,
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : " + response.statusText);
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
     }
-    return response.json();
+    return reponse.json();
   })
   .then((data) => surListeAttente(data))
 }
@@ -117,12 +352,12 @@ const recupRefuse = () => {
       Authorization: session.token,
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : " + response.statusText);
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
     }
-    return response.json();
+    return reponse.json();
   })
   .then((data) => surListeRefus(data))
 }

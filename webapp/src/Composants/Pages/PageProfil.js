@@ -16,13 +16,13 @@ const PageProfil = () => {
       Authorization: session.token
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Error code : " + response.status + " : " + response.statusText
+          "Error code : " + reponse.status + " : " + reponse.statusText
       );
     }
-    return response.json();
+    return reponse.json();
   })
   .then((data) => surProfilUtilisateur(data))
 }
@@ -174,15 +174,15 @@ const surProfilUtilisateur = (data) => {
                         Authorization: session.token,
                       }
                     })
-                .then((response) => {
-                  if (!response.ok) {
+                .then((reponse) => {
+                  if (!reponse.ok) {
                     throw new Error(
-                        "Error code : " + response.status + " : "
-                        + response.statusText
-                        + " : " + response.text())
+                        "Error code : " + reponse.status + " : "
+                        + reponse.statusText
+                        + " : " + reponse.text())
                   }
-                  console.log(response)
-                  return response.json()
+                  console.log(reponse)
+                  return reponse.json()
                 })
                 .then((donnee) => surProfilUtilisateur(donnee))
                 .catch((err) => {
@@ -332,14 +332,14 @@ const surModifierProfilUtilisateur = (data) => {
             Authorization: session.token,
           }
         })
-        .then((response) => {
-          if (!response.ok) {
+        .then((reponse) => {
+          if (!reponse.ok) {
             throw new Error(
-                "Error code : " + response.status + " : " + response.statusText
-                + " : " + response.text())
+                "Error code : " + reponse.status + " : " + reponse.statusText
+                + " : " + reponse.text())
           }
-          console.log(response)
-          return response.json()
+          console.log(reponse)
+          return reponse.json()
         })
         .then((donnee) => Redirect("/profil"))
         .catch(err => surErreur(err))

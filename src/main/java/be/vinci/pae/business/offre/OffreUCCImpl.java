@@ -1,5 +1,6 @@
 package be.vinci.pae.business.offre;
 
+import be.vinci.pae.business.objet.Objet;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
@@ -158,6 +159,44 @@ public class OffreUCCImpl implements OffreUCC {
     }
     serviceDAL.commettreTransaction();
     return liste;
+  }
+
+  /**
+   * Modifie une offre et son objet correspondant.
+   *
+   * @param offreAvecModification : l'offre contenant les modifications
+   * @return l'offre modifiée
+   * @throws BusinessException : lance une exception business si l'offre n'a pas pu être annulée
+   */
+  @Override
+  public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
+    serviceDAL.commencerTransaction();
+    OffreDTO offre;
+    try {
+      if (!((Objet) offreAvecModification.getObjetDTO()).verifierEtatPourModificationOffre()) {
+        throw new BusinessException(
+            "L'objet est dans un état ne lui permettant pas d'être modifié");
+      }
+      ObjetDTO objet = objetDAO.miseAJourObjet(offreAvecModification.getObjetDTO());
+      if (objet == null) {
+        if (objetDAO.rechercheParId(offreAvecModification.getObjetDTO()) == null) {
+          throw new PasTrouveException("L'objet n'existe pas");
+        }
+        throw new BusinessException("Données de l'objet sont périmées");
+      }
+      offre = offreDAO.modifierOffre(offreAvecModification);
+      if (offre == null) {
+        if (offreDAO.rechercheParId(offreAvecModification.getIdOffre()) == null) {
+          throw new PasTrouveException("L'offre n'existe pas");
+        }
+        throw new BusinessException("Données de l'offre sont périmées");
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return offre;
   }
 
 }

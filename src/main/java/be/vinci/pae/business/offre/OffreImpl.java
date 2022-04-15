@@ -98,4 +98,5 @@ public class OffreImpl implements Offre {
   public void annulerOffre() {
     this.getObjetDTO().setEtatObjet("Annulé");
   }
+
 }
