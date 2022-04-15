@@ -258,4 +258,22 @@ public class UtilisateurUCCTest {
     assertEquals(liste, utilisateurUCC.listerUtilisateursEtatsInscriptions("Refusé"));
   }
 
+  @Test
+  @DisplayName("Test réussi : méthode rechercherMembres renvoie une "
+      + "liste avec tous les utilisateurs habitant dans la ville de Verviers.")
+  public void testRechercherMembresV1() {
+    List<UtilisateurDTO> liste = new ArrayList<>();
+    Mockito.when(utilisateurDAO.rechercherMembres("Verviers")).thenReturn(liste);
+    assertEquals(liste, utilisateurUCC.rechercherMembres("Verviers"));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode nbreObjets renvoie une 0 objets offerts pour l'utilisateur "
+      + "ayant l'id 1.")
+  public void testNbreObjetsV1() {
+    int id = utilisateurDTO1.getIdUtilisateur();
+    Mockito.when(utilisateurDAO.nbreObjets(id, "Offert")).thenReturn(0);
+    assertEquals(0, utilisateurUCC.nbreObjets(id, "Offert"));
+  }
+
 }
