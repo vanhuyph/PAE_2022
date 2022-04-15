@@ -200,7 +200,7 @@ public class OffreUCCImpl implements OffreUCC {
   }
 
   /**
-   * Liste toutes les offres en fonction d'un critère de recherche (nom, type, etat)
+   * Liste toutes les offres en fonction d'un critère de recherche (nom, type, etat).
    *
    * @param recherche : le critère de recherche
    * @return liste : la liste des offres correspondant au critère de recherche

@@ -209,7 +209,7 @@ public class OffreDAOImpl implements OffreDAO {
 
   /**
    * Récupère tous les offres en fonctions d'un critère de recherche (nom, type de l'objet ou l'etat
-   * de l'objet
+   * de l'objet.
    *
    * @param recherche : le critère de recherche
    * @return liste : la liste des offres correspondant au critères de recherche
