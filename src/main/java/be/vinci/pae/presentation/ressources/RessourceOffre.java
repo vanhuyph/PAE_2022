@@ -204,7 +204,6 @@ public class RessourceOffre {
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
   public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
-    //check id du token == id de l'offreur ?
     if (offreAvecModification.getObjetDTO().getDescription().isBlank()
         || offreAvecModification.getPlageHoraire().isBlank()) {
       throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
