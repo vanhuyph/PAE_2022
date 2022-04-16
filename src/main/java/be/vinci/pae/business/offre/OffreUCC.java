@@ -19,4 +19,5 @@ public interface OffreUCC {
   OffreDTO modifierOffre(OffreDTO offreModifiee);
 
   List<OffreDTO> rechercherOffre(String recherche);
+
 }
