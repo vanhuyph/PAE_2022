@@ -259,6 +259,24 @@ public class UtilisateurUCCTest {
   }
 
   @Test
+  @DisplayName("Test raté : méthode miseAJourUtilisateur n'a pas correctement effectuée "
+      + "la mise à jour de l'utilisateur.")
+  public void testMiseAJourUtilisateurV1() {
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO1)).thenReturn(null);
+    assertThrows(PasTrouveException.class,
+        () -> utilisateurUCC.miseAJourUtilisateur(utilisateurDTO1));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode miseAJourUtilisateur a correctement effectuée "
+      + "la mise à jour de l'utilisateur.")
+  public void testMiseAJourUtilisateurV2() {
+    Mockito.when(adresseDAO.miseAJourAdresse(adresseDTO)).thenReturn(adresseDTO);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO1)).thenReturn(utilisateurDTO1);
+    assertEquals(utilisateurDTO1, utilisateurUCC.miseAJourUtilisateur(utilisateurDTO1));
+  }
+
+  @Test
   @DisplayName("Test réussi : méthode rechercherMembres renvoie une "
       + "liste avec tous les utilisateurs habitant dans la ville de Verviers.")
   public void testRechercherMembresV1() {
