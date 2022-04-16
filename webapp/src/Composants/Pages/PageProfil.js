@@ -149,7 +149,9 @@ const surProfilUtilisateur = (data) => {
         nouvMdp.value = ""
         confMdp.value = ""
         msgErr.innerHTML = ""
-        document.querySelector(".changer-mdp").classList.toggle("montrer-block")
+        if(e.pointerId !== -1){
+          document.querySelector(".changer-mdp").classList.toggle("montrer-block")
+        }
         document.querySelector("#modifier-mdp").addEventListener("click",
             (e) => {
               e.preventDefault()
@@ -269,15 +271,17 @@ const surModifierProfilUtilisateur = (data) => {
                 <input id="commune" type="text" name="commune" value="${data.adresse.commune}">
               </div>
             </div>
+           <div class="two fields">
+              <div class="field">
+                <button id="confirmer-modifier" type="submit" class="ui green button">Modifier</button>
+              </div>
+              <div class="field">
+                <button id="annuler-modifier" class="ui red button">Annuler</button>
+              </div>
+            </div> 
             <div class="field">
               <p class="message-erreur" id="profil-erreur"></p>
              </div>
-            <div class="field">
-              <div class="ui buttons">
-                  <button id="confirmer-modifier" type="submit" class="ui green button">Modifier</button>
-                  <button id="annuler-modifier" class="ui red button">Annuler</button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
