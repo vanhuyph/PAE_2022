@@ -27,17 +27,6 @@ public class ObjetImpl implements Objet {
   @JsonView(Vues.Public.class)
   private int version;
 
-  /**
-   * Verifie si l'état de l'objet permet de le modifier ainsi que son offre.
-   *
-   * @return true si l'objet peut être modifié false si non.
-   */
-  @Override
-  public boolean verifierEtatPourModificationOffre() {
-    return this.etatObjet != null && !this.etatObjet.equals("Annulé") && !this.etatObjet.equals(
-        "Donné");
-  }
-
   public int getIdObjet() {
     return idObjet;
   }
@@ -117,6 +106,17 @@ public class ObjetImpl implements Objet {
   @Override
   public int hashCode() {
     return Objects.hash(idObjet, typeObjet, offreur);
+  }
+
+  /**
+   * Verifie si l'état de l'objet permet de le modifier ainsi que son offre.
+   *
+   * @return true si l'objet peut être modifié false si non.
+   */
+  @Override
+  public boolean verifierEtatPourModificationOffre() {
+    return this.etatObjet != null && !this.etatObjet.equals("Annulé") && !this.etatObjet.equals(
+        "Donné");
   }
 
   @Override
