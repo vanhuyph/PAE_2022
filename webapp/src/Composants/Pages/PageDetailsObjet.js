@@ -230,10 +230,10 @@ const surDetailObjet = async (offre) => {
           Swal.fire({
             position: 'top-end',
             icon: 'success',
-            title: 'Vous avez marqué un intérêt',
+            title: 'Vous avez bien marqué votre intérêt',
             showConfirmButton: false,
-            toast:true,
-            timer:3000,
+            toast: true,
+            timer: 3000,
             showClass: {
               popup: 'animate__animated animate__fadeInRight'
             },
@@ -246,7 +246,7 @@ const surDetailObjet = async (offre) => {
         let deuxiemeInter = setInterval(() => {
           clearInterval(deuxiemeInter)
           Redirect("/")
-        },5000)
+        }, 5000)
 
       })
       .catch(err => surErreur(err))
