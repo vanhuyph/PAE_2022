@@ -93,10 +93,11 @@ const PageAccueil = () => {
         }
         return reponse.json();
       }).then((data) => {
-        document.querySelector("#rechercherObjet").addEventListener("submit", (e) => {
-          e.preventDefault()
-          rechercheObjet()
-        })
+        document.querySelector("#rechercherObjet").addEventListener("submit",
+            (e) => {
+              e.preventDefault()
+              rechercheObjet()
+            })
         surListeOffres(data)
       })
     }
@@ -140,13 +141,13 @@ const rechercheObjet = () => {
         "Content-Type": "application/json",
         Authorization: session.token
       },
-    }).then((response) => {
-      if (!response.ok) {
+    }).then((reponse) => {
+      if (!reponse.ok) {
         throw new Error(
-            "Code d'erreur : " + response.status + " : " + response.statusText
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText
         );
       }
-      return response.json();
+      return reponse.json();
     }).then((data) => surListeOffres(data))
   }
 

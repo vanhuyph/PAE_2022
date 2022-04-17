@@ -162,7 +162,6 @@ const afficherMembres = () => {
   })
 
   var input = document.getElementById("autoComplete");
-
   autocomplete({
     input: input,
     minLength: 1,
@@ -177,7 +176,6 @@ const afficherMembres = () => {
       input.value = item.label;
     },
   });
-
   document.getElementById("rechercherMembre").addEventListener("submit",
       envoyerRecherche)
 }

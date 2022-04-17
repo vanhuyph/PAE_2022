@@ -57,7 +57,7 @@ const surDetailObjet = async (offre) => {
   })
   .then((nbInt) => nbInteressees = nbInt)
 
-  // Récupération des offres précedentes
+  // Récupération des offres précédentes
   let offresPrecedentes = "Pas d'offres précédentes";
   await fetch(
       API_URL + 'offres/offresPrecedentes/' + offre.objetDTO.idObjet, {
@@ -143,7 +143,7 @@ const surDetailObjet = async (offre) => {
           <p>${offre.objetDTO.description}</p>
         </div>
         <div class="column">
-          <h4>Date(s) précedente(s) de l'offre</h4>
+          <h4>Date(s) précédente(s) de l'offre</h4>
           <p>${offresPrecedentes}</p>
         </div>
       </div>
@@ -350,7 +350,7 @@ const surDetailObjetProprio = async (offre) => {
           <p>${offre.objetDTO.description}</p>
         </div>
         <div class="column">
-          <h4>Date(s) précedente(s) de l'offre</h4>
+          <h4>Date(s) précédente(s) de l'offre</h4>
           <p>${offresPrecedentes}</p>
         </div>
       </div>
@@ -503,7 +503,7 @@ const surDetailObjetProprioModifier = async (offre) => {
         </div>
         </div>
         <div class="column">
-          <h4>Date(s) précedente(s) de l'offre</h4>
+          <h4>Date(s) précédente(s) de l'offre</h4>
           ${offresPrecedentes}
         </div>
       </div>
