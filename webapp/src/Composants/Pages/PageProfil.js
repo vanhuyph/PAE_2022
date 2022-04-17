@@ -151,8 +151,9 @@ const surProfilUtilisateur = (data) => {
         nouvMdp.value = ""
         confMdp.value = ""
         msgErr.innerHTML = ""
-        if(e.pointerId !== -1){
-          document.querySelector(".changer-mdp").classList.toggle("montrer-block")
+        if (e.pointerId !== -1) {
+          document.querySelector(".changer-mdp").classList.toggle(
+              "montrer-block")
         }
         document.querySelector("#modifier-mdp").addEventListener("click",
             (e) => {
@@ -194,8 +195,8 @@ const surProfilUtilisateur = (data) => {
                     icon: 'success',
                     title: 'Votre mot de passe a bien été changé',
                     showConfirmButton: false,
-                    toast:true,
-                    timer:3000,
+                    toast: true,
+                    timer: 3000,
                     showClass: {
                       popup: 'animate__animated animate__fadeInRight'
                     },
@@ -212,8 +213,8 @@ const surProfilUtilisateur = (data) => {
                     icon: 'error',
                     title: 'Votre mot de passe n\'a pas pu etre changé',
                     showConfirmButton: false,
-                    toast:true,
-                    timer:3000,
+                    toast: true,
+                    timer: 3000,
                     showClass: {
                       popup: 'animate__animated animate__fadeInRight'
                     },
@@ -221,10 +222,10 @@ const surProfilUtilisateur = (data) => {
                       popup: 'animate__animated animate__fadeOutRight'
                     }
                   })
-                  if(err.message.includes('412')){
+                  if (err.message.includes('412')) {
                     document.querySelector(
                         "#mdp-erreur").innerHTML = "Mot de passe incorrect"
-                  }else {
+                  } else {
                     document.querySelector(
                         "#mdp-erreur").innerHTML = err.message
                   }
@@ -232,7 +233,6 @@ const surProfilUtilisateur = (data) => {
               }
             })
       })
-
   document.getElementById("modifier-profil").addEventListener("click", (e) => {
     e.preventDefault()
     surModifierProfilUtilisateur(data)
@@ -389,8 +389,8 @@ const surModifierProfilUtilisateur = (data) => {
             icon: 'success',
             title: 'Votre profil a bien été modifié',
             showConfirmButton: false,
-            toast:true,
-            timer:3000,
+            toast: true,
+            timer: 3000,
             showClass: {
               popup: 'animate__animated animate__fadeInRight'
             },

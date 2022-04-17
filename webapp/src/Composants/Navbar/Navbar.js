@@ -28,7 +28,6 @@ const Navbar = () => {
                     <div class="item" data-uri="/deconnexion">Se déconnecter</div>
                   </div>
                   </div>
-                 
                 </li>
             </ul>
         </div>
@@ -71,17 +70,17 @@ const Navbar = () => {
             <ul class="nav-list">
                 <li><a href="#" data-uri="/">Accueil</a></li>
                 <li><a href="#" data-uri="/connexion">Se connecter</a></li>
-                
             </ul>
         </div>
         </nav>
     `;
   }
   navbarWrapper.innerHTML = navbar;
-  if(utilisateur) {
+  if (utilisateur) {
     window.addEventListener("click", (e) => {
-      if(document.querySelector(".menu").classList.contains("montrer-block")) {
-        if (!document.querySelector(".menu").contains(e.target) && !document.querySelector(".li-menu").contains(e.target)) {
+      if (document.querySelector(".menu").classList.contains("montrer-block")) {
+        if (!document.querySelector(".menu").contains(e.target)
+            && !document.querySelector(".li-menu").contains(e.target)) {
           document.querySelector(".menu").classList.remove("montrer-block")
         }
       }
@@ -89,7 +88,6 @@ const Navbar = () => {
     document.querySelector(".li-menu").addEventListener("click", () => {
       document.querySelector(".menu").classList.toggle("montrer-block")
     })
-
   }
 };
 
