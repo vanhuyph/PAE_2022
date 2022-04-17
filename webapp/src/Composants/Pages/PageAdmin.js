@@ -2,6 +2,7 @@ import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
 import autocomplete from 'autocompleter';
+import rechecheIcon from "../../img/search.svg"
 
 const barVertical = `
 <div id="bar-vertical" class="ui left sidebar visible vertical menu">
@@ -40,8 +41,10 @@ const pageMembres = `
     <form id="rechercherMembre" class="ui form">
     <div class="field">
       <input id="autoComplete" type="search">
+      <button type="submit" class="button"><img src=${rechecheIcon} alt="recheche icon" height="20px"></button>
     </div>
     </form>
+    
   </div>
   <div id="contenu">
   
