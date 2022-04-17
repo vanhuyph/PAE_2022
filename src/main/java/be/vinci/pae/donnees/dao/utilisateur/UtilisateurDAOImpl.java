@@ -39,8 +39,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setString(1, pseudo);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          utilisateurDTO = remplirUtilisateursDepuisRS(rs, utilisateurDTO);
-          return utilisateurDTO;
+          return remplirUtilisateursDepuisRS(rs, utilisateurDTO);
         } else {
           return null;
         }
@@ -54,8 +53,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * Recherche un utilisateur via un id dans la base de données.
    *
    * @param id : l'id de l'utilisateur
-   * @return utilisateurDTO : l'utilisateur, s'il trouve un utilisateur qui possède l'id passé en
-   * paramètre
+   * @return utilisateurDTO : l'utilisateur, s'il trouve un utilisateur possédant l'id en paramètre
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
@@ -71,8 +69,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setInt(1, id);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          utilisateurDTO = remplirUtilisateursDepuisRS(rs, utilisateurDTO);
-          return utilisateurDTO;
+          return remplirUtilisateursDepuisRS(rs, utilisateurDTO);
         } else {
           return null;
         }
