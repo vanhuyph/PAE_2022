@@ -11,7 +11,9 @@
 body {
   background-color: #e1e9f3;
 }
-
+main{
+  min-height: 82vh;
+}
 /* Modification UI */
 .button {
   width: 100%;
@@ -688,6 +690,12 @@ Fin Message de bienvenue*/
 /*Accueil*/
 .montrer-block {
   display: block !important;
+}
+#footer .segment{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90px;
 }
 
 @media screen and (max-width: 340px) {
