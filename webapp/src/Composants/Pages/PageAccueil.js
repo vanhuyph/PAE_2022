@@ -92,16 +92,22 @@ const PageAccueil = () => {
           );
         }
         return reponse.json();
-      }).then((data) => surListeOffres(data))
+      }).then((data) => {
+        document.querySelector("#rechercherObjet").addEventListener("submit", (e) => {
+          e.preventDefault()
+          rechercheObjet()
+        })
+        surListeOffres(data)
+      })
     }
   }
   declencheurModal.forEach(decl => decl.addEventListener("click", () => {
     conteneurModal.classList.toggle("active")
   }))
-  document.querySelector("#rechercherObjet").addEventListener("submit", (e) => {
+  /*document.querySelector("#rechercherObjet").addEventListener("submit", (e) => {
     e.preventDefault()
     rechercheObjet()
-  })
+  })*/
 };
 
 const rechercheObjet = () => {
