@@ -78,6 +78,9 @@ main{
 .avatar img{
   height: 75%;
 }
+.li-menu{
+  margin-left: 10px !important;
+}
 .li-menu .menu .item a {
   height: 100px;
 }
