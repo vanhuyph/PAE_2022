@@ -1,6 +1,8 @@
 import {recupUtilisateurDonneesSession} from '../../utilitaires/session'
 import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
+import Swal from 'sweetalert2'
+import 'animate.css'
 
 const PageProfil = () => {
   let session = recupUtilisateurDonneesSession()
@@ -186,10 +188,46 @@ const surProfilUtilisateur = (data) => {
                   console.log(reponse)
                   return reponse.json()
                 })
-                .then((donnee) => surProfilUtilisateur(donnee))
+                .then((donnee) => {
+                  Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Votre mot de passe a bien été changé',
+                    showConfirmButton: false,
+                    toast:true,
+                    timer:3000,
+                    showClass: {
+                      popup: 'animate__animated animate__fadeInRight'
+                    },
+                    hideClass: {
+                      popup: 'animate__animated animate__fadeOutRight'
+                    }
+                  })
+                  surProfilUtilisateur(donnee)
+                })
                 .catch((err) => {
                   console.log(err)
-                  document.querySelector("#mdp-erreur").innerHTML = err.message
+                  Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Votre mot de passe n\'a pas pu etre changé',
+                    showConfirmButton: false,
+                    toast:true,
+                    timer:3000,
+                    showClass: {
+                      popup: 'animate__animated animate__fadeInRight'
+                    },
+                    hideClass: {
+                      popup: 'animate__animated animate__fadeOutRight'
+                    }
+                  })
+                  if(err.message.includes('412')){
+                    document.querySelector(
+                        "#mdp-erreur").innerHTML = "Mot de passe incorrect"
+                  }else {
+                    document.querySelector(
+                        "#mdp-erreur").innerHTML = err.message
+                  }
                 })
               }
             })

@@ -1,6 +1,7 @@
 import {API_URL} from "../../utilitaires/serveur";
 import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import {Redirect} from "../Router/Router";
+import Swal from "sweetalert2";
 
 const PageDetailsObjet = (id) => {
   const session = recupUtilisateurDonneesSession()
@@ -226,19 +227,27 @@ const surDetailObjet = async (offre) => {
         let premierInter = setInterval(() => {
           document.querySelector("#marquer-interet").classList.remove("loading")
           document.querySelector("#marquer-interet").classList.add("disabled")
-          let popup = document.querySelector(".interet-popup");
-          document.querySelector(
-              ".container-popup-interet").innerHTML = "<p>Votre intérêt a bien été marqué</p>"
-          popup.style = "transform: translateX(-310px); opacity: 1;transition: all 1s ease;";
-          let deuxiemeInter = setInterval(() => {
-            document.querySelector(".nb-interessees").innerHTML = nbInteressees
-                + 1;
-            document.querySelector(".etat-objet").innerHTML = 'Intéressé'
-            popup.style = "transform: translateX(300px); opacity: 0; transition: all 3.5s ease;";
-            clearInterval(deuxiemeInter);
-          }, 3000)
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Vous avez marqué un intérêt',
+            showConfirmButton: false,
+            toast:true,
+            timer:3000,
+            showClass: {
+              popup: 'animate__animated animate__fadeInRight'
+            },
+            hideClass: {
+              popup: 'animate__animated animate__fadeOutRight'
+            }
+          })
           clearInterval(premierInter);
         }, 1000)
+        let deuxiemeInter = setInterval(() => {
+          clearInterval(deuxiemeInter)
+          Redirect("/")
+        },5000)
+
       })
       .catch(err => surErreur(err))
     }
