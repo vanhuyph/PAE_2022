@@ -18,4 +18,5 @@ public interface OffreDAO {
   OffreDTO modifierOffre(OffreDTO offreAvecModification);
 
   List<OffreDTO> rechercherOffres(String recherche);
+
 }

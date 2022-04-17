@@ -74,8 +74,8 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   /**
    * Renvoie un utilisateur en fonction de son pseudo.
    *
-   * @param pseudo : le pseudo de l'utilisateur
-   * @return utilisateur : l'utilisateur possèdant l'id passé en paramètre
+   * @param pseudo : le pseudo de l'utilisateur à rechercher
+   * @return utilisateur : l'utilisateur recherché
    * @throws PasTrouveException : est lancée si l'utilisateur avec le pseudo passé en paramètre
    *                            n'est pas trouvé
    */
@@ -102,7 +102,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @param utilisateurDTO : l'utilisateur à inscrire
    * @return utilisateurARenvoyer : l'utilisateur inscrit
    * @throws ConflitException  : est lancée si un utilisateur possède déjà le pseudo
-   * @throws BusinessException : est lancée si l'utilisateur/adresse n'a pas pu être ajouté
+   * @throws BusinessException : est lancée si l'utilisateur/adresse n'a pas pu être ajoutée
    */
   @Override
   public UtilisateurDTO inscription(UtilisateurDTO utilisateurDTO) {
@@ -304,12 +304,18 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * Liste tous les utilisateurs en fonction d'un critère de recherche (nom, code postal ou ville).
    *
    * @param recherche : le critère de recherche
-   * @return liste : la liste des utilisateurs correspondant au critère de recherche
+   * @return liste : la liste des utilisateurs correspondante au critère de recherche
    */
   @Override
   public List<UtilisateurDTO> rechercherMembres(String recherche) {
     serviceDAL.commencerTransaction();
-    List<UtilisateurDTO> liste = utilisateurDAO.rechercherMembres(recherche);
+    List<UtilisateurDTO> liste;
+    try {
+      liste = utilisateurDAO.rechercherMembres(recherche);
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
     serviceDAL.commettreTransaction();
     return liste;
   }

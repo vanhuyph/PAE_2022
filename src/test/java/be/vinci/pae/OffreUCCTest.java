@@ -135,7 +135,7 @@ public class OffreUCCTest {
   public void rechercheParIdV1() {
     int id = -1;
     Mockito.when(offreDAO.rechercheParId(id)).thenReturn(null);
-    assertThrows(BusinessException.class, () -> offreUCC.rechercheParId(id));
+    assertThrows(PasTrouveException.class, () -> offreUCC.rechercheParId(id));
   }
 
   @Test

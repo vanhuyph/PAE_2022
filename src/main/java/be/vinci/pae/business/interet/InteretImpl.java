@@ -71,6 +71,11 @@ public class InteretImpl implements Interet {
   }
 
   @Override
+  public void marquerInteretObjet() {
+    this.getObjet().setEtatObjet("Intéressé");
+  }
+
+  @Override
   public String toString() {
     return "InteretImpl{"
         + "utilisateur=" + utilisateur
@@ -78,11 +83,6 @@ public class InteretImpl implements Interet {
         + ", dateRdv=" + dateRdv
         + "', version= " + version
         + '}';
-  }
-
-  @Override
-  public void marquerInteretObjet() {
-    this.getObjet().setEtatObjet("Intéressé");
   }
 
 }
