@@ -383,7 +383,23 @@ const surModifierProfilUtilisateur = (data) => {
           console.log(reponse)
           return reponse.json()
         })
-        .then((donnee) => Redirect("/profil"))
+        .then((donnee) => {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Votre profil a bien été modifié',
+            showConfirmButton: false,
+            toast:true,
+            timer:3000,
+            showClass: {
+              popup: 'animate__animated animate__fadeInRight'
+            },
+            hideClass: {
+              popup: 'animate__animated animate__fadeOutRight'
+            }
+          })
+          Redirect("/profil")
+        })
         .catch(err => surErreur(err))
       })
 }
