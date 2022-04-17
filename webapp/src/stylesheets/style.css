@@ -12,7 +12,8 @@ body {
   background-color: #e1e9f3;
 }
 main{
-  min-height: 82vh;
+  min-height: 590px;
+  margin-top: 20px;
 }
 /* Modification UI */
 .button {
@@ -240,7 +241,6 @@ main{
 /*Offres*/
 .offres {
   margin: auto;
-  margin-top: 20px;
   width: 60%;
 }
 
@@ -702,11 +702,26 @@ Fin Message de bienvenue*/
 .montrer-block {
   display: block !important;
 }
-#footer .segment{
-  display: flex;
+footer{
+  margin-top: 70px;
+  height: 15%;
+}
+#footer{
+  /*display: flex;
   justify-content: center;
+  align-items: center;*/
+  height: 100%;
+  border-top: 1px solid #d4d4d5;
+}
+#footer .segment{
+  height: 100%;
+}
+#footer-logo{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
   align-items: center;
-  height: 90px;
+  justify-content: space-around;
 }
 
 @media screen and (max-width: 340px) {
