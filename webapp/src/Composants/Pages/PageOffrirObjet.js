@@ -125,13 +125,13 @@ const surChoixTypeObjet = () => {
   const choixTypeObjet = document.querySelector("#choixTypeObjet")
   let typeObjet = document.querySelector("#typeObjet")
   const formCreerType = document.querySelector("#formCreerType")
-  console.log("formCreerType :" + formCreerType)
-  console.log("clic sur surChoixTypeObjet")
-  console.log("value clic :" + choixTypeObjet.value)
+  console.log("dans surChoixTypeObjet , value ="+choixTypeObjet.value);
   if (choixTypeObjet.value === "nouveauType"){
-    console.log("in the if of surChoixTypeObjet")
-    typeObjet.innerHTML += `<div id="formCreerType">
 
+    if(!formCreerType){
+      document.querySelector(".erreur-type").innerHTML = ""
+      typeObjet.innerHTML += `<div id="formCreerType">
+    
       <div >
         <label for="nom">Nom du nouveau type de l'objet</label>
         <input type="text" id="nomType">
@@ -142,23 +142,20 @@ const surChoixTypeObjet = () => {
         <button id="buttonCreerType">Créer nouveau type</button>
       </div>
       </div> `;
-    console.log("in the if of surChoixTypeObjet fin")
-
-    const buttonCreerType = document.querySelector("#buttonCreerType")
-    buttonCreerType.addEventListener("click", surCreerTypeObjet)
-    console.log("choixtypeobjetvalue"+choixTypeObjet.value)
-    choixTypeObjet.value = "nouveauType"
-    console.log("choixtypeobjetvalue"+choixTypeObjet.value)
+      const buttonCreerType = document.querySelector("#buttonCreerType")
+      const choixTypeObjet = document.querySelector("#choixTypeObjet")
+      buttonCreerType.addEventListener("click", surCreerTypeObjet)
+      choixTypeObjet.addEventListener("change", surChoixTypeObjet)
+      choixTypeObjet.value = "nouveauType"
+    }
   } else {
-    console.log("in the else of surChoixTypeObjet")
+    if(formCreerType){
+      formCreerType.remove();
+    }
   }
-
-
 }
 
 //Permet la création d'un nouveau type d'objet
-
-//a empecher de pouvoir créer des types deja existants
 const surCreerTypeObjet = async (e) => {
   e.preventDefault();
   let nomTypeRecu = "vide";
@@ -191,6 +188,8 @@ const surCreerTypeObjet = async (e) => {
     };
     await fetch('/api/typesObjet/creerTypeObjet', options).then((res) => {
       if (!res.ok) {
+        document.querySelector(
+            ".erreur-nomType").innerHTML = "Votre nouveau type d'objet existe déjà";
         throw new Error(
             "Code d'erreur : " + res.status + " : " + res.statusText
         );
@@ -201,16 +200,17 @@ const surCreerTypeObjet = async (e) => {
     }).then((data) => {
       afficherTypeObjet()
       const formCreerType = document.querySelector("#formCreerType")
-      formCreerType.innerHTML=``
+      formCreerType.remove();
       nomTypeRecu = data.toString()
       console.log("type of choixtypeobjet.value"+ typeof choixTypeObjet.value);
       console.log("choixtypeobjet.value"+ choixTypeObjet.value);
       console.log(data.idType);
       choixTypeObjet.value = data.idType.toString()  //je n'arrive pas à select le nouveau type
-      console.log("type of choixtypeobjet.value"+ typeof choixTypeObjet.value);
-      console.log("choixtypeobjet.value"+ choixTypeObjet.value);
+      console.log("type of choixtypeobjet.value :"+ typeof choixTypeObjet.value);
+      console.log("choixtypeobjet.value :"+ choixTypeObjet.value);
 
       console.log("choix type objet: "+choixTypeObjet.value)
+      document.querySelector(".erreur-type").innerHTML = "Votre nouveau type a bien été créé";
     })
 
   }

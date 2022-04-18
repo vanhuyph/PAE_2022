@@ -2,6 +2,7 @@ package be.vinci.pae.business.typeobjet;
 
 import be.vinci.pae.donnees.dao.typeobjet.TypeObjetDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
+import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import jakarta.inject.Inject;
 import java.util.List;
 
@@ -33,8 +34,23 @@ public class TypeObjetUCCImpl implements TypeObjetUCC {
 
   @Override
   public TypeObjetDTO creerTypeObjet(TypeObjetDTO typeObjetDTO) {
+
     serviceDAL.commencerTransaction();
-    TypeObjetDTO typeObjet = typeObjetDAO.creerTypeObjet(typeObjetDTO);
+    TypeObjetDTO typeObjet;
+
+    try {
+      typeObjet = typeObjetDAO.verifierUniqueTypeObjet(typeObjetDTO);
+
+      if (typeObjet.getIdType() == 0) {
+        typeObjet = typeObjetDAO.creerTypeObjet(typeObjetDTO);
+      } else {
+        throw new BusinessException("Le type d'objet existe déjà");
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+
     serviceDAL.commettreTransaction();
     return typeObjet;
   }

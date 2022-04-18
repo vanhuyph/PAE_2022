@@ -15,7 +15,8 @@ CREATE TABLE projet.adresses
 CREATE TABLE projet.types_objets
 (
     id_type SERIAL PRIMARY KEY,
-    nom     VARCHAR(50) NOT NULL
+    nom     VARCHAR(50) NOT NULL,
+    version INTEGER NOT NULL
 );
 
 CREATE TABLE projet.utilisateurs
@@ -97,29 +98,29 @@ VALUES (DEFAULT, 'bri', 'Lehmann', 'Brigitte',
         NULL, 0);
 
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Accessoires pour animaux domestiques');
+VALUES (DEFAULT, 'Accessoires pour animaux domestiques', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Accessoires pour voiture');
+VALUES (DEFAULT, 'Accessoires pour voiture', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Décoration');
+VALUES (DEFAULT, 'Décoration', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Jouets');
+VALUES (DEFAULT, 'Jouets', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Literie');
+VALUES (DEFAULT, 'Literie', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Matériel de cuisine');
+VALUES (DEFAULT, 'Matériel de cuisine', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Matériel de jardinage');
+VALUES (DEFAULT, 'Matériel de jardinage', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Meuble');
+VALUES (DEFAULT, 'Meuble', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Plantes');
+VALUES (DEFAULT, 'Plantes', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Produits cosmétiques');
+VALUES (DEFAULT, 'Produits cosmétiques', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Vélo, trottinette');
+VALUES (DEFAULT, 'Vélo, trottinette', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Vêtements');
+VALUES (DEFAULT, 'Vêtements', 0);
 
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'Offert', 3, 'Décorations de Noël de couleur rouge.', 3, NULL,

@@ -3,33 +3,71 @@ package be.vinci.pae.business.typeobjet;
 import be.vinci.pae.vue.Vues;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TypeObjetImpl implements TypeObjetDTO {
+public class TypeObjetImpl implements TypeObjet {
 
   @JsonView(Vues.Public.class)
   private int idType;
   @JsonView(Vues.Public.class)
   private String nom;
+  @JsonView(Vues.Public.class)
+  private int version;
 
-  @Override
+
   public int getIdType() {
     return idType;
   }
 
-  @Override
+
   public void setIdType(int idType) {
     this.idType = idType;
   }
 
-  @Override
+
   public String getNom() {
     return nom;
   }
 
-  @Override
+
   public void setNom(String nom) {
     this.nom = nom;
+  }
+
+
+  public int getVersion() {
+    return version;
+  }
+
+  public void setVersion(int version) {
+    this.version = version;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TypeObjetImpl typeObjet = (TypeObjetImpl) o;
+    return idType == typeObjet.idType && nom.equals(typeObjet.nom);
+
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(idType, nom);
+  }
+
+  @Override
+  public String toString() {
+    return "TypeObjet{"
+        + "id type= " + idType
+        + ", nom= " + nom
+        + '}';
   }
 
 }

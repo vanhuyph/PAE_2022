@@ -9,4 +9,6 @@ public interface TypeObjetDAO {
 
   TypeObjetDTO creerTypeObjet(TypeObjetDTO typeObjetDTO);
 
+  TypeObjetDTO verifierUniqueTypeObjet(TypeObjetDTO typeObjetDTO);
+
 }
