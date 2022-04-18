@@ -17,13 +17,12 @@ public class AdresseDAOImpl implements AdresseDAO {
   @Inject
   private DomaineFactory domaineFactory;
 
-
   /**
    * Recherche une adresse via un id dans la base de données.
    *
    * @param id : l'id de l'adresse
    * @return adresseDTO : l'adresse récupérée
-   * @throws FatalException : est lancée s'il y a un problème côté serveur
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public AdresseDTO rechercheParId(int id) {
@@ -82,7 +81,6 @@ public class AdresseDAOImpl implements AdresseDAO {
     String requetePs = "UPDATE projet.adresses SET rue = ?, numero = ?, boite = ?, "
         + "code_postal = ?, commune = ?, version = ? WHERE id_adresse = ? AND version = ? "
         + "RETURNING id_adresse, rue, numero, boite, code_postal, commune, version;";
-
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       return recupAdresseDTODepuisPs(adresseDTO, ps);
     } catch (SQLException e) {
@@ -141,7 +139,7 @@ public class AdresseDAOImpl implements AdresseDAO {
    *
    * @param adresseDTO : l'adresse à récupérer
    * @param ps         : le PreparedStatement
-   * @return adresseDTO : l'adresse récupéré
+   * @return adresseDTO : l'adresse récupérée
    * @throws FatalException : est lancée s'il y a un problème côté serveur
    */
   private AdresseDTO recupAdresseDTODepuisPs(AdresseDTO adresseDTO, PreparedStatement ps) {

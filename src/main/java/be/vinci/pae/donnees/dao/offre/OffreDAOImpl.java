@@ -179,11 +179,10 @@ public class OffreDAOImpl implements OffreDAO {
    *
    * @param offreAvecModification : : l'offre contenant les modifications
    * @return l'offre modifiée
-   * @throws FatalException si l'offre n'a pas pu être modifiée
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
-
     String requetePs = "UPDATE projet.offres SET plage_horaire = ?, version = ? "
         + "WHERE id_offre = ? AND version = ?"
         + "RETURNING id_offre, date_offre, plage_horaire, version;";
@@ -206,12 +205,12 @@ public class OffreDAOImpl implements OffreDAO {
   }
 
   /**
-   * Récupère tous les offres en fonctions d'un critère de recherche (nom, type de l'objet ou l'etat
-   * de l'objet.
+   * Récupère tous les offres en fonction d'un critère de recherche (nom du membre, type d'objet ou
+   * état d'objet.
    *
    * @param recherche : le critère de recherche
-   * @return liste : la liste des offres correspondant au critères de recherche
-   * @throws FatalException = est lancée s'il y a eu un problème côté serveur
+   * @return liste : la liste des offres correspondante au critère de recherche
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public List<OffreDTO> rechercherOffres(String recherche) {
@@ -270,9 +269,10 @@ public class OffreDAOImpl implements OffreDAO {
   /**
    * Rempli les données de l'offre depuis un ResultSet.
    *
-   * @param offreDTO : l'offre vide, qui va être rempli
-   * @param rs       : le Result Statement déjà préparé
-   * @return offreDTO : l'offre rempli
+   * @param offreDTO : l'offre vide, qui va être remplie
+   * @param rs       : le ResultSet
+   * @return offreDTO : l'offre remplie
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private OffreDTO remplirOffreDepuisResultSet(OffreDTO offreDTO, ResultSet rs) {
     ObjetDTO objetDTO = factory.getObjet();
@@ -326,9 +326,10 @@ public class OffreDAOImpl implements OffreDAO {
   /**
    * Rempli les données de l'offre depuis un ResultSet.
    *
-   * @param offreDTO : l'offre vide, qui va être rempli
-   * @param rs       : le Result Statement déjà préparé
-   * @return offreDTO : l'offre rempli
+   * @param offreDTO : l'offre vide, qui va être remplie
+   * @param rs       : le ResultSet
+   * @return offreDTO : l'offre remplie
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private OffreDTO remplirOffrePourUpdate(OffreDTO offreDTO, ResultSet rs) {
     try {
@@ -341,4 +342,5 @@ public class OffreDAOImpl implements OffreDAO {
       throw new FatalException(e.getMessage(), e);
     }
   }
+
 }

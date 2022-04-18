@@ -39,8 +39,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setString(1, pseudo);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          utilisateurDTO = remplirUtilisateursDepuisRS(rs, utilisateurDTO);
-          return utilisateurDTO;
+          return remplirUtilisateursDepuisRS(rs, utilisateurDTO);
         } else {
           return null;
         }
@@ -54,7 +53,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * Recherche un utilisateur via un id dans la base de données.
    *
    * @param id : l'id de l'utilisateur
-   * @return utilisateurDTO : l'utilisateur, s'il trouve un utilisateur qui possède ce id
+   * @return utilisateurDTO : l'utilisateur, s'il trouve un utilisateur possédant l'id en paramètre
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
@@ -70,8 +69,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setInt(1, id);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          utilisateurDTO = remplirUtilisateursDepuisRS(rs, utilisateurDTO);
-          return utilisateurDTO;
+          return remplirUtilisateursDepuisRS(rs, utilisateurDTO);
         } else {
           return null;
         }
@@ -248,7 +246,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * ville).
    *
    * @param recherche : le critère de recherche
-   * @return liste : la liste des utilisateurs correspondant au critère de recherche
+   * @return liste : la liste des utilisateurs correspondante au critère de recherche
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
@@ -375,8 +373,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * Rempli les données de l'adresse depuis un ResultSet.
    *
    * @param rs         : le ResultSet
-   * @param adresseDTO : l'adresse vide, qui va être rempli
-   * @return adresseDTO : l'adresse rempli
+   * @param adresseDTO : l'adresse vide, qui va être remplie
+   * @return adresseDTO : l'adresse remplie
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private AdresseDTO remplirAdresseDepuisRS(ResultSet rs, AdresseDTO adresseDTO) {

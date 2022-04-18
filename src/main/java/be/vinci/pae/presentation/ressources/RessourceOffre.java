@@ -90,7 +90,7 @@ public class RessourceOffre {
    * @param offreDTO : l'offre à annuler
    * @return offreDTO : l'offre annulée
    * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'annulation
-   *                               a échoué
+   *                               a échouée
    */
   @PUT
   @Path("annulerOffre")
@@ -103,7 +103,7 @@ public class RessourceOffre {
     }
     offreDTO = offreUCC.annulerOffre(offreDTO);
     if (offreDTO == null) {
-      throw new PresentationException("L'annulation de l'offre a échoué", Status.BAD_REQUEST);
+      throw new PresentationException("L'annulation de l'offre a échouée", Status.BAD_REQUEST);
     }
     return offreDTO;
   }
@@ -215,7 +215,7 @@ public class RessourceOffre {
    * Liste toutes les offres en fonction d'un critère de recherche (nom, type, état).
    *
    * @param recherche : le critère de recherche
-   * @return liste : la liste des offres correspondant au critère de recherche
+   * @return liste : la liste des offres correspondante au critère de recherche
    */
   @GET
   @Path("recherche/{recherche}")

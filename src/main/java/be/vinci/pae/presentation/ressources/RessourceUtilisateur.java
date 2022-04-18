@@ -103,7 +103,7 @@ public class RessourceUtilisateur {
   public ObjectNode recupererUtilisateur(@Context ContainerRequest request) {
     UtilisateurDTO utilisateur = (UtilisateurDTO) request.getProperty("utilisateur");
     if (utilisateur == null) {
-      throw new PresentationException("L'utilisateur n'a pas été retrouvé", Status.BAD_REQUEST);
+      throw new PresentationException("L'utilisateur n'a pas été trouvé", Status.BAD_REQUEST);
     }
     utilisateur = utilisateurUCC.rechercheParPseudo(utilisateur.getPseudo());
     ObjectNode noeud = creationToken(utilisateur);
@@ -254,7 +254,7 @@ public class RessourceUtilisateur {
    * Liste tous les utilisateurs en fonction d'un critère de recherche (nom, code postal ou ville).
    *
    * @param recherche : le critère de recherche
-   * @return liste : la liste des utilisateurs correspondant au critère de recherche
+   * @return liste : la liste des utilisateurs correspondante au critère de recherche
    */
   @GET
   @Path("recherche/{recherche}")
@@ -270,8 +270,10 @@ public class RessourceUtilisateur {
   /**
    * Modifie le profil de l'utilisateur.
    *
-   * @param utilisateurDTO : l'utilisateur modifié
-   * @return utilisateurDTO : l'utilisateur
+   * @param utilisateurDTO : l'utilisateur à modifier les informations
+   * @return utilisateurDTO : l'utilisateur avec ses informations modifiées
+   * @throws PresentationException : est lancée si des champs sont manquants lors de la
+   *                               modification
    */
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
