@@ -9,4 +9,5 @@ public interface Offre extends OffreDTO {
 
   void annulerOffre();
 
+
 }

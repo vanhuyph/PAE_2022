@@ -65,6 +65,7 @@ const PageAccueil = () => {
       enleverDonneeSession()
       Navbar()
     } else {
+
       pageAccueil += `
       <div class="offres">
         <h2>Toutes les offres</h2>
@@ -92,6 +93,11 @@ const PageAccueil = () => {
     conteneurModal.classList.toggle("active")
   }))
 };
+
+//Affichage de la fenetre modal pour évaluer un objet recu
+const surEvaluationObjet = (data) => {
+
+}
 
 // Affichage d'une liste des offres les plus récentes
 const surListeOffresRecentes = (data) => {
