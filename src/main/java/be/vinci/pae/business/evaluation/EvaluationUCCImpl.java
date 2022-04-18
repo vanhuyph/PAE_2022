@@ -25,7 +25,7 @@ public class EvaluationUCCImpl implements EvaluationUCC {
   @Override
   public EvaluationDTO creerEvaluation(EvaluationDTO evaluationDTO) {
     serviceDAL.commencerTransaction();
-    EvaluationDTO nEvaluation;
+    EvaluationDTO evaluation;
     try {
       ObjetDTO objetEvalue = objetDAO.rechercheParId(evaluationDTO.getObjet());
       if (objetEvalue == null) {
@@ -35,13 +35,13 @@ public class EvaluationUCCImpl implements EvaluationUCC {
       if (!objetEvalue.getEtatObjet().equals("donné")) {
         throw new BusinessException("l'objet n'est pas prêt");
       }
-      nEvaluation = evaluationDAO.creerEvaluation(evaluationDTO);
+      evaluation = evaluationDAO.creerEvaluation(evaluationDTO);
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
     }
     serviceDAL.commettreTransaction();
 
-    return nEvaluation;
+    return evaluation;
   }
 }
