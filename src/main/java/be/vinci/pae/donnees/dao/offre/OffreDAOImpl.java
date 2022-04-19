@@ -175,6 +175,76 @@ public class OffreDAOImpl implements OffreDAO {
   }
 
   /**
+   * Modifie une offre.
+   *
+   * @param offreAvecModification : : l'offre contenant les modifications
+   * @return l'offre modifiée
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
+    String requetePs = "UPDATE projet.offres SET plage_horaire = ?, version = ? "
+        + "WHERE id_offre = ? AND version = ?"
+        + "RETURNING id_offre, date_offre, plage_horaire, version;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setString(1, offreAvecModification.getPlageHoraire());
+      ps.setInt(2, offreAvecModification.getVersion() + 1);
+      ps.setInt(3, offreAvecModification.getIdOffre());
+      ps.setInt(4, offreAvecModification.getVersion());
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return remplirOffrePourUpdate(offreAvecModification, rs);
+        } else {
+          return null;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Récupère tous les offres en fonction d'un critère de recherche (nom du membre, type d'objet ou
+   * état d'objet.
+   *
+   * @param recherche : le critère de recherche
+   * @return liste : la liste des offres correspondante au critère de recherche
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public List<OffreDTO> rechercherOffres(String recherche) {
+    String requetePs =
+        "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
+            + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+            + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
+            + "o.etat_objet, o.description, o.photo, o.version, of.id_offre, of.date_offre, "
+            + "of.plage_horaire, of.version "
+            + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
+            + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
+            + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+            + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
+            + "WHERE (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
+            + "OR o.etat_objet = 'Annulé') "
+            + "AND (lower(u.nom) LIKE lower(?) "
+            + "OR lower(t.nom) LIKE lower(?) OR lower(o.etat_objet) "
+            + "LIKE lower(?))"
+            + "ORDER BY of.date_offre DESC";
+    OffreDTO offreDTO = factory.getOffre();
+    List<OffreDTO> liste;
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      recherche = "%" + recherche + "%";
+      ps.setString(1, recherche);
+      ps.setString(2, recherche);
+      ps.setString(3, recherche);
+      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+    return liste;
+  }
+
+  /**
    * Rempli une liste d'offres depuis un ResultSet.
    *
    * @param offreDTO : l'offre vide, qui va être remplie
@@ -199,9 +269,10 @@ public class OffreDAOImpl implements OffreDAO {
   /**
    * Rempli les données de l'offre depuis un ResultSet.
    *
-   * @param offreDTO : l'offre vide, qui va être rempli
-   * @param rs       : le Result Statement déjà préparé
-   * @return offreDTO : l'offre rempli
+   * @param offreDTO : l'offre vide, qui va être remplie
+   * @param rs       : le ResultSet
+   * @return offreDTO : l'offre remplie
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private OffreDTO remplirOffreDepuisResultSet(OffreDTO offreDTO, ResultSet rs) {
     ObjetDTO objetDTO = factory.getObjet();
@@ -250,6 +321,26 @@ public class OffreDAOImpl implements OffreDAO {
       throw new FatalException(e.getMessage(), e);
     }
     return offreDTO;
+  }
+
+  /**
+   * Rempli les données de l'offre depuis un ResultSet.
+   *
+   * @param offreDTO : l'offre vide, qui va être remplie
+   * @param rs       : le ResultSet
+   * @return offreDTO : l'offre remplie
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  private OffreDTO remplirOffrePourUpdate(OffreDTO offreDTO, ResultSet rs) {
+    try {
+      offreDTO.setIdOffre(rs.getInt(1));
+      offreDTO.setDateOffre(rs.getTimestamp(2).toLocalDateTime());
+      offreDTO.setPlageHoraire(rs.getString(3));
+      offreDTO.setVersion(rs.getInt(4));
+      return offreDTO;
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
   }
 
 }

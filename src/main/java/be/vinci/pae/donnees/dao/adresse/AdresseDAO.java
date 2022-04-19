@@ -9,4 +9,5 @@ public interface AdresseDAO {
   AdresseDTO ajouterAdresse(AdresseDTO adresseDTO);
 
   AdresseDTO miseAJourAdresse(AdresseDTO adresseDTO);
+
 }

@@ -79,6 +79,16 @@ public class OffreImpl implements Offre {
   }
 
   @Override
+  public void offrirObjet() {
+    this.getObjetDTO().setEtatObjet("Offert");
+  }
+
+  @Override
+  public void annulerOffre() {
+    this.getObjetDTO().setEtatObjet("Annulé");
+  }
+
+  @Override
   public String toString() {
     return "Offre{"
         + "id offre= " + idOffre
@@ -89,13 +99,4 @@ public class OffreImpl implements Offre {
         + '}';
   }
 
-  @Override
-  public void offrirObjet() {
-    this.getObjetDTO().setEtatObjet("Offert");
-  }
-
-  @Override
-  public void annulerOffre() {
-    this.getObjetDTO().setEtatObjet("Annulé");
-  }
 }

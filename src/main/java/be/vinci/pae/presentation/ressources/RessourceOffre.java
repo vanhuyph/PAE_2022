@@ -90,7 +90,7 @@ public class RessourceOffre {
    * @param offreDTO : l'offre à annuler
    * @return offreDTO : l'offre annulée
    * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'annulation
-   *                               a échoué
+   *                               a échouée
    */
   @PUT
   @Path("annulerOffre")
@@ -103,7 +103,7 @@ public class RessourceOffre {
     }
     offreDTO = offreUCC.annulerOffre(offreDTO);
     if (offreDTO == null) {
-      throw new PresentationException("L'annulation de l'offre a échoué", Status.BAD_REQUEST);
+      throw new PresentationException("L'annulation de l'offre a échouée", Status.BAD_REQUEST);
     }
     return offreDTO;
   }
@@ -188,6 +188,44 @@ public class RessourceOffre {
   @Produces({"image/*"})
   public Response voirPhotoOffre(@PathParam("uuidPhoto") String uuidPhoto) {
     return Response.ok(new File(Config.getPropriete("OneDrivePhotos") + uuidPhoto)).build();
+  }
+
+  /**
+   * Modifie un ou plusieurs détails de l'offre.
+   *
+   * @param offreAvecModification : l'offre avec les modifications
+   * @return l'offre modifiée
+   * @throws PresentationException : est lancée s'il y a eu un problème lors de la modification de
+   *                               l'offre
+   */
+  @PUT
+  @Path("/modifierOffre")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
+    if (offreAvecModification.getObjetDTO().getDescription().isBlank()
+        || offreAvecModification.getPlageHoraire().isBlank()) {
+      throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
+    }
+    return offreUCC.modifierOffre(offreAvecModification);
+  }
+
+  /**
+   * Liste toutes les offres en fonction d'un critère de recherche (nom, type, état).
+   *
+   * @param recherche : le critère de recherche
+   * @return liste : la liste des offres correspondante au critère de recherche
+   */
+  @GET
+  @Path("recherche/{recherche}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<OffreDTO> rechercherOffres(@PathParam("recherche") String recherche) {
+    List<OffreDTO> liste;
+    liste = offreUCC.rechercherOffre(recherche);
+    return liste;
   }
 
 }

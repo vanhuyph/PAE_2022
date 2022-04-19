@@ -36,6 +36,7 @@ public class UtilisateurUCCTest {
   private UtilisateurDTO utilisateurDTO2;
   private UtilisateurDTO utilisateurDTO3;
   private UtilisateurDTO utilisateurDTO4;
+  private UtilisateurDTO utilisateurDTO5;
 
   @BeforeAll
   void initTout() {
@@ -70,7 +71,14 @@ public class UtilisateurUCCTest {
     utilisateurDTO3.setIdUtilisateur(0);
 
     utilisateurDTO4 = domaineFactory.getUtilisateur();
-    utilisateurDTO4.setIdUtilisateur(1);
+    utilisateurDTO4.setIdUtilisateur(3);
+    // mdp = test123
+    utilisateurDTO4.setMdp("$2a$10$jAXbw66kyec1S8RV/pnwo.kuEnAbmIsP5h7463ZkxGJocnx1WzLUy");
+
+    utilisateurDTO5 = domaineFactory.getUtilisateur();
+    utilisateurDTO5.setIdUtilisateur(3);
+    // mdp = mdp
+    utilisateurDTO5.setMdp("$2a$10$HVuwI6iTIfe9mHpt5JtL8OGWvmN0.R1lP1O8etpe9GcPlXHxzt0e2");
   }
 
   @Test
@@ -256,6 +264,62 @@ public class UtilisateurUCCTest {
     List<UtilisateurDTO> liste = new ArrayList<>();
     Mockito.when(utilisateurDAO.listerUtilisateursEtatsInscriptions("Refusé")).thenReturn(liste);
     assertEquals(liste, utilisateurUCC.listerUtilisateursEtatsInscriptions("Refusé"));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode miseAJourUtilisateur n'a pas correctement effectuée "
+      + "la mise à jour de l'utilisateur.")
+  public void testMiseAJourUtilisateurV1() {
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO1)).thenReturn(null);
+    assertThrows(PasTrouveException.class,
+        () -> utilisateurUCC.miseAJourUtilisateur(utilisateurDTO1));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode miseAJourUtilisateur a correctement effectuée "
+      + "la mise à jour de l'utilisateur.")
+  public void testMiseAJourUtilisateurV2() {
+    Mockito.when(adresseDAO.miseAJourAdresse(adresseDTO)).thenReturn(adresseDTO);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO1)).thenReturn(utilisateurDTO1);
+    assertEquals(utilisateurDTO1, utilisateurUCC.miseAJourUtilisateur(utilisateurDTO1));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode modifierMdp a échouée car le mot de passe est incorrect lors "
+      + "de la demande de changement.")
+  public void testModifierMdpV1() {
+    int id = utilisateurDTO4.getIdUtilisateur();
+    Mockito.when(utilisateurDAO.rechercheParId(id)).thenReturn(utilisateurDTO4);
+    Mockito.when(utilisateurDAO.modifierMdp(utilisateurDTO4)).thenReturn(utilisateurDTO5);
+    assertThrows(BusinessException.class, () -> utilisateurUCC.modifierMdp(id, "123", "mdp"));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode modifierMdp a correctement effectuée le changement "
+      + "de mot de passe de l'utilisateur.")
+  public void testModifierMdpV2() {
+    int id = utilisateurDTO4.getIdUtilisateur();
+    Mockito.when(utilisateurDAO.rechercheParId(id)).thenReturn(utilisateurDTO4);
+    Mockito.when(utilisateurDAO.modifierMdp(utilisateurDTO4)).thenReturn(utilisateurDTO5);
+    assertEquals(utilisateurDTO5, utilisateurUCC.modifierMdp(id, "test123", "mdp"));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode rechercherMembres renvoie une "
+      + "liste avec tous les utilisateurs habitant dans la ville de Verviers.")
+  public void testRechercherMembresV1() {
+    List<UtilisateurDTO> liste = new ArrayList<>();
+    Mockito.when(utilisateurDAO.rechercherMembres("Verviers")).thenReturn(liste);
+    assertEquals(liste, utilisateurUCC.rechercherMembres("Verviers"));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode nbreObjets renvoie une 0 objets offerts pour l'utilisateur "
+      + "ayant l'id 1.")
+  public void testNbreObjetsV1() {
+    int id = utilisateurDTO1.getIdUtilisateur();
+    Mockito.when(utilisateurDAO.nbreObjets(id, "Offert")).thenReturn(0);
+    assertEquals(0, utilisateurUCC.nbreObjets(id, "Offert"));
   }
 
 }

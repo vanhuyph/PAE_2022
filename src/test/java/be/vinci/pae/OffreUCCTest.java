@@ -135,7 +135,7 @@ public class OffreUCCTest {
   public void rechercheParIdV1() {
     int id = -1;
     Mockito.when(offreDAO.rechercheParId(id)).thenReturn(null);
-    assertThrows(BusinessException.class, () -> offreUCC.rechercheParId(id));
+    assertThrows(PasTrouveException.class, () -> offreUCC.rechercheParId(id));
   }
 
   @Test
@@ -162,6 +162,15 @@ public class OffreUCCTest {
     List<OffreDTO> liste = new ArrayList<>();
     Mockito.when(offreDAO.offresPrecedentes(id)).thenReturn(liste);
     assertEquals(liste, offreUCC.offresPrecedentes(id));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode rechercherOffre renvoie une liste "
+      + "avec toutes les offres ayant le statut offert.")
+  public void testRechercherOffreV1() {
+    List<OffreDTO> liste = new ArrayList<>();
+    Mockito.when(offreDAO.rechercherOffres("Offert")).thenReturn(liste);
+    assertEquals(liste, offreDAO.rechercherOffres("Offert"));
   }
 
 }

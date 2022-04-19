@@ -15,4 +15,8 @@ public interface OffreDAO {
 
   List<OffreDTO> offresPrecedentes(int idObjet);
 
+  OffreDTO modifierOffre(OffreDTO offreAvecModification);
+
+  List<OffreDTO> rechercherOffres(String recherche);
+
 }
