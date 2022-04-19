@@ -8,6 +8,10 @@ public interface EvaluationDTO {
 
   void setIdEvaluation(int idEvaluation);
 
+  int getNote();
+
+  void setNote(int note);
+
   ObjetDTO getObjet();
 
   void setObjet(ObjetDTO objet);

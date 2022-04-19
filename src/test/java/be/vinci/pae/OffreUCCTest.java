@@ -173,4 +173,36 @@ public class OffreUCCTest {
     assertEquals(liste, offreDAO.rechercherOffres("Offert"));
   }
 
+  @Test
+  @DisplayName("Test réussi : méthode modifierOffre renvoie l'offre modifiée")
+  public void testModifierOffreV2() {
+    offreDTO2.setPlageHoraire("plageHorraireModifiée");
+    offreDTO2.setObjetDTO(objetDTO1);
+    // objetDTO1.setEtatObjet("Offert");
+
+    Mockito.when(offreDAO.modifierOffre(offreDTO2)).thenReturn(offreDTO2);
+    assertEquals(offreDTO2, offreUCC.modifierOffre(offreDTO2));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode modifierOffre renvoie null car l'objet n'est pas trouvable")
+  public void testModifierOffreV1() {
+    objetDTO1.setEtatObjet("Offert");
+    Mockito.when(offreDAO.modifierOffre(offreDTO1)).thenReturn(null);
+    assertThrows(PasTrouveException.class, () -> offreUCC.modifierOffre(offreDTO1));
+  }
+
+
+
+ /* @Test
+  @DisplayName("Test raté : méthode modifierOffre renvoie null car l'objet"
+      + "est dans un état ne permettant pas la modification")
+  public void testModifierOffreV2() {
+    offreDTO1.setObjetDTO(objetDTO1);
+    objetDTO1.setEtatObjet("Annulé");
+    Mockito.when(offreDAO.modifierOffre(offreDTO1)).thenReturn(null);
+    assertThrows(BusinessException.class, () -> offreUCC.modifierOffre(offreDTO1));
+  }*/
+
+
 }

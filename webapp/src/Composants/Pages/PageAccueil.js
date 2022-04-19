@@ -5,7 +5,9 @@ import {
 import Navbar from "../Navbar/Navbar";
 import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
-import rechecheIcon from "../../img/search.svg"
+import rechecheIcon from "../../img/search.svg";
+import Swal from 'sweetalert2'
+
 
 // Page d'accueil
 const PageAccueil = () => {
@@ -13,6 +15,7 @@ const PageAccueil = () => {
   const session = recupUtilisateurDonneesSession()
   let etatInscription
   let commentaire
+  let evaluationEnAttente = 1
   if (session) {
     if (session.utilisateur.etatInscription !== "Confirmé") {
       etatInscription = session.utilisateur.etatInscription
@@ -23,7 +26,18 @@ const PageAccueil = () => {
       }
     }
   }
+  if (evaluationEnAttente > 0){
+     Swal.fire({
+      input: 'textarea',
+      inputLabel: 'Message',
+      inputPlaceholder: 'Type your message here...',
+      inputAttributes: {
+        'aria-label': 'Type your message here'
+      },
+      showCancelButton: false
+    })
 
+  }
   let pageAccueil = `
   <div class="conteneur-modal">
     <div class="overlay declencheur-modal"></div>
@@ -59,7 +73,6 @@ const PageAccueil = () => {
     }
     return reponse.json();
   }).then((data) => surListeOffresRecentes(data))
-
   if (session) {
     if (session.utilisateur.etatInscription !== "Confirmé") {
       conteneurModal.classList.add('active')

@@ -9,6 +9,8 @@ public class EvaluationImpl implements Evaluation {
   @JsonView(Vues.Public.class)
   private int idEvaluation;
   @JsonView(Vues.Public.class)
+  private int note;
+  @JsonView(Vues.Public.class)
   private ObjetDTO objet;
   @JsonView(Vues.Public.class)
   private String commentaire;
@@ -21,6 +23,16 @@ public class EvaluationImpl implements Evaluation {
   @Override
   public void setIdEvaluation(int idEvaluation) {
     this.idEvaluation = idEvaluation;
+  }
+
+  @Override
+  public int getNote() {
+    return this.note;
+  }
+
+  @Override
+  public void setNote(int note) {
+    this.note = note;
   }
 
   @Override
