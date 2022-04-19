@@ -172,8 +172,8 @@ public class OffreUCCTest {
     Mockito.when(offreDAO.rechercherOffres("Offert")).thenReturn(liste);
     assertEquals(liste, offreDAO.rechercherOffres("Offert"));
   }
-
-  @Test
+// a finir
+  /*@Test
   @DisplayName("Test réussi : méthode modifierOffre renvoie l'offre modifiée")
   public void testModifierOffreV2() {
     offreDTO2.setPlageHoraire("plageHorraireModifiée");
@@ -190,7 +190,7 @@ public class OffreUCCTest {
     objetDTO1.setEtatObjet("Offert");
     Mockito.when(offreDAO.modifierOffre(offreDTO1)).thenReturn(null);
     assertThrows(PasTrouveException.class, () -> offreUCC.modifierOffre(offreDTO1));
-  }
+  }*/
 
 
 
