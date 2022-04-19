@@ -10,12 +10,12 @@ import Swal from 'sweetalert2'
 
 
 // Page d'accueil
-const PageAccueil = () => {
+const PageAccueil = async () => {
   const pageDiv = document.querySelector("#page");
   const session = recupUtilisateurDonneesSession()
   let etatInscription
   let commentaire
-  let evaluationEnAttente = 1
+  let evaluationEnAttente = 2 //fetch
   if (session) {
     if (session.utilisateur.etatInscription !== "Confirmé") {
       etatInscription = session.utilisateur.etatInscription
@@ -26,18 +26,53 @@ const PageAccueil = () => {
       }
     }
   }
-  if (evaluationEnAttente > 0){
-     Swal.fire({
-      input: 'textarea',
-      inputLabel: 'Message',
-      inputPlaceholder: 'Type your message here...',
-      inputAttributes: {
-        'aria-label': 'Type your message here'
-      },
-      showCancelButton: false
+  //si il doit évaluer un ou des objets recus
+  if (evaluationEnAttente > 0) {
+    const etapes = ['1', '2', '3']
+    const Queue = Swal.mixin({
+      progressSteps: etapes,
+      confirmButtonText: 'suivant',
+      cancelButtonText: 'Back',
+      // optional classes to avoid backdrop blinking between etapes
+      showClass: { backdrop: 'swal2-noanimation' },
+      hideClass: { backdrop: 'swal2-noanimation' }
     })
 
-  }
+    const {value: text} = await Queue.fire({
+      title: 'Evaluation 1/3',
+      currentProgressStep: 0,
+      input: 'text',
+      inputAttributes: {
+        required: true
+      },
+      validationMessage: 'nous avons besoin de votre commentaire'
+
+    })
+  //note requise ??
+    const {value: note} = await Queue.fire({
+      title: 'Evaluation 2/3',
+      input:'range',
+      inputLabel: 'Votre note',
+      inputAttributes: {
+        min: 0,
+        max: 5,
+        step: 1,
+        required:true
+      },
+      validationMessage: 'Nous avons besoin d\'une note ',
+      currentProgressStep: 1
+    })
+    //afficher la note et le commentaire et demande de confirmation
+    await Queue.fire({
+      title: 'Evaluation 3/3',
+      currentProgressStep: 2,
+      confirmButtonText: 'Confirmer',
+      text:`Vous avez donné une note de ${note} et le commentaire suivant : \n ${text}`,
+      // optional class to show fade-out backdrop animation which was disabled in Queue mixin
+      showClass: { backdrop: 'swal2-noanimation' },
+    })
+    }
+
   let pageAccueil = `
   <div class="conteneur-modal">
     <div class="overlay declencheur-modal"></div>
