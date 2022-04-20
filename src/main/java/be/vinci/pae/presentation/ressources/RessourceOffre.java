@@ -61,6 +61,7 @@ public class RessourceOffre {
    * Liste les offres.
    *
    * @return liste : la liste des offres
+   * @throws PresentationException : est lancée si l'offre n'a pas pu être trouvée
    */
   @GET
   @Path("listerOffres")
@@ -78,6 +79,7 @@ public class RessourceOffre {
    * Liste les offres les plus récentes.
    *
    * @return liste : la liste des offres les plus récentes
+   * @throws PresentationException : est lancée si l'offre n'a pas pu être trouvée
    */
   @GET
   @Path("listerOffresRecentes")
@@ -232,7 +234,7 @@ public class RessourceOffre {
   @Path("donnerOffre")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  //@Autorisation
+  @Autorisation
   public OffreDTO donnerOffre(OffreDTO offreDTO) {
     if (offreDTO.getIdOffre() <= 0
         || offreDTO.getObjetDTO().getReceveur().getIdUtilisateur() <= 0
@@ -252,6 +254,8 @@ public class RessourceOffre {
    *
    * @param idUtilisateur : l'utilisateur pour lequel on cherche ces offres
    * @return liste : la liste de ces offres
+   * @throws PresentationException : est lancée si l'id de l'utilisateur est invalide ou que l'offre
+   *                               n'a pas pu être trouvée
    */
   @GET
   @Path("/mesOffres/{idUtilisateur}")
@@ -262,6 +266,29 @@ public class RessourceOffre {
       throw new PresentationException("L'id de l'utilisateur est incorrect", Status.BAD_REQUEST);
     }
     List<OffreDTO> liste = offreUCC.mesOffres(idUtilisateur);
+    if (liste == null) {
+      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
+    }
+    return liste;
+  }
+
+  /**
+   * Liste des offres attribuer.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur pour lequel on a attribuer une offre
+   * @return liste : la liste des offres attribuer
+   * @throws PresentationException : est lancée si l'id de l'utilisateur est invalide ou que l'offre
+   *                               n'a pas pu être trouvée
+   */
+  @GET
+  @Path("/voirOffreAttribuer/{idUtilisateur}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<OffreDTO> voirOffreAttribuer(@PathParam("idUtilisateur") int idUtilisateur) {
+    if (idUtilisateur <= 0) {
+      throw new PresentationException("L'id de l'utilisateur est incorrect", Status.BAD_REQUEST);
+    }
+    List<OffreDTO> liste = offreUCC.voirOffreAttribuer(idUtilisateur);
     if (liste == null) {
       throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
     }

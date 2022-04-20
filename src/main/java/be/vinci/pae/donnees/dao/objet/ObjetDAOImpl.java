@@ -23,14 +23,15 @@ public class ObjetDAOImpl implements ObjetDAO {
    */
   @Override
   public ObjetDTO creerObjet(ObjetDTO objetDTO) {
-    String requetePs = "INSERT INTO projet.objets VALUES (DEFAULT, 'Offert', ?, ?, ?, null, ?, ?) "
-        + "RETURNING *;";
+    String requetePs = "INSERT INTO projet.objets VALUES (DEFAULT, 'Offert', ?, ?, ?, null, ?, ?,"
+        + " ?) RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, objetDTO.getTypeObjet().getIdType());
       ps.setString(2, objetDTO.getDescription());
       ps.setInt(3, objetDTO.getOffreur().getIdUtilisateur());
       ps.setString(4, objetDTO.getPhoto());
       ps.setInt(5, objetDTO.getVersion());
+      ps.setBoolean(6, objetDTO.isVue());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           objetDTO.setIdObjet(rs.getInt(1));
@@ -82,7 +83,7 @@ public class ObjetDAOImpl implements ObjetDAO {
   @Override
   public ObjetDTO miseAJourObjet(ObjetDTO objetDTO) {
     String requetePs = "UPDATE projet.objets SET etat_objet = ?, type_objet = ?, description = ?, "
-        + "offreur = ?, receveur = ?, photo = ?, version = ? "
+        + "offreur = ?, receveur = ?, photo = ?, version = ?, vue = ? "
         + "WHERE id_objet = ? AND version = ? RETURNING id_objet, version;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, objetDTO.getEtatObjet());
@@ -96,10 +97,12 @@ public class ObjetDAOImpl implements ObjetDAO {
       }
       ps.setString(6, objetDTO.getPhoto());
       ps.setInt(7, objetDTO.getVersion() + 1);
-      ps.setInt(8, objetDTO.getIdObjet());
-      ps.setInt(9, objetDTO.getVersion());
+      ps.setBoolean(8, objetDTO.isVue());
+      ps.setInt(9, objetDTO.getIdObjet());
+      ps.setInt(10, objetDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
+
           objetDTO.setIdObjet(rs.getInt(1));
           objetDTO.setVersion(rs.getInt(2));
           return objetDTO;

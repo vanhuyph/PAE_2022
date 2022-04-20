@@ -8,6 +8,7 @@ import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import jakarta.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OffreUCCImpl implements OffreUCC {
@@ -34,6 +35,7 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commencerTransaction();
     OffreDTO offre = null;
     try {
+      offreDTO.getObjetDTO().setVue(false);
       ObjetDTO objet = objetDAO.creerObjet(offreDTO.getObjetDTO());
       if (objet == null) {
         throw new BusinessException("L'objet n'a pas pu être créée");
@@ -231,7 +233,7 @@ public class OffreUCCImpl implements OffreUCC {
   /**
    * Liste ces propres offres.
    *
-   * @param idUtilisateur : l'utilisateur pour lequel on cherche ces offres
+   * @param idUtilisateur : l'id de l'utilisateur correspondant à l'offreur
    * @return liste : la liste de toutes ces offres
    */
   public List<OffreDTO> mesOffres(int idUtilisateur) {
@@ -247,5 +249,29 @@ public class OffreUCCImpl implements OffreUCC {
     return liste;
   }
 
-
+  /**
+   * Liste des offres attribuer.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur pour lequel on a attribuer une offre
+   * @return liste : la liste des offres attribuer
+   */
+  public List<OffreDTO> voirOffreAttribuer(int idUtilisateur) {
+    serviceDAL.commencerTransaction();
+    List<OffreDTO> listTemp = null;
+    List<OffreDTO> liste = new ArrayList<>();
+    try {
+      listTemp = offreDAO.voirOffreAttribuer(idUtilisateur);
+      for (int i = 0; i < listTemp.size(); i++) {
+        listTemp.get(i).getObjetDTO().setVue(true);
+        ObjetDTO objet = objetDAO.miseAJourObjet(listTemp.get(i).getObjetDTO());
+        listTemp.get(i).setObjetDTO(objet);
+        liste.add(listTemp.get(i));
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return liste;
+  }
 }

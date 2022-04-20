@@ -64,7 +64,7 @@ public class OffreDAOImpl implements OffreDAO {
     String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
         + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
         + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
-        + "o.etat_objet, o.description, o.photo, o.version, of.id_offre, of.date_offre, "
+        + "o.etat_objet, o.description, o.photo, o.version, o.vue, of.id_offre, of.date_offre, "
         + "of.plage_horaire, of.version "
         + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
@@ -95,7 +95,7 @@ public class OffreDAOImpl implements OffreDAO {
     String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
         + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
         + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
-        + "o.etat_objet, o.description, o.photo, o.version, of.id_offre, of.date_offre, "
+        + "o.etat_objet, o.description, o.photo, o.version, o.vue, of.id_offre, of.date_offre, "
         + "of.plage_horaire, of.version "
         + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
@@ -127,7 +127,7 @@ public class OffreDAOImpl implements OffreDAO {
     String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
         + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
         + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
-        + "o.etat_objet, o.description, o.photo, o.version, of.id_offre, of.date_offre, "
+        + "o.etat_objet, o.description, o.photo, o.version, o.vue, of.id_offre, of.date_offre, "
         + "of.plage_horaire, of.version "
         + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
@@ -145,12 +145,19 @@ public class OffreDAOImpl implements OffreDAO {
     return liste;
   }
 
+  /**
+   * Récupère les offres précédentes de l'objet avec l'id passé en paramètre.
+   *
+   * @param idObjet : l'id de l'objet à récupérer
+   * @return liste : la liste des offres précédentes de l'objet avec l'id passé en paramètre
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
   @Override
   public List<OffreDTO> offresPrecedentes(int idObjet) {
     String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
         + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
         + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
-        + "o.etat_objet, o.description, o.photo, o.version, of.id_offre, of.date_offre, "
+        + "o.etat_objet, o.description, o.photo, o.version, o.vue, of.id_offre, of.date_offre, "
         + "of.plage_horaire, of.version "
         + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
@@ -168,6 +175,12 @@ public class OffreDAOImpl implements OffreDAO {
     return liste;
   }
 
+  /**
+   * Liste ces propres offres.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur correspondant à l'offreur
+   * @return liste : la liste de toutes ces offres
+   */
   @Override
   public List<OffreDTO> mesOffres(int idUtilisateur) {
     String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
@@ -181,6 +194,39 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
         + "WHERE u.id_utilisateur = ? AND (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
         + "OR o.etat_objet = 'Annulé' OR o.etat_objet = 'Confirmé' ) ORDER BY of.date_offre DESC";
+
+    OffreDTO offreDTO = factory.getOffre();
+    List<OffreDTO> liste;
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setInt(1, idUtilisateur);
+      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+    return liste;
+  }
+
+  /**
+   * Liste des offres attribuer.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur pour lequel on a attribuer une offre
+   * @return liste : la liste des offres attribuer
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public List<OffreDTO> voirOffreAttribuer(int idUtilisateur) {
+    String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
+        + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
+        + "o.etat_objet, o.description, o.photo, o.version, o.vue, of.id_offre, of.date_offre, "
+        + "of.plage_horaire, of.version "
+        + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
+        + "LEFT OUTER JOIN projet.interets i ON i.objet = o.id_objet "
+        + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
+        + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+        + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
+        + "WHERE i.utilisateur = ? AND o.etat_objet = 'Confirmé' AND o.vue = 'false' "
+        + "ORDER BY of.date_offre DESC";
 
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
@@ -260,12 +306,13 @@ public class OffreDAOImpl implements OffreDAO {
       objetDTO.setReceveur(null);
       objetDTO.setPhoto(rs.getString(23));
       objetDTO.setVersion(rs.getInt(24));
+      objetDTO.setVue(rs.getBoolean(25));
 
-      offreDTO.setIdOffre(rs.getInt(25));
+      offreDTO.setIdOffre(rs.getInt(26));
       offreDTO.setObjetDTO(objetDTO);
-      offreDTO.setDateOffre(rs.getTimestamp(26).toLocalDateTime());
-      offreDTO.setPlageHoraire(rs.getString(27));
-      offreDTO.setVersion(rs.getInt(28));
+      offreDTO.setDateOffre(rs.getTimestamp(27).toLocalDateTime());
+      offreDTO.setPlageHoraire(rs.getString(28));
+      offreDTO.setVersion(rs.getInt(29));
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);
     }

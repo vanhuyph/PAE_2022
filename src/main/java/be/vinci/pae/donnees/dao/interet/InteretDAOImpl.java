@@ -33,14 +33,14 @@ public class InteretDAOImpl implements InteretDAO {
    */
   @Override
   public InteretDTO ajouterInteret(InteretDTO interetDTO) {
-    String requetePs = "INSERT INTO projet.interets VALUES (?, ?, ?, ?, ?) RETURNING *;";
+    String requetePs = "INSERT INTO projet.interets VALUES (?, ?, ?, ?, ?, ?) RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       Date dateRdvSQL = new Date(interetDTO.getDateRdv().getTime());
       ps.setInt(1, interetDTO.getUtilisateur().getIdUtilisateur());
       ps.setInt(2, interetDTO.getObjet().getIdObjet());
       ps.setDate(3, dateRdvSQL);
-      ps.setBoolean(4, interetDTO.isVue());
-      ps.setInt(5, interetDTO.getVersion());
+      ps.setInt(4, interetDTO.getVersion());
+      ps.setBoolean(5, interetDTO.isVue());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           return interetDTO;

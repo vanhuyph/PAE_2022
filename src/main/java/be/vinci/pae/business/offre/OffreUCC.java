@@ -22,4 +22,7 @@ public interface OffreUCC {
 
   List<OffreDTO> mesOffres(int idUtilisateur);
 
+  List<OffreDTO> voirOffreAttribuer(int idUtilisateur);
+  
+
 }

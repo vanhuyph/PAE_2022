@@ -55,6 +55,7 @@ public class InteretUCCImpl implements InteretUCC {
       Interet interetChange = (Interet) interetDTO;
       interetChange.creerVersion();
       interetChange.changerEtatObjet("Intéressé");
+      interetChange.setVue(false);
       objetDAO.miseAJourObjet(interetChange.getObjet());
       interet = interetDAO.ajouterInteret(interetChange);
       if (interet == null) {

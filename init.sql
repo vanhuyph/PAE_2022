@@ -42,7 +42,8 @@ CREATE TABLE projet.objets
     offreur     INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
     receveur    INTEGER REFERENCES projet.utilisateurs (id_utilisateur),
     photo       VARCHAR(255),
-    version INTEGER NOT NULL
+    version     INTEGER                                                 NOT NULL,
+    vue         BOOLEAN                                                 NOT NULL
 );
 
 CREATE TABLE projet.interets
@@ -50,8 +51,8 @@ CREATE TABLE projet.interets
     utilisateur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
     objet       INTEGER REFERENCES projet.objets (id_objet)             NOT NULL,
     date        DATE                                                    NOT NULL,
+    version     INTEGER                                                 NOT NULL,
     vue         BOOLEAN                                                 NOT NULL,
-    version INTEGER NOT NULL,
     PRIMARY KEY (utilisateur, objet)
 );
 
@@ -124,12 +125,12 @@ VALUES (DEFAULT, 'Vêtements');
 
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'Offert', 3, 'Décorations de Noël de couleur rouge.', 3, NULL,
-        'christmas-1869533_640.png', 1);
+        'christmas-1869533_640.png', 1, false);
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'Offert', 3, 'Cadre représentant un chien noir sur un fond noir.', 3, NULL,
-        'dog-4118585_640.jpg', 1);
+        'dog-4118585_640.jpg', 1, false);
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'BureauEcolier-7.JPG', 1);
+VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'BureauEcolier-7.JPG', 1, false);
 
 INSERT INTO projet.offres
 VALUES (DEFAULT, 1, '21-03-22', 'Mardi de 17h à 22h', 1);
@@ -149,10 +150,28 @@ VALUES (DEFAULT, 'didi', 'didi', 'didi',
         u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet,
         o.description, o.photo, i.date FROM projet.interets i,
         projet.utilisateurs u, projet.adresses a, projet.objets o, projet.types_objets t WHERE a.id_adresse = u.adresse AND
-         i.objet = ? AND o.id_objet = i.objet AND i.utilisateur = u.id_utilisateur AND t.id_type = o.type_objet;*/
+         i.objet = ? AND o.id_objet = i.objet AND i.utilisateur = u.id_utilisateur AND t.id_type = o.type_objet;
 INSERT INTO projet.interets
-VALUES (1, 1, now(), false, 0);
-/*SELECT u.id_utilisateur, u.pseudo, u.est_admin, u.etat_inscription, u.commentaire
+VALUES (1, 1, now(), 0, false);
+
+UPDATE projet.objets
+set etat_objet = 'Confirmé'
+WHERE id_objet = 1;
+
+UPDATE projet.objets
+SET etat_objet  = 'Confirmé',
+    type_objet  = 3,
+    description = 'Décorations de Noël de couleur rouge.',
+    offreur     = 3,
+    receveur    = NULL,
+    photo       = 'christmas-1869533_640.png',
+    version     = 1,
+    vue         = false
+WHERE id_objet = 1
+  AND version = 1
+RETURNING id_objet, version;
+
+SELECT u.id_utilisateur, u.pseudo, u.est_admin, u.etat_inscription, u.commentaire
 FROM projet.utilisateurs u
 ORDER BY u.est_admin, u.etat_inscription;
 
@@ -169,3 +188,41 @@ FROM projet.objets o,
      projet.utilisateurs u
 WHERE u.id_utilisateur = o.offreur
 ORDER BY u.nom, o.description;*/
+
+/*SELECT a.id_adresse,
+       a.rue,
+       a.numero,
+       a.boite,
+       a.code_postal,
+       a.commune,
+       a.version,
+       u.id_utilisateur,
+       u.pseudo,
+       u.nom,
+       u.prenom,
+       u.mdp,
+       u.gsm,
+       u.est_admin,
+       u.etat_inscription,
+       u.commentaire,
+       u.version,
+       t.id_type,
+       t.nom,
+       o.id_objet,
+       o.etat_objet,
+       o.description,
+       o.photo,
+       o.version,
+       of.id_offre,
+       of.date_offre,
+       of.plage_horaire,
+       of.version
+FROM projet.offres of
+         LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet
+         LEFT OUTER JOIN projet.interets i ON i.objet = o.id_objet
+         LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur
+         LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse
+         LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet
+WHERE i.utilisateur = ?
+  AND o.etat_objet = 'Confirmé'
+ORDER BY of.date_offre DESC;*/

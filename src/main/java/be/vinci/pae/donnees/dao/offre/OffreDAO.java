@@ -17,4 +17,6 @@ public interface OffreDAO {
 
   List<OffreDTO> mesOffres(int idUtilisateur);
 
+  List<OffreDTO> voirOffreAttribuer(int idUtilisateur);
+
 }
