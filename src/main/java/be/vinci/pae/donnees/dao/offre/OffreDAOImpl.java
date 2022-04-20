@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -209,11 +210,13 @@ public class OffreDAOImpl implements OffreDAO {
    * état d'objet.
    *
    * @param recherche : le critère de recherche
+   * @param dateDebut : la date de début pour la recherche
+   * @param dateFin   : la date de fin pour la recherche
    * @return liste : la liste des offres correspondante au critère de recherche
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public List<OffreDTO> rechercherOffres(String recherche) {
+  public List<OffreDTO> rechercherOffres(String recherche, LocalDate dateDebut, LocalDate dateFin) {
     String requetePs =
         "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
             + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
@@ -228,7 +231,8 @@ public class OffreDAOImpl implements OffreDAO {
             + "OR o.etat_objet = 'Annulé') "
             + "AND (lower(u.nom) LIKE lower(?) "
             + "OR lower(t.nom) LIKE lower(?) OR lower(o.etat_objet) "
-            + "LIKE lower(?))"
+            + "LIKE lower(?)) "
+            + "AND (of.date_offre BETWEEN dateDebut AND dateFin) "
             + "ORDER BY of.date_offre DESC";
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;

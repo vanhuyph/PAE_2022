@@ -8,6 +8,7 @@ import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import jakarta.inject.Inject;
+import java.time.LocalDate;
 import java.util.List;
 
 public class OffreUCCImpl implements OffreUCC {
@@ -208,14 +209,16 @@ public class OffreUCCImpl implements OffreUCC {
    * état d'objet).
    *
    * @param recherche : le critère de recherche
+   * @param dateDebut : la date de début de la recherche
+   * @param dateFin   : la date de fin de la recherche
    * @return liste : la liste des offres correspondantes au critère de recherche
    */
   @Override
-  public List<OffreDTO> rechercherOffre(String recherche) {
+  public List<OffreDTO> rechercherOffre(String recherche, LocalDate dateDebut, LocalDate dateFin) {
     serviceDAL.commencerTransaction();
     List<OffreDTO> liste;
     try {
-      liste = offreDAO.rechercherOffres(recherche);
+      liste = offreDAO.rechercherOffres(recherche, dateDebut, dateFin);
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
