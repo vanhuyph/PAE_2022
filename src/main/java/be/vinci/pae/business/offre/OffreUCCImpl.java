@@ -35,7 +35,6 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commencerTransaction();
     OffreDTO offre = null;
     try {
-      offreDTO.getObjetDTO().setVue(false);
       ObjetDTO objet = objetDAO.creerObjet(offreDTO.getObjetDTO());
       if (objet == null) {
         throw new BusinessException("L'objet n'a pas pu être créée");

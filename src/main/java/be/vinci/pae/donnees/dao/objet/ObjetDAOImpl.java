@@ -23,8 +23,8 @@ public class ObjetDAOImpl implements ObjetDAO {
    */
   @Override
   public ObjetDTO creerObjet(ObjetDTO objetDTO) {
-    String requetePs = "INSERT INTO projet.objets VALUES (DEFAULT, 'Offert', ?, ?, ?, null, ?, ?,"
-        + " ?) RETURNING *;";
+    String requetePs = "INSERT INTO projet.objets VALUES (DEFAULT, 'Offert', ?, ?, ?, null, ?, ?, "
+        + "?) RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, objetDTO.getTypeObjet().getIdType());
       ps.setString(2, objetDTO.getDescription());
