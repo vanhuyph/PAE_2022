@@ -221,7 +221,7 @@ public class OffreDAOImpl implements OffreDAO {
     if (!recherche.equals("")) {
       requetePs =
           "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
-              + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+              + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin,"
               + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
               + "o.etat_objet, o.description, o.photo, o.version, of.id_offre, of.date_offre, "
               + "of.plage_horaire, of.version "
@@ -239,7 +239,7 @@ public class OffreDAOImpl implements OffreDAO {
     } else {
       requetePs =
           "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
-              + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+              + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin,"
               + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
               + "o.etat_objet, o.description, o.photo, o.version, of.id_offre, of.date_offre, "
               + "of.plage_horaire, of.version "
