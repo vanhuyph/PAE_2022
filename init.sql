@@ -58,7 +58,9 @@ CREATE TABLE projet.evaluations
 (
     id_evaluation SERIAL PRIMARY KEY,
     objet         INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
-    commentaire   VARCHAR(255)                                NOT NULL
+    note          INTEGER ,
+    commentaire   VARCHAR(255)
+
 );
 
 CREATE TABLE projet.offres
@@ -122,7 +124,7 @@ INSERT INTO projet.types_objets
 VALUES (DEFAULT, 'Vêtements');
 
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 3, 'Décorations de Noël de couleur rouge.', 3, NULL,
+VALUES (DEFAULT, 'Donné', 3, 'Décorations de Noël de couleur rouge.', 3, 4,
         'christmas-1869533_640.png', 1);
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'Offert', 3, 'Cadre représentant un chien noir sur un fond noir.', 3, NULL,

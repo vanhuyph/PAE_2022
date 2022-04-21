@@ -1,5 +1,6 @@
 package be.vinci.pae.business.offre;
 
+import be.vinci.pae.business.objet.ObjetDTO;
 import java.util.List;
 
 public interface OffreUCC {
@@ -20,4 +21,5 @@ public interface OffreUCC {
 
   List<OffreDTO> rechercherOffre(String recherche);
 
+  List<ObjetDTO> objetsAEvalueParUtilisateur(int idUtilisateur);
 }

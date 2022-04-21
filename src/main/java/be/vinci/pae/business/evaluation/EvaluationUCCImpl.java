@@ -1,10 +1,11 @@
 package be.vinci.pae.business.evaluation;
 
-import be.vinci.pae.business.objet.ObjetDTO;
+import be.vinci.pae.business.objet.Objet;
 import be.vinci.pae.donnees.dao.evaluation.EvaluationDAO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import jakarta.inject.Inject;
 
 public class EvaluationUCCImpl implements EvaluationUCC {
@@ -21,19 +22,21 @@ public class EvaluationUCCImpl implements EvaluationUCC {
    *
    * @param evaluationDTO : l'évaluation a créer
    * @return l'évaluation créée
+   * @throws BusinessException  : est lancée si l'objet n'est pas dans un état permettant d'être
+   *                            évalué
+   * @throws PasTrouveException : est lancée si l'objet n'existe pas
    */
   @Override
   public EvaluationDTO creerEvaluation(EvaluationDTO evaluationDTO) {
     serviceDAL.commencerTransaction();
     EvaluationDTO evaluation;
     try {
-      ObjetDTO objetEvalue = objetDAO.rechercheParId(evaluationDTO.getObjet());
+      Objet objetEvalue = (Objet) objetDAO.rechercheParId(evaluationDTO.getObjet());
       if (objetEvalue == null) {
-        throw new BusinessException("l'objet n'existe pas");
+        throw new PasTrouveException("l'objet n'existe pas");
       }
-      //extraire dans une méthode dans evaluation et evaluationImpl
-      if (!objetEvalue.getEtatObjet().equals("donné")) {
-        throw new BusinessException("l'objet n'est pas prêt");
+      if (!objetEvalue.peutEtreEvalué()) {
+        throw new BusinessException("l'objet n'est pas prêt a être évalué ou a déjà été évalué");
       }
       evaluation = evaluationDAO.creerEvaluation(evaluationDTO);
     } catch (Exception e) {

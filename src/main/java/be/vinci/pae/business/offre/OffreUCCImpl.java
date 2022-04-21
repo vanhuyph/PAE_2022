@@ -1,5 +1,6 @@
 package be.vinci.pae.business.offre;
 
+import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.objet.Objet;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
@@ -18,6 +19,8 @@ public class OffreUCCImpl implements OffreUCC {
   ObjetDAO objetDAO;
   @Inject
   ServiceDAL serviceDAL;
+  @Inject
+  DomaineFactory factory;
 
   /**
    * Créer une offre.
@@ -169,7 +172,7 @@ public class OffreUCCImpl implements OffreUCC {
    *
    * @param offreAvecModification : l'offre contenant les modifications
    * @return offre : l'offre modifiée
-   * @throws BusinessException  : est lancée si l'offre n'a pas pu être annulée / données périmées
+   * @throws BusinessException  : est lancée si l'offre n'a pas pu être modifié / données périmées
    * @throws PasTrouveException : est lancée si l'objet/l'offre n'existe pas
    */
   @Override
@@ -222,6 +225,43 @@ public class OffreUCCImpl implements OffreUCC {
     }
     serviceDAL.commettreTransaction();
     return liste;
+  }
+
+  /**
+   * Recupere tous les objets que l'utilisateur doit évaluer.
+   *
+   * @param idReceveur : l'id de l'utilisateur concerné
+   * @return objetsAEvalue : la liste des objets que l'utilisateur doit évaluer ou null si il n'y
+   * pas d'objet a évaluer
+   * @throws PasTrouveException si un des objets n'existe pas.
+   * @throws BusinessException  si les données sont périmées.
+   */
+  @Override
+  public List<ObjetDTO> objetsAEvalueParUtilisateur(int idReceveur) {
+    serviceDAL.commettreTransaction();
+    List<ObjetDTO> objetsAEvalue;
+    try {
+      objetsAEvalue = objetDAO.rechercheObjetParReceveur(idReceveur);
+      if (objetsAEvalue == null) {
+        for (ObjetDTO objet : objetsAEvalue) {
+          if (objetDAO.rechercheParId(objet) == null) {
+            throw new PasTrouveException("L'objet n'existe pas");
+          }
+          if (!((Objet) objet).peutEtreEvalué()) {
+            throw new BusinessException("L'objet est dans un état ne permettant pas de l'évaluer");
+          }
+        }
+        throw new BusinessException("Données de l'objet sont périmées");
+      }
+
+      if (objetsAEvalue.isEmpty()) {
+        return null;
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    return objetsAEvalue;
   }
 
 }

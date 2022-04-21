@@ -55,11 +55,5 @@ public class EvaluationImpl implements Evaluation {
     this.commentaire = commmentaire;
   }
 
-  @Override
-  public boolean peutEtreEvaluer() {
-    if (this.objet.getEtatObjet().equals("donné")) {
-      return true;
-    }
-    return false;
-  }
+
 }

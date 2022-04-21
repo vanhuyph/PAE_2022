@@ -16,6 +16,7 @@ const PageAccueil = async () => {
   let etatInscription
   let commentaire
   let evaluationEnAttente = 2 //fetch
+
   if (session) {
     if (session.utilisateur.etatInscription !== "Confirmé") {
       etatInscription = session.utilisateur.etatInscription
@@ -26,51 +27,65 @@ const PageAccueil = async () => {
       }
     }
   }
+
   //si il doit évaluer un ou des objets recus
-  if (evaluationEnAttente > 0) {
-    const etapes = ['1', '2', '3']
+  while (evaluationEnAttente > 0) {
+
+    const etapes = ['1', '2', '3','4']
     const Queue = Swal.mixin({
       progressSteps: etapes,
       confirmButtonText: 'suivant',
-      cancelButtonText: 'Back',
-      // optional classes to avoid backdrop blinking between etapes
-      showClass: { backdrop: 'swal2-noanimation' },
-      hideClass: { backdrop: 'swal2-noanimation' }
-    })
+      cancelButtonText: 'retour',
 
-    const {value: text} = await Queue.fire({
-      title: 'Evaluation 1/3',
+      reverseButtons: true,
+    })
+    //donne les information sur l'objet à évaluer
+    await Queue.fire({
+      title: 'Evaluation 3/3',
       currentProgressStep: 0,
-      input: 'text',
-      inputAttributes: {
-        required: true
-      },
-      validationMessage: 'nous avons besoin de votre commentaire'
+      showCancelButton: true,
+      confirmButtonText: 'Confirmer',
+      text:`Vous avez donné une note de ${note} et le commentaire suivant : \n ${commentaireEval}`,
 
     })
-  //note requise ??
+//note requise ??
     const {value: note} = await Queue.fire({
-      title: 'Evaluation 2/3',
+      title: 'Votre note',
       input:'range',
-      inputLabel: 'Votre note',
+
       inputAttributes: {
         min: 0,
         max: 5,
         step: 1,
         required:true
       },
+
+      showCancelButton: false,
       validationMessage: 'Nous avons besoin d\'une note ',
       currentProgressStep: 1
     })
+    const {value: commentaireEval} = await Queue.fire({
+      title: 'Votre Commentaire',
+      currentProgressStep: 2,
+      input: 'text',
+      inputAttributes: {
+        required: true
+      },
+      showCancelButton:true,
+      validationMessage: 'nous avons besoin de votre commentaire'
+
+    })
+
     //afficher la note et le commentaire et demande de confirmation
     await Queue.fire({
-      title: 'Evaluation 3/3',
-      currentProgressStep: 2,
+      title: 'Confirmation',
+      currentProgressStep: 3,
+      showCancelButton: true,
       confirmButtonText: 'Confirmer',
-      text:`Vous avez donné une note de ${note} et le commentaire suivant : \n ${text}`,
-      // optional class to show fade-out backdrop animation which was disabled in Queue mixin
-      showClass: { backdrop: 'swal2-noanimation' },
+      text:`Vous avez donné une note de ${note} et le commentaire suivant : \n ${commentaireEval}`,
+
     })
+    evaluationEnAttente--;
     }
 
   let pageAccueil = `

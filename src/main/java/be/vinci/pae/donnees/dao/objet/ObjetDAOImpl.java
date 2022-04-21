@@ -1,5 +1,6 @@
 package be.vinci.pae.donnees.dao.objet;
 
+import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
@@ -8,11 +9,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ObjetDAOImpl implements ObjetDAO {
 
   @Inject
   private ServiceBackendDAL serviceBackendDAL;
+  @Inject
+  private DomaineFactory factory;
 
   /**
    * Créer un objet.
@@ -71,6 +76,35 @@ public class ObjetDAOImpl implements ObjetDAO {
   }
 
   /**
+   * Recherche un objet que
+   *
+   * @param idReceveur
+   * @return
+   */
+  @Override
+  public List<ObjetDTO> rechercheObjetParReceveur(int idReceveur) {
+    String requetePs = "SELECT id_objet,etat_objet,description FROM projet.objets WHERE"
+        + " receveur = ?;";
+    List<ObjetDTO> liste = new ArrayList<>();
+    ObjetDTO objetDTO = factory.getObjet();
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setInt(1, idReceveur);
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          objetDTO.setIdObjet(rs.getInt(1));
+          objetDTO.setEtatObjet(rs.getString(2));
+          objetDTO.setDescription(rs.getString(3));
+          liste.add(objetDTO);
+
+        }
+        return liste;
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  /**
    * Met à jour l'objet.
    *
    * @param objetDTO : l'objet à mettre a jour
@@ -109,5 +143,6 @@ public class ObjetDAOImpl implements ObjetDAO {
       throw new FatalException(e.getMessage(), e);
     }
   }
+
 
 }

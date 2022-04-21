@@ -111,12 +111,22 @@ public class ObjetImpl implements Objet {
   /**
    * Verifie si l'état de l'objet permet de le modifier ainsi que son offre.
    *
-   * @return true : si l'objet peut être modifié, false sinon.
+   * @return true si l'objet peut être modifié, false sinon.
    */
   @Override
   public boolean verifierEtatPourModificationOffre() {
     return this.etatObjet != null && !this.etatObjet.equals("Annulé") && !this.etatObjet.equals(
         "Donné") && !this.etatObjet.equals("Evalué");
+  }
+
+  /**
+   * Verifie que l'objet peut être évalué.
+   *
+   * @return true si l'objet peut être évalué , false si non.
+   */
+  @Override
+  public boolean peutEtreEvalué() {
+    return this.etatObjet != null && this.etatObjet.equals("donné");
   }
 
   @Override

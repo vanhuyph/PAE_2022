@@ -244,12 +244,13 @@ public class OffreDAOImpl implements OffreDAO {
     return liste;
   }
 
+
   /**
    * Rempli une liste d'offres depuis un ResultSet.
    *
    * @param offreDTO : l'offre vide, qui va être remplie
    * @param ps       : le PreparedStatement déjà mis en place
-   * @return liste : la liste remplie
+   * @return liste : la liste rempli
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private List<OffreDTO> remplirListOffresDepuisResulSet(OffreDTO offreDTO, PreparedStatement ps) {

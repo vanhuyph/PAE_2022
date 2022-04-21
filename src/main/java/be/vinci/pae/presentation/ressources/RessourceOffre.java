@@ -1,5 +1,6 @@
 package be.vinci.pae.presentation.ressources;
 
+import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.presentation.ressources.filtres.Autorisation;
@@ -228,4 +229,21 @@ public class RessourceOffre {
     return liste;
   }
 
+  /**
+   * Recupere tous les objets qui doivent etre évalués par un utilisateur.
+   *
+   * @param idUtilisateur : id de l'utilisateur
+   * @return objetsAEvaluee : la liste des objets que l'utilisateur doit évalué
+   */
+  @GET
+  @Path("/objetsAEvalue/{idUtilisateur}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  //@Autorisation
+  public List<ObjetDTO> objetsAEvalueeParUtilisateur(
+      @PathParam("idUtilisateur") int idUtilisateur) {
+    List<ObjetDTO> objetsAEvalue;
+    objetsAEvalue = offreUCC.objetsAEvalueParUtilisateur(idUtilisateur);
+    return objetsAEvalue;
+  }
 }
