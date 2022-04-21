@@ -1,5 +1,6 @@
 package be.vinci.pae.donnees.dao.objet;
 
+import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
@@ -11,6 +12,8 @@ import java.sql.Types;
 
 public class ObjetDAOImpl implements ObjetDAO {
 
+  @Inject
+  private DomaineFactory factory;
   @Inject
   private ServiceBackendDAL serviceBackendDAL;
 
@@ -54,13 +57,24 @@ public class ObjetDAOImpl implements ObjetDAO {
    */
   @Override
   public ObjetDTO rechercheParId(ObjetDTO objetDTO) {
-    String requetePs = "SELECT id_objet FROM projet.objets WHERE id_objet = ?;";
+    String requetePs = "SELECT id_objet, etat_objet, type_objet, description, offreur, receveur, "
+        + "photo, version, vue FROM projet.objets WHERE id_objet = ?;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, objetDTO.getIdObjet());
-      objetDTO.setIdObjet(0);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           objetDTO.setIdObjet(rs.getInt(1));
+          objetDTO.setEtatObjet(rs.getString(2));
+          objetDTO.setTypeObjet(factory.getTypeObjet());
+          objetDTO.getTypeObjet().setIdType(rs.getInt(3));
+          objetDTO.setDescription(rs.getString(4));
+          objetDTO.setOffreur(factory.getUtilisateur());
+          objetDTO.getOffreur().setIdUtilisateur(rs.getInt(5));
+          objetDTO.setReceveur(factory.getUtilisateur());
+          objetDTO.getReceveur().setIdUtilisateur(rs.getInt(6));
+          objetDTO.setPhoto(rs.getString(7));
+          objetDTO.setVersion(rs.getInt(8));
+          objetDTO.setVue(rs.getBoolean(9));
           return objetDTO;
         } else {
           return null;
