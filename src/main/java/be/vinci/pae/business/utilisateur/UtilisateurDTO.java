@@ -58,12 +58,12 @@ public interface UtilisateurDTO {
 
   void setNbObjetDonnees(int nbObjetDonnees);
 
-  public int getNbObjetRecus();
+  int getNbObjetRecus();
 
-  public void setNbObjetRecus(int nbObjetRecus);
+  void setNbObjetRecus(int nbObjetRecus);
 
-  public int getNbObjetAbandonnes();
+  int getNbObjetAbandonnes();
 
-  public void setNbObjetAbandonnes(int nbObjetAbandonnes);
+  void setNbObjetAbandonnes(int nbObjetAbandonnes);
 
 }
