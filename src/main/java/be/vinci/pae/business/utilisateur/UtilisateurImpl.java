@@ -32,6 +32,14 @@ public class UtilisateurImpl implements Utilisateur {
   private AdresseDTO adresse;
   @JsonView(Vues.Public.class)
   private int version;
+  @JsonView(Vues.Internal.class)
+  private int nbObjetOfferts;
+  @JsonView(Vues.Internal.class)
+  private int nbObjetDonnees;
+  @JsonView(Vues.Internal.class)
+  private int nbObjetRecus;
+  @JsonView(Vues.Internal.class)
+  private int nbObjetAbandonnes;
 
   @Override
   public int getIdUtilisateur() {
@@ -144,6 +152,46 @@ public class UtilisateurImpl implements Utilisateur {
   }
 
   @Override
+  public int getNbObjetOfferts() {
+    return nbObjetOfferts;
+  }
+
+  @Override
+  public void setNbObjetOfferts(int nbObjetOfferts) {
+    this.nbObjetOfferts = nbObjetOfferts;
+  }
+
+  @Override
+  public int getNbObjetDonnees() {
+    return nbObjetDonnees;
+  }
+
+  @Override
+  public void setNbObjetDonnees(int nbObjetDonnees) {
+    this.nbObjetDonnees = nbObjetDonnees;
+  }
+
+  @Override
+  public int getNbObjetRecus() {
+    return nbObjetRecus;
+  }
+
+  @Override
+  public void setNbObjetRecus(int nbObjetRecus) {
+    this.nbObjetRecus = nbObjetRecus;
+  }
+
+  @Override
+  public int getNbObjetAbandonnes() {
+    return nbObjetAbandonnes;
+  }
+
+  @Override
+  public void setNbObjetAbandonnes(int nbObjetAbandonnes) {
+    this.nbObjetAbandonnes = nbObjetAbandonnes;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -217,6 +265,10 @@ public class UtilisateurImpl implements Utilisateur {
         + ", commentaire='" + commentaire + '\''
         + ", adresse=" + adresse
         + ", version='" + version + '\''
+        + ", nombre d'objets offerts='" + nbObjetOfferts + '\''
+        + ", nombre d'objets données='" + nbObjetDonnees + '\''
+        + ", nombre d'objets reçus='" + nbObjetRecus + '\''
+        + ", nombre d'objets abandonnées='" + nbObjetAbandonnes + '\''
         + '}';
   }
 

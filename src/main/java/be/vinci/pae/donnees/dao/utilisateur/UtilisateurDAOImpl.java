@@ -31,7 +31,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, "
+            + "u.etat_inscription, u.commentaire, u.version, u.nb_objets_offert, u.nb_objets_donne,"
+            + " u.nb_objets_recu, u.nb_objets_abandonne, a.id_adresse, a.rue, a.numero, "
             + "a.boite, a.code_postal, a.commune, a.version FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE u.pseudo = ?;";
@@ -62,7 +63,9 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, "
+            + "u.etat_inscription, u.commentaire, u.version, u.nb_objets_offert, "
+            + "u.nb_objets_donne, u.nb_objets_recu, u.nb_objets_abandonne, "
+            + "a.id_adresse, a.rue, a.numero, "
             + "a.boite, a.code_postal, a.commune, a.version FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE u.id_utilisateur = ?;";
@@ -142,6 +145,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setInt(9, utilisateurDTO.getVersion() + 1);
       ps.setInt(10, utilisateurDTO.getIdUtilisateur());
       ps.setInt(11, utilisateurDTO.getVersion());
+      ps.setInt(12, utilisateurDTO.getNbObjetOfferts());
+      ps.setInt(13, utilisateurDTO.getNbObjetDonnees());
+      ps.setInt(14, utilisateurDTO.getNbObjetRecus());
+      ps.setInt(15, utilisateurDTO.getNbObjetAbandonnes());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
@@ -223,7 +230,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, "
+            + "u.etat_inscription, u.commentaire, u.version, u.nb_objets_offert, u.nb_objets_donne,"
+            + " u.nb_objets_recu, u.nb_objets_abandonne, a.id_adresse, a.rue, a.numero, "
             + "a.boite, a.code_postal, a.commune, a.version FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE u.etat_inscription = ? ORDER BY u.pseudo;";
@@ -320,15 +328,17 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       remplirUtilisateurSansAdresse(utilisateurDTO, rs.getInt(1),
           rs.getString(2), rs.getString(3), rs.getString(4),
           rs.getString(5), rs.getString(6), rs.getBoolean(7),
-          rs.getString(8), rs.getString(9), rs.getInt(10));
+          rs.getString(8), rs.getString(9), rs.getInt(10),
+          rs.getInt(11), rs.getInt(12), rs.getInt(13),
+          rs.getInt(14));
       AdresseDTO adresseDTO = factory.getAdresse();
-      adresseDTO.setIdAdresse(rs.getInt(11));
-      adresseDTO.setRue(rs.getString(12));
-      adresseDTO.setNumero(rs.getInt(13));
-      adresseDTO.setBoite(rs.getString(14));
-      adresseDTO.setCodePostal(rs.getInt(15));
-      adresseDTO.setCommune(rs.getString(16));
-      adresseDTO.setVersion(rs.getInt(17));
+      adresseDTO.setIdAdresse(rs.getInt(15));
+      adresseDTO.setRue(rs.getString(16));
+      adresseDTO.setNumero(rs.getInt(17));
+      adresseDTO.setBoite(rs.getString(18));
+      adresseDTO.setCodePostal(rs.getInt(19));
+      adresseDTO.setCommune(rs.getString(20));
+      adresseDTO.setVersion(rs.getInt(21));
       utilisateurDTO.setAdresse(adresseDTO);
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);
@@ -350,7 +360,9 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       remplirUtilisateurSansAdresse(utilisateurDTO, rs.getInt(1),
           rs.getString(2), rs.getString(3), rs.getString(4),
           rs.getString(5), rs.getString(6), rs.getBoolean(7),
-          rs.getString(9), rs.getString(10), rs.getInt(11));
+          rs.getString(9), rs.getString(10), rs.getInt(11),
+          rs.getInt(12), rs.getInt(13), rs.getInt(14),
+          rs.getInt(15));
       AdresseDTO adresseDTO = factory.getAdresse();
       String requetePs = "SELECT id_adresse, rue, numero, boite, code_postal, commune "
           + "FROM projet.adresses WHERE id_adresse = ?;";
@@ -410,7 +422,9 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    */
   private void remplirUtilisateurSansAdresse(UtilisateurDTO utilisateurDTO, int id,
       String pseudo, String nom, String prenom, String mdp, String gsm, boolean estAdmin,
-      String etatInscription, String commentaire, int version) {
+      String etatInscription, String commentaire, int version, int nbObjetOfferts,
+      int nbObjetDonnes,
+      int nbObjetRecus, int nbObjetAbandonnes) {
     utilisateurDTO.setIdUtilisateur(id);
     utilisateurDTO.setPseudo(pseudo);
     utilisateurDTO.setNom(nom);
@@ -421,6 +435,11 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     utilisateurDTO.setEtatInscription(etatInscription);
     utilisateurDTO.setCommentaire(commentaire);
     utilisateurDTO.setVersion(version);
+    utilisateurDTO.setNbObjetOfferts(nbObjetOfferts);
+    utilisateurDTO.setNbObjetDonnees(nbObjetDonnes);
+    utilisateurDTO.setNbObjetRecus(nbObjetRecus);
+    utilisateurDTO.setNbObjetAbandonnes(nbObjetAbandonnes);
+
   }
 
 }

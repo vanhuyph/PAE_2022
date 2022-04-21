@@ -234,70 +234,6 @@ const surListeConfirme = async (donnees) => {
 </div>`
 
   for (const utilisateur of donnees) {
-    let objetsOfferts = 0
-    let objetsDonnes = 0
-    let objetsRecus = 0
-    let objetsAbandonnes = 0
-
-    // Récupère le nombre d'objets offerts
-    await fetch(
-        API_URL + 'utilisateurs/nbreObjetsOfferts/' + utilisateur.idUtilisateur,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: session.token,
-          },
-        })
-    .then((reponse) => {
-      if (!reponse.ok) {
-        throw new Error(
-            "Code erreur : " + reponse.status + " : " + reponse.statusText
-        );
-      }
-      return reponse.json();
-    })
-    .then((nbInt) => objetsOfferts = nbInt)
-
-    // Récupère le nombre d'objets donnés
-    await fetch(
-        API_URL + 'utilisateurs/nbreObjetsDonnes/' + utilisateur.idUtilisateur,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: session.token,
-          },
-        })
-    .then((reponse) => {
-      if (!reponse.ok) {
-        throw new Error(
-            "Code erreur : " + reponse.status + " : " + reponse.statusText
-        );
-      }
-      return reponse.json();
-    })
-    .then((nbInt) => objetsDonnes = nbInt)
-
-    // Récupère le nombre d'objets reçus
-    await fetch(
-        API_URL + 'utilisateurs/nbreObjetsRecus/' + utilisateur.idUtilisateur, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: session.token,
-          },
-        })
-    .then((reponse) => {
-      if (!reponse.ok) {
-        throw new Error(
-            "Code erreur : " + reponse.status + " : " + reponse.statusText
-        );
-      }
-      return reponse.json();
-    })
-    .then((nbInt) => objetsRecus = nbInt)
-
     liste += `
     <div class="utilisateur">
       <div class="admin-membre">
@@ -309,10 +245,10 @@ const surListeConfirme = async (donnees) => {
         <div class="utilisateur-objets">
         <h4>Nombre d'objets</h4>
           <div class="utilisateur-objets-spe">
-            <div><strong>Offerts : </strong><p>${objetsOfferts}</p></div>
-            <div><strong>Donnés : </strong><p>${objetsDonnes}</p></div>
-            <div><strong>Reçus : </strong><p>${objetsRecus}</p></div>
-            <div><strong>Abandonnés : </strong><p>${objetsAbandonnes}</p></div>
+            <div><strong>Offerts : </strong><p>${utilisateur.nbObjetOfferts}</p></div>
+            <div><strong>Donnés : </strong><p>${utilisateur.nbObjetDonnees}</p></div>
+            <div><strong>Reçus : </strong><p>${utilisateur.nbObjetRecus}</p></div>
+            <div><strong>Abandonnés : </strong><p>${utilisateur.nbObjetAbandonnes}</p></div>
           </div>
         </div>
       </div>
