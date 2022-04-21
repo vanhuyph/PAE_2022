@@ -1,5 +1,6 @@
 package be.vinci.pae.business.offre;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface OffreUCC {
@@ -16,6 +17,10 @@ public interface OffreUCC {
 
   List<OffreDTO> offresPrecedentes(int idObjet);
 
+  OffreDTO modifierOffre(OffreDTO offreModifiee);
+
+  List<OffreDTO> rechercherOffre(String recherche, LocalDate dateDebut, LocalDate dateFin);
+
   OffreDTO indiquerMembreReceveur(OffreDTO offreDTO);
 
   OffreDTO donnerOffre(OffreDTO offreDTO);
@@ -23,6 +28,5 @@ public interface OffreUCC {
   List<OffreDTO> mesOffres(int idUtilisateur);
 
   List<OffreDTO> voirOffreAttribuer(int idUtilisateur);
-  
 
 }

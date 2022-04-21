@@ -5,6 +5,7 @@ import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.utilitaires.Config;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -23,6 +24,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -61,7 +63,6 @@ public class RessourceOffre {
    * Liste les offres.
    *
    * @return liste : la liste des offres
-   * @throws PresentationException : est lancée si l'offre n'a pas pu être trouvée
    */
   @GET
   @Path("listerOffres")
@@ -69,9 +70,6 @@ public class RessourceOffre {
   @Autorisation
   public List<OffreDTO> listerOffres() {
     List<OffreDTO> liste = offreUCC.listerOffres();
-    if (liste == null) {
-      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
-    }
     return liste;
   }
 
@@ -79,23 +77,19 @@ public class RessourceOffre {
    * Liste les offres les plus récentes.
    *
    * @return liste : la liste des offres les plus récentes
-   * @throws PresentationException : est lancée si l'offre n'a pas pu être trouvée
    */
   @GET
   @Path("listerOffresRecentes")
   @Produces(MediaType.APPLICATION_JSON)
   public List<OffreDTO> listerOffresRecent() {
     List<OffreDTO> liste = offreUCC.listerOffresRecentes();
-    if (liste == null) {
-      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
-    }
     return liste;
   }
 
   /**
    * Annule une offre.
    *
-   * @param offreDTO : l'offre a annulé
+   * @param offreDTO : l'offre à annuler
    * @return offreDTO : l'offre annulée
    * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'annulation
    *                               a échoué
@@ -111,7 +105,7 @@ public class RessourceOffre {
     }
     offreDTO = offreUCC.annulerOffre(offreDTO);
     if (offreDTO == null) {
-      throw new PresentationException("L'annulation de l'offre a échoué", Status.BAD_REQUEST);
+      throw new PresentationException("L'annulation de l'offre a échouée", Status.BAD_REQUEST);
     }
     return offreDTO;
   }
@@ -178,13 +172,15 @@ public class RessourceOffre {
   public Response telechargerPhoto(@FormDataParam("photo") InputStream photo,
       @FormDataParam("photo") FormDataContentDisposition fichierDisposition) throws IOException {
     String nomDencodage = UUID.randomUUID().toString();
-    Files.copy(photo, Paths.get(Config.getPropriete("OneDrivePhotos") + nomDencodage),
+    String nomFichier =
+        nomDencodage + "." + fichierDisposition.getFileName().split("\\.(?=[^\\.]+$)")[1];
+    Files.copy(photo, Paths.get(Config.getPropriete("OneDrivePhotos") + nomFichier),
         StandardCopyOption.REPLACE_EXISTING);
-    return Response.ok(nomDencodage).build();
+    return Response.ok(nomFichier).build();
   }
 
   /**
-   * Voir la photo d'une offre.
+   * Permet de voir la photo d'une offre.
    *
    * @param uuidPhoto : nom du fichier sur le serveur
    * @return une réponse contenant la photo
@@ -194,6 +190,47 @@ public class RessourceOffre {
   @Produces({"image/*"})
   public Response voirPhotoOffre(@PathParam("uuidPhoto") String uuidPhoto) {
     return Response.ok(new File(Config.getPropriete("OneDrivePhotos") + uuidPhoto)).build();
+  }
+
+  /**
+   * Modifie un ou plusieurs détails de l'offre.
+   *
+   * @param offreAvecModification : l'offre avec les modifications
+   * @return l'offre modifiée
+   * @throws PresentationException : est lancée s'il y a eu un problème lors de la modification de
+   *                               l'offre
+   */
+  @PUT
+  @Path("/modifierOffre")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
+    if (offreAvecModification.getObjetDTO().getDescription().isBlank()
+        || offreAvecModification.getPlageHoraire().isBlank()) {
+      throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
+    }
+    return offreUCC.modifierOffre(offreAvecModification);
+  }
+
+  /**
+   * Liste toutes les offres en fonction d'un critère de recherche (nom, type, état).
+   *
+   * @param json : le json envoyé depuis le formulaire de recherche
+   * @return liste : la liste des offres correspondante au critère de recherche
+   */
+  @POST
+  @Path("recherche")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<OffreDTO> rechercherOffres(JsonNode json) {
+    String recherche = json.get("recherche").asText();
+    LocalDate dateDebut = LocalDate.parse(json.get("dateDebut").asText());
+    LocalDate dateFin = LocalDate.parse(json.get("dateFin").asText());
+    List<OffreDTO> liste;
+    liste = offreUCC.rechercherOffre(recherche, dateDebut, dateFin);
+    return liste;
   }
 
   /**

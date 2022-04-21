@@ -6,7 +6,6 @@ import be.vinci.pae.business.interet.InteretDTO;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
-import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.Date;
@@ -23,12 +22,11 @@ public class InteretDAOImpl implements InteretDAO {
   @Inject
   private ServiceBackendDAL serviceBackendDAL;
 
-
   /**
    * Ajoute un intérêt à l'objet.
    *
-   * @param interetDTO : interet
-   * @return interetDTO : interetDTO rempli
+   * @param interetDTO : l'intérêt à ajouter
+   * @return interetDTO : l'interetDTO rempli
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
@@ -49,7 +47,6 @@ public class InteretDAOImpl implements InteretDAO {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
   }
@@ -80,7 +77,7 @@ public class InteretDAOImpl implements InteretDAO {
   }
 
   /**
-   * nombre de personnes intéressées pour une offre.
+   * Récupère le nombre de personnes intéressées de l'objet avec l'id passé en paramètre.
    *
    * @param idObjet : l'id de l'objet dont les personnes sont intéressées
    * @return nbPers : le nombre de personnes intéressées
@@ -98,8 +95,6 @@ public class InteretDAOImpl implements InteretDAO {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return nbPers;
@@ -264,6 +259,5 @@ public class InteretDAOImpl implements InteretDAO {
     }
     return interetDTO;
   }
-
 
 }

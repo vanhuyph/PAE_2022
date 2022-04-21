@@ -45,7 +45,6 @@ public class ObjetDAOImpl implements ObjetDAO {
     }
   }
 
-
   /**
    * Recherche l'objet en fonction de son id.
    *
@@ -71,7 +70,6 @@ public class ObjetDAOImpl implements ObjetDAO {
       throw new FatalException(e.getMessage(), e);
     }
   }
-
 
   /**
    * Met à jour l'objet.
@@ -102,7 +100,6 @@ public class ObjetDAOImpl implements ObjetDAO {
       ps.setInt(10, objetDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-
           objetDTO.setIdObjet(rs.getInt(1));
           objetDTO.setVersion(rs.getInt(2));
           return objetDTO;

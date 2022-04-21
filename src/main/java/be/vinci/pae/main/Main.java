@@ -2,9 +2,11 @@ package be.vinci.pae.main;
 
 import be.vinci.pae.utilitaires.ApplicationBinder;
 import be.vinci.pae.utilitaires.Config;
+import be.vinci.pae.utilitaires.LoggerFichier;
 import be.vinci.pae.utilitaires.WebExceptionMapper;
 import java.io.IOException;
 import java.net.URI;
+import java.util.logging.Level;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -36,7 +38,7 @@ public class Main {
   public static void main(String[] args) throws IOException {
     Config.charger("dev.properties");
     final HttpServer server = startServer();
-    System.out.println(
+    LoggerFichier.log(Level.INFO,
         String.format("Jersey app disponible sur " + Config.getPropriete("BaseURI")));
     System.in.read();
     server.stop();

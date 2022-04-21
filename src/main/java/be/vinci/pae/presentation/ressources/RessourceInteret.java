@@ -59,7 +59,7 @@ public class RessourceInteret {
    * @throws PresentationException : est lancée si l'id de l'objet est incorrect
    */
   @GET
-  @Path("/nbPersonnesInteresees/{id}")
+  @Path("nbPersonnesInteresees/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation

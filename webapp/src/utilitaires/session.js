@@ -27,13 +27,14 @@ const enleverDonneeSession = () => {
 const verifierTokenAuChargement = () => {
   let tokenRecupere = localStorage.getItem(STORE_NAME)
   let tokenLocal = true
-  if(!tokenRecupere){
+  if (!tokenRecupere) {
     tokenRecupere = sessionStorage.getItem(STORE_NAME)
     tokenLocal = false
   }
-  if(!tokenRecupere)return;
+  if (!tokenRecupere) {
+    return;
+  }
   VerifierTokenUtilisateur(JSON.parse(tokenRecupere), tokenLocal)
-
 }
 
 export {

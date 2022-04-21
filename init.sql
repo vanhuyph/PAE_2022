@@ -9,7 +9,7 @@ CREATE TABLE projet.adresses
     boite       VARCHAR(10),
     code_postal INTEGER      NOT NULL,
     commune     VARCHAR(30),
-    version INTEGER NOT NULL
+    version     INTEGER      NOT NULL
 );
 
 CREATE TABLE projet.types_objets
@@ -20,17 +20,21 @@ CREATE TABLE projet.types_objets
 
 CREATE TABLE projet.utilisateurs
 (
-    id_utilisateur   SERIAL PRIMARY KEY,
-    pseudo           VARCHAR(25)                                     NOT NULL,
-    nom              VARCHAR(50)                                     NOT NULL,
-    prenom           VARCHAR(50)                                     NOT NULL,
-    mdp              VARCHAR(255)                                    NOT NULL,
-    gsm              VARCHAR(15),
-    est_admin        BOOLEAN                                         NOT NULL,
-    adresse          INTEGER REFERENCES projet.adresses (id_adresse) NOT NULL,
-    etat_inscription VARCHAR(10)                                     NOT NULL,
-    commentaire      VARCHAR(255) NULL,
-    version INTEGER NOT NULL
+    id_utilisateur     SERIAL PRIMARY KEY,
+    pseudo             VARCHAR(25)                                     NOT NULL,
+    nom                VARCHAR(50)                                     NOT NULL,
+    prenom             VARCHAR(50)                                     NOT NULL,
+    mdp                VARCHAR(255)                                    NOT NULL,
+    gsm                VARCHAR(15),
+    est_admin          BOOLEAN                                         NOT NULL,
+    adresse            INTEGER REFERENCES projet.adresses (id_adresse) NOT NULL,
+    etat_inscription   VARCHAR(10)                                     NOT NULL,
+    commentaire        VARCHAR(255) NULL,
+    version            INTEGER                                         NOT NULL,
+    nb_objet_offert    INTEGER                                         NOT NULL,
+    nb_objet_donne     INTEGER                                         NOT NULL,
+    nb_objet_recu      INTEGER                                         NOT NULL,
+    nb_objet_abandonne INTEGER                                         NOT NULL
 );
 
 CREATE TABLE projet.objets
@@ -69,34 +73,34 @@ CREATE TABLE projet.offres
     id_objet      INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
     date_offre    TIMESTAMP                                   NOT NULL,
     plage_horaire VARCHAR(255)                                NOT NULL,
-    version INTEGER NOT NULL
+    version       INTEGER                                     NOT NULL
 );
 
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Rue de l’Eglise', 11, 'B1', 4987, 'Stoumont',1);
+VALUES (DEFAULT, 'Rue de l’Eglise', 11, 'B1', 4987, 'Stoumont', 0);
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Rue de Renkin', 7, NULL, 4800, 'Verviers',1);
+VALUES (DEFAULT, 'Rue de Renkin', 7, NULL, 4800, 'Verviers', 0);
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Rue Haute Folie', 6, 'A103', 4800, 'Verviers',1);
+VALUES (DEFAULT, 'Rue Haute Folie', 6, 'A103', 4800, 'Verviers', 0);
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Haut-Vinâve', 13, NULL, 4845, 'Jalhay',1);
+VALUES (DEFAULT, 'Haut-Vinâve', 13, NULL, 4845, 'Jalhay', 0);
 
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'caro', 'Line', 'Caroline',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 1, 'Refusé',
-        'Il faudra patienter un jour ou deux.',1);
+        'Il faudra patienter un jour ou deux.', 0, 0, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'achil', 'Ile', 'Achille',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 2,
-        'En attente', NULL,1);
+        'En attente', NULL, 0, 0, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bazz', 'Ile', 'Basile',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 3, 'Confirmé',
-        NULL,1);
+        NULL, 0, 0, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bri', 'Lehmann', 'Brigitte',
         '$2a$10$W0IiogOO7ef5/Kw.GdmEkO46mtg6VSeDsV5SYc4Dzmp4XnnOBUAkC', NULL, true, 4, 'Confirmé',
-        NULL,1);
+        NULL, 0, 2, 1, 1, 0);
 
 INSERT INTO projet.types_objets
 VALUES (DEFAULT, 'Accessoires pour animaux domestiques');
@@ -138,92 +142,3 @@ INSERT INTO projet.offres
 VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h', 1);
 INSERT INTO projet.offres
 VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h', 1);
-
-INSERT INTO projet.utilisateurs
-VALUES (DEFAULT, 'didi', 'didi', 'didi',
-        '$2a$10$HuP3EOr3NfjMNiFhCGAYf.QLfnQ7R5WGl.IokLtCp4UBo7svGNhBS', NULL, true, 4, 'Confirmé',
-        NULL, 1);
-
-
-
-/*SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,
-        u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin,
-        u.etat_inscription, u.commentaire, t.id_type, t.nom, o.id_objet, o.etat_objet,
-        o.description, o.photo, i.date FROM projet.interets i,
-        projet.utilisateurs u, projet.adresses a, projet.objets o, projet.types_objets t WHERE a.id_adresse = u.adresse AND
-         i.objet = ? AND o.id_objet = i.objet AND i.utilisateur = u.id_utilisateur AND t.id_type = o.type_objet;
-INSERT INTO projet.interets
-VALUES (1, 1, now(), 0, false);
-
-UPDATE projet.objets
-set etat_objet = 'Confirmé'
-WHERE id_objet = 1;
-
-UPDATE projet.objets
-SET etat_objet  = 'Confirmé',
-    type_objet  = 3,
-    description = 'Décorations de Noël de couleur rouge.',
-    offreur     = 3,
-    receveur    = NULL,
-    photo       = 'christmas-1869533_640.png',
-    version     = 1,
-    vue         = false
-WHERE id_objet = 1
-  AND version = 1
-RETURNING id_objet, version;
-
-SELECT u.id_utilisateur, u.pseudo, u.est_admin, u.etat_inscription, u.commentaire
-FROM projet.utilisateurs u
-ORDER BY u.est_admin, u.etat_inscription;
-
-SELECT o.id_objet, o.description, t.nom AS "type", o.etat_objet, of.date_offre
-FROM projet.objets o,
-     projet.types_objets t,
-     projet.offres of
-WHERE o.type_objet = t.id_type
-  AND of.id_objet = o.id_objet
-ORDER BY of.date_offre;
-
-SELECT u.nom, o.description
-FROM projet.objets o,
-     projet.utilisateurs u
-WHERE u.id_utilisateur = o.offreur
-ORDER BY u.nom, o.description;*/
-
-/*SELECT a.id_adresse,
-       a.rue,
-       a.numero,
-       a.boite,
-       a.code_postal,
-       a.commune,
-       a.version,
-       u.id_utilisateur,
-       u.pseudo,
-       u.nom,
-       u.prenom,
-       u.mdp,
-       u.gsm,
-       u.est_admin,
-       u.etat_inscription,
-       u.commentaire,
-       u.version,
-       t.id_type,
-       t.nom,
-       o.id_objet,
-       o.etat_objet,
-       o.description,
-       o.photo,
-       o.version,
-       of.id_offre,
-       of.date_offre,
-       of.plage_horaire,
-       of.version
-FROM projet.offres of
-         LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet
-         LEFT OUTER JOIN projet.interets i ON i.objet = o.id_objet
-         LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur
-         LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse
-         LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet
-WHERE i.utilisateur = ?
-  AND o.etat_objet = 'Confirmé'
-ORDER BY of.date_offre DESC;*/

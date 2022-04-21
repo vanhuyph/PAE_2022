@@ -28,7 +28,8 @@ public class InteretUCCImpl implements InteretUCC {
    *
    * @param interetDTO : l'intérêt à créer
    * @return interet : interetDTO
-   * @throws BusinessException : est lancée s'il y a eu une erreur
+   * @throws BusinessException  : est lancée s'il y a eu une erreur
+   * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas
    */
   @Override
   public InteretDTO creerUnInteret(InteretDTO interetDTO) {
@@ -48,18 +49,15 @@ public class InteretUCCImpl implements InteretUCC {
           if (utilisateurVerif == null) {
             throw new PasTrouveException("L'utilisateur n'existe pas");
           }
-          throw new BusinessException("Données sont périmées");
+          throw new BusinessException("Données périmées");
         }
-        interetDTO.setUtilisateur(utilisateur);
       }
-      Interet interetChange = (Interet) interetDTO;
-      interetChange.creerVersion();
-      interetChange.changerEtatObjet("Intéressé");
-      interetChange.setVue(false);
-      objetDAO.miseAJourObjet(interetChange.getObjet());
-      interet = interetDAO.ajouterInteret(interetChange);
+      ((Interet) interetDTO).marquerInteretObjet();
+      objetDAO.miseAJourObjet(interetDTO.getObjet());
+      interetDTO.setVue(false);
+      interet = interetDAO.ajouterInteret(interetDTO);
       if (interet == null) {
-        throw new BusinessException("L'intérêt n'a pas pu être créé.");
+        throw new BusinessException("L'intérêt n'a pas pu être créé");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
@@ -72,19 +70,19 @@ public class InteretUCCImpl implements InteretUCC {
   /**
    * Récupère le nombre de personnes intéressées pour une offre.
    *
-   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @param id : l'id de l'offre dont les personnes sont intéressées
    * @return nbPersonnesInteressees : le nombre de personnes intéressées
-   * @throws BusinessException : est lancée si l'id de l'objet est incorrect
+   * @throws BusinessException : est lancée si l'id de l'offre est incorrect
    */
   @Override
-  public int nbPersonnesInteressees(int idObjet) {
+  public int nbPersonnesInteressees(int id) {
     serviceDAL.commencerTransaction();
     int nbPersonnesInteressees;
     try {
-      if (idObjet <= 0) {
+      if (id <= 0) {
         throw new BusinessException("L'offre n'a pas pu être trouvée");
       }
-      nbPersonnesInteressees = interetDAO.nbPersonnesInteressees(idObjet);
+      nbPersonnesInteressees = interetDAO.nbPersonnesInteressees(id);
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
@@ -138,7 +136,6 @@ public class InteretUCCImpl implements InteretUCC {
         listTemp.get(i).setVue(true);
         InteretDTO interetDTO = interetDAO.miseAJourInteret(listTemp.get(i));
         list.add(interetDTO);
-
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
