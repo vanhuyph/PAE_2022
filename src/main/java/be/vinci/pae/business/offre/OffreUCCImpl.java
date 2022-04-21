@@ -2,8 +2,10 @@ package be.vinci.pae.business.offre;
 
 import be.vinci.pae.business.objet.Objet;
 import be.vinci.pae.business.objet.ObjetDTO;
+import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
+import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
@@ -17,19 +19,24 @@ public class OffreUCCImpl implements OffreUCC {
   @Inject
   ObjetDAO objetDAO;
   @Inject
+  UtilisateurDAO utilisateurDAO;
+  @Inject
   ServiceDAL serviceDAL;
 
   /**
-   * Créer une offre.
+   * Créer une offre et incrémente le nombre d'objet offerts de l'utilisateur.
    *
    * @param offreDTO : l'offre à créer
    * @return offre : l'offre créée
-   * @throws BusinessException : est lancée si l'objet ou l'offre n'a pas pu être créée
+   * @throws BusinessException  : est lancée si l'objet ou l'offre n'a pas pu être créée
+   * @throws PasTrouveException : est lancée si l'utilisateur à qui l'on veut incrémenter son nombre
+   *                            d'objets offerts n'est pas trouvé
    */
   @Override
   public OffreDTO creerOffre(OffreDTO offreDTO) {
     serviceDAL.commencerTransaction();
     OffreDTO offre;
+    UtilisateurDTO utilisateur;
     try {
       ObjetDTO objet = objetDAO.creerObjet(offreDTO.getObjetDTO());
       if (objet == null) {
@@ -39,6 +46,13 @@ public class OffreUCCImpl implements OffreUCC {
       offre = offreDAO.creerOffre(offreDTO);
       if (offre == null) {
         throw new BusinessException("L'offre n'a pas pu être créée");
+      }
+      utilisateur = utilisateurDAO.incrementerObjetOffert(objet.getOffreur());
+      if (utilisateur == null) {
+        if (utilisateurDAO.rechercheParId(objet.getOffreur().getIdUtilisateur()) == null) {
+          throw new PasTrouveException("L'utilisateur n'existe pas");
+        }
+        throw new BusinessException("Données sont périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();

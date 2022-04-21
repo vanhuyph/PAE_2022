@@ -172,8 +172,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public UtilisateurDTO modifierGsm(UtilisateurDTO utilisateurDTO) {
     String requetePs =
         "UPDATE projet.utilisateurs SET gsm = ?, version = ? WHERE id_utilisateur = ? "
-            + "AND version = ? "
-            + "RETURNING *;";
+            + "AND version = ? RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, utilisateurDTO.getGsm());
       ps.setInt(2, utilisateurDTO.getVersion() + 1);
@@ -313,6 +312,33 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       throw new FatalException(e.getMessage(), e);
     }
     return nbreObjets;
+  }
+
+  /**
+   * Incrémente le nombre d'objets offerts de l'utilisateur à chaque nouvelle offre.
+   *
+   * @param utilisateurDTO : l'utilisateur à qui l'on veut incrémenter son nombre d'objets offerts
+   * @return utilisateurDTO : l'utilisateur avec son nombre d'objets offerts à jour
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public UtilisateurDTO incrementerObjetOffert(UtilisateurDTO utilisateurDTO) {
+    String requete = "UPDATE projet.utilisateurs SET nb_objet_offert = nb_objet_offert + 1, "
+        + "version = ? WHERE id_utilisateur = ? AND version = ?;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requete)) {
+      ps.setInt(1, utilisateurDTO.getIdUtilisateur());
+      ps.setInt(2, utilisateurDTO.getVersion() + 1);
+      ps.setInt(2, utilisateurDTO.getVersion());
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
+        } else {
+          return null;
+        }
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
   }
 
   /**

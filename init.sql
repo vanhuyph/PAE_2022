@@ -9,7 +9,7 @@ CREATE TABLE projet.adresses
     boite       VARCHAR(10),
     code_postal INTEGER      NOT NULL,
     commune     VARCHAR(30),
-    version INTEGER NOT NULL
+    version     INTEGER      NOT NULL
 );
 
 CREATE TABLE projet.types_objets
@@ -20,21 +20,21 @@ CREATE TABLE projet.types_objets
 
 CREATE TABLE projet.utilisateurs
 (
-    id_utilisateur   SERIAL PRIMARY KEY,
-    pseudo           VARCHAR(25)                                     NOT NULL,
-    nom              VARCHAR(50)                                     NOT NULL,
-    prenom           VARCHAR(50)                                     NOT NULL,
-    mdp              VARCHAR(255)                                    NOT NULL,
-    gsm              VARCHAR(15),
-    est_admin        BOOLEAN                                         NOT NULL,
-    adresse          INTEGER REFERENCES projet.adresses (id_adresse) NOT NULL,
-    etat_inscription VARCHAR(10)                                     NOT NULL,
-    commentaire      VARCHAR(255) NULL,
-    version          INTEGER                                         NOT NULL,
-    nb_objets_offert INTEGER NOT NULL,
-    nb_objets_donne INTEGER NOT NULL,
-    nb_objets_recu INTEGER NOT NULL,
-    nb_objets_abandonne INTEGER NOT NULL
+    id_utilisateur     SERIAL PRIMARY KEY,
+    pseudo             VARCHAR(25)                                     NOT NULL,
+    nom                VARCHAR(50)                                     NOT NULL,
+    prenom             VARCHAR(50)                                     NOT NULL,
+    mdp                VARCHAR(255)                                    NOT NULL,
+    gsm                VARCHAR(15),
+    est_admin          BOOLEAN                                         NOT NULL,
+    adresse            INTEGER REFERENCES projet.adresses (id_adresse) NOT NULL,
+    etat_inscription   VARCHAR(10)                                     NOT NULL,
+    commentaire        VARCHAR(255) NULL,
+    version            INTEGER                                         NOT NULL,
+    nb_objet_offert    INTEGER                                         NOT NULL,
+    nb_objet_donne     INTEGER                                         NOT NULL,
+    nb_objet_recu      INTEGER                                         NOT NULL,
+    nb_objet_abandonne INTEGER                                         NOT NULL
 );
 
 CREATE TABLE projet.objets
@@ -46,7 +46,7 @@ CREATE TABLE projet.objets
     offreur     INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
     receveur    INTEGER REFERENCES projet.utilisateurs (id_utilisateur),
     photo       VARCHAR(255),
-    version INTEGER NOT NULL
+    version     INTEGER                                                 NOT NULL
 );
 
 CREATE TABLE projet.interets
@@ -54,7 +54,7 @@ CREATE TABLE projet.interets
     utilisateur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
     objet       INTEGER REFERENCES projet.objets (id_objet)             NOT NULL,
     date        DATE                                                    NOT NULL,
-    version INTEGER NOT NULL,
+    version     INTEGER                                                 NOT NULL,
     PRIMARY KEY (utilisateur, objet)
 );
 
@@ -71,34 +71,34 @@ CREATE TABLE projet.offres
     id_objet      INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
     date_offre    TIMESTAMP                                   NOT NULL,
     plage_horaire VARCHAR(255)                                NOT NULL,
-    version INTEGER NOT NULL
+    version       INTEGER                                     NOT NULL
 );
 
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Rue de l’Eglise', 11, 'B1', 4987, 'Stoumont',0);
+VALUES (DEFAULT, 'Rue de l’Eglise', 11, 'B1', 4987, 'Stoumont', 0);
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Rue de Renkin', 7, NULL, 4800, 'Verviers',0);
+VALUES (DEFAULT, 'Rue de Renkin', 7, NULL, 4800, 'Verviers', 0);
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Rue Haute Folie', 6, 'A103', 4800, 'Verviers',0);
+VALUES (DEFAULT, 'Rue Haute Folie', 6, 'A103', 4800, 'Verviers', 0);
 INSERT INTO projet.adresses
-VALUES (DEFAULT, 'Haut-Vinâve', 13, NULL, 4845, 'Jalhay',0);
+VALUES (DEFAULT, 'Haut-Vinâve', 13, NULL, 4845, 'Jalhay', 0);
 
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'caro', 'Line', 'Caroline',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 1, 'Refusé',
-        'Il faudra patienter un jour ou deux.',0,0,0,0,0);
+        'Il faudra patienter un jour ou deux.', 0, 0, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'achil', 'Ile', 'Achille',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 2,
-        'En attente', NULL,0,0,0,0,0);
+        'En attente', NULL, 0, 0, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bazz', 'Ile', 'Basile',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 3, 'Confirmé',
-        NULL,0,0,0,0,0);
+        NULL, 0, 0, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bri', 'Lehmann', 'Brigitte',
         '$2a$10$W0IiogOO7ef5/Kw.GdmEkO46mtg6VSeDsV5SYc4Dzmp4XnnOBUAkC', NULL, true, 4, 'Confirmé',
-        NULL,0,2,1,1,0);
+        NULL, 0, 2, 1, 1, 0);
 
 INSERT INTO projet.types_objets
 VALUES (DEFAULT, 'Accessoires pour animaux domestiques');
@@ -127,16 +127,16 @@ VALUES (DEFAULT, 'Vêtements');
 
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'Offert', 3, 'Décorations de Noël de couleur rouge.', 3, NULL,
-        'christmas-1869533_640.png',1);
+        'christmas-1869533_640.png', 1);
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'Offert', 3, 'Cadre représentant un chien noir sur un fond noir.', 3, NULL,
-        'dog-4118585_640.jpg',1);
+        'dog-4118585_640.jpg', 1);
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'BureauEcolier-7.JPG',1);
+VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'BureauEcolier-7.JPG', 1);
 
 INSERT INTO projet.offres
-VALUES (DEFAULT, 1, '21-03-22', 'Mardi de 17h à 22h',1);
+VALUES (DEFAULT, 1, '21-03-22', 'Mardi de 17h à 22h', 1);
 INSERT INTO projet.offres
-VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h',1);
+VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h', 1);
 INSERT INTO projet.offres
-VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h',1);
+VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h', 1);

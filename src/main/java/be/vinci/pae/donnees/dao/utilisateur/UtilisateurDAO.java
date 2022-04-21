@@ -23,4 +23,6 @@ public interface UtilisateurDAO {
 
   int nbreObjets(int idUtilisateur, String etatObjet);
 
+  UtilisateurDTO incrementerObjetOffert(UtilisateurDTO utilisateurDTO);
+
 }
