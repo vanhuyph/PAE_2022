@@ -6,7 +6,6 @@ import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.utilitaires.Config;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -226,10 +225,9 @@ public class RessourceOffre {
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
   public List<OffreDTO> rechercherOffres(JsonNode json) {
-    ObjectMapper jsonMapper = new ObjectMapper();
     String recherche = json.get("recherche").asText();
-    LocalDate dateDebut = jsonMapper.convertValue(json.get("dateDebut"), LocalDate.class);
-    LocalDate dateFin = jsonMapper.convertValue(json.get("dateFin"), LocalDate.class);
+    LocalDate dateDebut = LocalDate.parse(json.get("dateDebut").asText());
+    LocalDate dateFin = LocalDate.parse(json.get("dateFin").asText());
     List<OffreDTO> liste;
     liste = offreUCC.rechercherOffre(recherche, dateDebut, dateFin);
     return liste;
