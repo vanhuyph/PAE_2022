@@ -677,17 +677,32 @@ Fin Message de bienvenue*/
 
 /*Accueil*/
 #rechercherObjet {
-  width: 100%;
+  width: 50%;
   margin: 40px auto;
 }
 
-#rechercherObjet .field {
-  width: 60%;
+#rechercherObjet .field{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
   margin: auto !important;
+  margin-bottom: 15px !important;
+}
+#rechercherObjet .fields{
+  width: 100%;
+  margin: 0;
+  justify-content: space-between !important;
+}
+#rechercherObjet .fields .field{
+  padding: 0;
 }
 
+#date-debut, #date-fin{
+  width: 98%;
+  margin: 1%;
+}
 #rechercherObjet .field #recherche-objet {
-  width: 85% !important;
+  width: 91% !important;
 }
 
 #rechercherObjet .field button {
@@ -699,7 +714,10 @@ Fin Message de bienvenue*/
   border: 1px solid #bfc6ce;
   border-radius: 10px !important;
 }
-
+#rechercherObjet #reinitialiser-filtre button{
+  width: 100% !important;
+  height: 35px !important;
+}
 #liste-offres, #liste-offres-recentes {
   margin: auto;
   padding: 10px;

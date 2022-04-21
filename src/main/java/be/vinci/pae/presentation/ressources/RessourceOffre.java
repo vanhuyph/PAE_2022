@@ -5,6 +5,7 @@ import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.utilitaires.Config;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -23,6 +24,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -214,17 +216,20 @@ public class RessourceOffre {
   /**
    * Liste toutes les offres en fonction d'un critère de recherche (nom, type, état).
    *
-   * @param recherche : le critère de recherche
+   * @param json : le json envoyé depuis le formulaire de recherche
    * @return liste : la liste des offres correspondante au critère de recherche
    */
-  @GET
-  @Path("recherche/{recherche}")
+  @POST
+  @Path("recherche")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public List<OffreDTO> rechercherOffres(@PathParam("recherche") String recherche) {
+  public List<OffreDTO> rechercherOffres(JsonNode json) {
+    String recherche = json.get("recherche").asText();
+    LocalDate dateDebut = LocalDate.parse(json.get("dateDebut").asText());
+    LocalDate dateFin = LocalDate.parse(json.get("dateFin").asText());
     List<OffreDTO> liste;
-    liste = offreUCC.rechercherOffre(recherche);
+    liste = offreUCC.rechercherOffre(recherche, dateDebut, dateFin);
     return liste;
   }
 
