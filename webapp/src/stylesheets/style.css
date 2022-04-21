@@ -691,11 +691,16 @@ Fin Message de bienvenue*/
 #rechercherObjet .fields{
   width: 100%;
   margin: 0;
+  justify-content: space-between !important;
 }
 #rechercherObjet .fields .field{
   padding: 0;
 }
 
+#date-debut, #date-fin{
+  width: 98%;
+  margin: 1%;
+}
 #rechercherObjet .field #recherche-objet {
   width: 91% !important;
 }
