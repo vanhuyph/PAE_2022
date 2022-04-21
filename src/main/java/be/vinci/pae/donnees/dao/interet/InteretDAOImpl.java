@@ -16,8 +16,8 @@ public class InteretDAOImpl implements InteretDAO {
   /**
    * Ajoute un intérêt à l'objet.
    *
-   * @param interetDTO : interet
-   * @return interetDTO : interetDTO rempli
+   * @param interetDTO : l'intérêt à ajouter
+   * @return interetDTO : l'interetDTO rempli
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override

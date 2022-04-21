@@ -1,6 +1,7 @@
 package be.vinci.pae.donnees.dao.offre;
 
 import be.vinci.pae.business.offre.OffreDTO;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface OffreDAO {
@@ -17,5 +18,6 @@ public interface OffreDAO {
 
   OffreDTO modifierOffre(OffreDTO offreAvecModification);
 
-  List<OffreDTO> rechercherOffres(String recherche);
+  List<OffreDTO> rechercherOffres(String recherche, LocalDate dateDebut, LocalDate dateFin);
+
 }

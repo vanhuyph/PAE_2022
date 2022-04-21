@@ -11,9 +11,12 @@
 body {
   background-color: #e1e9f3;
 }
-main{
-  min-height: 82vh;
+
+main {
+  min-height: 590px;
+  margin-top: 20px;
 }
+
 /* Modification UI */
 .button {
   width: 100%;
@@ -70,27 +73,34 @@ main{
   justify-content: center;
   align-items: center;
 }
-.nav-list{
+
+.nav-list {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.avatar img{
+
+.avatar img {
   height: 75%;
 }
-.li-menu{
+
+.li-menu {
   margin-left: 10px !important;
 }
+
 .li-menu .menu .item a {
   height: 100px;
 }
-.menu, .menu::after{
+
+.menu, .menu::after {
   background: #e1e9f3 !important;
 }
-.menu .item a{
+
+.menu .item a {
   color: black;
 }
-.menu .item a:hover{
+
+.menu .item a:hover {
   background: transparent;
   border: 0;
 }
@@ -107,7 +117,7 @@ main{
   margin: 0 3px;
 }
 
-.conteneur-navbar ul li> a {
+.conteneur-navbar ul li > a {
   border: 1px solid transparent;
   border-radius: 10px;
   padding: 8px;
@@ -240,7 +250,6 @@ main{
 /*Offres*/
 .offres {
   margin: auto;
-  margin-top: 20px;
   width: 60%;
 }
 
@@ -668,17 +677,32 @@ Fin Message de bienvenue*/
 
 /*Accueil*/
 #rechercherObjet {
-  width: 100%;
+  width: 50%;
   margin: 40px auto;
 }
 
-#rechercherObjet .field {
-  width: 60%;
+#rechercherObjet .field{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
   margin: auto !important;
+  margin-bottom: 15px !important;
+}
+#rechercherObjet .fields{
+  width: 100%;
+  margin: 0;
+  justify-content: space-between !important;
+}
+#rechercherObjet .fields .field{
+  padding: 0;
 }
 
+#date-debut, #date-fin{
+  width: 98%;
+  margin: 1%;
+}
 #rechercherObjet .field #recherche-objet {
-  width: 85% !important;
+  width: 91% !important;
 }
 
 #rechercherObjet .field button {
@@ -690,7 +714,10 @@ Fin Message de bienvenue*/
   border: 1px solid #bfc6ce;
   border-radius: 10px !important;
 }
-
+#rechercherObjet #reinitialiser-filtre button{
+  width: 100% !important;
+  height: 35px !important;
+}
 #liste-offres, #liste-offres-recentes {
   margin: auto;
   padding: 10px;
@@ -702,11 +729,10 @@ Fin Message de bienvenue*/
 .montrer-block {
   display: block !important;
 }
-#footer .segment{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 90px;
+
+footer {
+  margin-top: 68px;
+  height: 15%;
 }
 
 @media screen and (max-width: 340px) {

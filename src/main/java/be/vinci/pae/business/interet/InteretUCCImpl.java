@@ -26,7 +26,8 @@ public class InteretUCCImpl implements InteretUCC {
    *
    * @param interetDTO : l'intérêt à créer
    * @return interet : interetDTO
-   * @throws BusinessException : est lancée s'il y a eu une erreur
+   * @throws BusinessException  : est lancée s'il y a eu une erreur
+   * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas
    */
   @Override
   public InteretDTO creerUnInteret(InteretDTO interetDTO) {

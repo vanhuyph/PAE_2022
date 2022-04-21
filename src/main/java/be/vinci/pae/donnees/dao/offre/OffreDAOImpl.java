@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -179,11 +180,10 @@ public class OffreDAOImpl implements OffreDAO {
    *
    * @param offreAvecModification : : l'offre contenant les modifications
    * @return l'offre modifiée
-   * @throws FatalException si l'offre n'a pas pu être modifiée
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
-
     String requetePs = "UPDATE projet.offres SET plage_horaire = ?, version = ? "
         + "WHERE id_offre = ? AND version = ?"
         + "RETURNING id_offre, date_offre, plage_horaire, version;";
@@ -206,38 +206,64 @@ public class OffreDAOImpl implements OffreDAO {
   }
 
   /**
-   * Récupère tous les offres en fonctions d'un critère de recherche (nom, type de l'objet ou l'etat
-   * de l'objet.
+   * Récupère tous les offres en fonction d'un critère de recherche (nom du membre, type d'objet ou
+   * état d'objet.
    *
    * @param recherche : le critère de recherche
-   * @return liste : la liste des offres correspondant au critères de recherche
-   * @throws FatalException = est lancée s'il y a eu un problème côté serveur
+   * @param dateDebut : la date de début pour la recherche
+   * @param dateFin   : la date de fin pour la recherche
+   * @return liste : la liste des offres correspondante au critère de recherche
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public List<OffreDTO> rechercherOffres(String recherche) {
-    String requetePs =
-        "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
-            + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
-            + "o.etat_objet, o.description, o.photo, o.version, of.id_offre, of.date_offre, "
-            + "of.plage_horaire, of.version "
-            + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
-            + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
-            + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
-            + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-            + "WHERE (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
-            + "OR o.etat_objet = 'Annulé') "
-            + "AND (lower(u.nom) LIKE lower(?) "
-            + "OR lower(t.nom) LIKE lower(?) OR lower(o.etat_objet) "
-            + "LIKE lower(?))"
-            + "ORDER BY of.date_offre DESC";
+  public List<OffreDTO> rechercherOffres(String recherche, LocalDate dateDebut, LocalDate dateFin) {
+    String requetePs;
+    if (!recherche.equals("")) {
+      requetePs =
+          "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
+              + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin,"
+              + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
+              + "o.etat_objet, o.description, o.photo, o.version, of.id_offre, of.date_offre, "
+              + "of.plage_horaire, of.version "
+              + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
+              + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
+              + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+              + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
+              + "WHERE (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
+              + "OR o.etat_objet = 'Annulé') "
+              + "AND (lower(u.nom) LIKE lower(?) "
+              + "OR lower(t.nom) LIKE lower(?) OR lower(o.etat_objet) "
+              + "LIKE lower(?)) "
+              + "AND (of.date_offre BETWEEN ? AND ?) "
+              + "ORDER BY of.date_offre DESC";
+    } else {
+      requetePs =
+          "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
+              + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin,"
+              + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
+              + "o.etat_objet, o.description, o.photo, o.version, of.id_offre, of.date_offre, "
+              + "of.plage_horaire, of.version "
+              + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
+              + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
+              + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+              + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
+              + "WHERE (of.date_offre BETWEEN ? AND ?) "
+              + "ORDER BY of.date_offre DESC";
+    }
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      recherche = "%" + recherche + "%";
-      ps.setString(1, recherche);
-      ps.setString(2, recherche);
-      ps.setString(3, recherche);
+      if (!recherche.equals("")) {
+        recherche = "%" + recherche + "%";
+        ps.setString(1, recherche);
+        ps.setString(2, recherche);
+        ps.setString(3, recherche);
+        ps.setTimestamp(4, Timestamp.valueOf(dateDebut.atStartOfDay()));
+        ps.setTimestamp(5, Timestamp.valueOf(dateFin.atTime(23, 59)));
+      } else {
+        ps.setTimestamp(1, Timestamp.valueOf(dateDebut.atStartOfDay()));
+        ps.setTimestamp(2, Timestamp.valueOf(dateFin.atTime(23, 59)));
+      }
       liste = remplirListOffresDepuisResulSet(offreDTO, ps);
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);
@@ -270,9 +296,10 @@ public class OffreDAOImpl implements OffreDAO {
   /**
    * Rempli les données de l'offre depuis un ResultSet.
    *
-   * @param offreDTO : l'offre vide, qui va être rempli
-   * @param rs       : le Result Statement déjà préparé
-   * @return offreDTO : l'offre rempli
+   * @param offreDTO : l'offre vide, qui va être remplie
+   * @param rs       : le ResultSet
+   * @return offreDTO : l'offre remplie
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private OffreDTO remplirOffreDepuisResultSet(OffreDTO offreDTO, ResultSet rs) {
     ObjetDTO objetDTO = factory.getObjet();
@@ -326,9 +353,10 @@ public class OffreDAOImpl implements OffreDAO {
   /**
    * Rempli les données de l'offre depuis un ResultSet.
    *
-   * @param offreDTO : l'offre vide, qui va être rempli
-   * @param rs       : le Result Statement déjà préparé
-   * @return offreDTO : l'offre rempli
+   * @param offreDTO : l'offre vide, qui va être remplie
+   * @param rs       : le ResultSet
+   * @return offreDTO : l'offre remplie
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private OffreDTO remplirOffrePourUpdate(OffreDTO offreDTO, ResultSet rs) {
     try {
@@ -341,4 +369,5 @@ public class OffreDAOImpl implements OffreDAO {
       throw new FatalException(e.getMessage(), e);
     }
   }
+
 }
