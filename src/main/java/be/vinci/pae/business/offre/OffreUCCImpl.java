@@ -238,7 +238,7 @@ public class OffreUCCImpl implements OffreUCC {
    */
   @Override
   public List<ObjetDTO> objetsAEvalueParUtilisateur(int idReceveur) {
-    serviceDAL.commettreTransaction();
+    serviceDAL.commencerTransaction();
     List<ObjetDTO> objetsAEvalue;
     try {
       objetsAEvalue = objetDAO.rechercheObjetParReceveur(idReceveur);
