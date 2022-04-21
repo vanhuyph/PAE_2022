@@ -324,7 +324,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO incrementerObjetOffert(UtilisateurDTO utilisateurDTO) {
     String requete = "UPDATE projet.utilisateurs SET nb_objet_offert = nb_objet_offert + 1, "
-        + "version = ? WHERE id_utilisateur = ? AND version = ?;";
+        + "version = ? WHERE id_utilisateur = ? AND version = ? RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requete)) {
       ps.setInt(1, utilisateurDTO.getIdUtilisateur());
       ps.setInt(2, utilisateurDTO.getVersion() + 1);

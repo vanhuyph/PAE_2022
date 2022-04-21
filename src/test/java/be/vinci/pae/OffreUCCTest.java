@@ -10,6 +10,7 @@ import be.vinci.pae.business.offre.OffreUCC;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
+import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class OffreUCCTest {
 
   private OffreDAO offreDAO;
   private OffreUCC offreUCC;
+  private UtilisateurDAO utilisateurDAO;
   private DomaineFactory domaineFactory;
   private OffreDTO offreDTO1;
   private OffreDTO offreDTO2;
@@ -44,6 +46,7 @@ public class OffreUCCTest {
     this.offreUCC = locator.getService(OffreUCC.class);
     this.offreDAO = locator.getService(OffreDAO.class);
     this.objetDAO = locator.getService(ObjetDAO.class);
+    this.utilisateurDAO = locator.getService(UtilisateurDAO.class);
 
     utilisateurDTO = domaineFactory.getUtilisateur();
     utilisateurDTO.setIdUtilisateur(1);
@@ -84,9 +87,9 @@ public class OffreUCCTest {
   @Test
   @DisplayName("Test réussi : méthode creerOffre renvoie l'offre créée.")
   public void testCreerOffreV3() {
-    offreDTO1.setObjetDTO(objetDTO1);
     Mockito.when(objetDAO.creerObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO1);
     Mockito.when(offreDAO.creerOffre(offreDTO1)).thenReturn(offreDTO1);
+    Mockito.when(utilisateurDAO.incrementerObjetOffert(utilisateurDTO)).thenReturn(utilisateurDTO);
     assertEquals(offreDTO1, offreUCC.creerOffre(offreDTO1));
   }
 
