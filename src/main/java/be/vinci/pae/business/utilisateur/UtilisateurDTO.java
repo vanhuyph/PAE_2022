@@ -50,4 +50,20 @@ public interface UtilisateurDTO {
 
   void setVersion(int version);
 
+  int getNbObjetOfferts();
+
+  void setNbObjetOfferts(int nbObjetOfferts);
+
+  int getNbObjetDonnees();
+
+  void setNbObjetDonnees(int nbObjetDonnees);
+
+  int getNbObjetRecus();
+
+  void setNbObjetRecus(int nbObjetRecus);
+
+  int getNbObjetAbandonnes();
+
+  void setNbObjetAbandonnes(int nbObjetAbandonnes);
+
 }
