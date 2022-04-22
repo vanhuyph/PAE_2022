@@ -1,7 +1,9 @@
 package be.vinci.pae.business.evaluation;
 
 import be.vinci.pae.business.objet.ObjetDTO;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+@JsonDeserialize(as = EvaluationImpl.class)
 public interface EvaluationDTO {
 
   int getIdEvaluation();

@@ -58,13 +58,15 @@ public class ObjetDAOImpl implements ObjetDAO {
    */
   @Override
   public ObjetDTO rechercheParId(ObjetDTO objetDTO) {
-    String requetePs = "SELECT id_objet FROM projet.objets WHERE id_objet = ?;";
+    String requetePs = "SELECT id_objet,version FROM projet.objets WHERE id_objet = ?;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, objetDTO.getIdObjet());
       objetDTO.setIdObjet(0);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           objetDTO.setIdObjet(rs.getInt(1));
+          objetDTO.setVersion(rs.getInt(2));
+
           return objetDTO;
         } else {
           return null;
@@ -98,6 +100,33 @@ public class ObjetDAOImpl implements ObjetDAO {
 
         }
         return liste;
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Met à jour l'état de l'objet.
+   */
+  @Override
+  public ObjetDTO changerEtatObjet(ObjetDTO objetDTO) {
+    String requetePs = "UPDATE projet.objets SET etat_objet = ?, version = ? "
+        + "WHERE id_objet = ? AND version = ? RETURNING id_objet, version;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setString(1, objetDTO.getEtatObjet());
+      ps.setInt(2, objetDTO.getVersion() + 1);
+      ps.setInt(3, objetDTO.getIdObjet());
+      ps.setInt(4, objetDTO.getVersion());
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          objetDTO.setIdObjet(rs.getInt(1));
+          objetDTO.setVersion(rs.getInt(2));
+          return objetDTO;
+        } else {
+          return null;
+        }
       }
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);

@@ -247,7 +247,7 @@ public class OffreUCCImpl implements OffreUCC {
           if (objetDAO.rechercheParId(objet) == null) {
             throw new PasTrouveException("L'objet n'existe pas");
           }
-          if (!((Objet) objet).peutEtreEvalué()) {
+          if (!((Objet) objet).peutEtreEvalue()) {
             throw new BusinessException("L'objet est dans un état ne permettant pas de l'évaluer");
           }
         }
@@ -261,6 +261,7 @@ public class OffreUCCImpl implements OffreUCC {
       serviceDAL.retourEnArriereTransaction();
       throw e;
     }
+    serviceDAL.commettreTransaction();
     return objetsAEvalue;
   }
 

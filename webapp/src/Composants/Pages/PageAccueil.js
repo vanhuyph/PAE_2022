@@ -10,12 +10,12 @@ import Swal from 'sweetalert2'
 
 
 // Page d'accueil
-const PageAccueil = async () => {
+const PageAccueil =  () => {
   const pageDiv = document.querySelector("#page");
   const session = recupUtilisateurDonneesSession()
   let etatInscription
   let commentaire
-  let evaluationEnAttente = 2 //fetch
+
 
   if (session) {
     if (session.utilisateur.etatInscription !== "Confirmé") {
@@ -27,66 +27,21 @@ const PageAccueil = async () => {
       }
     }
   }
-
-  //si il doit évaluer un ou des objets recus
-  while (evaluationEnAttente > 0) {
-
-    const etapes = ['1', '2', '3','4']
-    const Queue = Swal.mixin({
-      progressSteps: etapes,
-      confirmButtonText: 'suivant',
-      cancelButtonText: 'retour',
-
-      reverseButtons: true,
-    })
-    //donne les information sur l'objet à évaluer
-    await Queue.fire({
-      title: 'Evaluation 3/3',
-      currentProgressStep: 0,
-      showCancelButton: true,
-      confirmButtonText: 'Confirmer',
-      text:`Vous avez donné une note de ${note} et le commentaire suivant : \n ${commentaireEval}`,
-
-    })
-//note requise ??
-    const {value: note} = await Queue.fire({
-      title: 'Votre note',
-      input:'range',
-
-      inputAttributes: {
-        min: 0,
-        max: 5,
-        step: 1,
-        required:true
-      },
-
-      showCancelButton: false,
-      validationMessage: 'Nous avons besoin d\'une note ',
-      currentProgressStep: 1
-    })
-    const {value: commentaireEval} = await Queue.fire({
-      title: 'Votre Commentaire',
-      currentProgressStep: 2,
-      input: 'text',
-      inputAttributes: {
-        required: true
-      },
-      showCancelButton:true,
-      validationMessage: 'nous avons besoin de votre commentaire'
-
-    })
-
-    //afficher la note et le commentaire et demande de confirmation
-    await Queue.fire({
-      title: 'Confirmation',
-      currentProgressStep: 3,
-      showCancelButton: true,
-      confirmButtonText: 'Confirmer',
-      text:`Vous avez donné une note de ${note} et le commentaire suivant : \n ${commentaireEval}`,
-
-    })
-    evaluationEnAttente--;
+  //Récuperation des  objets a evaluer
+  fetch(API_URL + "offres/objetsAEvalue/"+session.utilisateur.idUtilisateur, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token
+    },
+  }).then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
     }
+    return reponse.json();
+  }).then((data) => objetsAEvaluer(data,session))
+
 
   let pageAccueil = `
   <div class="conteneur-modal">
@@ -115,6 +70,7 @@ const PageAccueil = async () => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+
     },
   }).then((reponse) => {
     if (!reponse.ok) {
@@ -173,7 +129,110 @@ const PageAccueil = async () => {
     rechercheObjet()
   })*/
 };
+//affichage des objets a évaluer
+const objetsAEvaluer =  (data,session) => {
+  let note;
+  let com;
+  //si il doit évaluer un ou des objets recus
+   data.forEach( async (objet) =>{
+     //donne les information sur l'objet à évaluer
+     const {value:suivant} = await Swal.fire({
+       title: 'Evaluation en attente',
+       confirmButtonText: 'Confirmer',
+      input: 'select',
+       inputOptions:{
+         oui:'oui',
+         non:'non',
+       },
+       inputAttributes:{
+         required:true,
+       },
+       inputPlaceholder:'Sélectionnez une réponse',
+       validationMessage:'nous avons besoin d\'une réponse',
+       allowOutsideClick: false,
+       text:`Voulez vous évaluer l'objet : ${objet.description} ? `,
 
+     })
+     if (suivant ==="oui"){
+
+    const etapes = ['1', '2', '3']
+    const Queue = Swal.mixin({
+      progressSteps: etapes,
+      confirmButtonText: 'suivant',
+      cancelButtonText: 'retour',
+      reverseButtons: true,
+      allowOutsideClick: false
+    })
+
+    //note
+    //required marche pas
+    const {value: noteFinale} = await Queue.fire({
+      title: 'Votre note',
+      input:'select',
+     inputAttributes:{
+        required:true,
+     },
+      inputOptions: {
+        0:'0',
+        1:'1',
+        2:'2',
+        3:'3',
+        4:'4',
+        5:'5',
+      },
+      inputPlaceholder:'Sélectionnez une note',
+      showCancelButton: false,
+      validationMessage: 'nous avons besoin de votre note',
+      currentProgressStep: 0
+    })
+    const {value: commentaireEval} = await Queue.fire({
+      title: 'Votre Commentaire',
+      currentProgressStep: 1,
+      input: 'text',
+      inputAttributes: {
+        required: true
+      },
+      validationMessage: 'nous avons besoin de votre commentaire'
+
+    })
+
+    //afficher la note et le commentaire et demande de confirmation
+    await Queue.fire({
+      title: 'Confirmation',
+      currentProgressStep: 2,
+      confirmButtonText: 'Confirmer',
+      text:`Vous avez donné une note de ${noteFinale} et le commentaire suivant : \n ${commentaireEval}`,
+
+    })
+     note=noteFinale;
+     com=commentaireEval;
+     }
+     const evaluation = {
+       objet:objet,
+       note:note,
+       commentaire:com,
+     }
+     await fetch(API_URL+"evaluations/creerEvaluation",{
+       method: "POST",
+       headers:{
+         "Content-Type": "application/json",
+         Authorization: session.token
+       },
+       body:JSON.stringify(evaluation),
+     }).then((rep) =>{
+       if (!rep.ok){
+         throw  new Error("Code d'erreur : "+ rep.status+" : "+rep.statusText);
+       }
+       return rep.json();
+     })
+
+
+   });
+
+
+
+
+}
 const rechercheObjet = () => {
   const session = recupUtilisateurDonneesSession()
   const recherche = document.querySelector("#recherche-objet").value

@@ -13,5 +13,7 @@ public interface ObjetDAO {
 
   ObjetDTO miseAJourObjet(ObjetDTO objetDTO);
 
+  ObjetDTO changerEtatObjet(ObjetDTO objetDTO);
+
 
 }

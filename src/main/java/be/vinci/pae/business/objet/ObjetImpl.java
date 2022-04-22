@@ -125,8 +125,13 @@ public class ObjetImpl implements Objet {
    * @return true si l'objet peut être évalué , false si non.
    */
   @Override
-  public boolean peutEtreEvalué() {
-    return this.etatObjet != null && this.etatObjet.equals("donné");
+  public boolean peutEtreEvalue() {
+    return this.etatObjet != null && this.etatObjet.equals("Donné");
+  }
+
+  @Override
+  public void estEvalue() {
+    this.setEtatObjet("Evalué");
   }
 
   @Override

@@ -233,17 +233,18 @@ public class RessourceOffre {
    * Recupere tous les objets qui doivent etre évalués par un utilisateur.
    *
    * @param idUtilisateur : id de l'utilisateur
-   * @return objetsAEvaluee : la liste des objets que l'utilisateur doit évalué
+   * @return objetsAEvaluer : la liste des objets que l'utilisateur doit évaluer
    */
   @GET
   @Path("/objetsAEvalue/{idUtilisateur}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  //@Autorisation
+  @Autorisation
   public List<ObjetDTO> objetsAEvalueeParUtilisateur(
       @PathParam("idUtilisateur") int idUtilisateur) {
-    List<ObjetDTO> objetsAEvalue;
-    objetsAEvalue = offreUCC.objetsAEvalueParUtilisateur(idUtilisateur);
-    return objetsAEvalue;
+    List<ObjetDTO> objetsAEvaluer;
+    objetsAEvaluer = offreUCC.objetsAEvalueParUtilisateur(idUtilisateur);
+
+    return objetsAEvaluer;
   }
 }

@@ -2,8 +2,10 @@ package be.vinci.pae.business.evaluation;
 
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.vue.Vues;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EvaluationImpl implements Evaluation {
 
   @JsonView(Vues.Public.class)

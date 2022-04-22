@@ -28,6 +28,7 @@ public class EvaluationUCCImpl implements EvaluationUCC {
    */
   @Override
   public EvaluationDTO creerEvaluation(EvaluationDTO evaluationDTO) {
+
     serviceDAL.commencerTransaction();
     EvaluationDTO evaluation;
     try {
@@ -35,10 +36,13 @@ public class EvaluationUCCImpl implements EvaluationUCC {
       if (objetEvalue == null) {
         throw new PasTrouveException("l'objet n'existe pas");
       }
-      if (!objetEvalue.peutEtreEvalué()) {
+      if (!objetEvalue.peutEtreEvalue()) {
         throw new BusinessException("l'objet n'est pas prêt a être évalué ou a déjà été évalué");
       }
+      objetEvalue.estEvalue();
+      objetDAO.changerEtatObjet(objetEvalue);
       evaluation = evaluationDAO.creerEvaluation(evaluationDTO);
+
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;

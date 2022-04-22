@@ -21,7 +21,6 @@ public class EvaluationDAOImpl implements EvaluationDAO {
    */
   @Override
   public EvaluationDTO creerEvaluation(EvaluationDTO evaluationDTO) {
-    //ajouter Notes
     String requetePs = "INSERT INTO projet.evaluations VALUES (DEFAULT, ?,?, ?) RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, evaluationDTO.getObjet().getIdObjet());
