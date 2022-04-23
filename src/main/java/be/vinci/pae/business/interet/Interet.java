@@ -7,4 +7,6 @@ public interface Interet extends InteretDTO {
 
   void marquerInteretObjet();
 
+  InteretDTO changerEtatObjet(String etat);
+
 }

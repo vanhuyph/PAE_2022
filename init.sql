@@ -46,7 +46,8 @@ CREATE TABLE projet.objets
     offreur     INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
     receveur    INTEGER REFERENCES projet.utilisateurs (id_utilisateur),
     photo       VARCHAR(255),
-    version     INTEGER                                                 NOT NULL
+    version     INTEGER                                                 NOT NULL,
+    vue         BOOLEAN                                                 NOT NULL
 );
 
 CREATE TABLE projet.interets
@@ -55,6 +56,7 @@ CREATE TABLE projet.interets
     objet       INTEGER REFERENCES projet.objets (id_objet)             NOT NULL,
     date        DATE                                                    NOT NULL,
     version     INTEGER                                                 NOT NULL,
+    vue         BOOLEAN                                                 NOT NULL,
     PRIMARY KEY (utilisateur, objet)
 );
 
@@ -127,12 +129,12 @@ VALUES (DEFAULT, 'Vêtements');
 
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'Offert', 3, 'Décorations de Noël de couleur rouge.', 3, NULL,
-        'christmas-1869533_640.png', 1);
+        'christmas-1869533_640.png', 1, false);
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'Offert', 3, 'Cadre représentant un chien noir sur un fond noir.', 3, NULL,
-        'dog-4118585_640.jpg', 1);
+        'dog-4118585_640.jpg', 1, false);
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'BureauEcolier-7.JPG', 1);
+VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'BureauEcolier-7.JPG', 1, false);
 
 INSERT INTO projet.offres
 VALUES (DEFAULT, 1, '21-03-22', 'Mardi de 17h à 22h', 1);

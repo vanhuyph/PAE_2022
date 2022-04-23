@@ -92,7 +92,7 @@ public class RessourceOffre {
    * @param offreDTO : l'offre à annuler
    * @return offreDTO : l'offre annulée
    * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'annulation
-   *                               a échouée
+   *                               a échoué
    */
   @PUT
   @Path("annulerOffre")
@@ -230,6 +230,105 @@ public class RessourceOffre {
     LocalDate dateFin = LocalDate.parse(json.get("dateFin").asText());
     List<OffreDTO> liste;
     liste = offreUCC.rechercherOffre(recherche, dateDebut, dateFin);
+    return liste;
+  }
+
+  /**
+   * Indique un membre receveur et changer l'état de l'objet en confirmé.
+   *
+   * @param offreDTO : l'offre pour laquelle on va mettre à jour
+   * @return offreDTO : l'offre annulée
+   * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'ajout d'un
+   *                               receveur a échoué
+   */
+  @PUT
+  @Path("indiquerMembreReceveur")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public OffreDTO indiquerMembreReceveur(OffreDTO offreDTO) {
+    if (offreDTO.getIdOffre() <= 0
+        || offreDTO.getObjetDTO().getReceveur().getIdUtilisateur() <= 0) {
+      throw new PresentationException("L'id de l'offre ou de l'utilisateur est incorrect",
+          Status.BAD_REQUEST);
+    }
+    offreDTO = offreUCC.indiquerMembreReceveur(offreDTO);
+    if (offreDTO == null) {
+      throw new PresentationException("L'ajout d'un receveur a échoué", Status.BAD_REQUEST);
+    }
+    return offreDTO;
+  }
+
+  /**
+   * donner une offre.
+   *
+   * @param offreDTO : l'offre a donner
+   * @return offreDTO : l'offre donner
+   * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que la donation a
+   *                               échoué
+   */
+  @PUT
+  @Path("donnerOffre")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public OffreDTO donnerOffre(OffreDTO offreDTO) {
+    if (offreDTO.getIdOffre() <= 0
+        || offreDTO.getObjetDTO().getReceveur().getIdUtilisateur() <= 0
+        || offreDTO.getObjetDTO().getIdObjet() <= 0) {
+      throw new PresentationException("L'id de l'offre ou de l'objet est incorrect ou qu'il n'y a"
+          + " pas de receveur", Status.BAD_REQUEST);
+    }
+    offreDTO = offreUCC.donnerOffre(offreDTO);
+    if (offreDTO == null) {
+      throw new PresentationException("La donation de l'offre a échoué", Status.BAD_REQUEST);
+    }
+    return offreDTO;
+  }
+
+  /**
+   * Liste les offres.
+   *
+   * @param idUtilisateur : l'utilisateur pour lequel on cherche ces offres
+   * @return liste : la liste de ces offres
+   * @throws PresentationException : est lancée si l'id de l'utilisateur est invalide ou que l'offre
+   *                               n'a pas pu être trouvée
+   */
+  @GET
+  @Path("/mesOffres/{idUtilisateur}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<OffreDTO> mesOffres(@PathParam("idUtilisateur") int idUtilisateur) {
+    if (idUtilisateur <= 0) {
+      throw new PresentationException("L'id de l'utilisateur est incorrect", Status.BAD_REQUEST);
+    }
+    List<OffreDTO> liste = offreUCC.mesOffres(idUtilisateur);
+    if (liste == null) {
+      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
+    }
+    return liste;
+  }
+
+  /**
+   * Liste des offres attribuer.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur pour lequel on a attribuer une offre
+   * @return liste : la liste des offres attribuer
+   * @throws PresentationException : est lancée si l'id de l'utilisateur est invalide ou que l'offre
+   *                               n'a pas pu être trouvée
+   */
+  @GET
+  @Path("/voirOffreAttribuer/{idUtilisateur}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<OffreDTO> voirOffreAttribuer(@PathParam("idUtilisateur") int idUtilisateur) {
+    if (idUtilisateur <= 0) {
+      throw new PresentationException("L'id de l'utilisateur est incorrect", Status.BAD_REQUEST);
+    }
+    List<OffreDTO> liste = offreUCC.voirOffreAttribuer(idUtilisateur);
+    if (liste == null) {
+      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
+    }
     return liste;
   }
 

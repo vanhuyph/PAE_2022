@@ -3,6 +3,7 @@ package be.vinci.pae.business.offre;
 import be.vinci.pae.business.objet.Objet;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
+import be.vinci.pae.donnees.dao.interet.InteretDAO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
@@ -11,6 +12,7 @@ import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OffreUCCImpl implements OffreUCC {
@@ -21,6 +23,8 @@ public class OffreUCCImpl implements OffreUCC {
   ObjetDAO objetDAO;
   @Inject
   UtilisateurDAO utilisateurDAO;
+  @Inject
+  InteretDAO interetDAO;
   @Inject
   ServiceDAL serviceDAL;
 
@@ -233,6 +237,113 @@ public class OffreUCCImpl implements OffreUCC {
     List<OffreDTO> liste;
     try {
       liste = offreDAO.rechercherOffres(recherche, dateDebut, dateFin);
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return liste;
+  }
+
+  /**
+   * Confirmée une offre.
+   *
+   * @param offreDTO : l'offre à confirmer
+   * @return l'offre Confirmée
+   * @throws BusinessException : lance une exception business si l'offre n'a pas pu être confirmée
+   */
+  @Override
+  public OffreDTO indiquerMembreReceveur(OffreDTO offreDTO) {
+    serviceDAL.commencerTransaction();
+    Offre offre;
+    try {
+      offre = (Offre) offreDTO;
+      // offre.changerEtatObjet("Confirmé");
+      ObjetDTO objet = objetDAO.miseAJourObjet(offreDTO.getObjetDTO());
+      if (objet == null) {
+        ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
+        if (objetVerif == null) {
+          throw new PasTrouveException("L'objet n'existe pas");
+        }
+        throw new BusinessException("Données périmées");
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return offre;
+  }
+
+  /**
+   * donner une offre.
+   *
+   * @param offreDTO : id de l'offre à donner
+   * @return l'offre donnée
+   * @throws BusinessException : lance une exception business si l'offre n'a pas pu être donnée ou
+   *                           l'id de l'objet est incorrect
+   */
+  @Override
+  public OffreDTO donnerOffre(OffreDTO offreDTO) {
+    serviceDAL.commencerTransaction();
+    Offre offre;
+    try {
+      offre = (Offre) offreDTO;
+      // offre.changerEtatObjet("Donné");
+      ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
+      int idObjet = interetDAO.supprimerInteret(offreDTO.getObjetDTO().getIdObjet());
+      if (objet == null || idObjet <= 0) {
+        ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
+        if (objetVerif == null) {
+          throw new PasTrouveException("L'objet n'existe pas");
+        }
+        throw new BusinessException("Données périmées ou l'id de l'objet est incorrect");
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return offre;
+  }
+
+  /**
+   * Liste ces propres offres.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur correspondant à l'offreur
+   * @return liste : la liste de toutes ces offres
+   */
+  public List<OffreDTO> mesOffres(int idUtilisateur) {
+    serviceDAL.commencerTransaction();
+    List<OffreDTO> liste = null;
+    try {
+      liste = offreDAO.mesOffres(idUtilisateur);
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return liste;
+  }
+
+  /**
+   * Liste des offres attribuer.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur pour lequel on a attribuer une offre
+   * @return liste : la liste des offres attribuer
+   */
+  public List<OffreDTO> voirOffreAttribuer(int idUtilisateur) {
+    serviceDAL.commencerTransaction();
+    List<OffreDTO> listTemp = null;
+    List<OffreDTO> liste = new ArrayList<>();
+    try {
+      listTemp = offreDAO.voirOffreAttribuer(idUtilisateur);
+      for (int i = 0; i < listTemp.size(); i++) {
+        listTemp.get(i).getObjetDTO().setVue(true);
+        ObjetDTO objet = objetDAO.miseAJourObjet(listTemp.get(i).getObjetDTO());
+        listTemp.get(i).setObjetDTO(objet);
+        liste.add(listTemp.get(i));
+      }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;

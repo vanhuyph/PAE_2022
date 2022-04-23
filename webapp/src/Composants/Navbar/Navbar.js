@@ -24,7 +24,7 @@ const Navbar = () => {
                   </div>
                   <div class="menu">
                     <div class="item" data-uri="/profil">Profil</div>
-                    <div class="item">Mes offres</div>
+                    <div class="item" data-uri="/mesOffres">Mes offres</div>
                     <div class="item" data-uri="/deconnexion">Se déconnecter</div>
                   </div>
                   </div>
@@ -51,7 +51,7 @@ const Navbar = () => {
                   </div>
                   <div class="menu">
                     <div class="item" data-uri="/profil">Profil</div>
-                    <div class="item">Mes offres</div>
+                    <div class="item" data-uri="/mesOffres">Mes offres</div>
                     <div class="item" data-uri="/deconnexion">Se déconnecter</div>
                   </div>
                   </div>

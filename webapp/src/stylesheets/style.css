@@ -396,7 +396,7 @@ Fin Message de bienvenue*/
 /* Fin entete utilisateur*/
 /* Utilisateur */
 
-.utilisateur {
+.utilisateur, .mon-offre {
   border: 1px solid rgba(0, 0, 0, 0.3);
   box-shadow: 0px 5px 13px 5px #d8e0ea;
   border-radius: 8px;
@@ -728,6 +728,13 @@ Fin Message de bienvenue*/
 /*Accueil*/
 .montrer-block {
   display: block !important;
+}
+
+.offres .mon-offre .descri, .mon-offre .actions{
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  flex-direction: column;
 }
 
 footer {

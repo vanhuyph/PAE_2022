@@ -7,6 +7,7 @@ import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.offre.OffreUCC;
+import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
@@ -51,13 +52,21 @@ public class OffreUCCTest {
     utilisateurDTO = domaineFactory.getUtilisateur();
     utilisateurDTO.setIdUtilisateur(1);
 
+    TypeObjetDTO typeObjetDTO = domaineFactory.getTypeObjet();
+    typeObjetDTO.setIdType(1);
+    typeObjetDTO.setNom("test");
+
     objetDTO1 = domaineFactory.getObjet();
     objetDTO1.setDescription("testDescription");
     objetDTO1.setOffreur(utilisateurDTO);
     objetDTO1.setPhoto("testPhoto");
+    objetDTO1.setVersion(1);
+    objetDTO1.setIdObjet(1);
+    objetDTO1.setReceveur(null);
+    objetDTO1.setTypeObjet(typeObjetDTO);
 
     objetDTO2 = domaineFactory.getObjet();
-    objetDTO2.setIdObjet(1);
+    objetDTO2.setIdObjet(2);
 
     offreDTO1 = domaineFactory.getOffre();
     offreDTO1.setIdOffre(1);
@@ -175,5 +184,42 @@ public class OffreUCCTest {
   //    Mockito.when(offreDAO.rechercherOffres("Offert")).thenReturn(liste);
   //    assertEquals(liste, offreDAO.rechercherOffres("Offert"));
   //  }
+
+  /*@Test
+  @DisplayName("Test réussi : méthode indiquerMembreReceveur renvoie l'offre confirmé.")
+  public void testIndiquerMembreReceveurV1() {
+    offreDTO1.setObjetDTO(objetDTO1);
+    assertEquals("confirmé",
+        offreUCC.indiquerMembreReceveur(offreDTO1).getObjetDTO().getEtatObjet());
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode donnerOffre renvoie l'offre donné.")
+  public void testDonnerOffreV1() {
+    objetDTO1.setReceveur(utilisateurDTO);
+    offreDTO1.setObjetDTO(objetDTO1);
+    Mockito.when(objetDAO.creerObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO1);
+    Mockito.when(offreDAO.creerOffre(offreDTO1)).thenReturn(offreDTO1);
+    Mockito.when(offreUCC.donnerOffre(offreDTO1)).thenReturn(offreDTO1);
+    assertEquals("Donné", offreDTO1.getObjetDTO().getEtatObjet());
+  }*/
+
+  @Test
+  @DisplayName("Test réussi : méthode mesOffres renvoie bien une liste.")
+  public void testMesOffresV1() {
+    int id = utilisateurDTO.getIdUtilisateur();
+    List<OffreDTO> liste = new ArrayList<>();
+    Mockito.when(offreDAO.mesOffres(id)).thenReturn(liste);
+    assertEquals(liste, offreUCC.mesOffres(id));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode VoirOffreAttribuer renvoie bien une liste.")
+  public void testVoirOffreAttribuerV1() {
+    int id = utilisateurDTO.getIdUtilisateur();
+    List<OffreDTO> liste = new ArrayList<>();
+    Mockito.when(offreDAO.voirOffreAttribuer(id)).thenReturn(liste);
+    assertEquals(liste, offreUCC.voirOffreAttribuer(id));
+  }
 
 }

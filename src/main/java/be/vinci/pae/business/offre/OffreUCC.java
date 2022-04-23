@@ -21,4 +21,12 @@ public interface OffreUCC {
 
   List<OffreDTO> rechercherOffre(String recherche, LocalDate dateDebut, LocalDate dateFin);
 
+  OffreDTO indiquerMembreReceveur(OffreDTO offreDTO);
+
+  OffreDTO donnerOffre(OffreDTO offreDTO);
+
+  List<OffreDTO> mesOffres(int idUtilisateur);
+
+  List<OffreDTO> voirOffreAttribuer(int idUtilisateur);
+
 }

@@ -31,8 +31,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.version, u.nb_objets_offert, u.nb_objets_donne,"
-            + " u.nb_objets_recu, u.nb_objets_abandonne, a.id_adresse, a.rue, a.numero, "
+            + "u.etat_inscription, u.commentaire, u.version, u.nb_objet_offert, u.nb_objet_donne,"
+            + " u.nb_objet_recu, u.nb_objet_abandonne, a.id_adresse, a.rue, a.numero, "
             + "a.boite, a.code_postal, a.commune, a.version FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE u.pseudo = ?;";
@@ -62,8 +62,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     UtilisateurDTO utilisateurDTO = factory.getUtilisateur();
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.version, u.nb_objets_offert, "
-            + "u.nb_objets_donne, u.nb_objets_recu, u.nb_objets_abandonne, "
+            + "u.etat_inscription, u.commentaire, u.version, u.nb_objet_offert, "
+            + "u.nb_objet_donne, u.nb_objet_recu, u.nb_objet_abandonne, "
             + "a.id_adresse, a.rue, a.numero, "
             + "a.boite, a.code_postal, a.commune, a.version FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
@@ -227,8 +227,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public List<UtilisateurDTO> listerUtilisateursEtatsInscriptions(String etatInscription) {
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.version, u.nb_objets_offert, u.nb_objets_donne,"
-            + " u.nb_objets_recu, u.nb_objets_abandonne, a.id_adresse, a.rue, a.numero, "
+            + "u.etat_inscription, u.commentaire, u.version, u.nb_objet_offert, u.nb_objet_donne,"
+            + " u.nb_objet_recu, u.nb_objet_abandonne, a.id_adresse, a.rue, a.numero, "
             + "a.boite, a.code_postal, a.commune, a.version FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE u.etat_inscription = ? ORDER BY u.pseudo;";

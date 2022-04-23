@@ -20,4 +20,8 @@ public interface OffreDAO {
 
   List<OffreDTO> rechercherOffres(String recherche, LocalDate dateDebut, LocalDate dateFin);
 
+  List<OffreDTO> mesOffres(int idUtilisateur);
+
+  List<OffreDTO> voirOffreAttribuer(int idUtilisateur);
+
 }
