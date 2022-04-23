@@ -28,4 +28,12 @@ public interface InteretDTO {
 
   void setVersion(int version);
 
+  boolean isReceveurChoisi();
+
+  void setReceveurChoisi(boolean receveurChoisi);
+
+  boolean isVenuChercher();
+
+  void setVenuChercher(boolean venuChercher);
+
 }

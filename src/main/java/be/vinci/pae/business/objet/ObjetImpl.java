@@ -129,6 +129,14 @@ public class ObjetImpl implements Objet {
         "Donné");
   }
 
+  /**
+   * Change l'état de l'objet en Confirmé.
+   */
+  @Override
+  public void confirmerObjet() {
+    this.setEtatObjet("Confirmé");
+  }
+
   @Override
   public String toString() {
     return "Objet{"
