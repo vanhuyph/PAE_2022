@@ -123,7 +123,6 @@ public class RessourceInteret {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public InteretDTO indiquerReceveur(InteretDTO interet) {
-    System.out.println(interet);
     if (interet.getObjet().getIdObjet() < 1 || interet.getUtilisateur().getIdUtilisateur() < 1) {
       throw new PresentationException("Objet ou utilisateur incorrect", Status.BAD_REQUEST);
     }

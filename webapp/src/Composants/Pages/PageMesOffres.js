@@ -151,18 +151,19 @@ import Swal from "sweetalert2";
         let photo = document.getElementById("photo-objet").value
         let version = document.getElementById("version-objet").value
         let vue = document.getElementById("vue-objet").value
+        let objet = {
+          idObjet: idObj,
+          etatObjet : etatObjet,
+          typeObjet : {idType: type},
+          description : desc,
+          offreur: {idUtilisateur: offreur},
+          photo : photo,
+          version:version,
+          vue:vue
+        }
         let of = {
           idOffre: document.getElementById("id-offre").value,
-          objetDTO:{
-            idObjet: idObj,
-            etatObjet : etatObjet,
-            typeObjet : {idType: type},
-            description : desc,
-            offreur: {idUtilisateur: offreur},
-            photo : photo,
-            version:version,
-            vue:vue
-          }
+          objetDTO: objet
         }
 
 
@@ -199,7 +200,7 @@ import Swal from "sweetalert2";
             listeInteret += `</div>`
 
             let intReceveur = {
-              objet: {idObjet: idObj}
+              objet: objet
             }
             Swal.fire({
               title: `<strong>Liste d'intérêts</strong>`,

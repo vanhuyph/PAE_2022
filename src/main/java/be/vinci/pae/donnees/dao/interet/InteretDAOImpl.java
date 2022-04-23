@@ -208,10 +208,8 @@ public class InteretDAOImpl implements InteretDAO {
       ps.setInt(4, interetDTO.getUtilisateur().getIdUtilisateur());
       ps.setInt(5, interetDTO.getObjet().getIdObjet());
       try (ResultSet rs = ps.executeQuery()) {
-        System.out.println(rs);
         if (rs.next()) {
           interetDTO.setVersion(rs.getInt(1));
-          System.out.println(interetDTO);
           return interetDTO;
         } else {
           return null;

@@ -1,5 +1,7 @@
 package be.vinci.pae.business.interet;
 
+import be.vinci.pae.business.objet.Objet;
+import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.interet.InteretDAO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
@@ -152,9 +154,14 @@ public class InteretUCCImpl implements InteretUCC {
     try {
       ((Interet) interet).indiquerReceveur();
       interetDTO = interetDAO.indiquerReceveur(interet);
-      System.out.println(interetDTO);
       if (interetDTO == null) {
         throw new BusinessException("Le receveur n'a pas pu être indiqué");
+      }
+      ((Objet) interetDTO.getObjet()).verifierEtatPourModificationOffre();
+      ((Objet) interetDTO.getObjet()).confirmerObjet();
+      ObjetDTO objet = objetDAO.miseAJourObjet(interetDTO.getObjet());
+      if (objet == null) {
+        throw new BusinessException("Données de l'objet périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
