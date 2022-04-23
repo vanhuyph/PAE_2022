@@ -234,32 +234,6 @@ public class RessourceOffre {
   }
 
   /**
-   * Indique un membre receveur et changer l'état de l'objet en confirmé.
-   *
-   * @param offreDTO : l'offre pour laquelle on va mettre à jour
-   * @return offreDTO : l'offre annulée
-   * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'ajout d'un
-   *                               receveur a échoué
-   */
-  @PUT
-  @Path("indiquerMembreReceveur")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @Autorisation
-  public OffreDTO indiquerMembreReceveur(OffreDTO offreDTO) {
-    if (offreDTO.getIdOffre() <= 0
-        || offreDTO.getObjetDTO().getReceveur().getIdUtilisateur() <= 0) {
-      throw new PresentationException("L'id de l'offre ou de l'utilisateur est incorrect",
-          Status.BAD_REQUEST);
-    }
-    offreDTO = offreUCC.indiquerMembreReceveur(offreDTO);
-    if (offreDTO == null) {
-      throw new PresentationException("L'ajout d'un receveur a échoué", Status.BAD_REQUEST);
-    }
-    return offreDTO;
-  }
-
-  /**
    * donner une offre.
    *
    * @param offreDTO : l'offre a donner

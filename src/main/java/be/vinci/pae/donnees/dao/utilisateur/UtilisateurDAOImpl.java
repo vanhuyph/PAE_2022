@@ -130,7 +130,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
             + " etat_inscription = ?, commentaire = ?, adresse = ?, version = ? "
             + "WHERE id_utilisateur = ? AND version = ? "
             + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, adresse"
-            + ", etat_inscription, commentaire, version;";
+            + ", etat_inscription, commentaire, version, nb_objet_offert, nb_objet_donne, "
+            + "nb_objet_recu, nb_objet_abandonne;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, utilisateurDTO.getPseudo());
       ps.setString(2, utilisateurDTO.getNom());
@@ -143,10 +144,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setInt(9, utilisateurDTO.getVersion() + 1);
       ps.setInt(10, utilisateurDTO.getIdUtilisateur());
       ps.setInt(11, utilisateurDTO.getVersion());
-      ps.setInt(12, utilisateurDTO.getNbObjetOfferts());
-      ps.setInt(13, utilisateurDTO.getNbObjetDonnees());
-      ps.setInt(14, utilisateurDTO.getNbObjetRecus());
-      ps.setInt(15, utilisateurDTO.getNbObjetAbandonnes());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);

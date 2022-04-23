@@ -31,7 +31,7 @@ public class InteretDAOImpl implements InteretDAO {
    */
   @Override
   public InteretDTO ajouterInteret(InteretDTO interetDTO) {
-    String requetePs = "INSERT INTO projet.interets VALUES (?, ?, ?, ?, ?, ?) RETURNING *;";
+    String requetePs = "INSERT INTO projet.interets VALUES (?, ?, ?, ?, ?, ?, NULL, NULL) RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       Date dateRdvSQL = new Date(interetDTO.getDateRdv().getTime());
       ps.setInt(1, interetDTO.getUtilisateur().getIdUtilisateur());
@@ -185,6 +185,32 @@ public class InteretDAOImpl implements InteretDAO {
           interetDTO.getUtilisateur().setIdUtilisateur(rs.getInt(1));
           interetDTO.getObjet().setIdObjet(rs.getInt(2));
           interetDTO.setVersion(rs.getInt(3));
+          return interetDTO;
+        } else {
+          return null;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public InteretDTO indiquerReceveur(InteretDTO interetDTO) {
+    String requetePs = "UPDATE projet.interets SET receveur_choisi = ?, version = ? "
+        + "WHERE version = ? AND utilisateur = ? AND objet = ? RETURNING version;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setBoolean(1, interetDTO.isReceveurChoisi());
+      ps.setInt(2, interetDTO.getVersion() + 1);
+      ps.setInt(3, interetDTO.getVersion());
+      ps.setInt(4, interetDTO.getUtilisateur().getIdUtilisateur());
+      ps.setInt(5, interetDTO.getObjet().getIdObjet());
+      try (ResultSet rs = ps.executeQuery()) {
+        System.out.println(rs);
+        if (rs.next()) {
+          interetDTO.setVersion(rs.getInt(1));
+          System.out.println(interetDTO);
           return interetDTO;
         } else {
           return null;

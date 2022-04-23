@@ -22,6 +22,12 @@ public class InteretImpl implements Interet {
   @JsonView(Vues.Public.class)
   private int version;
 
+  @JsonView(Vues.Internal.class)
+  private boolean receveurChoisi;
+
+  @JsonView(Vues.Internal.class)
+  private boolean venuChercher;
+
   public UtilisateurDTO getUtilisateur() {
     return utilisateur;
   }
@@ -62,6 +68,22 @@ public class InteretImpl implements Interet {
     this.version = version;
   }
 
+  public boolean isReceveurChoisi() {
+    return receveurChoisi;
+  }
+
+  public void setReceveurChoisi(boolean receveurChoisi) {
+    this.receveurChoisi = receveurChoisi;
+  }
+
+  public boolean isVenuChercher() {
+    return venuChercher;
+  }
+
+  public void setVenuChercher(boolean venuChercher) {
+    this.venuChercher = venuChercher;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -93,6 +115,8 @@ public class InteretImpl implements Interet {
         + ", dateRdv=" + dateRdv
         + ", vue =" + vue
         + ", version=" + version
+        + ", receveur choisi=" + receveurChoisi
+        + ", est venu=" + venuChercher
         + '}';
   }
 
@@ -100,6 +124,11 @@ public class InteretImpl implements Interet {
   public InteretDTO changerEtatObjet(String etat) {
     this.getObjet().setEtatObjet(etat);
     return this;
+  }
+
+  @Override
+  public void indiquerReceveur() {
+    this.setReceveurChoisi(true);
   }
 
 }

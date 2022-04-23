@@ -9,6 +9,7 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -81,7 +82,7 @@ public class RessourceInteret {
   @Path("/listeDesPersonnesInteressees/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  // @Autorisation
+  @Autorisation
   public List<InteretDTO> listeDesPersonnesInteressees(@PathParam("id") int idObjet) {
     if (idObjet <= 0) {
       throw new PresentationException("L'id de l'objet est incorrect", Status.BAD_REQUEST);
@@ -101,7 +102,7 @@ public class RessourceInteret {
   @Path("/listeDesPersonnesInteresseesVue/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  //@Autorisation
+  @Autorisation
   public List<InteretDTO> listeDesPersonnesInteresseesVue(@PathParam("id") int idObjet) {
     if (idObjet <= 0) {
       throw new PresentationException("L'id de l'objet est incorrect", Status.BAD_REQUEST);
@@ -109,4 +110,18 @@ public class RessourceInteret {
     List<InteretDTO> list = interetUCC.listeDesPersonnesInteresseesVue(idObjet);
     return list;
   }
+
+  @PUT
+  @Path("/indiquerReceveur")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public InteretDTO indiquerReceveur(InteretDTO interet) {
+    System.out.println(interet);
+    if (interet.getObjet().getIdObjet() < 1 || interet.getUtilisateur().getIdUtilisateur() < 1) {
+      throw new PresentationException("Objet ou utilisateur incorrect", Status.BAD_REQUEST);
+    }
+    interet = interetUCC.indiquerReceveur(interet);
+    return interet;
+  }
+
 }

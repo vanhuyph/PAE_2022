@@ -145,4 +145,22 @@ public class InteretUCCImpl implements InteretUCC {
     return list;
   }
 
+  @Override
+  public InteretDTO indiquerReceveur(InteretDTO interet) {
+    serviceDAL.commencerTransaction();
+    InteretDTO interetDTO;
+    try {
+      ((Interet) interet).indiquerReceveur();
+      interetDTO = interetDAO.indiquerReceveur(interet);
+      System.out.println(interetDTO);
+      if (interetDTO == null) {
+        throw new BusinessException("Le receveur n'a pas pu être indiqué");
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    return interetDTO;
+  }
+
 }

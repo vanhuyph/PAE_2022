@@ -737,6 +737,29 @@ Fin Message de bienvenue*/
   flex-direction: column;
 }
 
+.interet{
+  border: 1px solid #d7dee7;
+  border-radius: 10px;
+  padding: 8px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-bottom: 15px;
+}
+.interet:hover{
+  background: #d7dee7;
+}
+.interet.choisi{
+  background: #7066e0;
+  color: white;
+}
+
+.interet p{
+  margin: 0;
+}
+
 footer {
   margin-top: 68px;
   height: 15%;
