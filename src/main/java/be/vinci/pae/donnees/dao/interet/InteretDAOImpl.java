@@ -32,7 +32,7 @@ public class InteretDAOImpl implements InteretDAO {
    */
   @Override
   public InteretDTO ajouterInteret(InteretDTO interetDTO) {
-    String requetePs = "INSERT INTO projet.interets VALUES (?, ?, ?, ?, ?, ?, false, NULL) "
+    String requetePs = "INSERT INTO projet.interets VALUES (?, ?, ?, ?, ?, false, NULL) "
         + "RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       Date dateRdvSQL = new Date(interetDTO.getDateRdv().getTime());
@@ -163,9 +163,7 @@ public class InteretDAOImpl implements InteretDAO {
     List<InteretDTO> listeDesPersonnesInteressees;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
       ps.setInt(1, idObjet);
-      listeDesPersonnesInteressees =
-          remplirListInteretDepuisResulSet(interetDTO, ps);
-      System.out.println("dal");
+      listeDesPersonnesInteressees = remplirListInteretDepuisResulSet(interetDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException(e.getMessage(), e);

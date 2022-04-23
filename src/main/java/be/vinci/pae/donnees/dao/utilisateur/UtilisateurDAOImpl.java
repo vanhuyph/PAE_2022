@@ -92,7 +92,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
     String requetePs = "INSERT INTO projet.utilisateurs "
-        + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, ?, NULL, ?) RETURNING "
+        + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, ?, NULL, ?, 0, 0, 0, 0) RETURNING "
         + "id_utilisateur, commentaire;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, utilisateur.getPseudo());
@@ -257,7 +257,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public List<UtilisateurDTO> rechercherMembres(String recherche) {
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, "
+            + "u.etat_inscription, u.commentaire, u.version, u.nb_objet_offert, u.nb_objet_donne, "
+            + "u.nb_objet_recu, u.nb_objet_abandonne, a.id_adresse, a.rue, a.numero, "
             + "a.boite, a.code_postal, a.commune, a.version FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE (lower(u.nom) LIKE lower(?) OR a.code_postal::TEXT LIKE ? OR lower(a.commune) "
@@ -321,9 +322,9 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     String requete = "UPDATE projet.utilisateurs SET nb_objet_offert = nb_objet_offert + 1, "
         + "version = ? WHERE id_utilisateur = ? AND version = ? RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requete)) {
-      ps.setInt(1, utilisateurDTO.getIdUtilisateur());
-      ps.setInt(2, utilisateurDTO.getVersion() + 1);
-      ps.setInt(2, utilisateurDTO.getVersion());
+      ps.setInt(1, utilisateurDTO.getVersion() + 1);
+      ps.setInt(2, utilisateurDTO.getIdUtilisateur());
+      ps.setInt(3, utilisateurDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
@@ -429,16 +430,21 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   /**
    * Rempli les données de l'utilisateur sans adresse.
    *
-   * @param utilisateurDTO  : l'utilisateur vide, qui va être rempli
-   * @param id              : l'id de l'utilisateur
-   * @param pseudo          : le pseudo de l'utilisateur
-   * @param nom             : le nom de l'utilisateur
-   * @param prenom          : le prenom de l'utilisateur
-   * @param mdp             : le mot de passe de l'utilisateur
-   * @param gsm             : le gsm de l'utilisateur
-   * @param estAdmin        : si l'utilisateur est admin ou non
-   * @param etatInscription : l'etat d'inscription de l'utilisateur
-   * @param commentaire     : le commentaire de refus concernant l'inscription de l'utilisateur
+   * @param utilisateurDTO    : l'utilisateur vide, qui va être rempli
+   * @param id                : l'id de l'utilisateur
+   * @param pseudo            : le pseudo de l'utilisateur
+   * @param nom               : le nom de l'utilisateur
+   * @param prenom            : le prenom de l'utilisateur
+   * @param mdp               : le mot de passe de l'utilisateur
+   * @param gsm               : le gsm de l'utilisateur
+   * @param estAdmin          : si l'utilisateur est admin ou non
+   * @param etatInscription   : l'etat d'inscription de l'utilisateur
+   * @param commentaire       : le commentaire de refus concernant l'inscription de l'utilisateur
+   * @param version           : la version de l'utilisateur
+   * @param nbObjetOfferts    : le nombre d'objets offerts de l'utilisateur
+   * @param nbObjetDonnes     : le nombre d'objets donnés de l'utilisateur
+   * @param nbObjetRecus      : le nombre d'objets reçus de l'utilisateur
+   * @param nbObjetAbandonnes : le nombre d'objets abandonnés de l'utilisateur
    * @return utilisateurDTO  : l'utilisateur rempli
    */
   private void remplirUtilisateurSansAdresse(UtilisateurDTO utilisateurDTO, int id,
@@ -460,7 +466,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     utilisateurDTO.setNbObjetDonnees(nbObjetDonnes);
     utilisateurDTO.setNbObjetRecus(nbObjetRecus);
     utilisateurDTO.setNbObjetAbandonnes(nbObjetAbandonnes);
-
   }
 
 }
