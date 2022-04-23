@@ -52,11 +52,13 @@ CREATE TABLE projet.objets
 
 CREATE TABLE projet.interets
 (
-    utilisateur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
-    objet       INTEGER REFERENCES projet.objets (id_objet)             NOT NULL,
-    date        DATE                                                    NOT NULL,
-    version     INTEGER                                                 NOT NULL,
-    vue         BOOLEAN                                                 NOT NULL,
+    utilisateur     INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
+    objet           INTEGER REFERENCES projet.objets (id_objet)             NOT NULL,
+    date            DATE                                                    NOT NULL,
+    version         INTEGER                                                 NOT NULL,
+    vue             BOOLEAN                                                 NOT NULL,
+    receveur_choisi BOOLEAN                                                 NULL,
+    venu_chercher   BOOLEAN                                                 NULL,
     PRIMARY KEY (utilisateur, objet)
 );
 
@@ -92,7 +94,7 @@ VALUES (DEFAULT, 'caro', 'Line', 'Caroline',
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'achil', 'Ile', 'Achille',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 2,
-        'En attente', NULL, 0, 0, 0, 0, 0);
+        'Confirmé', NULL, 0, 0, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bazz', 'Ile', 'Basile',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 3, 'Confirmé',
@@ -142,3 +144,36 @@ INSERT INTO projet.offres
 VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h', 1);
 INSERT INTO projet.offres
 VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h', 1);
+
+INSERT INTO projet.interets
+VALUES (3, 3, '25-03-22', 0, false, false, NULL);
+INSERT INTO projet.interets
+VALUES (2, 3, '25-03-22', 0, false, false, NULL);
+
+SELECT *
+FROM projet.interets;
+
+--UPDATE projet.interets SET receveur_choisi = true, version = 1 WHERE version = 0 AND utilisateur = 3 AND objet = 3 RETURNING version;
+
+
+-- Requêtes démo 1 client
+-- SELECT u.id_utilisateur, u.pseudo, u.est_admin, u.etat_inscription, u.commentaire
+-- FROM projet.utilisateurs u
+-- ORDER BY u.est_admin, u.etat_inscription;
+--
+-- SELECT o.id_objet, o.description, t.nom AS "type", o.etat_objet, of.date_offre
+-- FROM projet.objets o,
+--      projet.types_objets t,
+--      projet.offres of
+-- WHERE o.type_objet = t.id_type
+--   AND of.id_objet = o.id_objet
+-- ORDER BY of.date_offre;
+--
+-- SELECT u.nom, o.description
+-- FROM projet.objets o,
+--      projet.utilisateurs u
+-- WHERE u.id_utilisateur = o.offreur
+-- ORDER BY u.nom, o.description;
+
+
+--UPDATE projet.adresses SET rue = 'Haut-Vinâve', numero = 13, boite = null, code_postal = 4844, commune = 'Jalhay', version = 1 WHERE id_adresse = 4 AND version = 0 RETURNING id_adresse, rue, numero, boite, code_postal, commune, version;
