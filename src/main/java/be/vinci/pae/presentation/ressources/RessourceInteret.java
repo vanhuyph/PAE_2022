@@ -111,6 +111,13 @@ public class RessourceInteret {
     return list;
   }
 
+  /**
+   * Indique le receveur depuis un interet.
+   *
+   * @param interet : l'interet qui aura un receveur
+   * @return interet
+   * @throws PresentationException : est lancée si l'objet ou l'utilisateur est incorrect
+   */
   @PUT
   @Path("/indiquerReceveur")
   @Consumes(MediaType.APPLICATION_JSON)
