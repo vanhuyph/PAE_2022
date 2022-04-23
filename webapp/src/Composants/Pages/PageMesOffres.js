@@ -139,14 +139,14 @@ const surListeMesOffres = (data) => {
   mesOffresAnnulees.innerHTML = listeMesOffresAnnuler;
 
   document.querySelectorAll(".mon-offre").forEach(offre => {
-    let idObj = document.getElementById("id-objet").value
-    let etatObjet = document.getElementById("etat-objet").value
-    let type = document.getElementById("type-objet").value
-    let desc = document.getElementById("desc-objet").value
-    let offreur = document.getElementById("offreur-objet").value
-    let photo = document.getElementById("photo-objet").value
-    let version = document.getElementById("version-objet").value
-    let vue = document.getElementById("vue-objet").value
+    let idObj = offre.querySelector("#id-objet").value
+    let etatObjet = offre.querySelector("#etat-objet").value
+    let type = offre.querySelector("#type-objet").value
+    let desc = offre.querySelector("#desc-objet").value
+    let offreur = offre.querySelector("#offreur-objet").value
+    let photo = offre.querySelector("#photo-objet").value
+    let version = offre.querySelector("#version-objet").value
+    let vue = offre.querySelector("#vue-objet").value
     let objet = {
       idObjet: idObj,
       etatObjet: etatObjet,
@@ -158,13 +158,13 @@ const surListeMesOffres = (data) => {
       vue: vue
     }
     let of = {
-      idOffre: document.getElementById("id-offre").value,
+      idOffre: idObj,
       objetDTO: objet
     }
 
-    let offreListeInteressees = offre.querySelectorAll("#liste-interessees");
+    let offreListeInteressees = offre.querySelector("#liste-interessees");
     if (offreListeInteressees) {
-      offreListeInteressees.forEach((o) => o.addEventListener("click", () => {
+      offreListeInteressees.addEventListener("click", () => {
         fetch(API_URL + "interets/listeDesPersonnesInteressees/" + idObj, {
           method: "GET",
           headers: {
@@ -212,25 +212,26 @@ const surListeMesOffres = (data) => {
                 'Retour',
             cancelButtonAriaLabel: 'Thumbs down'
           }).then((r) => {
-            console.log(intReceveur)
-            fetch(API_URL + "interets/indiquerReceveur", {
-              method: "PUT",
-              body: JSON.stringify(intReceveur),
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": session.token,
-              },
-            }).then((reponse) => {
-              if (!reponse.ok) {
-                throw new Error(
-                    "Code d'erreur : " + reponse.status + " : "
-                    + reponse.statusText);
-              }
-              return reponse.json();
-            }).then((donnee) => {
+            if (r.isConfirmed){
+              fetch(API_URL + "interets/indiquerReceveur", {
+                method: "PUT",
+                body: JSON.stringify(intReceveur),
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": session.token,
+                },
+              }).then((reponse) => {
+                if (!reponse.ok) {
+                  throw new Error(
+                      "Code d'erreur : " + reponse.status + " : "
+                      + reponse.statusText);
+                }
+                return reponse.json();
+              }).then((donnee) => {
 
-              Redirect("/mesOffres")
-            })
+                Redirect("/mesOffres")
+              })
+          }
           })
           document.querySelectorAll(".interet").forEach((inte) => {
             inte.addEventListener("click", () => {
@@ -249,12 +250,12 @@ const surListeMesOffres = (data) => {
             })
           })
         })
-      }))
+      })
     }
 
-    let offreAnnulee = offre.querySelectorAll("#annuler-offre");
+    let offreAnnulee = offre.querySelector("#annuler-offre");
     if (offreAnnulee) {
-      offreAnnulee.forEach((o) => o.addEventListener("click", () => {
+      offreAnnulee.addEventListener("click", () => {
             fetch(API_URL + "offres/annulerOffre", {
               method: "PUT",
               body: JSON.stringify(of),
@@ -275,7 +276,7 @@ const surListeMesOffres = (data) => {
             .then(() => {
               Redirect("/mesOffres")
             })
-          })
+          }
       )
     }
   })
