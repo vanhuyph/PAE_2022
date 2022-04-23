@@ -160,6 +160,7 @@ public class InteretUCCImpl implements InteretUCC {
       serviceDAL.retourEnArriereTransaction();
       throw e;
     }
+    serviceDAL.commettreTransaction();
     return interetDTO;
   }
 
