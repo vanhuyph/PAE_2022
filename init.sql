@@ -57,8 +57,8 @@ CREATE TABLE projet.interets
     date            DATE                                                    NOT NULL,
     version         INTEGER                                                 NOT NULL,
     vue             BOOLEAN                                                 NOT NULL,
-    receveur_choisi BOOLEAN                                                 NULL,
-    venu_chercher   BOOLEAN                                                 NULL,
+    receveur_choisi BOOLEAN NULL,
+    venu_chercher   BOOLEAN NULL,
     PRIMARY KEY (utilisateur, objet)
 );
 
@@ -98,11 +98,11 @@ VALUES (DEFAULT, 'achil', 'Ile', 'Achille',
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bazz', 'Ile', 'Basile',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 3, 'Confirmé',
-        NULL, 0, 0, 0, 0, 0);
+        NULL, 0, 2, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bri', 'Lehmann', 'Brigitte',
         '$2a$10$W0IiogOO7ef5/Kw.GdmEkO46mtg6VSeDsV5SYc4Dzmp4XnnOBUAkC', NULL, true, 4, 'Confirmé',
-        NULL, 0, 2, 1, 1, 0);
+        NULL, 0, 1, 0, 0, 0);
 
 INSERT INTO projet.types_objets
 VALUES (DEFAULT, 'Accessoires pour animaux domestiques');
@@ -150,12 +150,6 @@ VALUES (3, 3, '25-03-22', 0, false, false, NULL);
 INSERT INTO projet.interets
 VALUES (2, 3, '25-03-22', 0, false, false, NULL);
 
-SELECT *
-FROM projet.interets;
-
---UPDATE projet.interets SET receveur_choisi = true, version = 1 WHERE version = 0 AND utilisateur = 3 AND objet = 3 RETURNING version;
-
-
 -- Requêtes démo 1 client
 -- SELECT u.id_utilisateur, u.pseudo, u.est_admin, u.etat_inscription, u.commentaire
 -- FROM projet.utilisateurs u
@@ -174,6 +168,3 @@ FROM projet.interets;
 --      projet.utilisateurs u
 -- WHERE u.id_utilisateur = o.offreur
 -- ORDER BY u.nom, o.description;
-
-
---UPDATE projet.adresses SET rue = 'Haut-Vinâve', numero = 13, boite = null, code_postal = 4844, commune = 'Jalhay', version = 1 WHERE id_adresse = 4 AND version = 0 RETURNING id_adresse, rue, numero, boite, code_postal, commune, version;
