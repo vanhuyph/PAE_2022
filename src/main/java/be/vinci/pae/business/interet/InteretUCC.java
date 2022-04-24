@@ -15,4 +15,5 @@ public interface InteretUCC {
   InteretDTO indiquerReceveur(InteretDTO interet);
 
   InteretDTO nonRemis(int idObjet);
+
 }

@@ -108,19 +108,6 @@ public class InteretImpl implements Interet {
   }
 
   @Override
-  public String toString() {
-    return "InteretImpl{"
-        + "utilisateur=" + utilisateur
-        + ", objet=" + objet
-        + ", dateRdv=" + dateRdv
-        + ", vue =" + vue
-        + ", version=" + version
-        + ", receveur choisi=" + receveurChoisi
-        + ", est venu=" + venuChercher
-        + '}';
-  }
-
-  @Override
   public InteretDTO changerEtatObjet(String etat) {
     this.getObjet().setEtatObjet(etat);
     return this;
@@ -133,8 +120,21 @@ public class InteretImpl implements Interet {
   }
 
   @Override
-  public void pasVenueChercher() {
+  public void pasVenuChercher() {
     this.setVenuChercher(false);
+  }
+
+  @Override
+  public String toString() {
+    return "InteretImpl{"
+        + "utilisateur=" + utilisateur
+        + ", objet=" + objet
+        + ", dateRdv=" + dateRdv
+        + ", vue =" + vue
+        + ", version=" + version
+        + ", receveur choisi=" + receveurChoisi
+        + ", est venu=" + venuChercher
+        + '}';
   }
 
 }
