@@ -237,7 +237,7 @@ public class OffreUCCImpl implements OffreUCC {
    * @throws BusinessException  si les données sont périmées.
    */
   @Override
-  public List<ObjetDTO> objetsAEvalueParUtilisateur(int idReceveur) {
+  public List<ObjetDTO> objetsAEvaluerParUtilisateur(int idReceveur) {
     serviceDAL.commencerTransaction();
     List<ObjetDTO> objetsAEvalue;
     try {

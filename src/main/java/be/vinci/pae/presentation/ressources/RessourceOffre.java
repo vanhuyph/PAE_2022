@@ -236,14 +236,14 @@ public class RessourceOffre {
    * @return objetsAEvaluer : la liste des objets que l'utilisateur doit évaluer
    */
   @GET
-  @Path("/objetsAEvalue/{idUtilisateur}")
+  @Path("/objetsAEvaluer/{idUtilisateur}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public List<ObjetDTO> objetsAEvalueeParUtilisateur(
+  public List<ObjetDTO> objetsAEvaluerParUtilisateur(
       @PathParam("idUtilisateur") int idUtilisateur) {
     List<ObjetDTO> objetsAEvaluer;
-    objetsAEvaluer = offreUCC.objetsAEvalueParUtilisateur(idUtilisateur);
+    objetsAEvaluer = offreUCC.objetsAEvaluerParUtilisateur(idUtilisateur);
 
     return objetsAEvaluer;
   }

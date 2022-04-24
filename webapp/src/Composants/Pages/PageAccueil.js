@@ -28,7 +28,7 @@ const PageAccueil =  () => {
     }
   }
   //Récuperation des  objets a evaluer
-  fetch(API_URL + "offres/objetsAEvalue/"+session.utilisateur.idUtilisateur, {
+  fetch(API_URL + "offres/objetsAEvaluer/"+session.utilisateur.idUtilisateur, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -165,7 +165,6 @@ const objetsAEvaluer =  (data,session) => {
     })
 
     //note
-    //required marche pas
     const {value: noteFinale} = await Queue.fire({
       title: 'Votre note',
       input:'select',
@@ -207,6 +206,8 @@ const objetsAEvaluer =  (data,session) => {
      note=noteFinale;
      com=commentaireEval;
      }
+    note=6;
+     com="n'a pas été évalué.";
      const evaluation = {
        objet:objet,
        note:note,

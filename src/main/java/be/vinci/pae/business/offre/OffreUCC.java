@@ -21,5 +21,5 @@ public interface OffreUCC {
 
   List<OffreDTO> rechercherOffre(String recherche);
 
-  List<ObjetDTO> objetsAEvalueParUtilisateur(int idUtilisateur);
+  List<ObjetDTO> objetsAEvaluerParUtilisateur(int idUtilisateur);
 }
