@@ -267,7 +267,7 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode reoffrirObjet avec en paramètre un objet qui n'a pas l'état annulé")
+  @DisplayName("Test raté : méthode reoffrirObjet avec en paramètre objet sans l'état annulé")
   public void testReoffrirObjetV1() {
     assertThrows(BusinessException.class, () -> offreUCC.reoffrirObjet(offreDTO3));
   }
@@ -292,7 +292,7 @@ public class OffreUCCTest {
   // TO DO , problème de jenkins qui accepte pas le test
 
   //@Test
-  //@DisplayName("Test réussi : méthode reoffrirObjet renvoit bien une nouvelle offre sans créer de nouvel objet")
+  //@DisplayName("Test réussi : méthode reoffrirObjet renvoit bien une nouvelle offre")
   //public void testReoffrirObjetV4() {
   //  Mockito.when(objetDAO.miseAJourObjet(objetDTO4)).thenReturn(objetDTO5);
   //  Mockito.when(offreDAO.creerOffre(offreDTO5)).thenReturn(offreDTO5);
