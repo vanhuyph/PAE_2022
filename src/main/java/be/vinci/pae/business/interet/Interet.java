@@ -11,4 +11,6 @@ public interface Interet extends InteretDTO {
 
   void indiquerReceveur();
 
+  void pasVenuChercher();
+
 }

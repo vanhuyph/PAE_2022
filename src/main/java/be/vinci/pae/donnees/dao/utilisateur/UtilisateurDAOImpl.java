@@ -92,7 +92,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   @Override
   public UtilisateurDTO ajouterUtilisateur(UtilisateurDTO utilisateur) {
     String requetePs = "INSERT INTO projet.utilisateurs "
-        + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, ?, NULL, ?) RETURNING "
+        + "VALUES (DEFAULT, ?, ?, ?, ?, NULL, false, ?, ?, NULL, ?, 0, 0, 0, 0) RETURNING "
         + "id_utilisateur, commentaire;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, utilisateur.getPseudo());
@@ -127,7 +127,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateurDTO) {
     String requetePs =
         "UPDATE projet.utilisateurs SET pseudo = ?, nom = ?, prenom = ?, gsm = ?, est_admin = ?,"
-            + " etat_inscription = ?, commentaire = ?, adresse = ?, version = ? "
+            + " etat_inscription = ?, commentaire = ?, adresse = ?, version = ?, "
+            + "nb_objet_offert = ?, nb_objet_donne = ?, nb_objet_recu = ?, nb_objet_abandonne = ? "
             + "WHERE id_utilisateur = ? AND version = ? "
             + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, adresse"
             + ", etat_inscription, commentaire, version, nb_objet_offert, nb_objet_donne, "
@@ -142,8 +143,12 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setString(7, utilisateurDTO.getCommentaire());
       ps.setInt(8, utilisateurDTO.getAdresse().getIdAdresse());
       ps.setInt(9, utilisateurDTO.getVersion() + 1);
-      ps.setInt(10, utilisateurDTO.getIdUtilisateur());
-      ps.setInt(11, utilisateurDTO.getVersion());
+      ps.setInt(10, utilisateurDTO.getNbObjetOfferts());
+      ps.setInt(11, utilisateurDTO.getNbObjetDonnees());
+      ps.setInt(12, utilisateurDTO.getNbObjetRecus());
+      ps.setInt(13, utilisateurDTO.getNbObjetAbandonnes());
+      ps.setInt(14, utilisateurDTO.getIdUtilisateur());
+      ps.setInt(15, utilisateurDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
@@ -257,7 +262,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public List<UtilisateurDTO> rechercherMembres(String recherche) {
     String requetePs =
         "SELECT u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-            + "u.etat_inscription, u.commentaire, u.version, a.id_adresse, a.rue, a.numero, "
+            + "u.etat_inscription, u.commentaire, u.version, u.nb_objet_offert, u.nb_objet_donne, "
+            + "u.nb_objet_recu, u.nb_objet_abandonne, a.id_adresse, a.rue, a.numero, "
             + "a.boite, a.code_postal, a.commune, a.version FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE (lower(u.nom) LIKE lower(?) OR a.code_postal::TEXT LIKE ? OR lower(a.commune) "
@@ -279,61 +285,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       throw new FatalException(e.getMessage(), e);
     }
     return liste;
-  }
-
-  /**
-   * Récupère le nombre d'objets selon l'état par l'utilisateur dont l'id est passé en paramètre.
-   *
-   * @param idUtilisateur : l'id de l'utilisateur dont on veut connaître le compte de ses objets
-   *                      selon l'état
-   * @param etatObjet     : l'état de l'objet
-   * @return nbreObjets : le nombre d'objets
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
-  @Override
-  public int nbreObjets(int idUtilisateur, String etatObjet) {
-    String requete = "SELECT COUNT (o.id_objet) FROM projet.utilisateurs u, projet.objets o WHERE "
-        + "u.id_utilisateur = o.offreur AND u.id_utilisateur = ? AND o.etat_objet = ?;";
-    int nbreObjets = 0;
-    try (PreparedStatement ps = serviceBackendDAL.getPs(requete)) {
-      ps.setInt(1, idUtilisateur);
-      ps.setString(2, etatObjet);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          nbreObjets = rs.getInt(1);
-        }
-      }
-    } catch (SQLException e) {
-      throw new FatalException(e.getMessage(), e);
-    }
-    return nbreObjets;
-  }
-
-  /**
-   * Incrémente le nombre d'objets offerts de l'utilisateur à chaque nouvelle offre.
-   *
-   * @param utilisateurDTO : l'utilisateur à qui l'on veut incrémenter son nombre d'objets offerts
-   * @return utilisateurDTO : l'utilisateur avec son nombre d'objets offerts à jour
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
-  @Override
-  public UtilisateurDTO incrementerObjetOffert(UtilisateurDTO utilisateurDTO) {
-    String requete = "UPDATE projet.utilisateurs SET nb_objet_offert = nb_objet_offert + 1, "
-        + "version = ? WHERE id_utilisateur = ? AND version = ? RETURNING *;";
-    try (PreparedStatement ps = serviceBackendDAL.getPs(requete)) {
-      ps.setInt(1, utilisateurDTO.getVersion() + 1);
-      ps.setInt(2, utilisateurDTO.getIdUtilisateur());
-      ps.setInt(3, utilisateurDTO.getVersion());
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
-        } else {
-          return null;
-        }
-      }
-    } catch (SQLException e) {
-      throw new FatalException(e.getMessage(), e);
-    }
   }
 
   /**
@@ -429,17 +380,22 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   /**
    * Rempli les données de l'utilisateur sans adresse.
    *
-   * @param utilisateurDTO  : l'utilisateur vide, qui va être rempli
-   * @param id              : l'id de l'utilisateur
-   * @param pseudo          : le pseudo de l'utilisateur
-   * @param nom             : le nom de l'utilisateur
-   * @param prenom          : le prenom de l'utilisateur
-   * @param mdp             : le mot de passe de l'utilisateur
-   * @param gsm             : le gsm de l'utilisateur
-   * @param estAdmin        : si l'utilisateur est admin ou non
-   * @param etatInscription : l'etat d'inscription de l'utilisateur
-   * @param commentaire     : le commentaire de refus concernant l'inscription de l'utilisateur
-   *
+   * @param utilisateurDTO    : l'utilisateur vide, qui va être rempli
+   * @param id                : l'id de l'utilisateur
+   * @param pseudo            : le pseudo de l'utilisateur
+   * @param nom               : le nom de l'utilisateur
+   * @param prenom            : le prenom de l'utilisateur
+   * @param mdp               : le mot de passe de l'utilisateur
+   * @param gsm               : le gsm de l'utilisateur
+   * @param estAdmin          : si l'utilisateur est admin ou non
+   * @param etatInscription   : l'etat d'inscription de l'utilisateur
+   * @param commentaire       : le commentaire de refus concernant l'inscription de l'utilisateur
+   * @param version           : la version de l'utilisateur
+   * @param nbObjetOfferts    : le nombre d'objets offerts de l'utilisateur
+   * @param nbObjetDonnes     : le nombre d'objets donnés de l'utilisateur
+   * @param nbObjetRecus      : le nombre d'objets reçus de l'utilisateur
+   * @param nbObjetAbandonnes : le nombre d'objets abandonnés de l'utilisateur
+   * @return utilisateurDTO  : l'utilisateur rempli
    */
   private void remplirUtilisateurSansAdresse(UtilisateurDTO utilisateurDTO, int id,
       String pseudo, String nom, String prenom, String mdp, String gsm, boolean estAdmin,
@@ -460,7 +416,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     utilisateurDTO.setNbObjetDonnees(nbObjetDonnes);
     utilisateurDTO.setNbObjetRecus(nbObjetRecus);
     utilisateurDTO.setNbObjetAbandonnes(nbObjetAbandonnes);
-
   }
 
 }

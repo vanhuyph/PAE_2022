@@ -10,4 +10,5 @@ public interface Objet extends ObjetDTO {
   void confirmerObjet();
 
   boolean verifierEtatPourReoffrirObjet();
+
 }

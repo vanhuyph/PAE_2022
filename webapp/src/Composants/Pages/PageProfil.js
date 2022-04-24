@@ -21,7 +21,7 @@ const PageProfil = () => {
   .then((reponse) => {
     if (!reponse.ok) {
       throw new Error(
-          "Error code : " + reponse.status + " : " + reponse.statusText
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText
       );
     }
     return reponse.json();
@@ -182,7 +182,7 @@ const surProfilUtilisateur = (data) => {
                 .then((reponse) => {
                   if (!reponse.ok) {
                     throw new Error(
-                        "Error code : " + reponse.status + " : "
+                        "Code d'erreur : " + reponse.status + " : "
                         + reponse.statusText
                         + " : " + reponse.text())
                   }
@@ -377,7 +377,7 @@ const surModifierProfilUtilisateur = (data) => {
         .then((reponse) => {
           if (!reponse.ok) {
             throw new Error(
-                "Error code : " + reponse.status + " : " + reponse.statusText
+                "Code d'erreur : " + reponse.status + " : " + reponse.statusText
                 + " : " + reponse.text())
           }
           console.log(reponse)

@@ -142,7 +142,8 @@ public class OffreUCCTest {
   public void testCreerOffreV3() {
     Mockito.when(objetDAO.creerObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO1);
     Mockito.when(offreDAO.creerOffre(offreDTO1)).thenReturn(offreDTO1);
-    Mockito.when(utilisateurDAO.incrementerObjetOffert(utilisateurDTO)).thenReturn(utilisateurDTO);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(offreDTO1.getObjetDTO().getOffreur()))
+        .thenReturn(utilisateurDTO);
     assertEquals(offreDTO1, offreUCC.creerOffre(offreDTO1));
   }
 
