@@ -280,16 +280,23 @@ public class OffreDAOImpl implements OffreDAO {
   @Override
   public List<OffreDTO> mesOffres(int idUtilisateur) {
     String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
-        + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-        + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
-        + "o.etat_objet, o.description, o.photo, o.version, o.vue, of.id_offre, of.date_offre, "
-        + "of.plage_horaire, of.version "
-        + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
-        + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
-        + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
-        + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-        + "WHERE u.id_utilisateur = ? AND (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
-        + "OR o.etat_objet = 'Annulé' OR o.etat_objet = 'Confirmé' ) ORDER BY of.date_offre DESC";
+        + "        a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin,"
+        + "        u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet,"
+        + "        o.etat_objet, o.description, o.photo, o.version, o.vue, of.id_offre, of.date_offre,"
+        + "       of.plage_horaire, of.version"
+        + "        FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet"
+        + "        LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur"
+        + "        LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse"
+        + "        LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet"
+        + "                              inner join ("
+        + "            SELECT o2.id_objet, max(of2.date_offre) as MaxDate FROM projet.offres of2"
+        + "                LEFT OUTER JOIN projet.objets o2 ON o2.id_objet = of2.id_objet"
+        + "                WHERE o2.id_objet = of2.id_objet"
+        + "                GROUP BY o2.id_objet) o2 on o.id_objet = o2.id_objet AND of.date_offre = o2.MaxDate"
+        + "        WHERE u.id_utilisateur = ? AND (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
+        + "         OR o.etat_objet = 'Annulé' OR o.etat_objet = 'Confirmé' )"
+
+        + "        ORDER BY of.date_offre DESC";
 
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;

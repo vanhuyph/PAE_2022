@@ -267,7 +267,6 @@ import Swal from "sweetalert2";
 
         if(offre.querySelector("#annuler-offre")) {
           offre.querySelector("#annuler-offre").addEventListener("click", () =>{
-            console.log("annuler offre cliquée")
             fetch(API_URL+"offres/annulerOffre", {
               method: "PUT",
               body:JSON.stringify(of),
@@ -294,6 +293,7 @@ import Swal from "sweetalert2";
 
           offre.querySelector("#offrir").addEventListener("click", () =>{
             console.log("offrir offre cliquée")
+            console.log("description :"+desc)
 
             let ofNouveau = {
               plageHoraire: plageHoraire,
@@ -322,6 +322,7 @@ import Swal from "sweetalert2";
           })
 
         }
+
 
       })
   };
