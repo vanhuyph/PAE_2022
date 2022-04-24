@@ -22,23 +22,24 @@ const PageMesOffres = () => {
       "Content-Type": "application/json",
       "Authorization": session.token,
     },
-  }).then((response) => {
-    if (!response.ok) {
+  }).then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : " + response.statusText);
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
     }
-    return response.json();
+    return reponse.json();
   }).then((data) => surListeMesOffres(data))
 };
 
+// Affichage des listes d'offres, des listes d'offres avec receveur et des listes d'offres annulées
 const surListeMesOffres = (data) => {
   let session = recupUtilisateurDonneesSession()
   const mesOffres = document.getElementById("mesOffres");
   const mesOffresReceveur = document.getElementById("mesOffresReceveur");
   const mesOffresAnnulees = document.getElementById("mesOffresAnnulees");
   let listeMesOffres = `<div class="mes-offres">`;
-  let listeMesOffresConfirmer = `<div class="mes-offres-conf">`;
-  let listeMesOffresAnnuler = `<div class="mes-offres-ann">`;
+  let listeMesOffresConfirmees = `<div class="mes-offres-conf">`;
+  let listeMesOffresAnnulees = `<div class="mes-offres-ann">`;
   data.forEach((offre) => {
     if (offre.objetDTO.etatObjet === "Offert" || offre.objetDTO.etatObjet
         === "Intéressé") {
@@ -65,13 +66,13 @@ const surListeMesOffres = (data) => {
                   </div>
                   <div class="column actions">
                     <button id="liste-interessees" class="ui primary button">Voir les personnes intéressées</button>
-                    <button id="annuler-offre" class="ui basic red button">Annuler offre</button>
+                    <button id="annuler-offre" class="ui basic red button">Annuler mon offre</button>
                   </div>
                 </div>
               </div>
             </div>`;
     } else if (offre.objetDTO.etatObjet === "Confirmé") {
-      listeMesOffresConfirmer += `
+      listeMesOffresConfirmees += `
             <div class="mon-offre">
             <div>
               <input id="id-offre" type="hidden" value="${offre.idOffre}">
@@ -95,14 +96,14 @@ const surListeMesOffres = (data) => {
                   <div class="column actions">
                     <button id="objetRemis" class="ui green button" >Objet remis</button>
                     <button id="nonRemis" class="ui yellow button" >Non remis</button>
-                    <button id="annuler-offre" class="ui basic red button">Annuler offre</button>
+                    <button id="annuler-offre" class="ui basic red button">Annuler mon offre</button>
                   </div>
                 </div>
               </div>
             </div>
             `;
     } else if (offre.objetDTO.etatObjet === "Annulé") {
-      listeMesOffresAnnuler += ` 
+      listeMesOffresAnnulees += ` 
               <div class="mon-offre">
               <div>
               <input id="id-offre" type="hidden" value="${offre.idOffre}">
@@ -124,7 +125,7 @@ const surListeMesOffres = (data) => {
                        <p>${offre.objetDTO.description}</p>
                     </div>
                     <div class="column actions">
-                      <button id="offrir" class="ui green button" >Offrir l'objet</button>
+                      <button id="offrir" class="ui green button" >Offrir à nouveau</button>
                     </div>
                   </div>
                 </div>
@@ -132,11 +133,11 @@ const surListeMesOffres = (data) => {
     }
   })
   listeMesOffres += `</div>`;
-  listeMesOffresConfirmer += `</div>`;
-  listeMesOffresAnnuler += `</div>`;
+  listeMesOffresConfirmees += `</div>`;
+  listeMesOffresAnnulees += `</div>`;
   mesOffres.innerHTML = listeMesOffres;
-  mesOffresReceveur.innerHTML = listeMesOffresConfirmer;
-  mesOffresAnnulees.innerHTML = listeMesOffresAnnuler;
+  mesOffresReceveur.innerHTML = listeMesOffresConfirmees;
+  mesOffresAnnulees.innerHTML = listeMesOffresAnnulees;
 
   document.querySelectorAll(".mon-offre").forEach(offre => {
     let idObj = offre.querySelector("#id-objet").value
@@ -167,7 +168,6 @@ const surListeMesOffres = (data) => {
       offreListeInteressees.addEventListener("click", () => {
         listeInteresse(objet)
       })
-
     }
 
     let offreAnnulee = offre.querySelector("#annuler-offre");
@@ -178,27 +178,29 @@ const surListeMesOffres = (data) => {
     }
 
     let offreNonRemis = offre.querySelector("#nonRemis")
-    if(offreNonRemis){
+    if (offreNonRemis) {
       offreNonRemis.addEventListener("click", () => {
         Swal.fire({
           title: `<strong>Objet non remis</strong>`,
           html: `
             <button id="liste-interessees-non-remis" class="ui primary button">Choisir un nouveau receveur</button> 
             <button id="offrir-non-remis" class="ui green button" >Offrir à nouveau l'objet</button> 
-            <button id="annuler-offre-non-remis" class="ui basic red button">Annuler offre</button>
+            <button id="annuler-offre-non-remis" class="ui basic red button">Annuler mon offre</button>
           `,
-          showConfirmButton:false,
+          showConfirmButton: false,
         })
-        let listeInteresseNR = document.querySelector("#liste-interessees-non-remis")
+        let listeInteresseNR = document.querySelector(
+            "#liste-interessees-non-remis")
         console.log(listeInteresseNR)
-        if (listeInteresseNR){
+        if (listeInteresseNR) {
           listeInteresseNR.addEventListener("click", () => {
             listeInteresseNonRemis(objet)
           })
         }
 
-        let annulerOffreNonRemis = document.querySelector("#annuler-offre-non-remis")
-        if(annulerOffreNonRemis){
+        let annulerOffreNonRemis = document.querySelector(
+            "#annuler-offre-non-remis")
+        if (annulerOffreNonRemis) {
           annulerOffreNonRemis.addEventListener("click", () => {
             nonRemis(objet)
             annulerOffre(of)
@@ -219,14 +221,14 @@ const nonRemis = (objet) => {
       Authorization: session.token,
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : "
-          + response.statusText
+          "Code d'erreur : " + reponse.status + " : "
+          + reponse.statusText
       );
     }
-    return response.json();
+    return reponse.json();
   })
   .then((donnee) => {
   })
@@ -242,14 +244,14 @@ const annulerOffre = (of) => {
       Authorization: session.token,
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : "
-          + response.statusText
+          "Code d'erreur : " + reponse.status + " : "
+          + reponse.statusText
       );
     }
-    return response.json();
+    return reponse.json();
   })
   .then(() => {
     Redirect("/mesOffres")
@@ -265,14 +267,14 @@ const listeInteresse = (objet) => {
       Authorization: session.token,
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : "
-          + response.statusText
+          "Code d'erreur : " + reponse.status + " : "
+          + reponse.statusText
       );
     }
-    return response.json();
+    return reponse.json();
   })
   .then((donnees) => {
     let listeInteret = `<div class="interets">`;
@@ -287,7 +289,7 @@ const listeInteresse = (objet) => {
                 <p>${interet.utilisateur.nom}</p>
                 <p>${interet.utilisateur.prenom}</p>
                 <p>${interet.utilisateur.pseudo}</p>
-                <p>Horaire:  ${date}</p>
+                <p>Horaire :  ${date}</p>
               </div>`
     })
     listeInteret += `</div>`
@@ -308,7 +310,7 @@ const listeInteresse = (objet) => {
           'Retour',
       cancelButtonAriaLabel: 'Thumbs down'
     }).then((r) => {
-      if (r.isConfirmed){
+      if (r.isConfirmed) {
         fetch(API_URL + "interets/indiquerReceveur", {
           method: "PUT",
           body: JSON.stringify(intReceveur),
@@ -359,14 +361,14 @@ const listeInteresseNonRemis = (objet) => {
       Authorization: session.token,
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : "
-          + response.statusText
+          "Code d'erreur : " + reponse.status + " : "
+          + reponse.statusText
       );
     }
-    return response.json();
+    return reponse.json();
   })
   .then((donnees) => {
     let listeInteret = `<div class="interets">`;
@@ -381,7 +383,7 @@ const listeInteresseNonRemis = (objet) => {
                 <p>${interet.utilisateur.nom}</p>
                 <p>${interet.utilisateur.prenom}</p>
                 <p>${interet.utilisateur.pseudo}</p>
-                <p>Horaire:  ${date}</p>
+                <p>Horaire :  ${date}</p>
               </div>`
     })
     listeInteret += `</div>`
@@ -402,7 +404,7 @@ const listeInteresseNonRemis = (objet) => {
           'Retour',
       cancelButtonAriaLabel: 'Thumbs down'
     }).then((r) => {
-      if (r.isConfirmed){
+      if (r.isConfirmed) {
         fetch(API_URL + "interets/indiquerReceveur", {
           method: "PUT",
           body: JSON.stringify(intReceveur),
@@ -443,4 +445,5 @@ const listeInteresseNonRemis = (objet) => {
     })
   })
 }
+
 export default PageMesOffres;
