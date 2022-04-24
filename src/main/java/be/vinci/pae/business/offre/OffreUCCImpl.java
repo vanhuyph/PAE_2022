@@ -9,6 +9,7 @@ import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import jakarta.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OffreUCCImpl implements OffreUCC {
@@ -239,30 +240,31 @@ public class OffreUCCImpl implements OffreUCC {
   @Override
   public List<ObjetDTO> objetsAEvaluerParUtilisateur(int idReceveur) {
     serviceDAL.commencerTransaction();
-    List<ObjetDTO> objetsAEvalue;
+    List<ObjetDTO> objetsAEvaluerTemp;
+    List<ObjetDTO> objetsAEvaluer = new ArrayList<>();
     try {
-      objetsAEvalue = objetDAO.rechercheObjetParReceveur(idReceveur);
-      if (objetsAEvalue == null) {
-        for (ObjetDTO objet : objetsAEvalue) {
-          if (objetDAO.rechercheParId(objet) == null) {
-            throw new PasTrouveException("L'objet n'existe pas");
+      objetsAEvaluerTemp = objetDAO.rechercheObjetParReceveur(idReceveur);
+
+      if (!objetsAEvaluerTemp.isEmpty()) {
+        for (ObjetDTO objet : objetsAEvaluerTemp) {
+          if (objet == null) {
+            if (objetDAO.rechercheParId(objet) == null) {
+              throw new PasTrouveException("L'objet n'existe pas");
+            }
+            throw new BusinessException("Données de l'objet sont périmées");
           }
-          if (!((Objet) objet).peutEtreEvalue()) {
-            throw new BusinessException("L'objet est dans un état ne permettant pas de l'évaluer");
+          if (((Objet) objet).peutEtreEvalue()) {
+            objetsAEvaluer.add(objet);
           }
         }
-        throw new BusinessException("Données de l'objet sont périmées");
       }
 
-      if (objetsAEvalue.isEmpty()) {
-        return null;
-      }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
     }
     serviceDAL.commettreTransaction();
-    return objetsAEvalue;
+    return objetsAEvaluer;
   }
 
 }

@@ -86,7 +86,7 @@ public class ObjetDAOImpl implements ObjetDAO {
   @Override
   public List<ObjetDTO> rechercheObjetParReceveur(int idReceveur) {
     String requetePs = "SELECT id_objet,etat_objet,description FROM projet.objets WHERE"
-        + " receveur = ?;";
+        + " receveur = ? ;";
     List<ObjetDTO> liste = new ArrayList<>();
     ObjetDTO objetDTO = factory.getObjet();
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
