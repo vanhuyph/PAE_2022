@@ -291,7 +291,7 @@ public class OffreUCCTest {
   @Test
   @DisplayName("Test réussi : méthode reoffrirObjet renvoit bien une nouvelle offre sans créer de nouvel objet")
   public void testReoffrirObjetV4() {
-    Mockito.when(objetDAO.miseAJourObjet(objetDTO5)).thenReturn(objetDTO5);
+    Mockito.when(objetDAO.miseAJourObjet(objetDTO4)).thenReturn(objetDTO5);
     Mockito.when(offreDAO.creerOffre(offreDTO5)).thenReturn(offreDTO5);
     assertEquals(offreDTO5, offreUCC.reoffrirObjet(offreDTO4));
   }
