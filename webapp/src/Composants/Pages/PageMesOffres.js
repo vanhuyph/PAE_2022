@@ -184,6 +184,8 @@ const surListeMesOffres = (data) => {
         .then((donnees) => {
           let listeInteret = `<div class="interets">`;
           donnees.forEach((interet) => {
+            console.log(interet.dateRdv)
+            let date = new Date(interet.dateRdv).toLocaleDateString("fr-BE")
             listeInteret += `
                 <div class="interet">
                   <input type="hidden" id="ut" value="${interet.utilisateur.idUtilisateur}">
@@ -191,7 +193,7 @@ const surListeMesOffres = (data) => {
                   <p>${interet.utilisateur.nom}</p>
                   <p>${interet.utilisateur.prenom}</p>
                   <p>${interet.utilisateur.pseudo}</p>
-                  <p>Horaire: ${interet.dateRdv}</p>
+                  <p>Horaire:  ${date}</p>
                 </div>`
           })
           listeInteret += `</div>`
