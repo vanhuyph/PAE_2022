@@ -201,7 +201,7 @@ public class InteretUCCImpl implements InteretUCC {
       if (interetDAO.miseAJourInteret(interetDTO) == null) {
         throw new BusinessException("Données de l'intérêt périmées");
       }
-      ((Utilisateur) interetDTO.getUtilisateur()).incrementerNbObjetAbandonne();
+      ((Utilisateur) interetDTO.getUtilisateur()).incrementerNbObjetsAbandonnes();
       if (utilisateurDAO.miseAJourUtilisateur(interetDTO.getUtilisateur()) == null) {
         throw new BusinessException("Données de l'utilisateur périmées");
       }

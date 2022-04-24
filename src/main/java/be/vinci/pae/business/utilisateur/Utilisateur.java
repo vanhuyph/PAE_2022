@@ -15,12 +15,12 @@ public interface Utilisateur extends UtilisateurDTO {
 
   boolean refuserInscription(String commentaire);
 
-  void incrementerNbObjetOffert();
+  void incrementerNbObjetsOfferts();
 
-  void incrementerNbObjetDonne();
+  void incrementerNbObjetsDonnes();
 
-  void incrementerNbObjetRecu();
+  void incrementerNbObjetsRecus();
 
-  void incrementerNbObjetAbandonne();
+  void incrementerNbObjetsAbandonnes();
 
 }
