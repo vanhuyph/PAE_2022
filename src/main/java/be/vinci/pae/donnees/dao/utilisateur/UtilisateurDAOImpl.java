@@ -127,7 +127,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateurDTO) {
     String requetePs =
         "UPDATE projet.utilisateurs SET pseudo = ?, nom = ?, prenom = ?, gsm = ?, est_admin = ?,"
-            + " etat_inscription = ?, commentaire = ?, adresse = ?, version = ? "
+            + " etat_inscription = ?, commentaire = ?, adresse = ?, version = ?, "
+            + "nb_objet_offert = ?, nb_objet_donne = ?, nb_objet_recu = ?, nb_objet_abandonne = ? "
             + "WHERE id_utilisateur = ? AND version = ? "
             + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, adresse"
             + ", etat_inscription, commentaire, version, nb_objet_offert, nb_objet_donne, "
@@ -142,8 +143,12 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setString(7, utilisateurDTO.getCommentaire());
       ps.setInt(8, utilisateurDTO.getAdresse().getIdAdresse());
       ps.setInt(9, utilisateurDTO.getVersion() + 1);
-      ps.setInt(10, utilisateurDTO.getIdUtilisateur());
-      ps.setInt(11, utilisateurDTO.getVersion());
+      ps.setInt(10, utilisateurDTO.getNbObjetOfferts());
+      ps.setInt(11, utilisateurDTO.getNbObjetDonnees());
+      ps.setInt(12, utilisateurDTO.getNbObjetRecus());
+      ps.setInt(13, utilisateurDTO.getNbObjetAbandonnes());
+      ps.setInt(14, utilisateurDTO.getIdUtilisateur());
+      ps.setInt(15, utilisateurDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
@@ -280,61 +285,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       throw new FatalException(e.getMessage(), e);
     }
     return liste;
-  }
-
-  /**
-   * Récupère le nombre d'objets selon l'état par l'utilisateur dont l'id est passé en paramètre.
-   *
-   * @param idUtilisateur : l'id de l'utilisateur dont on veut connaître le compte de ses objets
-   *                      selon l'état
-   * @param etatObjet     : l'état de l'objet
-   * @return nbreObjets : le nombre d'objets
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
-  @Override
-  public int nbreObjets(int idUtilisateur, String etatObjet) {
-    String requete = "SELECT COUNT (o.id_objet) FROM projet.utilisateurs u, projet.objets o WHERE "
-        + "u.id_utilisateur = o.offreur AND u.id_utilisateur = ? AND o.etat_objet = ?;";
-    int nbreObjets = 0;
-    try (PreparedStatement ps = serviceBackendDAL.getPs(requete)) {
-      ps.setInt(1, idUtilisateur);
-      ps.setString(2, etatObjet);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          nbreObjets = rs.getInt(1);
-        }
-      }
-    } catch (SQLException e) {
-      throw new FatalException(e.getMessage(), e);
-    }
-    return nbreObjets;
-  }
-
-  /**
-   * Incrémente le nombre d'objets offerts de l'utilisateur à chaque nouvelle offre.
-   *
-   * @param utilisateurDTO : l'utilisateur à qui l'on veut incrémenter son nombre d'objets offerts
-   * @return utilisateurDTO : l'utilisateur avec son nombre d'objets offerts à jour
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
-  @Override
-  public UtilisateurDTO incrementerObjetOffert(UtilisateurDTO utilisateurDTO) {
-    String requete = "UPDATE projet.utilisateurs SET nb_objet_offert = nb_objet_offert + 1, "
-        + "version = ? WHERE id_utilisateur = ? AND version = ? RETURNING *;";
-    try (PreparedStatement ps = serviceBackendDAL.getPs(requete)) {
-      ps.setInt(1, utilisateurDTO.getVersion() + 1);
-      ps.setInt(2, utilisateurDTO.getIdUtilisateur());
-      ps.setInt(3, utilisateurDTO.getVersion());
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
-        } else {
-          return null;
-        }
-      }
-    } catch (SQLException e) {
-      throw new FatalException(e.getMessage(), e);
-    }
   }
 
   /**

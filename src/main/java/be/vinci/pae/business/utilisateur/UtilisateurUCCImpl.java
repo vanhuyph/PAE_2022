@@ -320,31 +320,4 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     return liste;
   }
 
-  /**
-   * Récupère le nombre d'objets avec l'état passé en paramètre par l'utilisateur dont l'id est
-   * passé en paramètre.
-   *
-   * @param idUtilisateur : l'id de l'utilisateur dont on veut connaître le compte de ses objets
-   *                      selon l'état
-   * @param etatObjet     : l'état de l'objet
-   * @return nbreObjets : le nombre d'objets
-   * @throws BusinessException : est lancée si l'id de l'utilisateur est incorrect
-   */
-  @Override
-  public int nbreObjets(int idUtilisateur, String etatObjet) {
-    serviceDAL.commencerTransaction();
-    int nbreObjets;
-    try {
-      if (idUtilisateur <= 0) {
-        throw new BusinessException("L'utilisateur n'a pas pu être trouvé");
-      }
-      nbreObjets = utilisateurDAO.nbreObjets(idUtilisateur, etatObjet);
-    } catch (Exception e) {
-      serviceDAL.retourEnArriereTransaction();
-      throw e;
-    }
-    serviceDAL.commettreTransaction();
-    return nbreObjets;
-  }
-
 }

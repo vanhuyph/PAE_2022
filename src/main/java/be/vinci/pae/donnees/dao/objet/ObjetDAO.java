@@ -10,4 +10,6 @@ public interface ObjetDAO {
 
   ObjetDTO miseAJourObjet(ObjetDTO objetDTO);
 
+  void remplirOffreurDepuisObjet(ObjetDTO objetDTO);
+
 }
