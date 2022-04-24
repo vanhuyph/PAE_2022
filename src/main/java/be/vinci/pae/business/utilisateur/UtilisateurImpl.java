@@ -252,6 +252,26 @@ public class UtilisateurImpl implements Utilisateur {
   }
 
   @Override
+  public void incrementerNbObjetOffert() {
+    this.setNbObjetOfferts(this.getNbObjetOfferts() + 1);
+  }
+
+  @Override
+  public void incrementerNbObjetDonne() {
+    this.setNbObjetDonnees(this.getNbObjetDonnees() + 1);
+  }
+
+  @Override
+  public void incrementerNbObjetRecu() {
+    this.setNbObjetRecus(this.getNbObjetRecus() + 1);
+  }
+
+  @Override
+  public void incrementerNbObjetAbandonne() {
+    this.setNbObjetAbandonnes(this.getNbObjetAbandonnes() + 1);
+  }
+
+  @Override
   public String toString() {
     return "UtilisateurImpl{"
         + "idUtilisateur=" + idUtilisateur

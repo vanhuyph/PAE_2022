@@ -130,4 +130,14 @@ public class RessourceInteret {
     return interet;
   }
 
+  @PUT
+  @Path("/nonRemis/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public InteretDTO nonRemis(@PathParam("id") int idObjet) {
+    InteretDTO interetDTO = interetUCC.nonRemis(idObjet);
+    return interetDTO;
+  }
+
 }

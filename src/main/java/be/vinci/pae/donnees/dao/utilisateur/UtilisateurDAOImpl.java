@@ -127,7 +127,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   public UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateurDTO) {
     String requetePs =
         "UPDATE projet.utilisateurs SET pseudo = ?, nom = ?, prenom = ?, gsm = ?, est_admin = ?,"
-            + " etat_inscription = ?, commentaire = ?, adresse = ?, version = ? "
+            + " etat_inscription = ?, commentaire = ?, adresse = ?, version = ?, "
+            + "nb_objet_offert = ?, nb_objet_donne = ?, nb_objet_recu = ?, nb_objet_abandonne = ? "
             + "WHERE id_utilisateur = ? AND version = ? "
             + "RETURNING id_utilisateur, pseudo, nom, prenom, mdp, gsm, est_admin, adresse"
             + ", etat_inscription, commentaire, version, nb_objet_offert, nb_objet_donne, "
@@ -142,8 +143,12 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
       ps.setString(7, utilisateurDTO.getCommentaire());
       ps.setInt(8, utilisateurDTO.getAdresse().getIdAdresse());
       ps.setInt(9, utilisateurDTO.getVersion() + 1);
-      ps.setInt(10, utilisateurDTO.getIdUtilisateur());
-      ps.setInt(11, utilisateurDTO.getVersion());
+      ps.setInt(10, utilisateurDTO.getNbObjetOfferts());
+      ps.setInt(11, utilisateurDTO.getNbObjetDonnees());
+      ps.setInt(12, utilisateurDTO.getNbObjetRecus());
+      ps.setInt(13, utilisateurDTO.getNbObjetAbandonnes());
+      ps.setInt(14, utilisateurDTO.getIdUtilisateur());
+      ps.setInt(15, utilisateurDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);

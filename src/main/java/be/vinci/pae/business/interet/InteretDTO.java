@@ -32,8 +32,8 @@ public interface InteretDTO {
 
   void setReceveurChoisi(boolean receveurChoisi);
 
-  boolean isVenuChercher();
+  Boolean isVenuChercher();
 
-  void setVenuChercher(boolean venuChercher);
+  void setVenuChercher(Boolean venuChercher);
 
 }

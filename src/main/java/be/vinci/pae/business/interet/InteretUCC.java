@@ -13,4 +13,6 @@ public interface InteretUCC {
   List<InteretDTO> listeDesPersonnesInteresseesVue(int idObjet);
 
   InteretDTO indiquerReceveur(InteretDTO interet);
+
+  InteretDTO nonRemis(int idObjet);
 }

@@ -17,5 +17,7 @@ public interface InteretDAO {
 
   int supprimerInteret(int idObjet);
 
-  InteretDTO indiquerReceveur(InteretDTO interetDTO);
+  InteretDTO receveurActuel(int idObjet);
+
+  InteretDTO nonRemis(InteretDTO interetDTO);
 }
