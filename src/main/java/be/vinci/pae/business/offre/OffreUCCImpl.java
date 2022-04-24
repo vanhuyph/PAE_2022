@@ -86,7 +86,7 @@ public class OffreUCCImpl implements OffreUCC {
     ObjetDTO objet;
     try {
 
-      if(!((Objet) offreDTO.getObjetDTO()).verifierEtatPourReoffrirObjet()){
+      if (!((Objet) offreDTO.getObjetDTO()).verifierEtatPourReoffrirObjet()) {
         throw new BusinessException("L'objet n'est pas à l'état annulé");
       }
 
@@ -366,7 +366,7 @@ public class OffreUCCImpl implements OffreUCC {
    */
   public List<OffreDTO> mesOffres(int idUtilisateur) {
     serviceDAL.commencerTransaction();
-    List<OffreDTO> liste ;
+    List<OffreDTO> liste;
     try {
       liste = offreDAO.mesOffres(idUtilisateur);
     } catch (Exception e) {
