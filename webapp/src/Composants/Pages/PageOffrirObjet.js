@@ -2,6 +2,7 @@ import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import Navbar from "../Navbar/Navbar";
 import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
+import Swal from "sweetalert2";
 
 const formPhoto =
     `
@@ -125,7 +126,6 @@ const surChoixTypeObjet = () => {
   const choixTypeObjet = document.querySelector("#choixTypeObjet")
   let typeObjet = document.querySelector("#typeObjet")
   const formCreerType = document.querySelector("#formCreerType")
-  console.log("dans surChoixTypeObjet , value ="+choixTypeObjet.value);
   if (choixTypeObjet.value === "nouveauType"){
 
     if(!formCreerType){
@@ -166,13 +166,10 @@ const surCreerTypeObjet = async (e) => {
   if (nomNouveauType === "") {
     document.querySelector(
         ".erreur-nomType").innerHTML = "Votre nouveau type d'objet est vide";
-  }else{
+  } else {
 
-    console.log("click pour sur creerType");
     const session = recupUtilisateurDonneesSession();
     const nomType = document.getElementById("nomType");
-
-    console.log("nom type sur creer type:" + nomType.value)
 
     let typeObjetDTO = {
       idType: null,
@@ -202,20 +199,24 @@ const surCreerTypeObjet = async (e) => {
       const formCreerType = document.querySelector("#formCreerType")
       formCreerType.remove();
       nomTypeRecu = data.toString()
-      console.log("type of choixtypeobjet.value"+ typeof choixTypeObjet.value);
-      console.log("choixtypeobjet.value"+ choixTypeObjet.value);
-      console.log(data.idType);
-      choixTypeObjet.value = data.idType.toString()  //je n'arrive pas à select le nouveau type
-      console.log("type of choixtypeobjet.value :"+ typeof choixTypeObjet.value);
-      console.log("choixtypeobjet.value :"+ choixTypeObjet.value);
 
-      console.log("choix type objet: "+choixTypeObjet.value)
-      document.querySelector(".erreur-type").innerHTML = "Votre nouveau type a bien été créé";
+
+      Swal.fire({
+        title: `<strong>Créer un nouveau type d'objet</strong>`,
+        html: `<p> Votre nouveau type a bien été créé </p>`,
+        showCloseButton: true,
+        showCancelButton: false,
+        focusConfirm: false
+
+      })
+
+      choixTypeObjet.value = data.idType.toString()  //je n'arrive pas à select le nouveau type
+
     })
 
-  }
+    return nomTypeRecu;
 
-  return nomTypeRecu;
+  }
 
 }
 

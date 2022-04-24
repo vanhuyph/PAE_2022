@@ -36,11 +36,11 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
           TypeObjetDTO typeObjetCourant = factory.getTypeObjet();
 
           liste.add(remplirTypeObjetDepuisResulSet(typeObjetCourant, rs));
+
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return liste;
@@ -61,7 +61,6 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return typeObjetDTO;
@@ -69,10 +68,11 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
 
   @Override
   public TypeObjetDTO verifierUniqueTypeObjet(TypeObjetDTO typeObjetDTO) {
-    String requetePs = "SELECT * FROM projet.types_objets WHERE nom = ?";
+    String requetePs = "SELECT * FROM projet.types_objets WHERE nom = ? AND version = ?";
 
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, typeObjetDTO.getNom());
+      ps.setInt(2, typeObjetDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           remplirTypeObjetDepuisResulSet(typeObjetDTO, rs);
@@ -80,7 +80,6 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return typeObjetDTO;
@@ -99,9 +98,7 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
       typeObjetDTO.setIdType(rs.getInt(1));
       typeObjetDTO.setNom(rs.getString(2));
       typeObjetDTO.setVersion(rs.getInt(3));
-
     } catch (SQLException e) {
-      ((ServiceDAL) serviceBackendDAL).retourEnArriereTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return typeObjetDTO;

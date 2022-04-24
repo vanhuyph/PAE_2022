@@ -20,8 +20,10 @@ public class TypeObjetUCCImpl implements TypeObjetUCC {
    */
   @Override
   public List<TypeObjetDTO> listerTypeObjet() {
+
     serviceDAL.commencerTransaction();
     List<TypeObjetDTO> liste;
+
     try {
       liste = typeObjetDAO.listerTypeObjet();
     } catch (Exception e) {
