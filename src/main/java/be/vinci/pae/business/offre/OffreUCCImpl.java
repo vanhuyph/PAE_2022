@@ -86,15 +86,16 @@ public class OffreUCCImpl implements OffreUCC {
     ObjetDTO objet;
     try {
 
+      System.out.println("1");
       if (!((Objet) offreDTO.getObjetDTO()).verifierEtatPourReoffrirObjet()) {
         throw new BusinessException("L'objet n'est pas à l'état annulé");
       }
 
 
       ((Offre) offreDTO).reoffriObjet();
-
+      System.out.println("2");
       objet = objetDAO.miseAJourObjet(offreDTO.getObjetDTO());
-
+      System.out.println("3");
       if (objet == null) {
         if (objetDAO.rechercheParId(objet) == null) {
           throw new PasTrouveException("L'objet n'existe pas");
@@ -102,13 +103,13 @@ public class OffreUCCImpl implements OffreUCC {
         throw new BusinessException("Données sont périmées");
 
       }
-
+      System.out.println("4");
       offre = offreDAO.creerOffre(offreDTO);
       if (offre == null) {
         throw new BusinessException("L'offre n'a pas pu être créée");
       }
 
-
+      System.out.println("5");
 
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
