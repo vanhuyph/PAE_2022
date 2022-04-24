@@ -75,7 +75,7 @@ public class OffreDAOImpl implements OffreDAO {
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
+      liste = remplirListeOffresDepuisResulSet(offreDTO, ps);
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);
     }
@@ -132,12 +132,12 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-        + "WHERE o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' OR o.etat_objet = 'Annulé' "
+        + "WHERE (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé') "
         + "ORDER BY of.date_offre DESC LIMIT 3;";
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
+      liste = remplirListeOffresDepuisResulSet(offreDTO, ps);
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);
     }
@@ -168,7 +168,7 @@ public class OffreDAOImpl implements OffreDAO {
     List<OffreDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, idObjet);
-      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
+      liste = remplirListeOffresDepuisResulSet(offreDTO, ps);
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);
     }
@@ -264,7 +264,7 @@ public class OffreDAOImpl implements OffreDAO {
         ps.setTimestamp(1, Timestamp.valueOf(dateDebut.atStartOfDay()));
         ps.setTimestamp(2, Timestamp.valueOf(dateFin.atTime(23, 59)));
       }
-      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
+      liste = remplirListeOffresDepuisResulSet(offreDTO, ps);
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);
     }
@@ -295,7 +295,7 @@ public class OffreDAOImpl implements OffreDAO {
     List<OffreDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, idUtilisateur);
-      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
+      liste = remplirListeOffresDepuisResulSet(offreDTO, ps);
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);
     }
@@ -327,7 +327,7 @@ public class OffreDAOImpl implements OffreDAO {
     List<OffreDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, idUtilisateur);
-      liste = remplirListOffresDepuisResulSet(offreDTO, ps);
+      liste = remplirListeOffresDepuisResulSet(offreDTO, ps);
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);
     }
@@ -342,7 +342,7 @@ public class OffreDAOImpl implements OffreDAO {
    * @return liste : la liste remplie
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
-  private List<OffreDTO> remplirListOffresDepuisResulSet(OffreDTO offreDTO, PreparedStatement ps) {
+  private List<OffreDTO> remplirListeOffresDepuisResulSet(OffreDTO offreDTO, PreparedStatement ps) {
     List<OffreDTO> liste = new ArrayList<>();
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {

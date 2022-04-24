@@ -313,13 +313,4 @@ public class UtilisateurUCCTest {
     assertEquals(liste, utilisateurUCC.rechercherMembres("Verviers"));
   }
 
-  @Test
-  @DisplayName("Test réussi : méthode nbreObjets renvoie une 0 objets offerts pour l'utilisateur "
-      + "ayant l'id 1.")
-  public void testNbreObjetsV1() {
-    int id = utilisateurDTO1.getIdUtilisateur();
-    Mockito.when(utilisateurDAO.nbreObjets(id, "Offert")).thenReturn(0);
-    assertEquals(0, utilisateurUCC.nbreObjets(id, "Offert"));
-  }
-
 }

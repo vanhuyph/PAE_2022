@@ -38,6 +38,7 @@ public class ObjetDAOImpl implements ObjetDAO {
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           objetDTO.setIdObjet(rs.getInt(1));
+          remplirOffreurDepuisObjet(objetDTO);
           return objetDTO;
         } else {
           return null;
@@ -89,7 +90,7 @@ public class ObjetDAOImpl implements ObjetDAO {
    * Met à jour l'objet.
    *
    * @param objetDTO : l'objet à mettre a jour
-   * @return objetDTO : l'objet mit à jour
+   * @return objetDTO : l'objet mis à jour
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
@@ -119,6 +120,51 @@ public class ObjetDAOImpl implements ObjetDAO {
           return objetDTO;
         } else {
           return null;
+        }
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Permet de remplir l'offreur depuis un objet.
+   *
+   * @param objetDTO : l'objet qui contient l'id de l'utilisateur à remplir
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public void remplirOffreurDepuisObjet(ObjetDTO objetDTO) {
+    String requete = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
+        + "a.version, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, u.version, u.nb_objet_offert, u.nb_objet_donne, "
+        + "u.nb_objet_recu, u.nb_objet_abandonne FROM projet.utilisateurs u, projet.adresses a "
+        + "WHERE u.id_utilisateur = ? AND u.adresse = a.id_adresse;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requete)) {
+      ps.setInt(1, objetDTO.getOffreur().getIdUtilisateur());
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          objetDTO.getOffreur().setAdresse(factory.getAdresse());
+          objetDTO.getOffreur().getAdresse().setIdAdresse(rs.getInt(1));
+          objetDTO.getOffreur().getAdresse().setRue(rs.getString(2));
+          objetDTO.getOffreur().getAdresse().setNumero(rs.getInt(3));
+          objetDTO.getOffreur().getAdresse().setBoite(rs.getString(4));
+          objetDTO.getOffreur().getAdresse().setCodePostal(rs.getInt(5));
+          objetDTO.getOffreur().getAdresse().setCommune(rs.getString(6));
+          objetDTO.getOffreur().getAdresse().setVersion(rs.getInt(7));
+          objetDTO.getOffreur().setPseudo(rs.getString(8));
+          objetDTO.getOffreur().setNom(rs.getString(9));
+          objetDTO.getOffreur().setPrenom(rs.getString(10));
+          objetDTO.getOffreur().setMdp(rs.getString(11));
+          objetDTO.getOffreur().setGsm(rs.getString(12));
+          objetDTO.getOffreur().setEstAdmin(rs.getBoolean(13));
+          objetDTO.getOffreur().setEtatInscription(rs.getString(14));
+          objetDTO.getOffreur().setCommentaire(rs.getString(15));
+          objetDTO.getOffreur().setVersion(rs.getInt(16));
+          objetDTO.getOffreur().setNbObjetOfferts(rs.getInt(17));
+          objetDTO.getOffreur().setNbObjetDonnees(rs.getInt(18));
+          objetDTO.getOffreur().setNbObjetRecus(rs.getInt(19));
+          objetDTO.getOffreur().setNbObjetAbandonnes(rs.getInt(20));
         }
       }
     } catch (SQLException e) {

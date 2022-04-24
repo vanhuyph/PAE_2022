@@ -2,6 +2,7 @@ package be.vinci.pae.business.offre;
 
 import be.vinci.pae.business.objet.Objet;
 import be.vinci.pae.business.objet.ObjetDTO;
+import be.vinci.pae.business.utilisateur.Utilisateur;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.interet.InteretDAO;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
@@ -33,15 +34,13 @@ public class OffreUCCImpl implements OffreUCC {
    *
    * @param offreDTO : l'offre à créer
    * @return offre : l'offre créée
-   * @throws BusinessException  : est lancée si l'objet ou l'offre n'a pas pu être créée
-   * @throws PasTrouveException : est lancée si l'utilisateur à qui l'on veut incrémenter son nombre
-   *                            d'objets offerts n'est pas trouvé
+   * @throws BusinessException : est lancée si l'objet ou l'offre n'a pas pu être créée / données
+   *                           périmées
    */
   @Override
   public OffreDTO creerOffre(OffreDTO offreDTO) {
     serviceDAL.commencerTransaction();
     OffreDTO offre;
-    UtilisateurDTO utilisateur;
     try {
       ObjetDTO objet = objetDAO.creerObjet(offreDTO.getObjetDTO());
       if (objet == null) {
@@ -52,12 +51,10 @@ public class OffreUCCImpl implements OffreUCC {
       if (offre == null) {
         throw new BusinessException("L'offre n'a pas pu être créée");
       }
-      utilisateur = utilisateurDAO.incrementerObjetOffert(objet.getOffreur());
+      ((Utilisateur) objet.getOffreur()).incrementerNbObjetsOfferts();
+      UtilisateurDTO utilisateur = utilisateurDAO.miseAJourUtilisateur(objet.getOffreur());
       if (utilisateur == null) {
-        if (utilisateurDAO.rechercheParId(objet.getOffreur().getIdUtilisateur()) == null) {
-          throw new PasTrouveException("L'utilisateur n'existe pas");
-        }
-        throw new BusinessException("Données sont périmées");
+        throw new BusinessException("Données périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();

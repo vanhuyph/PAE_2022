@@ -288,61 +288,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
   }
 
   /**
-   * Récupère le nombre d'objets selon l'état par l'utilisateur dont l'id est passé en paramètre.
-   *
-   * @param idUtilisateur : l'id de l'utilisateur dont on veut connaître le compte de ses objets
-   *                      selon l'état
-   * @param etatObjet     : l'état de l'objet
-   * @return nbreObjets : le nombre d'objets
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
-  @Override
-  public int nbreObjets(int idUtilisateur, String etatObjet) {
-    String requete = "SELECT COUNT (o.id_objet) FROM projet.utilisateurs u, projet.objets o WHERE "
-        + "u.id_utilisateur = o.offreur AND u.id_utilisateur = ? AND o.etat_objet = ?;";
-    int nbreObjets = 0;
-    try (PreparedStatement ps = serviceBackendDAL.getPs(requete)) {
-      ps.setInt(1, idUtilisateur);
-      ps.setString(2, etatObjet);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          nbreObjets = rs.getInt(1);
-        }
-      }
-    } catch (SQLException e) {
-      throw new FatalException(e.getMessage(), e);
-    }
-    return nbreObjets;
-  }
-
-  /**
-   * Incrémente le nombre d'objets offerts de l'utilisateur à chaque nouvelle offre.
-   *
-   * @param utilisateurDTO : l'utilisateur à qui l'on veut incrémenter son nombre d'objets offerts
-   * @return utilisateurDTO : l'utilisateur avec son nombre d'objets offerts à jour
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
-  @Override
-  public UtilisateurDTO incrementerObjetOffert(UtilisateurDTO utilisateurDTO) {
-    String requete = "UPDATE projet.utilisateurs SET nb_objet_offert = nb_objet_offert + 1, "
-        + "version = ? WHERE id_utilisateur = ? AND version = ? RETURNING *;";
-    try (PreparedStatement ps = serviceBackendDAL.getPs(requete)) {
-      ps.setInt(1, utilisateurDTO.getVersion() + 1);
-      ps.setInt(2, utilisateurDTO.getIdUtilisateur());
-      ps.setInt(3, utilisateurDTO.getVersion());
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
-        } else {
-          return null;
-        }
-      }
-    } catch (SQLException e) {
-      throw new FatalException(e.getMessage(), e);
-    }
-  }
-
-  /**
    * Rempli les données de l'utilisateur depuis un ResultSet.
    *
    * @param rs             : le ResultSet
