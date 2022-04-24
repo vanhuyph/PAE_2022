@@ -104,45 +104,10 @@ public class InteretDAOImpl implements InteretDAO {
   }
 
   /**
-   * Liste les interet de sa propre offre.
+   * Liste les intérêts pour l'objet dont l'id est passé en paramètre.
    *
    * @param idObjet : l'id de l'objet dont les personnes sont intéressées
-   * @return liste : la liste de toutes les interets qu'on n'a pas encore vue
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
-  @Override
-  public List<InteretDTO> listeDesPersonnesInteresseesVue(int idObjet) {
-    String requetePS = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
-        + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-        + "u.etat_inscription, u.commentaire, u.version, u.nb_objet_offert, u.nb_objet_donne, "
-        + "u.nb_objet_recu, u.nb_objet_abandonne, a2.id_adresse, a2.rue, a2.numero, a2.boite, "
-        + "a2.code_postal, a2.commune, u2.id_utilisateur, u2.pseudo, u2.nom, u2.prenom, u2.mdp, "
-        + "u2.gsm, u2.est_admin, u2.etat_inscription, u2.commentaire, u2.version, "
-        + "u2.nb_objet_offert, u2.nb_objet_donne, u2.nb_objet_recu, u2.nb_objet_abandonne, "
-        + "t.id_type, t.nom, o.id_objet, o.etat_objet, o.description, o.photo, o.version, o.vue, "
-        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version  FROM projet.interets i, projet.utilisateurs u, projet.utilisateurs u2, "
-        + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
-        + "WHERE o.id_objet = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
-        + "a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur AND t.id_type = o.type_objet "
-        + "AND a2.id_adresse = u2.adresse AND i.vue = 'false';";
-    InteretDTO interetDTO = factory.getInteret();
-    List<InteretDTO> listeDesPersonnesInteressees;
-    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
-      ps.setInt(1, idObjet);
-      listeDesPersonnesInteressees =
-          remplirListInteretDepuisResulSet(interetDTO, ps);
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException(e.getMessage(), e);
-    }
-    return listeDesPersonnesInteressees;
-  }
-
-  /**
-   * Liste les interet de sa propre offre.
-   *
-   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
-   * @return liste : la liste de toutes les interets
+   * @return liste : la liste des intérêts pour l'objet
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
@@ -155,16 +120,52 @@ public class InteretDAOImpl implements InteretDAO {
         + "u2.gsm, u2.est_admin, u2.etat_inscription, u2.commentaire, u2.version, "
         + "u2.nb_objet_offert, u2.nb_objet_donne, u2.nb_objet_recu, u2.nb_objet_abandonne, "
         + "t.id_type, t.nom, o.id_objet, o.etat_objet, o.description, o.photo, o.version, o.vue, "
-        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version  FROM projet.interets i, projet.utilisateurs u, projet.utilisateurs u2, "
+        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version  FROM projet.interets i, "
+        + "projet.utilisateurs u, projet.utilisateurs u2, "
         + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
         + "WHERE o.id_objet = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
         + "a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur AND t.id_type = o.type_objet "
         + "AND a2.id_adresse = u2.adresse;";
     InteretDTO interetDTO = factory.getInteret();
+    List<InteretDTO> liste;
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
+      ps.setInt(1, idObjet);
+      liste = remplirListeInteretDepuisResulSet(interetDTO, ps);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return liste;
+  }
+
+  /**
+   * Liste les intérêts non-vues pour l'objet dont l'id est passé en paramètre.
+   *
+   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @return liste : la liste des intérêts non-vues
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public List<InteretDTO> listeDesPersonnesInteresseesVue(int idObjet) {
+    String requetePS = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
+        + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, u.version, u.nb_objet_offert, u.nb_objet_donne, "
+        + "u.nb_objet_recu, u.nb_objet_abandonne, a2.id_adresse, a2.rue, a2.numero, a2.boite, "
+        + "a2.code_postal, a2.commune, u2.id_utilisateur, u2.pseudo, u2.nom, u2.prenom, u2.mdp, "
+        + "u2.gsm, u2.est_admin, u2.etat_inscription, u2.commentaire, u2.version, "
+        + "u2.nb_objet_offert, u2.nb_objet_donne, u2.nb_objet_recu, u2.nb_objet_abandonne, "
+        + "t.id_type, t.nom, o.id_objet, o.etat_objet, o.description, o.photo, o.version, o.vue, "
+        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version FROM projet.interets i, "
+        + "projet.utilisateurs u, projet.utilisateurs u2, "
+        + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
+        + "WHERE o.id_objet = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
+        + "a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur AND t.id_type = o.type_objet "
+        + "AND a2.id_adresse = u2.adresse AND i.vue = 'false';";
+    InteretDTO interetDTO = factory.getInteret();
     List<InteretDTO> listeDesPersonnesInteressees;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
       ps.setInt(1, idObjet);
-      listeDesPersonnesInteressees = remplirListInteretDepuisResulSet(interetDTO, ps);
+      listeDesPersonnesInteressees = remplirListeInteretDepuisResulSet(interetDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
@@ -173,10 +174,10 @@ public class InteretDAOImpl implements InteretDAO {
   }
 
   /**
-   * Met à jour l'interet.
+   * Met à jour l'intérêt.
    *
-   * @param interetDTO : l'interet à mettre a jour
-   * @return interetDTO : l'interet mit à jour
+   * @param interetDTO : l'intérêt à mettre à jour
+   * @return interetDTO : l'intérêt mise à jour
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
@@ -214,6 +215,13 @@ public class InteretDAOImpl implements InteretDAO {
     }
   }
 
+  /**
+   * Permet de récupérer le receveur actuel de l'objet dont l'id est passé en paramètre.
+   *
+   * @param idObjet : l'id de l'objet
+   * @return interetDTO : interetDTO
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
   @Override
   public InteretDTO receveurActuel(int idObjet) {
     String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
@@ -246,6 +254,13 @@ public class InteretDAOImpl implements InteretDAO {
     }
   }
 
+  /**
+   * Permet d'indiquer que l'objet a été non remis car le receveur n'est pas venu chercher l'objet.
+   *
+   * @param interetDTO : l'intérêt auquel indiquer si le receveur est venu chercher ou non
+   * @return interetDTO : interetDTO
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
   @Override
   public InteretDTO nonRemis(InteretDTO interetDTO) {
     String requetePs = "UPDATE projet.interets SET venu_chercher = ?, version = ? "
@@ -270,14 +285,14 @@ public class InteretDAOImpl implements InteretDAO {
   }
 
   /**
-   * Rempli une liste d'interet depuis un ResultSet.
+   * Rempli une liste d'intérêts depuis un PreparedStatement.
    *
-   * @param interetDTO : l'interet vide, qui va être remplie
+   * @param interetDTO : l'intérêt vide, qui va être rempli
    * @param ps         : le PreparedStatement déjà mis en place
    * @return liste : la liste remplie
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
-  private List<InteretDTO> remplirListInteretDepuisResulSet(InteretDTO interetDTO,
+  private List<InteretDTO> remplirListeInteretDepuisResulSet(InteretDTO interetDTO,
       PreparedStatement ps) {
     List<InteretDTO> liste = new ArrayList<>();
     try (ResultSet rs = ps.executeQuery()) {
@@ -294,11 +309,11 @@ public class InteretDAOImpl implements InteretDAO {
   }
 
   /**
-   * Rempli les données de l'interet depuis un ResultSet.
+   * Rempli les données de l'intérêt depuis un ResultSet.
    *
-   * @param interetDTO : l'interet vide, qui va être rempli
-   * @param rs         : le Result Statement déjà préparé
-   * @return interetDTO : l'interet rempli
+   * @param interetDTO : l'intérêt vide, qui va être rempli
+   * @param rs         : le ResultSet déjà préparé
+   * @return interetDTO : l'intérêt rempli
    */
   private InteretDTO remplirInteretDepuisResulSet(InteretDTO interetDTO, ResultSet rs) {
     AdresseDTO adresseInteresse = factory.getAdresse();
@@ -366,8 +381,8 @@ public class InteretDAOImpl implements InteretDAO {
       objetDTO.setPhoto(rs.getString(46));
       objetDTO.setVersion(rs.getInt(47));
       objetDTO.setVue(rs.getBoolean(48));
-      interetDTO.setUtilisateur(interesse);
 
+      interetDTO.setUtilisateur(interesse);
       interetDTO.setVue(rs.getBoolean(49));
       interetDTO.setDateRdv(rs.getDate(50));
       interetDTO.setReceveurChoisi(rs.getBoolean(51));

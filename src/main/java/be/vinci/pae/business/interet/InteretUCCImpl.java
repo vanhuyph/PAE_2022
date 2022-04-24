@@ -95,10 +95,10 @@ public class InteretUCCImpl implements InteretUCC {
   }
 
   /**
-   * Liste les personnes ayant marqué un intérêt pour l'objet dont l'id est passé en paramètre.
+   * Liste les intérêts pour l'objet dont l'id est passé en paramètre.
    *
    * @param idObjet : l'id de l'objet dont les personnes sont intéressées
-   * @return listeInteret : la liste des personnes ayant marqué un intérêt pour l'objet
+   * @return liste : la liste des intérêts pour l'objet
    * @throws BusinessException : est lancée si l'id de l'objet est incorrect
    */
   @Override
@@ -119,10 +119,10 @@ public class InteretUCCImpl implements InteretUCC {
   }
 
   /**
-   * Liste les personnes ayant vu un intérêt pour l'objet dont l'id est passé en paramètre.
+   * Liste les intérêts non-vues pour l'objet dont l'id est passé en paramètre.
    *
    * @param idObjet : l'id de l'objet dont les personnes sont intéressées
-   * @return listeInteret : la liste de toutes les interets qu'on n'a pas encore vue
+   * @return liste : la liste des intérêts non-vues
    * @throws BusinessException : est lancée si l'id de l'objet est incorrect
    */
   @Override
