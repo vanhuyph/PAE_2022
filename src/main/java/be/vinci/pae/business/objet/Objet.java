@@ -8,4 +8,5 @@ public interface Objet extends ObjetDTO {
   boolean verifierEtatPourModificationOffre();
 
   void confirmerObjet();
+
 }
