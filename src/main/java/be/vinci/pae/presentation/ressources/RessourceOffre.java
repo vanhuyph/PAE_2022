@@ -214,7 +214,7 @@ public class RessourceOffre {
   }
 
   /**
-   * Liste toutes les offres en fonction d'un critère de recherche (nom, type, état).
+   * Liste toutes les offres en fonction d'un critère de recherche (nom, type, état et période).
    *
    * @param json : le json envoyé depuis le formulaire de recherche
    * @return liste : la liste des offres correspondante au critère de recherche
@@ -234,12 +234,12 @@ public class RessourceOffre {
   }
 
   /**
-   * donner une offre.
+   * Permet de donner une offre.
    *
-   * @param offreDTO : l'offre a donner
-   * @return offreDTO : l'offre donner
-   * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que la donation a
-   *                               échoué
+   * @param offreDTO : l'offre à donné
+   * @return offre : l'offre donnée
+   * @throws PresentationException : est lancée si l'id de l'offre/objet est incorrect ou qu'il n'y
+   *                               a pas de receveur ou que la donation de l'offre a échoué
    */
   @PUT
   @Path("donnerOffre")
@@ -261,12 +261,12 @@ public class RessourceOffre {
   }
 
   /**
-   * Liste les offres.
+   * Liste les propres offres de l'utilisateur dont l'id est passé en paramètre.
    *
-   * @param idUtilisateur : l'utilisateur pour lequel on cherche ces offres
-   * @return liste : la liste de ces offres
-   * @throws PresentationException : est lancée si l'id de l'utilisateur est invalide ou que l'offre
-   *                               n'a pas pu être trouvée
+   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses offres
+   * @return liste : la liste de toutes ses propres offres
+   * @throws PresentationException : est lancée si l'id de l'utilisateur est incorrect ou que
+   *                               l'offre n'a pas été trouvée
    */
   @GET
   @Path("/mesOffres/{idUtilisateur}")
@@ -284,12 +284,12 @@ public class RessourceOffre {
   }
 
   /**
-   * Liste des offres attribuer.
+   * Liste les offres qui ont été attribuées à l'utilisateur dont l'id est passé en paramètre.
    *
-   * @param idUtilisateur : l'id de l'utilisateur pour lequel on a attribuer une offre
-   * @return liste : la liste des offres attribuer
-   * @throws PresentationException : est lancée si l'id de l'utilisateur est invalide ou que l'offre
-   *                               n'a pas pu être trouvée
+   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses offres attribuées
+   * @return liste : la liste de toutes ses offres attribuées
+   * @throws PresentationException : est lancée si l'id de l'utilisateur est incorrect ou que
+   *                               l'offre n'a pas été trouvée
    */
   @GET
   @Path("/voirOffreAttribuer/{idUtilisateur}")

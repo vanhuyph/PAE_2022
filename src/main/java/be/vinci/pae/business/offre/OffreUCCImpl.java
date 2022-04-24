@@ -276,10 +276,10 @@ public class OffreUCCImpl implements OffreUCC {
   }
 
   /**
-   * donner une offre.
+   * Permet de donner une offre.
    *
-   * @param offreDTO : id de l'offre à donner
-   * @return l'offre donnée
+   * @param offreDTO : l'offre à donné
+   * @return offre : l'offre donnée
    * @throws PasTrouveException : est lancée si l'objet n'existe pas
    * @throws BusinessException  : est lancée si l'offre n'a pas pu être donnée ou l'id de l'objet
    *                            est incorrect
