@@ -92,7 +92,7 @@ public class OffreUCCImpl implements OffreUCC {
       }
 
 
-      ((Offre) offreDTO).reoffriObjet();
+      ((Offre) offreDTO).reoffrirObjet();
 
       objet = objetDAO.miseAJourObjet(offreDTO.getObjetDTO());
 

@@ -9,6 +9,6 @@ public interface Offre extends OffreDTO {
 
   void annulerOffre();
 
-  void reoffriObjet();
+  void reoffrirObjet();
 
 }
