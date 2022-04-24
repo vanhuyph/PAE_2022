@@ -70,7 +70,7 @@ public class OffreImpl implements Offre {
       return false;
     }
     OffreImpl offre = (OffreImpl) o;
-    return idOffre == offre.idOffre && dateOffre.equals(offre.dateOffre);
+    return idOffre == offre.idOffre;
   }
 
   @Override
