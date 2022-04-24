@@ -34,8 +34,12 @@ public class OffreUCCTest {
   private DomaineFactory domaineFactory;
   private OffreDTO offreDTO1;
   private OffreDTO offreDTO2;
+  private OffreDTO offreDTO3;
+  private OffreDTO offreDTO4;
   private ObjetDTO objetDTO1;
   private ObjetDTO objetDTO2;
+  private ObjetDTO objetDTO3;
+  private ObjetDTO objetDTO4;
   private ObjetDAO objetDAO;
   private UtilisateurDTO utilisateurDTO;
 
@@ -68,6 +72,19 @@ public class OffreUCCTest {
     objetDTO2 = domaineFactory.getObjet();
     objetDTO2.setIdObjet(2);
 
+    objetDTO3 = domaineFactory.getObjet();
+    objetDTO3.setEtatObjet("Offert");
+
+    objetDTO4 = domaineFactory.getObjet();
+    objetDTO4.setDescription("testDescription");
+    objetDTO4.setOffreur(utilisateurDTO);
+    objetDTO4.setPhoto("testPhoto");
+    objetDTO4.setVersion(1);
+    objetDTO4.setIdObjet(1);
+    objetDTO4.setReceveur(null);
+    objetDTO4.setTypeObjet(typeObjetDTO);
+    objetDTO4.setEtatObjet("Annulé");
+
     offreDTO1 = domaineFactory.getOffre();
     offreDTO1.setIdOffre(1);
     offreDTO1.setObjetDTO(objetDTO1);
@@ -75,6 +92,16 @@ public class OffreUCCTest {
 
     offreDTO2 = domaineFactory.getOffre();
     offreDTO2.setIdOffre(2);
+
+    offreDTO3 = domaineFactory.getOffre();
+    offreDTO3.setIdOffre(1);
+    offreDTO3.setObjetDTO(objetDTO3);
+    offreDTO3.setPlageHoraire("testPlageHoraire");
+
+    offreDTO4 = domaineFactory.getOffre();
+    offreDTO4.setIdOffre(1);
+    offreDTO4.setObjetDTO(objetDTO4);
+    offreDTO4.setPlageHoraire("testPlageHoraire");
   }
 
   @Test
@@ -220,6 +247,38 @@ public class OffreUCCTest {
     List<OffreDTO> liste = new ArrayList<>();
     Mockito.when(offreDAO.voirOffreAttribuer(id)).thenReturn(liste);
     assertEquals(liste, offreUCC.voirOffreAttribuer(id));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode reoffrirObjet avec en paramètre un objet qui n'a pas l'état annulé")
+  public void testReoffrirObjetV1() {
+    assertThrows(BusinessException.class, () -> offreUCC.reoffrirObjet(offreDTO3));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode reoffrirObjet avec en paramètre un objet qui n'existe pas")
+  public void testReoffrirObjetV2() {
+    Mockito.when(objetDAO.miseAJourObjet(objetDTO1)).thenReturn(null);
+    Mockito.when(objetDAO.rechercheParId(objetDTO1)).thenReturn(null);
+    assertThrows(BusinessException.class, () -> offreUCC.reoffrirObjet(offreDTO3));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode reoffrirObjet avec créer une offre qui échoue")
+  public void testReoffrirObjetV3() {
+    Mockito.when(objetDAO.miseAJourObjet(objetDTO1)).thenReturn(null);
+    Mockito.when(objetDAO.rechercheParId(objetDTO1)).thenReturn(null);
+    Mockito.when(offreDAO.creerOffre(offreDTO4)).thenReturn(null);
+    assertThrows(PasTrouveException.class, () -> offreUCC.reoffrirObjet(offreDTO4));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode reoffrirObjet renvoit bien une nouvelle offre sans créer de nouvel objet")
+  public void testReoffrirObjetV4() {
+    Mockito.when(objetDAO.miseAJourObjet(objetDTO4)).thenReturn(objetDTO4);
+    Mockito.when(objetDAO.rechercheParId(objetDTO4)).thenReturn(objetDTO4);
+    Mockito.when(offreDAO.creerOffre(offreDTO4)).thenReturn(offreDTO4);
+    assertEquals(offreDTO4, offreUCC.reoffrirObjet(offreDTO4));
   }
 
 }
