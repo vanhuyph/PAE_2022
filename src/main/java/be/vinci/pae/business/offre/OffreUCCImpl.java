@@ -69,8 +69,7 @@ public class OffreUCCImpl implements OffreUCC {
    *
    * @param offreDTO : l'offre à réoffrir
    * @return offre : l'offre réoffert
-   * @throws BusinessException  : est lancée si l'objet ou l'offre n'a pas pu être créée
-   *
+   * @throws BusinessException : est lancée si l'objet ou l'offre n'a pas pu être créée
    */
   @Override
   public OffreDTO reoffrirObjet(OffreDTO offreDTO) {
@@ -78,10 +77,11 @@ public class OffreUCCImpl implements OffreUCC {
     OffreDTO offre;
     ObjetDTO objet;
     try {
-      if (!((Objet) offreDTO.getObjetDTO()).verifierEtatPourReoffrirObjet()) {
-        throw new BusinessException("L'objet n'est pas à l'état annulé");
+      if (interetDAO.listeDesPersonnesInteressees(offreDTO.getObjetDTO().getIdObjet()).isEmpty()) {
+        ((Offre) offreDTO).offrirObjet();
+      } else {
+        ((Offre) offreDTO).interesseObjet();
       }
-      ((Offre) offreDTO).reoffrirObjet();
       objet = objetDAO.miseAJourObjet(offreDTO.getObjetDTO());
       if (objet == null) {
         if (objetDAO.rechercheParId(objet) == null) {

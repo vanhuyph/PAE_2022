@@ -84,7 +84,7 @@ public class OffreImpl implements Offre {
   }
 
   @Override
-  public void reoffrirObjet() {
+  public void interesseObjet() {
     this.getObjetDTO().setEtatObjet("Intéressé");
   }
 

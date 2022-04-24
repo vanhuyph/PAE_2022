@@ -7,8 +7,8 @@ public interface Offre extends OffreDTO {
 
   void offrirObjet();
 
-  void annulerOffre();
+  void interesseObjet();
 
-  void reoffrirObjet();
+  void annulerOffre();
 
 }
