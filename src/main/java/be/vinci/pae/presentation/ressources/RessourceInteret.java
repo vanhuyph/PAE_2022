@@ -73,10 +73,11 @@ public class RessourceInteret {
   }
 
   /**
-   * Liste les interets.
+   * Liste les intérêts pour l'objet dont l'id est passé en paramètre.
    *
-   * @param idObjet : l'id de l'objet pour lequel les personnes ont marqué un interet
-   * @return liste : la liste des interets
+   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @return liste : la liste des intérêts pour l'objet
+   * @throws PresentationException : est lancée si l'id de l'objet est incorrect
    */
   @GET
   @Path("/listeDesPersonnesInteressees/{id}")
@@ -87,16 +88,16 @@ public class RessourceInteret {
     if (idObjet <= 0) {
       throw new PresentationException("L'id de l'objet est incorrect", Status.BAD_REQUEST);
     }
-    List<InteretDTO> list = interetUCC.listeDesPersonnesInteressees(idObjet);
-    return list;
+    List<InteretDTO> liste = interetUCC.listeDesPersonnesInteressees(idObjet);
+    return liste;
   }
 
-
   /**
-   * Liste les interets.
+   * Liste les intérêts non-vues pour l'objet dont l'id est passé en paramètre.
    *
-   * @param idObjet : l'id de l'objet pour lequel les personnes ont marqué un interet
-   * @return liste : la liste des interets
+   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @return liste : la liste des intérêts non-vues
+   * @throws PresentationException : est lancée si l'id de l'objet est incorrect
    */
   @GET
   @Path("/listeDesPersonnesInteresseesVue/{id}")
@@ -107,16 +108,16 @@ public class RessourceInteret {
     if (idObjet <= 0) {
       throw new PresentationException("L'id de l'objet est incorrect", Status.BAD_REQUEST);
     }
-    List<InteretDTO> list = interetUCC.listeDesPersonnesInteresseesVue(idObjet);
-    return list;
+    List<InteretDTO> liste = interetUCC.listeDesPersonnesInteresseesVue(idObjet);
+    return liste;
   }
 
   /**
-   * Indique le receveur depuis un interet.
+   * Permet d'indiquer à une personne intéressée comme étant receveur de l'objet.
    *
-   * @param interet : l'interet qui aura un receveur
-   * @return interet
-   * @throws PresentationException : est lancée si l'objet ou l'utilisateur est incorrect
+   * @param interet : l'intérêt de la personne
+   * @return interetDTO : interetDTO
+   * @throws PresentationException : est lancée si objet/utilisateur incorrect
    */
   @PUT
   @Path("/indiquerReceveur")
@@ -130,6 +131,12 @@ public class RessourceInteret {
     return interet;
   }
 
+  /**
+   * Permet d'indiquer que l'objet a été non remis car le receveur n'est pas venu chercher l'objet.
+   *
+   * @param idObjet : l'id de l'objet à mettre en non remis
+   * @return interetDTO : interetDTO
+   */
   @PUT
   @Path("/nonRemis/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
