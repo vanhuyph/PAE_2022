@@ -275,15 +275,15 @@ public class OffreUCCTest {
   @Test
   @DisplayName("Test raté : méthode reoffrirObjet avec en paramètre un objet qui n'existe pas")
   public void testReoffrirObjetV2() {
-    Mockito.when(objetDAO.miseAJourObjet(objetDTO4)).thenReturn(null);
-    Mockito.when(objetDAO.rechercheParId(objetDTO4)).thenReturn(null);
+    Mockito.when(objetDAO.miseAJourObjet(objetDTO5)).thenReturn(null);
+    Mockito.when(objetDAO.rechercheParId(objetDTO5)).thenReturn(null);
     assertThrows(PasTrouveException.class, () -> offreUCC.reoffrirObjet(offreDTO4));
   }
 
   @Test
   @DisplayName("Test raté : méthode reoffrirObjet avec créer une offre qui échoue")
   public void testReoffrirObjetV3() {
-    Mockito.when(objetDAO.miseAJourObjet(objetDTO4)).thenReturn(objetDTO5);
+    Mockito.when(objetDAO.miseAJourObjet(objetDTO5)).thenReturn(objetDTO5);
     Mockito.when(offreDAO.creerOffre(offreDTO5)).thenReturn(null);
     assertThrows(BusinessException.class, () -> offreUCC.reoffrirObjet(offreDTO4));
   }
@@ -291,7 +291,7 @@ public class OffreUCCTest {
   @Test
   @DisplayName("Test réussi : méthode reoffrirObjet renvoit bien une nouvelle offre sans créer de nouvel objet")
   public void testReoffrirObjetV4() {
-    Mockito.when(objetDAO.miseAJourObjet(objetDTO4)).thenReturn(objetDTO5);
+    Mockito.when(objetDAO.miseAJourObjet(objetDTO5)).thenReturn(objetDTO5);
     Mockito.when(offreDAO.creerOffre(offreDTO5)).thenReturn(offreDTO5);
     assertEquals(offreDTO5, offreUCC.reoffrirObjet(offreDTO4));
   }
