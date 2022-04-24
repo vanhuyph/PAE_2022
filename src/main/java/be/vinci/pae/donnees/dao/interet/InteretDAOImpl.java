@@ -187,7 +187,7 @@ public class InteretDAOImpl implements InteretDAO {
         + "WHERE version = ? AND utilisateur = ? AND objet = ? "
         + "RETURNING utilisateur, objet, version;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      ps.setDate(1, new java.sql.Date(interetDTO.getDateRdv().getTime()));
+      ps.setDate(1, new Date(interetDTO.getDateRdv().getTime()));
       ps.setBoolean(2, interetDTO.isVue());
       ps.setInt(3, interetDTO.getVersion() + 1);
       ps.setBoolean(4, interetDTO.isReceveurChoisi());
