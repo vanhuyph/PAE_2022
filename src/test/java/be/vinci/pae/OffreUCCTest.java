@@ -270,7 +270,7 @@ public class OffreUCCTest {
   @Test
   @DisplayName("Test raté : méthode reoffrirObjet avec en paramètre objet sans l'état annulé")
   public void testReoffrirObjetV1() {
-    assertThrows(BusinessException.class, () -> offreUCC.reoffrirObjet(offreDTO3));
+    assertThrows(PasTrouveException.class, () -> offreUCC.reoffrirObjet(offreDTO3));
   }
 
   @Test
@@ -288,7 +288,6 @@ public class OffreUCCTest {
     Mockito.when(offreDAO.creerOffre(offreDTO5)).thenReturn(null);
     assertThrows(BusinessException.class, () -> offreUCC.reoffrirObjet(offreDTO4));
   }
-
 
   // TO DO , problème de jenkins qui accepte pas le test
 
