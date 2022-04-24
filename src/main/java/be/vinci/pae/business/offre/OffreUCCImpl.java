@@ -232,8 +232,8 @@ public class OffreUCCImpl implements OffreUCC {
    * Recupere tous les objets que l'utilisateur doit évaluer.
    *
    * @param idReceveur : l'id de l'utilisateur concerné
-   * @return objetsAEvalue : la liste des objets que l'utilisateur doit évaluer ou null si il n'y
-   * pas d'objet a évaluer
+   * @return objetsAEvalue : la liste des objets que l'utilisateur doit évaluer
+   * @return null si il n'y a pas d'objet a évaluer
    * @throws PasTrouveException si un des objets n'existe pas.
    * @throws BusinessException  si les données sont périmées.
    */

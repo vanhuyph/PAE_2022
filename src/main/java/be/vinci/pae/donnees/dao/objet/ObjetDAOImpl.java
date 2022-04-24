@@ -78,10 +78,10 @@ public class ObjetDAOImpl implements ObjetDAO {
   }
 
   /**
-   * Recherche un objet que
+   * Recherche un objet que.
    *
-   * @param idReceveur
-   * @return
+   * @param idReceveur : l'id de l'utilisateur connecté
+   * @return liste la liste des objets reçus par l'utilisateur
    */
   @Override
   public List<ObjetDTO> rechercheObjetParReceveur(int idReceveur) {
