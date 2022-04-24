@@ -84,6 +84,9 @@ public class OffreImpl implements Offre {
   }
 
   @Override
+  public void reoffriObjet() { this.getObjetDTO().setEtatObjet("Intéressé");}
+
+  @Override
   public void annulerOffre() {
     this.getObjetDTO().setEtatObjet("Annulé");
   }

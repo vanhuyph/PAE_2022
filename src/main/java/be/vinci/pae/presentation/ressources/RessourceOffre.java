@@ -60,6 +60,28 @@ public class RessourceOffre {
   }
 
   /**
+   * Réoffrir l'objet.
+   *
+   * @param offreDTO : l'offre précédente avec l'état annulé.
+   * @return offreDTO : l'offre recréée.
+   * @throws PresentationException : est lancée s'il y a eu un problème lors de la création d'une
+   *                               offre
+   */
+  @POST
+  @Path("reoffrirObjet")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public OffreDTO reoffrirObjet(OffreDTO offreDTO) {
+    if (offreDTO.getObjetDTO().getDescription().isBlank()
+        || offreDTO.getObjetDTO().getTypeObjet() == null || offreDTO.getPlageHoraire().isBlank()) {
+      throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
+    }
+    offreDTO = offreUCC.reoffrirObjet(offreDTO);
+    return offreDTO;
+  }
+
+  /**
    * Liste les offres.
    *
    * @return liste : la liste des offres

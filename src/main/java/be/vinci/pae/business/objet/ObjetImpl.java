@@ -130,6 +130,17 @@ public class ObjetImpl implements Objet {
   }
 
   /**
+   * Verifie si l'état de l'objet permet de le réoffrir.
+   *
+   * @return true : si l'objet peut être réoffert, false sinon.
+   */
+  @Override
+  public boolean verifierEtatPourReoffrirObjet() {
+    return this.etatObjet.equals("Annulé");
+  }
+
+
+  /**
    * Change l'état de l'objet en Confirmé.
    */
   @Override

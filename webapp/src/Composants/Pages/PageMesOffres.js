@@ -1,8 +1,6 @@
 import {
-    enleverDonneeSession,
     recupUtilisateurDonneesSession
   } from "../../utilitaires/session";
-  import Navbar from "../Navbar/Navbar";
   import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
 import Swal from "sweetalert2";
@@ -11,7 +9,7 @@ import Swal from "sweetalert2";
   const PageMesOffres = () =>{
     const pageDiv = document.querySelector("#page");
     const session = recupUtilisateurDonneesSession();
-    let pageMesOffres = `<div class="offres">
+  pageDiv.innerHTML = `<div class="offres">
     <h2>Mes offres</h2>
     <div id="mesOffres"></div>
     <h2>Mes offres avec receveur</h2>
@@ -19,7 +17,6 @@ import Swal from "sweetalert2";
     <h2>Mes offres annulées</h2>
     <div id="mesOffresAnnulees"></div>
   </div>`;
-  pageDiv.innerHTML = pageMesOffres;
   const id = session.utilisateur.idUtilisateur;
   fetch("/api/offres/mesOffres/" + id, {
     method: "GET",
@@ -118,6 +115,8 @@ import Swal from "sweetalert2";
               <input id="photo-objet" type="hidden" value="${offre.objetDTO.photo}">
               <input id="version-objet" type="hidden" value="${offre.objetDTO.version}">
               <input id="vue-objet" type="hidden" value="${offre.objetDTO.vue}">
+              <input id="plage-horaire-offre" type="hidden" value="${offre.plageHoraire}">
+              <input id="version-offreur" type="hidden" value="${offre.objetDTO.offreur.version}">
             </div>
                 <div class="ui three column grid">
                   <div class="row">
@@ -151,12 +150,25 @@ import Swal from "sweetalert2";
         let photo = document.getElementById("photo-objet").value
         let version = document.getElementById("version-objet").value
         let vue = document.getElementById("vue-objet").value
+        let plageHoraire;
+        if(document.getElementById("plage-horaire-offre")){
+          plageHoraire = document.getElementById("plage-horaire-offre").value;
+        }
+        let versionOffreur ;
+        if(document.getElementById("version-offreur")) {
+          versionOffreur = document.getElementById("version-offreur").value
+        }
+
+        let offreurObjet = {
+          idUtilisateur: offreur,
+          version: versionOffreur
+        }
         let objet = {
           idObjet: idObj,
           etatObjet : etatObjet,
           typeObjet : {idType: type},
           description : desc,
-          offreur: {idUtilisateur: offreur},
+          offreur: offreurObjet,
           photo : photo,
           version:version,
           vue:vue
@@ -167,27 +179,28 @@ import Swal from "sweetalert2";
         }
 
 
-
-        offre.querySelector("#liste-interessees").addEventListener("click", () => {
-          fetch(API_URL+"interets/listeDesPersonnesInteressees/"+idObj, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: session.token,
-            },
-          })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(
-                  "Code d'erreur : " + response.status + " : " + response.statusText
-              );
-            }
-            return response.json();
-          })
-          .then((donnees) => {
-            let listeInteret = `<div class="interets">`;
-            donnees.forEach((interet) => {
-              listeInteret += `
+        if(offre.querySelector("#liste-interessees")) {
+          offre.querySelector("#liste-interessees").addEventListener("click", () => {
+            console.log("liste interessee cliquée")
+            fetch(API_URL+"interets/listeDesPersonnesInteressees/"+idObj, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: session.token,
+              },
+            })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(
+                    "Code d'erreur : " + response.status + " : " + response.statusText
+                );
+              }
+              return response.json();
+            })
+            .then((donnees) => {
+              let listeInteret = `<div class="interets">`;
+              donnees.forEach((interet) => {
+                listeInteret += `
                 <div class="interet">
                   <input type="hidden" id="ut" value="${interet.utilisateur.idUtilisateur}">
                   <input type="hidden" id="version" value="${interet.version}">
@@ -196,83 +209,120 @@ import Swal from "sweetalert2";
                   <p>${interet.utilisateur.pseudo}</p>
                   <p>Horaire: ${interet.dateRdv}</p>
                 </div>`
-            })
-            listeInteret += `</div>`
+              })
+              listeInteret += `</div>`
 
-            let intReceveur = {
-              objet: objet
-            }
-            Swal.fire({
-              title: `<strong>Liste d'intérêts</strong>`,
-              html:`${listeInteret}`,
-              showCloseButton: true,
-              showCancelButton: true,
-              focusConfirm: false,
-              confirmButtonText:
-                  'Soumettre',
-              confirmButtonAriaLabel: 'Thumbs up, great!',
-              cancelButtonText:
-                  'Retour',
-              cancelButtonAriaLabel: 'Thumbs down'
-            }).then((r) => {
-              console.log(intReceveur)
-              fetch(API_URL+"interets/indiquerReceveur", {
-                method: "PUT",
-                body: JSON.stringify(intReceveur),
-                headers: {
-                  "Content-Type": "application/json",
-                  "Authorization": session.token,
-                },
-              }).then((reponse) => {
-                if (!reponse.ok) {
-                  throw new Error(
-                      "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
-                }
-                return reponse.json();
-              }).then((donnee) => {
+              let intReceveur = {
+                objet: objet
+              }
+              Swal.fire({
+                title: `<strong>Liste d'intérêts</strong>`,
+                html:`${listeInteret}`,
+                showCloseButton: true,
+                showCancelButton: true,
+                focusConfirm: false,
+                confirmButtonText:
+                    'Soumettre',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+                cancelButtonText:
+                    'Retour',
+                cancelButtonAriaLabel: 'Thumbs down'
+              }).then((r) => {
+                console.log(intReceveur)
+                fetch(API_URL+"interets/indiquerReceveur", {
+                  method: "PUT",
+                  body: JSON.stringify(intReceveur),
+                  headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": session.token,
+                  },
+                }).then((reponse) => {
+                  if (!reponse.ok) {
+                    throw new Error(
+                        "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+                  }
+                  return reponse.json();
+                }).then(() => {
 
-                Redirect("/mesOffres")
+                  Redirect("/mesOffres")
+                })
+              })
+              document.querySelectorAll(".interet").forEach((inte) => {
+                inte.addEventListener("click", () => {
+                  let retirer = document.querySelector(".choisi")
+                  if(retirer) {
+                    retirer.classList.remove("choisi")
+                  }
+                  inte.classList.add("choisi")
+                  intReceveur = {
+                    ...intReceveur,
+                    utilisateur: {idUtilisateur: inte.querySelector("#ut").value},
+                    version: inte.querySelector("#version").value,
+                  }
+                })
               })
             })
-            document.querySelectorAll(".interet").forEach((inte) => {
-              inte.addEventListener("click", () => {
-                let retirer = document.querySelector(".choisi")
-                if(retirer) {
-                  retirer.classList.remove("choisi")
-                }
-                inte.classList.add("choisi")
-                intReceveur = {
-                  ...intReceveur,
-                  utilisateur: {idUtilisateur: inte.querySelector("#ut").value},
-                  version: inte.querySelector("#version").value,
-                }
-              })
+          })
+        }
+
+        if(offre.querySelector("#annuler-offre")) {
+          offre.querySelector("#annuler-offre").addEventListener("click", () =>{
+            console.log("annuler offre cliquée")
+            fetch(API_URL+"offres/annulerOffre", {
+              method: "PUT",
+              body:JSON.stringify(of),
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: session.token,
+              },
+            })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(
+                    "Code d'erreur : " + response.status + " : " + response.statusText
+                );
+              }
+              return response.json();
+            })
+            .then(() => {
+
+              Redirect("/mesOffres")
             })
           })
-        })
+        }
+        if(offre.querySelector("#offrir")) {
 
-        offre.querySelector("#annuler-offre").addEventListener("click", () =>{
-          fetch(API_URL+"offres/annulerOffre", {
-            method: "PUT",
-            body:JSON.stringify(of),
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: session.token,
-            },
-          })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(
-                  "Code d'erreur : " + response.status + " : " + response.statusText
-              );
+          offre.querySelector("#offrir").addEventListener("click", () =>{
+            console.log("offrir offre cliquée")
+
+            let ofNouveau = {
+              plageHoraire: plageHoraire,
+              objetDTO: objet
             }
-            return response.json();
-          })
-          .then(() => {
+            fetch(API_URL+"offres/reoffrirObjet", {
+              method: "POST",
+              body: JSON.stringify(ofNouveau),
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: session.token,
+              },
+            })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(
+                    "Code d'erreur : " + response.status + " : " + response.statusText
+                );
+              }
+              return response.json();
+            })
+            .then(() => {
 
-            Redirect("/mesOffres")
+              Redirect("/mesOffres")
+            })
           })
-        })
+
+        }
+
       })
   };
   export default PageMesOffres;

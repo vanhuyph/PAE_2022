@@ -42,16 +42,20 @@ public class OffreUCCImpl implements OffreUCC {
     serviceDAL.commencerTransaction();
     OffreDTO offre;
     UtilisateurDTO utilisateur;
+
     try {
+
       ObjetDTO objet = objetDAO.creerObjet(offreDTO.getObjetDTO());
       if (objet == null) {
         throw new BusinessException("L'objet n'a pas pu être crée");
       }
       ((Offre) offreDTO).offrirObjet();
+
       offre = offreDAO.creerOffre(offreDTO);
       if (offre == null) {
         throw new BusinessException("L'offre n'a pas pu être créée");
       }
+
       utilisateur = utilisateurDAO.incrementerObjetOffert(objet.getOffreur());
       if (utilisateur == null) {
         if (utilisateurDAO.rechercheParId(objet.getOffreur().getIdUtilisateur()) == null) {
@@ -59,6 +63,53 @@ public class OffreUCCImpl implements OffreUCC {
         }
         throw new BusinessException("Données sont périmées");
       }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return offre;
+  }
+
+  /**
+   * Réoffrir une offre.
+   *
+   * @param offreDTO : l'offre à réoffrir
+   * @return offre : l'offre créée
+   * @throws BusinessException  : est lancée si l'objet ou l'offre n'a pas pu être créée
+   *
+   */
+  @Override
+  public OffreDTO reoffrirObjet(OffreDTO offreDTO) {
+    serviceDAL.commencerTransaction();
+    OffreDTO offre;
+    ObjetDTO objet;
+    try {
+
+      if(!((Objet) offreDTO.getObjetDTO()).verifierEtatPourReoffrirObjet()){
+        throw new BusinessException("L'objet n'est pas à l'état annulé");
+      }
+
+
+      ((Offre) offreDTO).reoffriObjet();
+
+      objet = objetDAO.miseAJourObjet(offreDTO.getObjetDTO());
+
+      if (objet == null) {
+        if (objetDAO.rechercheParId(objet) == null) {
+          throw new PasTrouveException("L'objet n'existe pas");
+        }
+        throw new BusinessException("Données sont périmées");
+
+      }
+
+      offre = offreDAO.creerOffre(offreDTO);
+      if (offre == null) {
+        throw new BusinessException("L'offre n'a pas pu être créée");
+      }
+
+
+
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
@@ -315,7 +366,7 @@ public class OffreUCCImpl implements OffreUCC {
    */
   public List<OffreDTO> mesOffres(int idUtilisateur) {
     serviceDAL.commencerTransaction();
-    List<OffreDTO> liste = null;
+    List<OffreDTO> liste ;
     try {
       liste = offreDAO.mesOffres(idUtilisateur);
     } catch (Exception e) {
@@ -334,7 +385,7 @@ public class OffreUCCImpl implements OffreUCC {
    */
   public List<OffreDTO> voirOffreAttribuer(int idUtilisateur) {
     serviceDAL.commencerTransaction();
-    List<OffreDTO> listTemp = null;
+    List<OffreDTO> listTemp;
     List<OffreDTO> liste = new ArrayList<>();
     try {
       listTemp = offreDAO.voirOffreAttribuer(idUtilisateur);

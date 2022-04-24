@@ -321,9 +321,9 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
     String requete = "UPDATE projet.utilisateurs SET nb_objet_offert = nb_objet_offert + 1, "
         + "version = ? WHERE id_utilisateur = ? AND version = ? RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requete)) {
-      ps.setInt(1, utilisateurDTO.getIdUtilisateur());
-      ps.setInt(2, utilisateurDTO.getVersion() + 1);
-      ps.setInt(2, utilisateurDTO.getVersion());
+      ps.setInt(1, utilisateurDTO.getVersion() + 1);
+      ps.setInt(2, utilisateurDTO.getIdUtilisateur());
+      ps.setInt(3, utilisateurDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           return remplirUtilisateursDepuisRSSansAdresse(rs, utilisateurDTO);
@@ -439,7 +439,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
    * @param estAdmin        : si l'utilisateur est admin ou non
    * @param etatInscription : l'etat d'inscription de l'utilisateur
    * @param commentaire     : le commentaire de refus concernant l'inscription de l'utilisateur
-   * @return utilisateurDTO  : l'utilisateur rempli
+   *
    */
   private void remplirUtilisateurSansAdresse(UtilisateurDTO utilisateurDTO, int id,
       String pseudo, String nom, String prenom, String mdp, String gsm, boolean estAdmin,

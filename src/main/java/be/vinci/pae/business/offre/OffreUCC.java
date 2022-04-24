@@ -7,6 +7,8 @@ public interface OffreUCC {
 
   OffreDTO creerOffre(OffreDTO offreDTO);
 
+  OffreDTO reoffrirObjet(OffreDTO offreDTO);
+
   List<OffreDTO> listerOffres();
 
   List<OffreDTO> listerOffresRecentes();
@@ -28,5 +30,7 @@ public interface OffreUCC {
   List<OffreDTO> mesOffres(int idUtilisateur);
 
   List<OffreDTO> voirOffreAttribuer(int idUtilisateur);
+
+
 
 }
