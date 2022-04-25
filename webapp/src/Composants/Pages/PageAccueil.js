@@ -79,7 +79,7 @@ const PageAccueil = () => {
               <input id="date-debut" type="date" min="1900-01-01" max="2300-12-12">
             </div>
             <div class="field">
-              <input id="date-fin" type="date" min="1900-01-01" max="2300-12-12">
+              <input id="date-fin" type="date"  max="2300-12-12">
             </div>
           </div>
           <div id="reinitialiser-filtre" class="field">
@@ -111,6 +111,11 @@ const PageAccueil = () => {
           document.querySelector("#date-fin").value = ""
           rechercheObjet()
         })
+        document.querySelector("#date-debut").onchange = function () {
+          let input = document.querySelector("#date-fin");
+          input.setAttribute("min", this.value);
+          input.setAttribute("value", this.value);
+        }
         document.querySelector("#rechercherObjet").addEventListener("submit",
             (e) => {
               e.preventDefault()
@@ -134,11 +139,11 @@ const rechercheObjet = () => {
   const recherche = document.querySelector("#recherche-objet").value
   let dateDebut = document.querySelector("#date-debut").value
   let dateFin = document.querySelector("#date-fin").value
-  if(dateDebut === ""){
+  if (dateDebut === "") {
     dateDebut = "1900-01-01"
   }
-  if (dateFin === ""){
-    dateFin ="2300-12-12"
+  if (dateFin === "") {
+    dateFin = "2300-12-12"
   }
   const listeOffres = document.getElementById("liste-offres");
   listeOffres.innerHTML = `<div class="chargement-offres">
@@ -151,7 +156,8 @@ const rechercheObjet = () => {
     dateFin: dateFin
   }
 
-  if (recherche !== "" || dateDebut !== "1900-01-01" || dateFin !== "2300-12-12") {
+  if (recherche !== "" || dateDebut !== "1900-01-01" || dateFin
+      !== "2300-12-12") {
     fetch(API_URL + "offres/recherche", {
       method: "POST",
       body: JSON.stringify(critereRecehrche),

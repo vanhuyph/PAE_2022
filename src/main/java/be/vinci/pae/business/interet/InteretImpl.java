@@ -21,10 +21,8 @@ public class InteretImpl implements Interet {
   private boolean vue;
   @JsonView(Vues.Public.class)
   private int version;
-
   @JsonView(Vues.Internal.class)
   private boolean receveurChoisi;
-
   @JsonView(Vues.Internal.class)
   private Boolean venuChercher;
 
