@@ -63,7 +63,8 @@ public class InteretDAOImpl implements InteretDAO {
    */
   @Override
   public int nbPersonnesInteressees(int idObjet) {
-    String requetePS = "SELECT COUNT(i.utilisateur) FROM projet.interets i WHERE i.objet = ?;";
+    String requetePS = "SELECT COUNT(i.utilisateur) FROM projet.interets i WHERE i.objet = ? "
+        + "AND i.receveur_choisi = false AND i.venu_chercher IS NULL;";
     int nbPers = 0;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
       ps.setInt(1, idObjet);
@@ -100,7 +101,8 @@ public class InteretDAOImpl implements InteretDAO {
         + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
         + "WHERE o.id_objet = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
         + "a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur AND t.id_type = o.type_objet "
-        + "AND a2.id_adresse = u2.adresse;";
+        + "AND a2.id_adresse = u2.adresse AND i.receveur_choisi = false AND i.venu_chercher "
+        + "IS NULL;";
     InteretDTO interetDTO = factory.getInteret();
     List<InteretDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
@@ -135,7 +137,8 @@ public class InteretDAOImpl implements InteretDAO {
         + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
         + "WHERE o.id_objet = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
         + "a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur AND t.id_type = o.type_objet "
-        + "AND a2.id_adresse = u2.adresse AND i.vue = 'false';";
+        + "AND a2.id_adresse = u2.adresse AND i.vue = false AND i.receveur_choisi = false "
+        + "AND i.venu_chercher IS NULL;";
     InteretDTO interetDTO = factory.getInteret();
     List<InteretDTO> listeDesPersonnesInteressees;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {

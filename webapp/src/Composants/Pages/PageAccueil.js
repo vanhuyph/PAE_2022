@@ -114,7 +114,6 @@ const PageAccueil = () => {
         document.querySelector("#date-debut").onchange = function () {
           let input = document.querySelector("#date-fin");
           input.setAttribute("min", this.value);
-          input.setAttribute("value", this.value);
         }
         document.querySelector("#rechercherObjet").addEventListener("submit",
             (e) => {

@@ -3,10 +3,9 @@ import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
 import Swal from "sweetalert2";
 
-
-  const PageMesOffres = () =>{
-    const pageDiv = document.querySelector("#page");
-    const session = recupUtilisateurDonneesSession();
+const PageMesOffres = () => {
+  const pageDiv = document.querySelector("#page");
+  const session = recupUtilisateurDonneesSession();
   pageDiv.innerHTML = `<div class="offres">
     <h2>Mes offres</h2>
     <div id="mesOffres"></div>
@@ -151,7 +150,7 @@ const surListeMesOffres = (data) => {
     let version = offre.querySelector("#version-objet").value
     let vue = offre.querySelector("#vue-objet").value
     let plageHoraire;
-    if(offre.querySelector("#plage-horaire-offre")){
+    if (offre.querySelector("#plage-horaire-offre")) {
       plageHoraire = offre.querySelector("#plage-horaire-offre").value;
     }
 
@@ -161,13 +160,13 @@ const surListeMesOffres = (data) => {
 
     let objet = {
       idObjet: idObj,
-      etatObjet : etatObjet,
-      typeObjet : {idType: type},
-      description : desc,
+      etatObjet: etatObjet,
+      typeObjet: {idType: type},
+      description: desc,
       offreur: offreurObjet,
-      photo : photo,
-      version:version,
-      vue:vue
+      photo: photo,
+      version: version,
+      vue: vue
     }
 
     let of = {
@@ -175,7 +174,7 @@ const surListeMesOffres = (data) => {
       objetDTO: objet,
     }
 
-    if(plageHoraire){
+    if (plageHoraire) {
       of = {
         ...of,
         plageHoraire: plageHoraire
@@ -183,7 +182,7 @@ const surListeMesOffres = (data) => {
     }
 
     let reoffrir = offre.querySelector("#offrir");
-    if(reoffrir){
+    if (reoffrir) {
       reoffrir.addEventListener("click", () => {
         reoffrirObjet(of)
       })
@@ -198,13 +197,14 @@ const surListeMesOffres = (data) => {
 
     let offreAnnulee = offre.querySelector("#annuler-offre");
     if (offreAnnulee) {
-        offreAnnulee.addEventListener("click", () => {
-          annulerOffre(of)
-        })
+      offreAnnulee.addEventListener("click", () => {
+        nonRemis(objet)
+        annulerOffre(of)
+      })
     }
 
     let offreRemis = offre.querySelector("#objetRemis")
-    if (offreRemis){
+    if (offreRemis) {
       offreRemis.addEventListener("click", () => {
         donnerObjet(of)
       })
@@ -241,7 +241,7 @@ const surListeMesOffres = (data) => {
           })
         }
         let reoffrirNonRemis = document.querySelector("#offrir-non-remis");
-        if(reoffrirNonRemis){
+        if (reoffrirNonRemis) {
           reoffrirNonRemis.addEventListener("click", () => {
             nonRemis(objet)
             reoffrirObjet(of)
@@ -256,7 +256,7 @@ const surListeMesOffres = (data) => {
 const reoffrirObjet = (offre) => {
   console.log(offre)
   let session = recupUtilisateurDonneesSession()
-  fetch(API_URL+ "offres/reoffrirObjet", {
+  fetch(API_URL + "offres/reoffrirObjet", {
     method: "POST",
     body: JSON.stringify(offre),
     headers: {
