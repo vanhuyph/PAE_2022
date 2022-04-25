@@ -296,7 +296,7 @@ const surDetailObjetProprio = async (offre) => {
     return reponse.json();
   })
   .then((offres) => {
-    if (offres.length > 1) {
+    if (offres.length > 0) {
       offresPrecedentes = ""
       offres.forEach((off) => {
         let daOf = new Date(off.dateOffre[0], off.dateOffre[1] - 1,
