@@ -7,6 +7,7 @@ import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.ConflitException;
 import be.vinci.pae.utilitaires.exceptions.NonAutoriseException;
+import be.vinci.pae.utilitaires.exceptions.OptimisticLockException;
 import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import jakarta.inject.Inject;
 import java.util.List;
@@ -228,9 +229,11 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    *
    * @param utilisateurDTO : l'utilisateur à mettre à jour
    * @return utilisateur : l'utilisateur avec ses informations mises à jour
-   * @throws PasTrouveException : est lancée si l'utilisateur ou l'adresse n'existe pas
-   * @throws BusinessException  : est lancée si les données de l'utilisateur ou de l'adresse sont
-   *                            périmées
+   * @throws ConflitException        : est lancée si le pseudo existe déjà
+   * @throws PasTrouveException      : est lancée si l'utilisateur ou l'adresse n'existe pas
+   * @throws BusinessException       : est lancée si les données de l'utilisateur ou de l'adresse
+   *                                 sont périmées
+   * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
   public UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateurDTO) {
@@ -248,14 +251,14 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
         if (adresseDAO.rechercheParId(utilisateurDTO.getAdresse().getIdAdresse()) == null) {
           throw new PasTrouveException("L'adresse n'existe pas");
         }
-        throw new BusinessException("Données de l'adresse sont périmées");
+        throw new OptimisticLockException("Données de l'adresse sont périmées");
       }
       utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
       if (utilisateur == null) {
         if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {
           throw new PasTrouveException("L'utilisateur n'existe pas");
         }
-        throw new BusinessException("Données de l'utilisateur sont périmées");
+        throw new OptimisticLockException("Données de l'utilisateur sont périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
@@ -272,8 +275,9 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    * @param mdpActuel : le mot de passe actuel de l'utilisateur
    * @param nouvMdp   : le nouveau mot de passe de l'utilisateur
    * @return utilisateur : l'utilisateur avec le mot de passe modifié
-   * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas
-   * @throws BusinessException  : est lancée si les données de l'utilisateur sont périmées
+   * @throws PasTrouveException      : est lancée si l'utilisateur n'existe pas
+   * @throws BusinessException       : est lancée si le mot de passe est incorrect
+   * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
   public UtilisateurDTO modifierMdp(int id, String mdpActuel, String nouvMdp) {
@@ -290,7 +294,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
       utilisateurActuel.setMdp(utilisateurActuel.hashMdp(nouvMdp));
       utilisateur = utilisateurDAO.modifierMdp(utilisateurActuel);
       if (utilisateur == null) {
-        throw new BusinessException("Données périmées");
+        throw new OptimisticLockException("Données périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
