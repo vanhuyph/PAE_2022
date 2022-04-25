@@ -84,6 +84,7 @@ const surListeMesOffres = (data) => {
               <input id="photo-objet" type="hidden" value="${offre.objetDTO.photo}">
               <input id="version-objet" type="hidden" value="${offre.objetDTO.version}">
               <input id="vue-objet" type="hidden" value="${offre.objetDTO.vue}">
+              <input id="plage-horaire-offre" type="hidden" value="${offre.plageHoraire}">
             </div>
               <div class="ui three column grid">
                 <div class="row">
@@ -229,6 +230,7 @@ const surListeMesOffres = (data) => {
           annulerOffreNonRemis.addEventListener("click", () => {
             nonRemis(objet)
             annulerOffre(of)
+            Swal.close()
           })
         }
         let reoffrirNonRemis = document.querySelector("#offrir-non-remis");
@@ -236,6 +238,7 @@ const surListeMesOffres = (data) => {
           reoffrirNonRemis.addEventListener("click", () => {
             nonRemis(objet)
             reoffrirObjet(of)
+            Swal.close()
           })
         }
       })
