@@ -416,12 +416,6 @@ public class OffreUCCImpl implements OffreUCC {
       objetsAEvaluerTemp = objetDAO.rechercheObjetParReceveur(idReceveur);
       if (!objetsAEvaluerTemp.isEmpty()) {
         for (ObjetDTO objet : objetsAEvaluerTemp) {
-          if (objet == null) {
-            if (objetDAO.rechercheParId(objet) == null) {
-              throw new PasTrouveException("L'objet n'existe pas");
-            }
-            throw new BusinessException("Données de l'objet sont périmées");
-          }
           if (((Objet) objet).peutEtreEvalue()) {
             objetsAEvaluer.add(objet);
           }
