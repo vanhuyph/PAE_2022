@@ -13,6 +13,7 @@ import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.OptimisticLockException;
 import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import java.util.ArrayList;
 import java.util.List;
@@ -176,7 +177,7 @@ public class OffreUCCTest {
   public void annulerOffreV2() {
     Mockito.when(objetDAO.miseAJourObjet(objetDTO1)).thenReturn(null);
     Mockito.when(objetDAO.rechercheParId(objetDTO1)).thenReturn(objetDTO1);
-    assertThrows(BusinessException.class, () -> offreUCC.annulerOffre(offreDTO1));
+    assertThrows(OptimisticLockException.class, () -> offreUCC.annulerOffre(offreDTO1));
   }
 
   @Test
