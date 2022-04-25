@@ -3,10 +3,11 @@ import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
 import Swal from "sweetalert2";
 
-const PageMesOffres = () => {
-  const pageDiv = document.querySelector("#page");
-  const session = recupUtilisateurDonneesSession();
-  let pageMesOffres = `<div class="offres">
+
+  const PageMesOffres = () =>{
+    const pageDiv = document.querySelector("#page");
+    const session = recupUtilisateurDonneesSession();
+  pageDiv.innerHTML = `<div class="offres">
     <h2>Mes offres</h2>
     <div id="mesOffres"></div>
     <h2>Mes offres avec receveur</h2>
@@ -14,7 +15,6 @@ const PageMesOffres = () => {
     <h2>Mes offres annulées</h2>
     <div id="mesOffresAnnulees"></div>
   </div>`;
-  pageDiv.innerHTML = pageMesOffres;
   const id = session.utilisateur.idUtilisateur;
   fetch("/api/offres/mesOffres/" + id, {
     method: "GET",
@@ -84,6 +84,7 @@ const surListeMesOffres = (data) => {
               <input id="photo-objet" type="hidden" value="${offre.objetDTO.photo}">
               <input id="version-objet" type="hidden" value="${offre.objetDTO.version}">
               <input id="vue-objet" type="hidden" value="${offre.objetDTO.vue}">
+              <input id="plage-horaire-offre" type="hidden" value="${offre.plageHoraire}">
             </div>
               <div class="ui three column grid">
                 <div class="row">
@@ -115,6 +116,7 @@ const surListeMesOffres = (data) => {
               <input id="photo-objet" type="hidden" value="${offre.objetDTO.photo}">
               <input id="version-objet" type="hidden" value="${offre.objetDTO.version}">
               <input id="vue-objet" type="hidden" value="${offre.objetDTO.vue}">
+              <input id="plage-horaire-offre" type="hidden" value="${offre.plageHoraire}">
             </div>
                 <div class="ui three column grid">
                   <div class="row">
@@ -148,19 +150,43 @@ const surListeMesOffres = (data) => {
     let photo = offre.querySelector("#photo-objet").value
     let version = offre.querySelector("#version-objet").value
     let vue = offre.querySelector("#vue-objet").value
+    let plageHoraire;
+    if(offre.querySelector("#plage-horaire-offre")){
+      plageHoraire = offre.querySelector("#plage-horaire-offre").value;
+    }
+
+    let offreurObjet = {
+      idUtilisateur: offreur,
+    }
+
     let objet = {
       idObjet: idObj,
-      etatObjet: etatObjet,
-      typeObjet: {idType: type},
-      description: desc,
-      offreur: {idUtilisateur: offreur},
-      photo: photo,
-      version: version,
-      vue: vue
+      etatObjet : etatObjet,
+      typeObjet : {idType: type},
+      description : desc,
+      offreur: offreurObjet,
+      photo : photo,
+      version:version,
+      vue:vue
     }
+
     let of = {
-      idOffre: idObj,
-      objetDTO: objet
+      idOffre: offre.querySelector("#id-offre").value,
+      objetDTO: objet,
+    }
+
+    if(plageHoraire){
+      of = {
+        ...of,
+        plageHoraire: plageHoraire
+      }
+    }
+
+    let reoffrir = offre.querySelector("#offrir");
+    if(reoffrir){
+      reoffrir.addEventListener("click", () => {
+        reoffrirObjet(of)
+      })
     }
 
     let offreListeInteressees = offre.querySelector("#liste-interessees");
@@ -172,9 +198,9 @@ const surListeMesOffres = (data) => {
 
     let offreAnnulee = offre.querySelector("#annuler-offre");
     if (offreAnnulee) {
-      offreAnnulee.addEventListener("click", () => {
-        annulerOffre(of)
-      })
+        offreAnnulee.addEventListener("click", () => {
+          annulerOffre(of)
+        })
     }
 
     let offreNonRemis = offre.querySelector("#nonRemis")
@@ -204,13 +230,46 @@ const surListeMesOffres = (data) => {
           annulerOffreNonRemis.addEventListener("click", () => {
             nonRemis(objet)
             annulerOffre(of)
+            Swal.close()
+          })
+        }
+        let reoffrirNonRemis = document.querySelector("#offrir-non-remis");
+        if(reoffrirNonRemis){
+          reoffrirNonRemis.addEventListener("click", () => {
+            nonRemis(objet)
+            reoffrirObjet(of)
+            Swal.close()
           })
         }
       })
     }
-
   })
 };
+
+const reoffrirObjet = (offre) => {
+  console.log(offre)
+  let session = recupUtilisateurDonneesSession()
+  fetch(API_URL+ "offres/reoffrirObjet", {
+    method: "POST",
+    body: JSON.stringify(offre),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token,
+    },
+  })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : "
+          + reponse.statusText
+      );
+    }
+    return reponse.json();
+  })
+  .then((donnee) => {
+    Redirect("/mesOffres")
+  })
+}
 
 const nonRemis = (objet) => {
   let session = recupUtilisateurDonneesSession()
@@ -325,7 +384,7 @@ const listeInteresse = (objet) => {
                 + reponse.statusText);
           }
           return reponse.json();
-        }).then((donnee) => {
+        }).then(() => {
 
           Redirect("/mesOffres")
         })

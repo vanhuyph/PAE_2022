@@ -70,7 +70,10 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-        + "WHERE o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' OR o.etat_objet = 'Annulé' "
+        + "WHERE (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' OR o.etat_objet = 'Annulé')"
+        + " AND of.date_offre = (SELECT max(of2.date_offre) "
+        + "FROM projet.offres of2, projet.objets o2 "
+        + "WHERE of2.id_objet = o.id_objet)"
         + "ORDER BY of.date_offre DESC";
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
@@ -101,7 +104,11 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-        + "WHERE of.id_offre = ?;";
+        + "WHERE of.id_offre = ?"
+        + "AND of.date_offre = (SELECT max(of2.date_offre) "
+        + "FROM projet.offres of2, projet.objets o2 "
+        + "WHERE of2.id_objet = o.id_objet)"
+        + ";";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, idOffre);
       try (ResultSet rs = ps.executeQuery()) {
@@ -133,6 +140,9 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
         + "WHERE (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé') "
+        + "AND of.date_offre = (SELECT max(of2.date_offre) "
+        + "FROM projet.offres of2, projet.objets o2 "
+        + "WHERE of2.id_objet = o.id_objet)"
         + "ORDER BY of.date_offre DESC LIMIT 3;";
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
@@ -163,6 +173,9 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
         + "WHERE of.id_objet = ? "
+        + "AND of.date_offre <> (SELECT max(of2.date_offre) "
+        + "FROM projet.offres of2, projet.objets o2 "
+        + "WHERE of2.id_objet = of.id_objet)"
         + "ORDER BY of.date_offre DESC;";
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
@@ -235,6 +248,9 @@ public class OffreDAOImpl implements OffreDAO {
               + "OR lower(t.nom) LIKE lower(?) OR lower(o.etat_objet) "
               + "LIKE lower(?)) "
               + "AND (of.date_offre BETWEEN ? AND ?) "
+              + "AND of.date_offre = (SELECT max(of2.date_offre) "
+              + "FROM projet.offres of2, projet.objets o2 "
+              + "WHERE of2.id_objet = o.id_objet)"
               + "ORDER BY of.date_offre DESC";
     } else {
       requetePs =
@@ -248,6 +264,9 @@ public class OffreDAOImpl implements OffreDAO {
               + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
               + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
               + "WHERE (of.date_offre BETWEEN ? AND ?) "
+              + "AND of.date_offre = (SELECT max(of2.date_offre) "
+              + "FROM projet.offres of2, projet.objets o2 "
+              + "WHERE of2.id_objet = o.id_objet)"
               + "ORDER BY of.date_offre DESC";
     }
     OffreDTO offreDTO = factory.getOffre();
@@ -290,7 +309,11 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
         + "WHERE u.id_utilisateur = ? AND (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
-        + "OR o.etat_objet = 'Annulé' OR o.etat_objet = 'Confirmé' ) ORDER BY of.date_offre DESC";
+        + "OR o.etat_objet = 'Annulé' OR o.etat_objet = 'Confirmé' ) "
+        + "AND of.date_offre = (SELECT max(of2.date_offre) "
+        + "FROM projet.offres of2, projet.objets o2 "
+        + "WHERE of2.id_objet = o.id_objet)"
+        + "ORDER BY of.date_offre DESC";
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {

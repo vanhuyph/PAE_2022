@@ -65,6 +65,44 @@ public class OffreUCCImpl implements OffreUCC {
   }
 
   /**
+   * Permet de réoffrir une offre.
+   *
+   * @param offreDTO : l'offre à réoffrir
+   * @return offre : l'offre réoffert
+   * @throws BusinessException : est lancée si l'objet ou l'offre n'a pas pu être créée
+   */
+  @Override
+  public OffreDTO reoffrirObjet(OffreDTO offreDTO) {
+    serviceDAL.commencerTransaction();
+    OffreDTO offre;
+    ObjetDTO objet;
+    try {
+      if (interetDAO.listeDesPersonnesInteressees(offreDTO.getObjetDTO().getIdObjet()).isEmpty()) {
+        ((Offre) offreDTO).offrirObjet();
+      } else {
+        ((Offre) offreDTO).interesseObjet();
+      }
+      ((Offre) offreDTO).objetNonVu();
+      objet = objetDAO.miseAJourObjet(offreDTO.getObjetDTO());
+      if (objet == null) {
+        if (objetDAO.rechercheParId(objet) == null) {
+          throw new PasTrouveException("L'objet n'existe pas");
+        }
+        throw new BusinessException("Données périmées");
+      }
+      offre = offreDAO.creerOffre(offreDTO);
+      if (offre == null) {
+        throw new BusinessException("L'offre n'a pas pu être créée");
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return offre;
+  }
+
+  /**
    * Liste toutes les offres.
    *
    * @return liste : la liste de toutes les offres
@@ -169,9 +207,7 @@ public class OffreUCCImpl implements OffreUCC {
         throw new BusinessException("L'id de l'objet est incorrect");
       }
       liste = offreDAO.offresPrecedentes(idObjet);
-      if (liste.size() > 0) {
-        liste.remove(0);
-      }
+      System.out.println(liste);
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
