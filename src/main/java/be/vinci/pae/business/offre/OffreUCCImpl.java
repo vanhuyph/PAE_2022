@@ -12,6 +12,7 @@ import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.OptimisticLockException;
 import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
@@ -36,8 +37,8 @@ public class OffreUCCImpl implements OffreUCC {
    *
    * @param offreDTO : l'offre à créer
    * @return offre : l'offre créée
-   * @throws BusinessException : est lancée si l'objet ou l'offre n'a pas pu être créée / données
-   *                           périmées
+   * @throws BusinessException       : est lancée si l'objet ou l'offre n'a pas pu être créée
+   * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
   public OffreDTO creerOffre(OffreDTO offreDTO) {
@@ -56,7 +57,7 @@ public class OffreUCCImpl implements OffreUCC {
       ((Utilisateur) objet.getOffreur()).incrementerNbObjetsOfferts();
       UtilisateurDTO utilisateur = utilisateurDAO.miseAJourUtilisateur(objet.getOffreur());
       if (utilisateur == null) {
-        throw new BusinessException("Données périmées");
+        throw new OptimisticLockException("Données périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
@@ -71,7 +72,8 @@ public class OffreUCCImpl implements OffreUCC {
    *
    * @param offreDTO : l'offre à réoffrir
    * @return offre : l'offre réoffert
-   * @throws BusinessException : est lancée si l'objet ou l'offre n'a pas pu être créée
+   * @throws BusinessException       : est lancée si l'objet ou l'offre n'a pas pu être créée
+   * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
   public OffreDTO reoffrirObjet(OffreDTO offreDTO) {
@@ -90,7 +92,7 @@ public class OffreUCCImpl implements OffreUCC {
         if (objetDAO.rechercheParId(objet) == null) {
           throw new PasTrouveException("L'objet n'existe pas");
         }
-        throw new BusinessException("Données périmées");
+        throw new OptimisticLockException("Données périmées");
       }
       offre = offreDAO.creerOffre(offreDTO);
       if (offre == null) {
@@ -145,8 +147,8 @@ public class OffreUCCImpl implements OffreUCC {
    *
    * @param offreDTO : l'offre à annuler
    * @return offreDTO : l'offre annulée
-   * @throws BusinessException  : est lancée si les données sont périmées
-   * @throws PasTrouveException : est lancée si l'objet n'existe pas
+   * @throws OptimisticLockException : est lancée si les données sont périmées
+   * @throws PasTrouveException      : est lancée si l'objet n'existe pas
    */
   @Override
   public OffreDTO annulerOffre(OffreDTO offreDTO) {
@@ -159,7 +161,7 @@ public class OffreUCCImpl implements OffreUCC {
         if (objetVerif == null) {
           throw new PasTrouveException("L'objet n'existe pas");
         }
-        throw new BusinessException("Données périmées");
+        throw new OptimisticLockException("Données périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
@@ -223,8 +225,9 @@ public class OffreUCCImpl implements OffreUCC {
    *
    * @param offreAvecModification : l'offre contenant les modifications
    * @return offre : l'offre modifiée
-   * @throws BusinessException  : est lancée si l'offre n'a pas pu être annulée / données périmées
-   * @throws PasTrouveException : est lancée si l'objet/l'offre n'existe pas
+   * @throws BusinessException       : est lancée si l'offre n'a pas pu être annulée
+   * @throws PasTrouveException      : est lancée si l'objet/l'offre n'existe pas
+   * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
   public OffreDTO modifierOffre(OffreDTO offreAvecModification) {
@@ -240,14 +243,14 @@ public class OffreUCCImpl implements OffreUCC {
         if (objetDAO.rechercheParId(offreAvecModification.getObjetDTO()) == null) {
           throw new PasTrouveException("L'objet n'existe pas");
         }
-        throw new BusinessException("Données de l'objet sont périmées");
+        throw new OptimisticLockException("Données de l'objet sont périmées");
       }
       offre = offreDAO.modifierOffre(offreAvecModification);
       if (offre == null) {
         if (offreDAO.rechercheParId(offreAvecModification.getIdOffre()) == null) {
           throw new PasTrouveException("L'offre n'existe pas");
         }
-        throw new BusinessException("Données de l'offre sont périmées");
+        throw new OptimisticLockException("Données de l'offre sont périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
@@ -285,7 +288,8 @@ public class OffreUCCImpl implements OffreUCC {
    *
    * @param offreDTO : l'offre à confirmer
    * @return offre : l'offre confirmée
-   * @throws BusinessException : est lancée si l'offre n'a pas pu être confirmée
+   * @throws PasTrouveException      : est lancée si l'objet n'est pas trouvé
+   * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
   public OffreDTO indiquerMembreReceveur(OffreDTO offreDTO) {
@@ -300,7 +304,7 @@ public class OffreUCCImpl implements OffreUCC {
         if (objetVerif == null) {
           throw new PasTrouveException("L'objet n'existe pas");
         }
-        throw new BusinessException("Données périmées");
+        throw new OptimisticLockException("Données périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
@@ -315,9 +319,10 @@ public class OffreUCCImpl implements OffreUCC {
    *
    * @param offreDTO : l'offre à donné
    * @return offre : l'offre donnée
-   * @throws PasTrouveException : est lancée si l'objet n'existe pas
-   * @throws BusinessException  : est lancée si l'offre n'a pas pu être donnée ou l'id de l'objet
-   *                            est incorrect
+   * @throws BusinessException       : est lancée si l'offre n'a pas pu être donnée ou l'id de
+   *                                 l'objet est incorrect
+   * @throws OptimisticLockException : est lancée si les données sont périmées
+   * @throws PasTrouveException      : est lancée si l'objet n'existe pas
    */
   @Override
   public OffreDTO donnerOffre(OffreDTO offreDTO) {
@@ -326,11 +331,11 @@ public class OffreUCCImpl implements OffreUCC {
       ((Offre) offreDTO).donnerObjet();
       InteretDTO interetDTO = interetDAO.receveurActuel(offreDTO.getObjetDTO().getIdObjet());
       if (interetDTO == null) {
-        throw new BusinessException("Pas d'interet");
+        throw new BusinessException("Pas d'intérêt");
       }
       ((Interet) interetDTO).venuChercher();
       if (interetDAO.miseAJourInteret(interetDTO) == null) {
-        throw new BusinessException("Données périmées");
+        throw new OptimisticLockException("Données périmées");
       }
       ((Objet) offreDTO.getObjetDTO()).indiquerReceveur(interetDTO.getUtilisateur());
       ObjetDTO objet = objetDAO.miseAJourObjet(offreDTO.getObjetDTO());
@@ -339,7 +344,7 @@ public class OffreUCCImpl implements OffreUCC {
         if (objetVerif == null) {
           throw new PasTrouveException("L'objet n'existe pas");
         }
-        throw new BusinessException("Données périmées");
+        throw new OptimisticLockException("Données périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();

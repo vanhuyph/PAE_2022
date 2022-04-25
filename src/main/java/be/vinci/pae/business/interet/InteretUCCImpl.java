@@ -9,6 +9,7 @@ import be.vinci.pae.donnees.dao.objet.ObjetDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.OptimisticLockException;
 import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
@@ -31,8 +32,9 @@ public class InteretUCCImpl implements InteretUCC {
    *
    * @param interetDTO : l'intérêt à créer
    * @return interet : interetDTO
-   * @throws BusinessException  : est lancée s'il y a eu une erreur
-   * @throws PasTrouveException : est lancée si l'utilisateur n'existe pas
+   * @throws BusinessException       : est lancée s'il y a eu une erreur
+   * @throws PasTrouveException      : est lancée si l'utilisateur n'existe pas
+   * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
   public InteretDTO creerUnInteret(InteretDTO interetDTO) {
@@ -52,7 +54,7 @@ public class InteretUCCImpl implements InteretUCC {
           if (utilisateurVerif == null) {
             throw new PasTrouveException("L'utilisateur n'existe pas");
           }
-          throw new BusinessException("Données périmées");
+          throw new OptimisticLockException("Données périmées");
         }
       }
       ((Interet) interetDTO).marquerInteretObjet();
@@ -153,8 +155,8 @@ public class InteretUCCImpl implements InteretUCC {
    *
    * @param interet : l'intérêt de la personne
    * @return interetDTO : interetDTO
-   * @throws BusinessException : est lancée si le receveur n'a pas pu être indiqué ou données
-   *                           périmées
+   * @throws BusinessException       : est lancée si le receveur n'a pas pu être indiqué
+   * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
   public InteretDTO indiquerReceveur(InteretDTO interet) {
@@ -170,7 +172,7 @@ public class InteretUCCImpl implements InteretUCC {
       ((Objet) interetDTO.getObjet()).confirmerObjet();
       ObjetDTO objet = objetDAO.miseAJourObjet(interetDTO.getObjet());
       if (objet == null) {
-        throw new BusinessException("Données de l'objet périmées");
+        throw new OptimisticLockException("Données de l'objet périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
@@ -185,8 +187,9 @@ public class InteretUCCImpl implements InteretUCC {
    *
    * @param idObjet : l'id de l'objet à mettre en non remis
    * @return interetDTO : interetDTO
-   * @throws PasTrouveException : est lancée si l'objet n'a pas de receveur actuellement
-   * @throws BusinessException  : est lancée si les données de l'intérêt/utilisateur sont périmées
+   * @throws PasTrouveException      : est lancée si l'objet n'a pas de receveur actuellement
+   * @throws OptimisticLockException : est lancée si les données de l'intérêt/utilisateur sont
+   *                                 périmées
    */
   @Override
   public InteretDTO nonRemis(int idObjet) {
@@ -199,11 +202,11 @@ public class InteretUCCImpl implements InteretUCC {
       }
       ((Interet) interetDTO).pasVenuChercher();
       if (interetDAO.miseAJourInteret(interetDTO) == null) {
-        throw new BusinessException("Données de l'intérêt périmées");
+        throw new OptimisticLockException("Données de l'intérêt périmées");
       }
       ((Utilisateur) interetDTO.getUtilisateur()).incrementerNbObjetsAbandonnes();
       if (utilisateurDAO.miseAJourUtilisateur(interetDTO.getUtilisateur()) == null) {
-        throw new BusinessException("Données de l'utilisateur périmées");
+        throw new OptimisticLockException("Données de l'utilisateur périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
