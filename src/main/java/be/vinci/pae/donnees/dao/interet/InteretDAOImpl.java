@@ -55,31 +55,6 @@ public class InteretDAOImpl implements InteretDAO {
   }
 
   /**
-   * supprimer les intérêts de l'objet.
-   *
-   * @param idObjet : l'id de l'objet pour lequel on va supprimé les interets
-   * @return interetDTO : interetDTO rempli
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
-  @Override
-  public int supprimerInteret(int idObjet) {
-    String requetePs = "DELETE FROM interets WHERE objet = ? ";
-    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      ps.setInt(1, idObjet);
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          return idObjet;
-        } else {
-          return 0;
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException(e.getMessage(), e);
-    }
-  }
-
-  /**
    * Récupère le nombre de personnes intéressées de l'objet avec l'id passé en paramètre.
    *
    * @param idObjet : l'id de l'objet dont les personnes sont intéressées
@@ -245,36 +220,6 @@ public class InteretDAOImpl implements InteretDAO {
         if (rs.next()) {
           InteretDTO interetDTO = factory.getInteret();
           return remplirInteretDepuisResulSet(interetDTO, rs);
-        } else {
-          return null;
-        }
-      }
-    } catch (SQLException e) {
-      throw new FatalException(e.getMessage(), e);
-    }
-  }
-
-  /**
-   * Permet d'indiquer que l'objet a été non remis car le receveur n'est pas venu chercher l'objet.
-   *
-   * @param interetDTO : l'intérêt auquel indiquer si le receveur est venu chercher ou non
-   * @return interetDTO : interetDTO
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
-  @Override
-  public InteretDTO nonRemis(InteretDTO interetDTO) {
-    String requetePs = "UPDATE projet.interets SET venu_chercher = ?, version = ? "
-        + "WHERE version = ? AND utilisateur = ? AND objet = ? RETURNING version;";
-    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
-      ps.setBoolean(1, interetDTO.isVenuChercher());
-      ps.setInt(2, interetDTO.getVersion() + 1);
-      ps.setInt(3, interetDTO.getVersion());
-      ps.setInt(4, interetDTO.getUtilisateur().getIdUtilisateur());
-      ps.setInt(5, interetDTO.getObjet().getIdObjet());
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          interetDTO.setVersion(rs.getInt(1));
-          return interetDTO;
         } else {
           return null;
         }

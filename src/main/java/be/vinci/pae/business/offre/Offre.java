@@ -13,4 +13,6 @@ public interface Offre extends OffreDTO {
 
   void objetNonVu();
 
+  void donnerObjet();
+
 }

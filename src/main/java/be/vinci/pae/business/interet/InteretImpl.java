@@ -123,6 +123,11 @@ public class InteretImpl implements Interet {
   }
 
   @Override
+  public void venuChercher() {
+    this.setVenuChercher(true);
+  }
+
+  @Override
   public String toString() {
     return "InteretImpl{"
         + "utilisateur=" + utilisateur
