@@ -81,9 +81,7 @@ const surDetailObjet = async (offre) => {
       offres.forEach((off) => {
         let daOf = new Date(off.dateOffre[0], off.dateOffre[1] - 1,
             off.dateOffre[2]).toLocaleDateString("fr-BE")
-        if (daOf !== dateOffre) {
           offresPrecedentes += `<p>${daOf}</p>`
-        }
       })
     }
   })
@@ -296,14 +294,13 @@ const surDetailObjetProprio = async (offre) => {
     return reponse.json();
   })
   .then((offres) => {
+    console.log(offres)
     if (offres.length > 0) {
       offresPrecedentes = ""
       offres.forEach((off) => {
         let daOf = new Date(off.dateOffre[0], off.dateOffre[1] - 1,
             off.dateOffre[2]).toLocaleDateString("fr-BE")
-        if (daOf !== dateOffre) {
           offresPrecedentes += `<p>${daOf}</p>`
-        }
       })
     }
   })
@@ -444,14 +441,13 @@ const surDetailObjetProprioModifier = async (offre) => {
     return reponse.json();
   })
   .then((offres) => {
-    if (offres.length > 1) {
+    if (offres.length > 0) {
       offresPrecedentes = ""
       offres.forEach((off) => {
+        console.log(off)
         let daOf = new Date(off.dateOffre[0], off.dateOffre[1] - 1,
             off.dateOffre[2]).toLocaleDateString("fr-BE")
-        if (daOf !== dateOffre) {
-          offresPrecedentes += `<p>${daOf}</p>`
-        }
+        offresPrecedentes += `<p>${daOf}</p>`
       })
     }
   })

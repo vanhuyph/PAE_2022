@@ -173,6 +173,9 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
         + "WHERE of.id_objet = ? "
+        + "AND of.date_offre <> (SELECT max(of2.date_offre) "
+        + "FROM projet.offres of2, projet.objets o2 "
+        + "WHERE of2.id_objet = of.id_objet)"
         + "ORDER BY of.date_offre DESC;";
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
