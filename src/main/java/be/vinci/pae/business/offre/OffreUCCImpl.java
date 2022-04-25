@@ -402,22 +402,19 @@ public class OffreUCCImpl implements OffreUCC {
    * Récupère tous les objets que l'utilisateur doit évaluer.
    *
    * @param idReceveur : l'id de l'utilisateur concerné
-   * @return objetsAEvalue : la liste des objets que l'utilisateur doit évaluer
-   * @return null si il n'y a pas d'objet a évaluer
-   * @throws PasTrouveException si un des objets n'existe pas.
-   * @throws BusinessException  si les données sont périmées.
+   * @return liste : la liste des objets à évaluer par l'utilisateur
    */
   @Override
   public List<ObjetDTO> objetsAEvaluerParUtilisateur(int idReceveur) {
     serviceDAL.commencerTransaction();
-    List<ObjetDTO> objetsAEvaluerTemp;
-    List<ObjetDTO> objetsAEvaluer = new ArrayList<>();
+    List<ObjetDTO> listeTemp;
+    List<ObjetDTO> liste = new ArrayList<>();
     try {
-      objetsAEvaluerTemp = objetDAO.rechercheObjetParReceveur(idReceveur);
-      if (!objetsAEvaluerTemp.isEmpty()) {
-        for (ObjetDTO objet : objetsAEvaluerTemp) {
+      listeTemp = objetDAO.rechercheObjetParReceveur(idReceveur);
+      if (!listeTemp.isEmpty()) {
+        for (ObjetDTO objet : listeTemp) {
           if (((Objet) objet).peutEtreEvalue()) {
-            objetsAEvaluer.add(objet);
+            liste.add(objet);
           }
         }
       }
@@ -426,7 +423,7 @@ public class OffreUCCImpl implements OffreUCC {
       throw e;
     }
     serviceDAL.commettreTransaction();
-    return objetsAEvaluer;
+    return liste;
   }
 
 }

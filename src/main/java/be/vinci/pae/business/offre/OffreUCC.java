@@ -1,8 +1,9 @@
 package be.vinci.pae.business.offre;
 
-import java.time.LocalDate;
 import be.vinci.pae.business.objet.ObjetDTO;
+import java.time.LocalDate;
 import java.util.List;
+
 
 public interface OffreUCC {
 
