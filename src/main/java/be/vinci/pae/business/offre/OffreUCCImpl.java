@@ -206,9 +206,7 @@ public class OffreUCCImpl implements OffreUCC {
         throw new BusinessException("L'id de l'objet est incorrect");
       }
       liste = offreDAO.offresPrecedentes(idObjet);
-      if (liste.size() > 0) {
-        liste.remove(0);
-      }
+      System.out.println(liste);
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
