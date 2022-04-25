@@ -1,5 +1,7 @@
 package be.vinci.pae.business.offre;
 
+import be.vinci.pae.business.interet.Interet;
+import be.vinci.pae.business.interet.InteretDTO;
 import be.vinci.pae.business.objet.Objet;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.utilisateur.Utilisateur;
@@ -320,25 +322,31 @@ public class OffreUCCImpl implements OffreUCC {
   @Override
   public OffreDTO donnerOffre(OffreDTO offreDTO) {
     serviceDAL.commencerTransaction();
-    Offre offre;
     try {
-      offre = (Offre) offreDTO;
-      // offre.changerEtatObjet("Donné");
-      ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
-      int idObjet = interetDAO.supprimerInteret(offreDTO.getObjetDTO().getIdObjet());
-      if (objet == null || idObjet <= 0) {
-        ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
+      ((Offre) offreDTO).donnerObjet();
+      InteretDTO interetDTO = interetDAO.receveurActuel(offreDTO.getObjetDTO().getIdObjet());
+      if (interetDTO == null) {
+        throw new BusinessException("Pas d'interet");
+      }
+      ((Interet) interetDTO).venuChercher();
+      if (interetDAO.miseAJourInteret(interetDTO) == null) {
+        throw new BusinessException("Données périmées");
+      }
+      ((Objet) offreDTO.getObjetDTO()).indiquerReceveur(interetDTO.getUtilisateur());
+      ObjetDTO objet = objetDAO.miseAJourObjet(offreDTO.getObjetDTO());
+      if (objet == null) {
+        ObjetDTO objetVerif = objetDAO.rechercheParId(offreDTO.getObjetDTO());
         if (objetVerif == null) {
           throw new PasTrouveException("L'objet n'existe pas");
         }
-        throw new BusinessException("Données périmées ou l'id de l'objet est incorrect");
+        throw new BusinessException("Données périmées");
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
     }
     serviceDAL.commettreTransaction();
-    return offre;
+    return offreDTO;
   }
 
   /**

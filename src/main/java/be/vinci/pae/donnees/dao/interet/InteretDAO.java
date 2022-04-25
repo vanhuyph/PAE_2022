@@ -15,10 +15,6 @@ public interface InteretDAO {
 
   InteretDTO miseAJourInteret(InteretDTO interetDTO);
 
-  int supprimerInteret(int idObjet);
-
   InteretDTO receveurActuel(int idObjet);
 
-  InteretDTO nonRemis(InteretDTO interetDTO);
-  
 }

@@ -99,6 +99,11 @@ public class OffreImpl implements Offre {
   }
 
   @Override
+  public void donnerObjet() {
+    this.getObjetDTO().setEtatObjet("Donné");
+  }
+
+  @Override
   public String toString() {
     return "Offre{"
         + "id offre= " + idOffre

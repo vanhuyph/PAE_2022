@@ -203,6 +203,13 @@ const surListeMesOffres = (data) => {
         })
     }
 
+    let offreRemis = offre.querySelector("#objetRemis")
+    if (offreRemis){
+      offreRemis.addEventListener("click", () => {
+        donnerObjet(of)
+      })
+    }
+
     let offreNonRemis = offre.querySelector("#nonRemis")
     if (offreNonRemis) {
       offreNonRemis.addEventListener("click", () => {
@@ -251,6 +258,30 @@ const reoffrirObjet = (offre) => {
   let session = recupUtilisateurDonneesSession()
   fetch(API_URL+ "offres/reoffrirObjet", {
     method: "POST",
+    body: JSON.stringify(offre),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token,
+    },
+  })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : "
+          + reponse.statusText
+      );
+    }
+    return reponse.json();
+  })
+  .then((donnee) => {
+    Redirect("/mesOffres")
+  })
+}
+
+const donnerObjet = (offre) => {
+  let session = recupUtilisateurDonneesSession()
+  fetch(API_URL + "offres/donnerOffre", {
+    method: "PUT",
     body: JSON.stringify(offre),
     headers: {
       "Content-Type": "application/json",

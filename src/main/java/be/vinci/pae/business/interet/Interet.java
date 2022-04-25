@@ -13,4 +13,6 @@ public interface Interet extends InteretDTO {
 
   void pasVenuChercher();
 
+  void venuChercher();
+
 }

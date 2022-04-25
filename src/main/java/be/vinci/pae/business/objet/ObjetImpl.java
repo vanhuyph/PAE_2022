@@ -139,6 +139,11 @@ public class ObjetImpl implements Objet {
     return this.etatObjet.equals("Annulé");
   }
 
+  @Override
+  public void indiquerReceveur(UtilisateurDTO utilisateur) {
+    this.setReceveur(utilisateur);
+  }
+
 
   /**
    * Change l'état de l'objet en Confirmé.
