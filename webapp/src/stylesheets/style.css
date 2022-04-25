@@ -249,7 +249,7 @@ main {
 
 /*Offres*/
 .offres {
-  margin: auto;
+  margin: 25px auto;
   width: 60%;
 }
 
@@ -612,6 +612,7 @@ Fin Message de bienvenue*/
   text-align: center;
   width: 80%;
 }
+
 #rechercherMembre .field button {
   cursor: pointer;
   margin: 0 !important;
@@ -681,26 +682,29 @@ Fin Message de bienvenue*/
   margin: 40px auto;
 }
 
-#rechercherObjet .field{
+#rechercherObjet .field {
   display: flex;
   justify-content: space-between;
   width: 100%;
   margin: auto !important;
   margin-bottom: 15px !important;
 }
-#rechercherObjet .fields{
+
+#rechercherObjet .fields {
   width: 100%;
   margin: 0;
   justify-content: space-between !important;
 }
-#rechercherObjet .fields .field{
+
+#rechercherObjet .fields .field {
   padding: 0;
 }
 
-#date-debut, #date-fin{
+#date-debut, #date-fin {
   width: 98%;
   margin: 1%;
 }
+
 #rechercherObjet .field #recherche-objet {
   width: 91% !important;
 }
@@ -714,10 +718,12 @@ Fin Message de bienvenue*/
   border: 1px solid #bfc6ce;
   border-radius: 10px !important;
 }
-#rechercherObjet #reinitialiser-filtre button{
+
+#rechercherObjet #reinitialiser-filtre button {
   width: 100% !important;
   height: 35px !important;
 }
+
 #liste-offres, #liste-offres-recentes {
   margin: auto;
   padding: 10px;
@@ -730,14 +736,14 @@ Fin Message de bienvenue*/
   display: block !important;
 }
 
-.offres .mon-offre .descri, .mon-offre .actions{
+.offres .mon-offre .descri, .mon-offre .actions {
   display: flex !important;
   align-items: flex-start !important;
   justify-content: center !important;
   flex-direction: column;
 }
 
-.interet{
+.interet {
   border: 1px solid #d7dee7;
   border-radius: 10px;
   padding: 8px 15px;
@@ -748,15 +754,17 @@ Fin Message de bienvenue*/
   transition: background 0.3s ease;
   margin-bottom: 15px;
 }
-.interet:hover{
+
+.interet:hover {
   background: #d7dee7;
 }
-.interet.choisi{
+
+.interet.choisi {
   background: #7066e0;
   color: white;
 }
 
-.interet p{
+.interet p {
   margin: 0;
 }
 
