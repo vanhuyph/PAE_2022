@@ -86,12 +86,23 @@ const PageAccueil =  () => {
       Navbar()
     } else {
       pageAccueil += `
-      <div class="offres">
+      <div class="offres" xmlns="http://www.w3.org/1999/html">
         <h2>Toutes les offres</h2>
         <form id="rechercherObjet" class="ui form">
           <div class="field">
             <input id="recherche-objet" type="search" placeholder="Recherche par : nom du membre, type, état">
             <button type="submit" class="button"><img src=${rechecheIcon} alt="recheche icon" height="20px"></button>
+          </div>
+          <div class="two fields">
+            <div class="field">
+              <input id="date-debut" type="date" min="1900-01-01" max="2300-12-12">
+            </div>
+            <div class="field">
+              <input id="date-fin" type="date"  max="2300-12-12">
+            </div>
+          </div>
+          <div id="reinitialiser-filtre" class="field">
+            <button id="rei-filtre" type="button">Réinitialiser le filtre</button>
           </div>
         </form>
         <div id="liste-offres"> </div>
@@ -112,6 +123,17 @@ const PageAccueil =  () => {
         }
         return reponse.json();
       }).then((data) => {
+        document.querySelector("#rei-filtre").addEventListener("click", (e) => {
+          e.preventDefault()
+          document.querySelector("#recherche-objet").value = ""
+          document.querySelector("#date-debut").value = ""
+          document.querySelector("#date-fin").value = ""
+          rechercheObjet()
+        })
+        document.querySelector("#date-debut").onchange = function () {
+          let input = document.querySelector("#date-fin");
+          input.setAttribute("min", this.value);
+        }
         document.querySelector("#rechercherObjet").addEventListener("submit",
             (e) => {
               e.preventDefault()
@@ -237,14 +259,30 @@ const objetsAEvaluer =  (data,session) => {
 const rechercheObjet = () => {
   const session = recupUtilisateurDonneesSession()
   const recherche = document.querySelector("#recherche-objet").value
+  let dateDebut = document.querySelector("#date-debut").value
+  let dateFin = document.querySelector("#date-fin").value
+  if (dateDebut === "") {
+    dateDebut = "1900-01-01"
+  }
+  if (dateFin === "") {
+    dateFin = "2300-12-12"
+  }
   const listeOffres = document.getElementById("liste-offres");
   listeOffres.innerHTML = `<div class="chargement-offres">
     <div class="ui text active centered inline loader">Chargement de la liste d'offres</div>
 </div>`
 
-  if (recherche !== "") {
-    fetch(API_URL + "offres/recherche/" + recherche, {
-      method: "GET",
+  let critereRecehrche = {
+    recherche: recherche,
+    dateDebut: dateDebut,
+    dateFin: dateFin
+  }
+
+  if (recherche !== "" || dateDebut !== "1900-01-01" || dateFin
+      !== "2300-12-12") {
+    fetch(API_URL + "offres/recherche", {
+      method: "POST",
+      body: JSON.stringify(critereRecehrche),
       headers: {
         "Content-Type": "application/json",
         Authorization: session.token

@@ -20,8 +20,20 @@ public interface InteretDTO {
 
   void setDateRdv(Date dateRdv);
 
+  boolean isVue();
+
+  void setVue(boolean vue);
+
   int getVersion();
 
   void setVersion(int version);
+
+  boolean isReceveurChoisi();
+
+  void setReceveurChoisi(boolean receveurChoisi);
+
+  Boolean isVenuChercher();
+
+  void setVenuChercher(Boolean venuChercher);
 
 }

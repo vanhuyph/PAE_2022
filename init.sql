@@ -15,22 +15,27 @@ CREATE TABLE projet.adresses
 CREATE TABLE projet.types_objets
 (
     id_type SERIAL PRIMARY KEY,
-    nom     VARCHAR(50) NOT NULL
+    nom     VARCHAR(50) NOT NULL,
+    version INTEGER NOT NULL
 );
 
 CREATE TABLE projet.utilisateurs
 (
-    id_utilisateur   SERIAL PRIMARY KEY,
-    pseudo           VARCHAR(25)                                     NOT NULL,
-    nom              VARCHAR(50)                                     NOT NULL,
-    prenom           VARCHAR(50)                                     NOT NULL,
-    mdp              VARCHAR(255)                                    NOT NULL,
-    gsm              VARCHAR(15),
-    est_admin        BOOLEAN                                         NOT NULL,
-    adresse          INTEGER REFERENCES projet.adresses (id_adresse) NOT NULL,
-    etat_inscription VARCHAR(10)                                     NOT NULL,
-    commentaire      VARCHAR(255) NULL,
-    version          INTEGER                                         NOT NULL
+    id_utilisateur     SERIAL PRIMARY KEY,
+    pseudo             VARCHAR(25)                                     NOT NULL,
+    nom                VARCHAR(50)                                     NOT NULL,
+    prenom             VARCHAR(50)                                     NOT NULL,
+    mdp                VARCHAR(255)                                    NOT NULL,
+    gsm                VARCHAR(15),
+    est_admin          BOOLEAN                                         NOT NULL,
+    adresse            INTEGER REFERENCES projet.adresses (id_adresse) NOT NULL,
+    etat_inscription   VARCHAR(10)                                     NOT NULL,
+    commentaire        VARCHAR(255) NULL,
+    version            INTEGER                                         NOT NULL,
+    nb_objet_offert    INTEGER                                         NOT NULL,
+    nb_objet_donne     INTEGER                                         NOT NULL,
+    nb_objet_recu      INTEGER                                         NOT NULL,
+    nb_objet_abandonne INTEGER                                         NOT NULL
 );
 
 CREATE TABLE projet.objets
@@ -42,15 +47,19 @@ CREATE TABLE projet.objets
     offreur     INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
     receveur    INTEGER REFERENCES projet.utilisateurs (id_utilisateur),
     photo       VARCHAR(255),
-    version     INTEGER                                                 NOT NULL
+    version     INTEGER                                                 NOT NULL,
+    vue         BOOLEAN                                                 NOT NULL
 );
 
 CREATE TABLE projet.interets
 (
-    utilisateur INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
-    objet       INTEGER REFERENCES projet.objets (id_objet)             NOT NULL,
-    date        DATE                                                    NOT NULL,
-    version     INTEGER                                                 NOT NULL,
+    utilisateur     INTEGER REFERENCES projet.utilisateurs (id_utilisateur) NOT NULL,
+    objet           INTEGER REFERENCES projet.objets (id_objet)             NOT NULL,
+    date            DATE                                                    NOT NULL,
+    version         INTEGER                                                 NOT NULL,
+    vue             BOOLEAN                                                 NOT NULL,
+    receveur_choisi BOOLEAN NULL,
+    venu_chercher   BOOLEAN NULL,
     PRIMARY KEY (utilisateur, objet)
 );
 
@@ -58,7 +67,7 @@ CREATE TABLE projet.evaluations
 (
     id_evaluation SERIAL PRIMARY KEY,
     objet         INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
-    note          INTEGER ,
+    note          INTEGER,
     commentaire   VARCHAR(255)
 
 );
@@ -84,53 +93,53 @@ VALUES (DEFAULT, 'Haut-Vinâve', 13, NULL, 4845, 'Jalhay', 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'caro', 'Line', 'Caroline',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 1, 'Refusé',
-        'Il faudra patienter un jour ou deux.', 0);
+        'Il faudra patienter un jour ou deux.', 0, 0, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'achil', 'Ile', 'Achille',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 2,
-        'En attente', NULL, 0);
+        'Confirmé', NULL, 0, 0, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bazz', 'Ile', 'Basile',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 3, 'Confirmé',
-        NULL, 0);
+        NULL, 0, 2, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bri', 'Lehmann', 'Brigitte',
         '$2a$10$W0IiogOO7ef5/Kw.GdmEkO46mtg6VSeDsV5SYc4Dzmp4XnnOBUAkC', NULL, true, 4, 'Confirmé',
-        NULL, 0);
+        NULL, 0, 1, 0, 0, 0);
 
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Accessoires pour animaux domestiques');
+VALUES (DEFAULT, 'Accessoires pour animaux domestiques', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Accessoires pour voiture');
+VALUES (DEFAULT, 'Accessoires pour voiture', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Décoration');
+VALUES (DEFAULT, 'Décoration', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Jouets');
+VALUES (DEFAULT, 'Jouets', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Literie');
+VALUES (DEFAULT, 'Literie', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Matériel de cuisine');
+VALUES (DEFAULT, 'Matériel de cuisine', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Matériel de jardinage');
+VALUES (DEFAULT, 'Matériel de jardinage', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Meuble');
+VALUES (DEFAULT, 'Meuble', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Plantes');
+VALUES (DEFAULT, 'Plantes', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Produits cosmétiques');
+VALUES (DEFAULT, 'Produits cosmétiques', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Vélo, trottinette');
+VALUES (DEFAULT, 'Vélo, trottinette', 0);
 INSERT INTO projet.types_objets
-VALUES (DEFAULT, 'Vêtements');
+VALUES (DEFAULT, 'Vêtements', 0);
 
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Donné', 3, 'Décorations de Noël de couleur rouge.', 3, 4,
-        'christmas-1869533_640.png', 1);
+VALUES (DEFAULT, 'Offert', 3, 'Décorations de Noël de couleur rouge.', 3, NULL,
+        'christmas-1869533_640.png', 1, false);
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'Offert', 3, 'Cadre représentant un chien noir sur un fond noir.', 3, NULL,
-        'dog-4118585_640.jpg', 1);
+        'dog-4118585_640.jpg', 1, false);
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'BureauEcolier-7.JPG', 1);
+VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'BureauEcolier-7.JPG', 1, false);
 
 INSERT INTO projet.offres
 VALUES (DEFAULT, 1, '21-03-22', 'Mardi de 17h à 22h', 1);
@@ -138,6 +147,11 @@ INSERT INTO projet.offres
 VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h', 1);
 INSERT INTO projet.offres
 VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h', 1);
+
+INSERT INTO projet.interets
+VALUES (3, 3, '25-03-22', 0, false, false, NULL);
+INSERT INTO projet.interets
+VALUES (2, 3, '25-03-22', 0, false, false, NULL);
 
 -- Requêtes démo 1 client
 -- SELECT u.id_utilisateur, u.pseudo, u.est_admin, u.etat_inscription, u.commentaire

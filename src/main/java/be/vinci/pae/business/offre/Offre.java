@@ -7,7 +7,12 @@ public interface Offre extends OffreDTO {
 
   void offrirObjet();
 
+  void interesseObjet();
+
   void annulerOffre();
 
+  void objetNonVu();
+
+  void donnerObjet();
 
 }

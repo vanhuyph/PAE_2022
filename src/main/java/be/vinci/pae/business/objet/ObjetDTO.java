@@ -39,4 +39,8 @@ public interface ObjetDTO {
 
   void setVersion(int version);
 
+  boolean isVue();
+
+  void setVue(boolean vue);
+
 }

@@ -25,6 +25,8 @@ public class ObjetImpl implements Objet {
   @JsonView(Vues.Public.class)
   private String photo;
   @JsonView(Vues.Public.class)
+  private boolean vue;
+  @JsonView(Vues.Public.class)
   private int version;
 
   public int getIdObjet() {
@@ -91,6 +93,14 @@ public class ObjetImpl implements Objet {
     this.version = version;
   }
 
+  public boolean isVue() {
+    return vue;
+  }
+
+  public void setVue(boolean vue) {
+    this.vue = vue;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -134,6 +144,30 @@ public class ObjetImpl implements Objet {
     this.setEtatObjet("Evalué");
   }
 
+  /**
+   * Verifie si l'état de l'objet permet de le réoffrir.
+   *
+   * @return true : si l'objet peut être réoffert, false sinon.
+   */
+  @Override
+  public boolean verifierEtatPourReoffrirObjet() {
+    return this.etatObjet.equals("Annulé");
+  }
+
+  @Override
+  public void indiquerReceveur(UtilisateurDTO utilisateur) {
+    this.setReceveur(utilisateur);
+  }
+
+
+  /**
+   * Change l'état de l'objet en Confirmé.
+   */
+  @Override
+  public void confirmerObjet() {
+    this.setEtatObjet("Confirmé");
+  }
+
   @Override
   public String toString() {
     return "Objet{"
@@ -144,6 +178,7 @@ public class ObjetImpl implements Objet {
         + ", offreur= " + offreur
         + ", receveur= " + receveur
         + ", photo= " + photo
+        + ", vue= " + vue
         + ", version= " + version
         + '}';
   }

@@ -32,6 +32,14 @@ public class UtilisateurImpl implements Utilisateur {
   private AdresseDTO adresse;
   @JsonView(Vues.Public.class)
   private int version;
+  @JsonView(Vues.Internal.class)
+  private int nbObjetOfferts;
+  @JsonView(Vues.Internal.class)
+  private int nbObjetDonnees;
+  @JsonView(Vues.Internal.class)
+  private int nbObjetRecus;
+  @JsonView(Vues.Internal.class)
+  private int nbObjetAbandonnes;
 
   @Override
   public int getIdUtilisateur() {
@@ -144,6 +152,46 @@ public class UtilisateurImpl implements Utilisateur {
   }
 
   @Override
+  public int getNbObjetOfferts() {
+    return nbObjetOfferts;
+  }
+
+  @Override
+  public void setNbObjetOfferts(int nbObjetOfferts) {
+    this.nbObjetOfferts = nbObjetOfferts;
+  }
+
+  @Override
+  public int getNbObjetDonnees() {
+    return nbObjetDonnees;
+  }
+
+  @Override
+  public void setNbObjetDonnees(int nbObjetDonnees) {
+    this.nbObjetDonnees = nbObjetDonnees;
+  }
+
+  @Override
+  public int getNbObjetRecus() {
+    return nbObjetRecus;
+  }
+
+  @Override
+  public void setNbObjetRecus(int nbObjetRecus) {
+    this.nbObjetRecus = nbObjetRecus;
+  }
+
+  @Override
+  public int getNbObjetAbandonnes() {
+    return nbObjetAbandonnes;
+  }
+
+  @Override
+  public void setNbObjetAbandonnes(int nbObjetAbandonnes) {
+    this.nbObjetAbandonnes = nbObjetAbandonnes;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -170,6 +218,11 @@ public class UtilisateurImpl implements Utilisateur {
     return BCrypt.hashpw(mdp, BCrypt.gensalt());
   }
 
+  /**
+   * Permet de changer l'état de l'inscription à "En attente".
+   *
+   * @return true : si l'état a bien été changé, false sinon
+   */
   @Override
   public boolean mettreEnAttente() {
     String enAttente = "En attente";
@@ -180,6 +233,13 @@ public class UtilisateurImpl implements Utilisateur {
     return false;
   }
 
+
+  /**
+   * Permet de changer l'état de l'inscription à "Confirmé".
+   *
+   * @param estAdmin : l'information si l'utilisateur doit être passé admin ou non
+   * @return true : si l'état a bien été changé, false sinon
+   */
   @Override
   public boolean confirmerInscription(boolean estAdmin) {
     String confirme = "Confirmé";
@@ -192,6 +252,12 @@ public class UtilisateurImpl implements Utilisateur {
     return false;
   }
 
+  /**
+   * Permet de changer l'état de l'inscription à "Refusé".
+   *
+   * @param commentaire : le commentaire associé au refus de l'inscription
+   * @return true : si l'état a bien été changé, false sinon
+   */
   @Override
   public boolean refuserInscription(String commentaire) {
     String refuse = "Refusé";
@@ -201,6 +267,38 @@ public class UtilisateurImpl implements Utilisateur {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Permet d'incrémenter le nombre d'objets offerts à chaque offre.
+   */
+  @Override
+  public void incrementerNbObjetsOfferts() {
+    this.setNbObjetOfferts(this.getNbObjetOfferts() + 1);
+  }
+
+  /**
+   * Permet d'incrémenter le nombre d'objets données à chaque offre donnée.
+   */
+  @Override
+  public void incrementerNbObjetsDonnes() {
+    this.setNbObjetDonnees(this.getNbObjetDonnees() + 1);
+  }
+
+  /**
+   * Permet d'incrémenter le nombre d'objets reçus à chaque offre reçu.
+   */
+  @Override
+  public void incrementerNbObjetsRecus() {
+    this.setNbObjetRecus(this.getNbObjetRecus() + 1);
+  }
+
+  /**
+   * Permet d'incrémenter le nombre d'objets abandonnés à chaque offre non-remis.
+   */
+  @Override
+  public void incrementerNbObjetsAbandonnes() {
+    this.setNbObjetAbandonnes(this.getNbObjetAbandonnes() + 1);
   }
 
   @Override
@@ -217,6 +315,10 @@ public class UtilisateurImpl implements Utilisateur {
         + ", commentaire='" + commentaire + '\''
         + ", adresse=" + adresse
         + ", version='" + version + '\''
+        + ", nombre d'objets offerts='" + nbObjetOfferts + '\''
+        + ", nombre d'objets données='" + nbObjetDonnees + '\''
+        + ", nombre d'objets reçus='" + nbObjetRecus + '\''
+        + ", nombre d'objets abandonnées='" + nbObjetAbandonnes + '\''
         + '}';
   }
 

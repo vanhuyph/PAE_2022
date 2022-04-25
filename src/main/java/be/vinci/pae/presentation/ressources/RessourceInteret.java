@@ -9,11 +9,13 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response.Status;
+import java.util.List;
 
 @Singleton
 @Path("/interets")
@@ -34,7 +36,7 @@ public class RessourceInteret {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public InteretDTO creetInteret(InteretDTO interetDTO) {
+  public InteretDTO creerInteret(InteretDTO interetDTO) {
     if (interetDTO.getObjet() == null || interetDTO.getUtilisateur() == null
         || interetDTO.getObjet().getIdObjet() < 1
         || interetDTO.getUtilisateur().getIdUtilisateur() < 1) {
@@ -53,21 +55,96 @@ public class RessourceInteret {
   /**
    * Récupère le nombre de personnes intéressées pour une offre.
    *
-   * @param id : l'id de l'offre dont les personnes sont intéressées
+   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
    * @return nbInteret : le nombre de personnes intéressées
-   * @throws PresentationException : est lancée si l'id de l'offre est incorrect
+   * @throws PresentationException : est lancée si l'id de l'objet est incorrect
    */
   @GET
   @Path("nbPersonnesInteresees/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public int nbPersonnesInteresees(@PathParam("id") int id) {
-    if (id <= 0) {
-      throw new PresentationException("L'id de l'offre est incorrect", Status.BAD_REQUEST);
+  public int nbPersonnesInteresees(@PathParam("id") int idObjet) {
+    if (idObjet <= 0) {
+      throw new PresentationException("L'id de l'objet est incorrect", Status.BAD_REQUEST);
     }
-    int nbInteret = interetUCC.nbPersonnesInteressees(id);
+    int nbInteret = interetUCC.nbPersonnesInteressees(idObjet);
     return nbInteret;
+  }
+
+  /**
+   * Liste les intérêts pour l'objet dont l'id est passé en paramètre.
+   *
+   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @return liste : la liste des intérêts pour l'objet
+   * @throws PresentationException : est lancée si l'id de l'objet est incorrect
+   */
+  @GET
+  @Path("/listeDesPersonnesInteressees/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<InteretDTO> listeDesPersonnesInteressees(@PathParam("id") int idObjet) {
+    if (idObjet <= 0) {
+      throw new PresentationException("L'id de l'objet est incorrect", Status.BAD_REQUEST);
+    }
+    List<InteretDTO> liste = interetUCC.listeDesPersonnesInteressees(idObjet);
+    return liste;
+  }
+
+  /**
+   * Liste les intérêts non-vues pour l'objet dont l'id est passé en paramètre.
+   *
+   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @return liste : la liste des intérêts non-vues
+   * @throws PresentationException : est lancée si l'id de l'objet est incorrect
+   */
+  @GET
+  @Path("/listeDesPersonnesInteresseesVue/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<InteretDTO> listeDesPersonnesInteresseesVue(@PathParam("id") int idObjet) {
+    if (idObjet <= 0) {
+      throw new PresentationException("L'id de l'objet est incorrect", Status.BAD_REQUEST);
+    }
+    List<InteretDTO> liste = interetUCC.listeDesPersonnesInteresseesVue(idObjet);
+    return liste;
+  }
+
+  /**
+   * Permet d'indiquer à une personne intéressée comme étant receveur de l'objet.
+   *
+   * @param interet : l'intérêt de la personne
+   * @return interetDTO : interetDTO
+   * @throws PresentationException : est lancée si objet/utilisateur incorrect
+   */
+  @PUT
+  @Path("/indiquerReceveur")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public InteretDTO indiquerReceveur(InteretDTO interet) {
+    if (interet.getObjet().getIdObjet() < 1 || interet.getUtilisateur().getIdUtilisateur() < 1) {
+      throw new PresentationException("Objet ou utilisateur incorrect", Status.BAD_REQUEST);
+    }
+    interet = interetUCC.indiquerReceveur(interet);
+    return interet;
+  }
+
+  /**
+   * Permet d'indiquer que l'objet a été non remis car le receveur n'est pas venu chercher l'objet.
+   *
+   * @param idObjet : l'id de l'objet à mettre en non remis
+   * @return interetDTO : interetDTO
+   */
+  @PUT
+  @Path("/nonRemis/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public InteretDTO nonRemis(@PathParam("id") int idObjet) {
+    InteretDTO interetDTO = interetUCC.nonRemis(idObjet);
+    return interetDTO;
   }
 
 }

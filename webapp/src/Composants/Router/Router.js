@@ -6,6 +6,7 @@ import PageAdmin from "../Pages/PageAdmin";
 import PageOffrirObjet from "../Pages/PageOffrirObjet";
 import PageDetailsObjet from "../Pages/PageDetailsObjet";
 import PageProfil from "../Pages/PageProfil";
+import PageMesOffres from "../Pages/PageMesOffres";
 
 // Configuration des routeurs ici
 const routes = {
@@ -17,6 +18,7 @@ const routes = {
   "/offrirObjet": PageOffrirObjet,
   "/objet": PageDetailsObjet,
   "/profil": PageProfil,
+  "/mesOffres": PageMesOffres,
 };
 
 /**
