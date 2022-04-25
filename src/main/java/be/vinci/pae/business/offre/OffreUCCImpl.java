@@ -82,6 +82,7 @@ public class OffreUCCImpl implements OffreUCC {
       } else {
         ((Offre) offreDTO).interesseObjet();
       }
+      ((Offre) offreDTO).objetNonVu();
       objet = objetDAO.miseAJourObjet(offreDTO.getObjetDTO());
       if (objet == null) {
         if (objetDAO.rechercheParId(objet) == null) {

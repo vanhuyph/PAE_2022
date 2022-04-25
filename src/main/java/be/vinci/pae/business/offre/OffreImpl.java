@@ -94,6 +94,11 @@ public class OffreImpl implements Offre {
   }
 
   @Override
+  public void objetNonVu() {
+    this.getObjetDTO().setVue(false);
+  }
+
+  @Override
   public String toString() {
     return "Offre{"
         + "id offre= " + idOffre
