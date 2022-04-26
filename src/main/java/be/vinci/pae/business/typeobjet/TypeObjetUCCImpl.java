@@ -20,10 +20,8 @@ public class TypeObjetUCCImpl implements TypeObjetUCC {
    */
   @Override
   public List<TypeObjetDTO> listerTypeObjet() {
-
     serviceDAL.commencerTransaction();
     List<TypeObjetDTO> liste;
-
     try {
       liste = typeObjetDAO.listerTypeObjet();
     } catch (Exception e) {
@@ -36,13 +34,10 @@ public class TypeObjetUCCImpl implements TypeObjetUCC {
 
   @Override
   public TypeObjetDTO creerTypeObjet(TypeObjetDTO typeObjetDTO) {
-
     serviceDAL.commencerTransaction();
     TypeObjetDTO typeObjet;
-
     try {
       typeObjet = typeObjetDAO.verifierUniqueTypeObjet(typeObjetDTO);
-
       if (typeObjet.getIdType() == 0) {
         typeObjet = typeObjetDAO.creerTypeObjet(typeObjetDTO);
       } else {
@@ -52,8 +47,8 @@ public class TypeObjetUCCImpl implements TypeObjetUCC {
       serviceDAL.retourEnArriereTransaction();
       throw e;
     }
-
     serviceDAL.commettreTransaction();
     return typeObjet;
   }
+
 }

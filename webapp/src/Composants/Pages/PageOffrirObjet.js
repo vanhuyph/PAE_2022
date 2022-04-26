@@ -80,7 +80,7 @@ const PageOffrirObjet = () => {
   }
 }
 
-const afficherTypeObjet = () => {
+  const afficherTypeObjet = () => {
   const session = recupUtilisateurDonneesSession();
   const formOffrirObjet = document.querySelector("#formulaire-offrirObjet");
 
@@ -316,14 +316,13 @@ const surOffrirObjet = async (e) => {
         Authorization: session.token
       },
     })
-    .then((response) => {
-      if (!response.ok) {
+    .then((reponse) => {
+      if (!reponse.ok) {
         throw new Error(
-            "Code d'erreur : " + response.status + " : " + response.statusText)
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText)
       }
-      Redirect("/")
-      return response.json();
-    })
+      return reponse.json();
+    }).then((donnee) => Redirect("/"))
   }
 }
 

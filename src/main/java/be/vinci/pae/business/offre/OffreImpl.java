@@ -70,12 +70,37 @@ public class OffreImpl implements Offre {
       return false;
     }
     OffreImpl offre = (OffreImpl) o;
-    return idOffre == offre.idOffre && dateOffre.equals(offre.dateOffre);
+    return idOffre == offre.idOffre;
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(idOffre, dateOffre);
+  }
+
+  @Override
+  public void offrirObjet() {
+    this.getObjetDTO().setEtatObjet("Offert");
+  }
+
+  @Override
+  public void interesseObjet() {
+    this.getObjetDTO().setEtatObjet("Intéressé");
+  }
+
+  @Override
+  public void annulerOffre() {
+    this.getObjetDTO().setEtatObjet("Annulé");
+  }
+
+  @Override
+  public void objetNonVu() {
+    this.getObjetDTO().setVue(false);
+  }
+
+  @Override
+  public void donnerObjet() {
+    this.getObjetDTO().setEtatObjet("Donné");
   }
 
   @Override
@@ -89,13 +114,4 @@ public class OffreImpl implements Offre {
         + '}';
   }
 
-  @Override
-  public void offrirObjet() {
-    this.getObjetDTO().setEtatObjet("Offert");
-  }
-
-  @Override
-  public void annulerOffre() {
-    this.getObjetDTO().setEtatObjet("Annulé");
-  }
 }

@@ -22,8 +22,10 @@ public class ObjetImpl implements Objet {
   private UtilisateurDTO offreur;
   @JsonView(Vues.Public.class)
   private UtilisateurDTO receveur;
-  @JsonView(Vues.Public.class)//vérifier type d'objet
+  @JsonView(Vues.Public.class)
   private String photo;
+  @JsonView(Vues.Public.class)
+  private boolean vue;
   @JsonView(Vues.Public.class)
   private int version;
 
@@ -91,6 +93,14 @@ public class ObjetImpl implements Objet {
     this.version = version;
   }
 
+  public boolean isVue() {
+    return vue;
+  }
+
+  public void setVue(boolean vue) {
+    this.vue = vue;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -108,6 +118,56 @@ public class ObjetImpl implements Objet {
     return Objects.hash(idObjet, typeObjet, offreur);
   }
 
+  /**
+   * Verifie si l'état de l'objet permet de le modifier ainsi que son offre.
+   *
+   * @return true si l'objet peut être modifié, false sinon.
+   */
+  @Override
+  public boolean verifierEtatPourModificationOffre() {
+    return this.etatObjet != null && !this.etatObjet.equals("Annulé") && !this.etatObjet.equals(
+        "Donné") && !this.etatObjet.equals("Evalué");
+  }
+
+  /**
+   * Verifie que l'objet peut être évalué.
+   *
+   * @return true si l'objet peut être évalué , false si non.
+   */
+  @Override
+  public boolean peutEtreEvalue() {
+    return this.etatObjet != null && this.etatObjet.equals("Donné");
+  }
+
+  @Override
+  public void estEvalue() {
+    this.setEtatObjet("Evalué");
+  }
+
+  /**
+   * Verifie si l'état de l'objet permet de le réoffrir.
+   *
+   * @return true : si l'objet peut être réoffert, false sinon.
+   */
+  @Override
+  public boolean verifierEtatPourReoffrirObjet() {
+    return this.etatObjet.equals("Annulé");
+  }
+
+  @Override
+  public void indiquerReceveur(UtilisateurDTO utilisateur) {
+    this.setReceveur(utilisateur);
+  }
+
+
+  /**
+   * Change l'état de l'objet en Confirmé.
+   */
+  @Override
+  public void confirmerObjet() {
+    this.setEtatObjet("Confirmé");
+  }
+
   @Override
   public String toString() {
     return "Objet{"
@@ -118,6 +178,7 @@ public class ObjetImpl implements Objet {
         + ", offreur= " + offreur
         + ", receveur= " + receveur
         + ", photo= " + photo
+        + ", vue= " + vue
         + ", version= " + version
         + '}';
   }

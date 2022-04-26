@@ -3,7 +3,6 @@ package be.vinci.pae.donnees.dao.typeobjet;
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.typeobjet.TypeObjetDTO;
 import be.vinci.pae.donnees.services.ServiceBackendDAL;
-import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -29,18 +28,15 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
   public List<TypeObjetDTO> listerTypeObjet() {
     String requetePs = "SELECT * FROM projet.types_objets;";
     List<TypeObjetDTO> liste = new ArrayList<>();
-
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           TypeObjetDTO typeObjetCourant = factory.getTypeObjet();
-
-          liste.add(remplirTypeObjetDepuisResulSet(typeObjetCourant, rs));
-
+          remplirTypeObjetDepuisResulSet(typeObjetCourant, rs);
+          liste.add(typeObjetCourant);
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
     return liste;
@@ -50,7 +46,6 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
   public TypeObjetDTO creerTypeObjet(TypeObjetDTO typeObjetDTO) {
     String requetePs = "INSERT INTO projet.types_objets"
         + " VALUES (DEFAULT, ?, ?) RETURNING *";
-
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, typeObjetDTO.getNom());
       ps.setInt(2, typeObjetDTO.getVersion());
@@ -60,7 +55,6 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
     return typeObjetDTO;
@@ -79,7 +73,6 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
     return typeObjetDTO;
@@ -89,11 +82,10 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
    * Rempli les données du type d'objet depuis un ResultSet.
    *
    * @param typeObjetDTO : le type d'objet vide, qui va être rempli
-   * @param rs           : le PreparedStatement déjà mis en place
-   * @return typeObjetDTO : le type d'objet rempli rempli
+   * @param rs           : le ResultSet
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
-  private TypeObjetDTO remplirTypeObjetDepuisResulSet(TypeObjetDTO typeObjetDTO, ResultSet rs) {
+  private void remplirTypeObjetDepuisResulSet(TypeObjetDTO typeObjetDTO, ResultSet rs) {
     try {
       typeObjetDTO.setIdType(rs.getInt(1));
       typeObjetDTO.setNom(rs.getString(2));
@@ -101,7 +93,6 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);
     }
-    return typeObjetDTO;
   }
 
 }

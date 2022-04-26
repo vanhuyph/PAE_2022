@@ -25,7 +25,7 @@ public class RessourceTypeObjet {
   /**
    * Liste les types d'objet.
    *
-   * @return la liste des types d'objet
+   * @return liste : la liste des types d'objet
    */
   @GET
   @Path("liste")
@@ -33,9 +33,9 @@ public class RessourceTypeObjet {
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
   public List<TypeObjetDTO> listerTypeObjet() {
-    List<TypeObjetDTO> typesObjet;
-    typesObjet = typeObjetUCC.listerTypeObjet();
-    return typesObjet;
+    List<TypeObjetDTO> liste;
+    liste = typeObjetUCC.listerTypeObjet();
+    return liste;
   }
 
   /**

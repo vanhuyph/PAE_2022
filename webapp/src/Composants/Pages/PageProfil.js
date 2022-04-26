@@ -1,6 +1,8 @@
 import {recupUtilisateurDonneesSession} from '../../utilitaires/session'
 import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
+import Swal from 'sweetalert2'
+import 'animate.css'
 
 const PageProfil = () => {
   let session = recupUtilisateurDonneesSession()
@@ -16,13 +18,13 @@ const PageProfil = () => {
       Authorization: session.token
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Error code : " + response.status + " : " + response.statusText
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText
       );
     }
-    return response.json();
+    return reponse.json();
   })
   .then((data) => surProfilUtilisateur(data))
 }
@@ -149,7 +151,10 @@ const surProfilUtilisateur = (data) => {
         nouvMdp.value = ""
         confMdp.value = ""
         msgErr.innerHTML = ""
-        document.querySelector(".changer-mdp").classList.toggle("montrer-block")
+        if (e.pointerId !== -1) {
+          document.querySelector(".changer-mdp").classList.toggle(
+              "montrer-block")
+        }
         document.querySelector("#modifier-mdp").addEventListener("click",
             (e) => {
               e.preventDefault()
@@ -174,25 +179,60 @@ const surProfilUtilisateur = (data) => {
                         Authorization: session.token,
                       }
                     })
-                .then((response) => {
-                  if (!response.ok) {
+                .then((reponse) => {
+                  if (!reponse.ok) {
                     throw new Error(
-                        "Error code : " + response.status + " : "
-                        + response.statusText
-                        + " : " + response.text())
+                        "Code d'erreur : " + reponse.status + " : "
+                        + reponse.statusText
+                        + " : " + reponse.text())
                   }
-                  console.log(response)
-                  return response.json()
+                  console.log(reponse)
+                  return reponse.json()
                 })
-                .then((donnee) => surProfilUtilisateur(donnee))
+                .then((donnee) => {
+                  Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Votre mot de passe a bien été changé',
+                    showConfirmButton: false,
+                    toast: true,
+                    timer: 3000,
+                    showClass: {
+                      popup: 'animate__animated animate__fadeInRight'
+                    },
+                    hideClass: {
+                      popup: 'animate__animated animate__fadeOutRight'
+                    }
+                  })
+                  surProfilUtilisateur(donnee)
+                })
                 .catch((err) => {
                   console.log(err)
-                  document.querySelector("#mdp-erreur").innerHTML = err.message
+                  Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Votre mot de passe n\'a pas pu etre changé',
+                    showConfirmButton: false,
+                    toast: true,
+                    timer: 3000,
+                    showClass: {
+                      popup: 'animate__animated animate__fadeInRight'
+                    },
+                    hideClass: {
+                      popup: 'animate__animated animate__fadeOutRight'
+                    }
+                  })
+                  if (err.message.includes('412')) {
+                    document.querySelector(
+                        "#mdp-erreur").innerHTML = "Mot de passe incorrect"
+                  } else {
+                    document.querySelector(
+                        "#mdp-erreur").innerHTML = err.message
+                  }
                 })
               }
             })
       })
-
   document.getElementById("modifier-profil").addEventListener("click", (e) => {
     e.preventDefault()
     surModifierProfilUtilisateur(data)
@@ -269,15 +309,17 @@ const surModifierProfilUtilisateur = (data) => {
                 <input id="commune" type="text" name="commune" value="${data.adresse.commune}">
               </div>
             </div>
+           <div class="two fields">
+              <div class="field">
+                <button id="confirmer-modifier" type="submit" class="ui green button">Modifier</button>
+              </div>
+              <div class="field">
+                <button id="annuler-modifier" class="ui red button">Annuler</button>
+              </div>
+            </div> 
             <div class="field">
               <p class="message-erreur" id="profil-erreur"></p>
              </div>
-            <div class="field">
-              <div class="ui buttons">
-                  <button id="confirmer-modifier" type="submit" class="ui green button">Modifier</button>
-                  <button id="annuler-modifier" class="ui red button">Annuler</button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -332,16 +374,32 @@ const surModifierProfilUtilisateur = (data) => {
             Authorization: session.token,
           }
         })
-        .then((response) => {
-          if (!response.ok) {
+        .then((reponse) => {
+          if (!reponse.ok) {
             throw new Error(
-                "Error code : " + response.status + " : " + response.statusText
-                + " : " + response.text())
+                "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+                + " : " + reponse.text())
           }
-          console.log(response)
-          return response.json()
+          console.log(reponse)
+          return reponse.json()
         })
-        .then((donnee) => Redirect("/profil"))
+        .then((donnee) => {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Votre profil a bien été modifié',
+            showConfirmButton: false,
+            toast: true,
+            timer: 3000,
+            showClass: {
+              popup: 'animate__animated animate__fadeInRight'
+            },
+            hideClass: {
+              popup: 'animate__animated animate__fadeOutRight'
+            }
+          })
+          Redirect("/profil")
+        })
         .catch(err => surErreur(err))
       })
 }
