@@ -25,7 +25,8 @@ const PageAccueil = () => {
       }
     }
   }
-  //Récuperation des  objets a evaluer
+
+  // Récupération des objets a évaluer lors de la connexion de l'utilisateur
   if (session) {
     fetch(
         API_URL + "offres/objetsAEvaluer/" + session.utilisateur.idUtilisateur,
@@ -60,7 +61,6 @@ const PageAccueil = () => {
     <div id="liste-offres-recentes"> </div>
   </div>
   `;
-
   pageDiv.innerHTML = pageAccueil;
   Navbar()
   const conteneurModal = document.querySelector(".conteneur-modal")
@@ -124,6 +124,7 @@ const PageAccueil = () => {
         }
         return reponse.json();
       }).then((data) => {
+        // Réinitialiser le filtre
         document.querySelector("#rei-filtre").addEventListener("click", (e) => {
           e.preventDefault()
           document.querySelector("#recherche-objet").value = ""
@@ -147,47 +148,42 @@ const PageAccueil = () => {
   declencheurModal.forEach(decl => decl.addEventListener("click", () => {
     conteneurModal.classList.toggle("active")
   }))
-  /*document.querySelector("#rechercherObjet").addEventListener("submit", (e) => {
-    e.preventDefault()
-    rechercheObjet()
-  })*/
 };
-//affichage des objets a évaluer
+
+// Affichage des objets a évaluer
 const objetsAEvaluer = (data, session) => {
   let note;
   let com;
-  //si il doit évaluer un ou des objets recus
+  // S'il doit évaluer un ou des objets recus
   data.forEach(async (objet) => {
-    //donne les information sur l'objet à évaluer
+    // Donne les informations sur l'objet à évaluer
     const {value: suivant} = await Swal.fire({
-      title: 'Evaluation en attente',
+      title: 'Évaluation en attente',
       confirmButtonText: 'Confirmer',
       input: 'select',
       inputOptions: {
-        oui: 'oui',
-        non: 'non',
+        oui: 'Oui',
+        non: 'Non',
       },
       inputAttributes: {
         required: true,
       },
       inputPlaceholder: 'Sélectionnez une réponse',
-      validationMessage: 'nous avons besoin d\'une réponse',
+      validationMessage: 'Nous avons besoin d\'une réponse',
       allowOutsideClick: false,
-      text: `Voulez vous évaluer l'objet : ${objet.description} ? `,
-
+      html: `<p>Voulez vous évaluer l'objet :</p> 
+<strong>${objet.description}</strong>`,
     })
     if (suivant === "oui") {
-
       const etapes = ['1', '2', '3']
       const Queue = Swal.mixin({
         progressSteps: etapes,
-        confirmButtonText: 'suivant',
-        cancelButtonText: 'retour',
+        confirmButtonText: 'Suivant',
+        cancelButtonText: 'Retour',
         reverseButtons: true,
         allowOutsideClick: false
       })
-
-      //note
+      // Sélection de la note
       const {value: noteFinale} = await Queue.fire({
         title: 'Votre note',
         input: 'select',
@@ -204,27 +200,25 @@ const objetsAEvaluer = (data, session) => {
         },
         inputPlaceholder: 'Sélectionnez une note',
         showCancelButton: false,
-        validationMessage: 'nous avons besoin de votre note',
+        validationMessage: 'Nous avons besoin d\'une note',
         currentProgressStep: 0
       })
       const {value: commentaireEval} = await Queue.fire({
-        title: 'Votre Commentaire',
+        title: 'Votre commentaire',
         currentProgressStep: 1,
         input: 'text',
         inputAttributes: {
           required: true
         },
-        validationMessage: 'nous avons besoin de votre commentaire'
-
+        validationMessage: 'Nous avons besoin d\'un commentaire'
       })
 
-      //afficher la note et le commentaire et demande de confirmation
+      // Affichage de la confirmation pour la note et le commentaire
       await Queue.fire({
         title: 'Confirmation',
         currentProgressStep: 2,
         confirmButtonText: 'Confirmer',
         text: `Vous avez donné une note de ${noteFinale} et le commentaire suivant : \n ${commentaireEval}`,
-
       })
       note = noteFinale;
       com = commentaireEval;
@@ -251,10 +245,10 @@ const objetsAEvaluer = (data, session) => {
       }
       return rep.json();
     })
-
   });
-
 }
+
+// Permet la recherche d'objets
 const rechercheObjet = () => {
   const session = recupUtilisateurDonneesSession()
   const recherche = document.querySelector("#recherche-objet").value
@@ -310,7 +304,6 @@ const rechercheObjet = () => {
       return reponse.json();
     }).then((data) => surListeOffres(data))
   }
-
 }
 
 // Affichage d'une liste des offres les plus récentes
