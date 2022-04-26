@@ -80,7 +80,7 @@ const PageOffrirObjet = () => {
   }
 }
 
-  const afficherTypeObjet = () => {
+const afficherTypeObjet = () => {
   const session = recupUtilisateurDonneesSession();
   const formOffrirObjet = document.querySelector("#formulaire-offrirObjet");
 
@@ -121,23 +121,20 @@ const choixTypeObjet = (data) => {
   choixTypeObjet.addEventListener("change", surChoixTypeObjet)
 }
 
-//Permet la visualition de créer un nouveau type d'objet
+// Permet la visualition de créer un nouveau type d'objet
 const surChoixTypeObjet = () => {
   const choixTypeObjet = document.querySelector("#choixTypeObjet")
   let typeObjet = document.querySelector("#typeObjet")
   const formCreerType = document.querySelector("#formCreerType")
-  if (choixTypeObjet.value === "nouveauType"){
-
-    if(!formCreerType){
+  if (choixTypeObjet.value === "nouveauType") {
+    if (!formCreerType) {
       document.querySelector(".erreur-type").innerHTML = ""
       typeObjet.innerHTML += `<div id="formCreerType">
-    
       <div >
         <label for="nom">Nom du nouveau type de l'objet</label>
         <input type="text" id="nomType">
           <p class="message-erreur erreur-nomType"></p>
       </div>
-
       <div>
         <button id="buttonCreerType">Créer nouveau type</button>
       </div>
@@ -149,28 +146,25 @@ const surChoixTypeObjet = () => {
       choixTypeObjet.value = "nouveauType"
     }
   } else {
-    if(formCreerType){
+    if (formCreerType) {
       formCreerType.remove();
     }
   }
 }
 
-//Permet la création d'un nouveau type d'objet
+// Permet la création d'un nouveau type d'objet
 const surCreerTypeObjet = async (e) => {
   e.preventDefault();
   let nomTypeRecu = "vide";
   let nomNouveauType = document.querySelector("#nomType").value;
   let choixTypeObjet = document.querySelector("#choixTypeObjet")
   document.querySelector(".erreur-nomType").innerHTML = "";
-
   if (nomNouveauType === "") {
     document.querySelector(
         ".erreur-nomType").innerHTML = "Votre nouveau type d'objet est vide";
   } else {
-
     const session = recupUtilisateurDonneesSession();
     const nomType = document.getElementById("nomType");
-
     let typeObjetDTO = {
       idType: null,
       nom: nomType.value
@@ -183,41 +177,40 @@ const surCreerTypeObjet = async (e) => {
         Authorization: session.token
       },
     };
-    await fetch('/api/typesObjet/creerTypeObjet', options).then((res) => {
-      if (!res.ok) {
-        document.querySelector(
-            ".erreur-nomType").innerHTML = "Votre nouveau type d'objet existe déjà";
-        throw new Error(
-            "Code d'erreur : " + res.status + " : " + res.statusText
-        );
-      }
-
-      return res.json();
-
-    }).then((data) => {
+    await fetch(API_URL + 'typesObjet/creerTypeObjet', options).then(
+        (reponse) => {
+          if (!reponse.ok) {
+            document.querySelector(
+                ".erreur-nomType").innerHTML = "Ce type d\'objet existe déjà";
+            throw new Error(
+                "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+            );
+          }
+          return reponse.json();
+        }).then((data) => {
       afficherTypeObjet()
       const formCreerType = document.querySelector("#formCreerType")
       formCreerType.remove();
       nomTypeRecu = data.toString()
 
-
       Swal.fire({
-        title: `<strong>Créer un nouveau type d'objet</strong>`,
-        html: `<p> Votre nouveau type a bien été créé </p>`,
-        showCloseButton: true,
-        showCancelButton: false,
-        focusConfirm: false
-
+        position: 'top-end',
+        icon: 'success',
+        title: 'Votre nouveau type a bien été ajouté',
+        showConfirmButton: false,
+        toast: true,
+        timer: 3000,
+        showClass: {
+          popup: 'animate__animated animate__fadeInRight'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutRight'
+        }
       })
-
-      choixTypeObjet.value = data.idType.toString()  //je n'arrive pas à select le nouveau type
-
+      choixTypeObjet.value = data.idType.toString()
     })
-
     return nomTypeRecu;
-
   }
-
 }
 
 // Permet de prévisualiser la photo avant de l'upload
