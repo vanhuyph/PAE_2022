@@ -767,6 +767,15 @@ Fin Message de bienvenue*/
 .interet p {
   margin: 0;
 }
+.page-offrirObjet, .page-offrirObjet .segments, .page-offrirObjet .segment {
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: 0 0 0 0 !important;
+}
+
+.ui.form select{
+  background-color: transparent !important;
+}
 
 footer {
   margin-top: 68px;

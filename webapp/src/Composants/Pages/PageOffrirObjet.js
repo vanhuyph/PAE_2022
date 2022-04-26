@@ -24,7 +24,8 @@ const typesObjet =
     `
 // Formulaire pour créer une offre
 const pageOffrirObjet = `
-    <div class="page-offrirObjet ">
+<div class="offres">
+    <div class="page-offrirObjet">
     <h2>Offrir un objet</h2>
     <div class="ui horizontal segments">
     <div class="ui segment">
@@ -47,16 +48,17 @@ const pageOffrirObjet = `
             ${typesObjet}
         </div>
         <div class=" tertiary inverted ">
-        <button class="ui  button " type="submit">Offrir l'objet</button>
+        <button class="ui button " type="submit">Offrir l'objet</button>
         </div>
     </form> 
      </div>
-       <div class="ui  right floated segment">
+       <div class="ui right floated segment">
     <div class="">
       ${formPhoto}
       </div>
     </div>
     </div>  
+    </div>
     </div>
     `
 
@@ -136,7 +138,7 @@ const surChoixTypeObjet = () => {
           <p class="message-erreur erreur-nomType"></p>
       </div>
       <div>
-        <button id="buttonCreerType">Créer nouveau type</button>
+        <button id="buttonCreerType" class="ui button">Créer nouveau type</button>
       </div>
       </div> `;
       const buttonCreerType = document.querySelector("#buttonCreerType")
