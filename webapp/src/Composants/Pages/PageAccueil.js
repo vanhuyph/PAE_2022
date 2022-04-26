@@ -171,7 +171,7 @@ const objetsAEvaluer = (data, session) => {
       inputPlaceholder: 'Sélectionnez une réponse',
       validationMessage: 'Nous avons besoin d\'une réponse',
       allowOutsideClick: false,
-      html: `<p>Voulez vous évaluer l'objet :</p> 
+      html: `<p>Voulez-vous évaluer l'objet suivant :</p> 
 <strong>${objet.description}</strong>`,
     })
     if (suivant === "oui") {
@@ -179,7 +179,6 @@ const objetsAEvaluer = (data, session) => {
       const Queue = Swal.mixin({
         progressSteps: etapes,
         confirmButtonText: 'Suivant',
-        cancelButtonText: 'Retour',
         reverseButtons: true,
         allowOutsideClick: false
       })
@@ -199,7 +198,6 @@ const objetsAEvaluer = (data, session) => {
           5: '5',
         },
         inputPlaceholder: 'Sélectionnez une note',
-        showCancelButton: false,
         validationMessage: 'Nous avons besoin d\'une note',
         currentProgressStep: 0
       })
@@ -215,7 +213,7 @@ const objetsAEvaluer = (data, session) => {
 
       // Affichage de la confirmation pour la note et le commentaire
       await Queue.fire({
-        title: 'Confirmation',
+        title: 'Votre objet a bien été évalué',
         currentProgressStep: 2,
         confirmButtonText: 'Confirmer',
         text: `Vous avez donné une note de ${noteFinale} et le commentaire suivant : \n ${commentaireEval}`,
@@ -238,12 +236,12 @@ const objetsAEvaluer = (data, session) => {
         Authorization: session.token
       },
       body: JSON.stringify(evaluation),
-    }).then((rep) => {
-      if (!rep.ok) {
+    }).then((reponse) => {
+      if (!reponse.ok) {
         throw  new Error(
-            "Code d'erreur : " + rep.status + " : " + rep.statusText);
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
       }
-      return rep.json();
+      return reponse.json();
     })
   });
 }

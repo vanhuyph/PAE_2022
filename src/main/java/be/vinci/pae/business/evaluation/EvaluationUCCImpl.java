@@ -19,10 +19,10 @@ public class EvaluationUCCImpl implements EvaluationUCC {
   ObjetDAO objetDAO;
 
   /**
-   * Permet de créer un eevaluation.
+   * Permet de créer une évaluation.
    *
    * @param evaluationDTO : l'évaluation a créer
-   * @return l'évaluation créée
+   * @return evaluation : l'évaluation créée
    * @throws BusinessException       : est lancée si l'objet n'est pas dans un état permettant
    *                                 d'être évalué
    * @throws PasTrouveException      : est lancée si l'objet n'existe pas
@@ -35,7 +35,7 @@ public class EvaluationUCCImpl implements EvaluationUCC {
     try {
       Objet objetEvalue = (Objet) objetDAO.rechercheParId(evaluationDTO.getObjet());
       if (objetEvalue == null) {
-        throw new PasTrouveException("l'objet n'existe pas");
+        throw new PasTrouveException("L'objet n'existe pas");
       }
       if (!objetEvalue.peutEtreEvalue()) {
         throw new BusinessException("l'objet n'est pas prêt a être évalué ou a déjà été évalué");
