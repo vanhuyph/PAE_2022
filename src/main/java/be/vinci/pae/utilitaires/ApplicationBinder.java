@@ -2,6 +2,8 @@ package be.vinci.pae.utilitaires;
 
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.DomaineFactoryImpl;
+import be.vinci.pae.business.evaluation.EvaluationUCC;
+import be.vinci.pae.business.evaluation.EvaluationUCCImpl;
 import be.vinci.pae.business.interet.InteretUCC;
 import be.vinci.pae.business.interet.InteretUCCImpl;
 import be.vinci.pae.business.offre.OffreUCC;
@@ -12,6 +14,8 @@ import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.business.utilisateur.UtilisateurUCCImpl;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAOImpl;
+import be.vinci.pae.donnees.dao.evaluation.EvaluationDAO;
+import be.vinci.pae.donnees.dao.evaluation.EvaluationDAOImpl;
 import be.vinci.pae.donnees.dao.interet.InteretDAO;
 import be.vinci.pae.donnees.dao.interet.InteretDAOImpl;
 import be.vinci.pae.donnees.dao.objet.ObjetDAO;
@@ -47,6 +51,8 @@ public class ApplicationBinder extends AbstractBinder {
     bind(TypeObjetDAOImpl.class).to(TypeObjetDAO.class).in(Singleton.class);
     bind(InteretUCCImpl.class).to(InteretUCC.class).in(Singleton.class);
     bind(InteretDAOImpl.class).to(InteretDAO.class).in(Singleton.class);
+    bind(EvaluationUCCImpl.class).to(EvaluationUCC.class).in(Singleton.class);
+    bind(EvaluationDAOImpl.class).to(EvaluationDAO.class).in(Singleton.class);
   }
 
 }

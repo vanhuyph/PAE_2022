@@ -5,7 +5,8 @@ import {
 import Navbar from "../Navbar/Navbar";
 import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
-import rechecheIcon from "../../img/search.svg"
+import rechecheIcon from "../../img/search.svg";
+import Swal from 'sweetalert2'
 
 // Page d'accueil
 const PageAccueil = () => {
@@ -13,6 +14,7 @@ const PageAccueil = () => {
   const session = recupUtilisateurDonneesSession()
   let etatInscription
   let commentaire
+
   if (session) {
     if (session.utilisateur.etatInscription !== "Confirmé") {
       etatInscription = session.utilisateur.etatInscription
@@ -22,6 +24,24 @@ const PageAccueil = () => {
         commentaire = session.utilisateur.commentaire
       }
     }
+  }
+  //Récuperation des  objets a evaluer
+  if (session) {
+    fetch(
+        API_URL + "offres/objetsAEvaluer/" + session.utilisateur.idUtilisateur,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token
+          },
+        }).then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+      }
+      return reponse.json();
+    }).then((data) => objetsAEvaluer(data, session))
   }
 
   let pageAccueil = `
@@ -51,6 +71,7 @@ const PageAccueil = () => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+
     },
   }).then((reponse) => {
     if (!reponse.ok) {
@@ -59,7 +80,6 @@ const PageAccueil = () => {
     }
     return reponse.json();
   }).then((data) => surListeOffresRecentes(data))
-
   if (session) {
     if (session.utilisateur.etatInscription !== "Confirmé") {
       conteneurModal.classList.add('active')
@@ -132,7 +152,109 @@ const PageAccueil = () => {
     rechercheObjet()
   })*/
 };
+//affichage des objets a évaluer
+const objetsAEvaluer = (data, session) => {
+  let note;
+  let com;
+  //si il doit évaluer un ou des objets recus
+  data.forEach(async (objet) => {
+    //donne les information sur l'objet à évaluer
+    const {value: suivant} = await Swal.fire({
+      title: 'Evaluation en attente',
+      confirmButtonText: 'Confirmer',
+      input: 'select',
+      inputOptions: {
+        oui: 'oui',
+        non: 'non',
+      },
+      inputAttributes: {
+        required: true,
+      },
+      inputPlaceholder: 'Sélectionnez une réponse',
+      validationMessage: 'nous avons besoin d\'une réponse',
+      allowOutsideClick: false,
+      text: `Voulez vous évaluer l'objet : ${objet.description} ? `,
 
+    })
+    if (suivant === "oui") {
+
+      const etapes = ['1', '2', '3']
+      const Queue = Swal.mixin({
+        progressSteps: etapes,
+        confirmButtonText: 'suivant',
+        cancelButtonText: 'retour',
+        reverseButtons: true,
+        allowOutsideClick: false
+      })
+
+      //note
+      const {value: noteFinale} = await Queue.fire({
+        title: 'Votre note',
+        input: 'select',
+        inputAttributes: {
+          required: true,
+        },
+        inputOptions: {
+          0: '0',
+          1: '1',
+          2: '2',
+          3: '3',
+          4: '4',
+          5: '5',
+        },
+        inputPlaceholder: 'Sélectionnez une note',
+        showCancelButton: false,
+        validationMessage: 'nous avons besoin de votre note',
+        currentProgressStep: 0
+      })
+      const {value: commentaireEval} = await Queue.fire({
+        title: 'Votre Commentaire',
+        currentProgressStep: 1,
+        input: 'text',
+        inputAttributes: {
+          required: true
+        },
+        validationMessage: 'nous avons besoin de votre commentaire'
+
+      })
+
+      //afficher la note et le commentaire et demande de confirmation
+      await Queue.fire({
+        title: 'Confirmation',
+        currentProgressStep: 2,
+        confirmButtonText: 'Confirmer',
+        text: `Vous avez donné une note de ${noteFinale} et le commentaire suivant : \n ${commentaireEval}`,
+
+      })
+      note = noteFinale;
+      com = commentaireEval;
+    } else {
+      note = -1;
+      com = "N'a pas été évalué.";
+    }
+    const evaluation = {
+      objet: objet,
+      note: note,
+      commentaire: com,
+    }
+    await fetch(API_URL + "evaluations/creerEvaluation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token
+      },
+      body: JSON.stringify(evaluation),
+    }).then((rep) => {
+      if (!rep.ok) {
+        throw  new Error(
+            "Code d'erreur : " + rep.status + " : " + rep.statusText);
+      }
+      return rep.json();
+    })
+
+  });
+
+}
 const rechercheObjet = () => {
   const session = recupUtilisateurDonneesSession()
   const recherche = document.querySelector("#recherche-objet").value

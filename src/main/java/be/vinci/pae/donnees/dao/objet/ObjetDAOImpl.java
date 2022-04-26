@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ObjetDAOImpl implements ObjetDAO {
 
@@ -80,6 +82,35 @@ public class ObjetDAOImpl implements ObjetDAO {
         } else {
           return null;
         }
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Recherche un objet que.
+   *
+   * @param idReceveur : l'id de l'utilisateur connecté
+   * @return liste la liste des objets reçus par l'utilisateur
+   */
+  @Override
+  public List<ObjetDTO> rechercheObjetParReceveur(int idReceveur) {
+    String requetePs = "SELECT id_objet, etat_objet ,description FROM projet.objets "
+        + "WHERE receveur = ? AND id_objet NOT IN (SELECT e.objet FROM projet.evaluations e "
+        + "WHERE objet = objets.id_objet);";
+    List<ObjetDTO> liste = new ArrayList<>();
+    ObjetDTO objetDTO = factory.getObjet();
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setInt(1, idReceveur);
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          objetDTO.setIdObjet(rs.getInt(1));
+          objetDTO.setEtatObjet(rs.getString(2));
+          objetDTO.setDescription(rs.getString(3));
+          liste.add(objetDTO);
+        }
+        return liste;
       }
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);

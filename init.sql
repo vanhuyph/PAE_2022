@@ -67,7 +67,9 @@ CREATE TABLE projet.evaluations
 (
     id_evaluation SERIAL PRIMARY KEY,
     objet         INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
-    commentaire   VARCHAR(255)                                NOT NULL
+    note          INTEGER,
+    commentaire   VARCHAR(255)
+
 );
 
 CREATE TABLE projet.offres

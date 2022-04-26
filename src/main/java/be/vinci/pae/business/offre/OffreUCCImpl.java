@@ -211,7 +211,6 @@ public class OffreUCCImpl implements OffreUCC {
         throw new BusinessException("L'id de l'objet est incorrect");
       }
       liste = offreDAO.offresPrecedentes(idObjet);
-      System.out.println(liste);
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
@@ -390,6 +389,34 @@ public class OffreUCCImpl implements OffreUCC {
         ObjetDTO objet = objetDAO.miseAJourObjet(listeTemp.get(i).getObjetDTO());
         listeTemp.get(i).setObjetDTO(objet);
         liste.add(listeTemp.get(i));
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return liste;
+  }
+
+  /**
+   * Récupère tous les objets que l'utilisateur doit évaluer.
+   *
+   * @param idReceveur : l'id de l'utilisateur concerné
+   * @return liste : la liste des objets à évaluer par l'utilisateur
+   */
+  @Override
+  public List<ObjetDTO> objetsAEvaluerParUtilisateur(int idReceveur) {
+    serviceDAL.commencerTransaction();
+    List<ObjetDTO> listeTemp;
+    List<ObjetDTO> liste = new ArrayList<>();
+    try {
+      listeTemp = objetDAO.rechercheObjetParReceveur(idReceveur);
+      if (!listeTemp.isEmpty()) {
+        for (ObjetDTO objet : listeTemp) {
+          if (((Objet) objet).peutEtreEvalue()) {
+            liste.add(objet);
+          }
+        }
       }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();

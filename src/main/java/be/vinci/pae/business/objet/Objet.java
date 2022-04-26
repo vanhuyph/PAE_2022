@@ -14,4 +14,8 @@ public interface Objet extends ObjetDTO {
 
   void indiquerReceveur(UtilisateurDTO utilisateur);
 
+  boolean peutEtreEvalue();
+
+  void estEvalue();
+
 }

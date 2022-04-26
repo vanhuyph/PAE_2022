@@ -1,7 +1,9 @@
 package be.vinci.pae.business.offre;
 
+import be.vinci.pae.business.objet.ObjetDTO;
 import java.time.LocalDate;
 import java.util.List;
+
 
 public interface OffreUCC {
 
@@ -31,6 +33,6 @@ public interface OffreUCC {
 
   List<OffreDTO> voirOffreAttribuer(int idUtilisateur);
 
-
+  List<ObjetDTO> objetsAEvaluerParUtilisateur(int idUtilisateur);
 
 }

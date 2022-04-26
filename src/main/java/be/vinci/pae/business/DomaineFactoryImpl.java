@@ -2,6 +2,8 @@ package be.vinci.pae.business;
 
 import be.vinci.pae.business.adresse.AdresseDTO;
 import be.vinci.pae.business.adresse.AdresseImpl;
+import be.vinci.pae.business.evaluation.EvaluationDTO;
+import be.vinci.pae.business.evaluation.EvaluationImpl;
 import be.vinci.pae.business.interet.InteretDTO;
 import be.vinci.pae.business.interet.InteretImpl;
 import be.vinci.pae.business.objet.ObjetDTO;
@@ -43,6 +45,11 @@ public class DomaineFactoryImpl implements DomaineFactory {
   @Override
   public InteretDTO getInteret() {
     return new InteretImpl();
+  }
+
+  @Override
+  public EvaluationDTO getEvaluation() {
+    return new EvaluationImpl();
   }
 
 }
