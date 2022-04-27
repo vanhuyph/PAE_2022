@@ -43,10 +43,16 @@ const pageOffrirObjet = `
               <p class="message-erreur erreur-horaire"></p>
           </div>
         </div>
-         <div class="field" id="typeObjet">
-          <label for="type">Type</label>
+         <div class="ui grid" id="typeObjet">
+          <div class="ten wide column">
+            <label for="type">Type</label>
             ${typesObjet}
+          </div>
+          <div class="six wide column">
+            <button class="ui yellow button" type="button" id="ajouter-type">Ajouter un type</button>
+          </div>
         </div>
+        <div id="form-type-objet"></div>
         <div class=" tertiary inverted ">
         <button class="ui button " type="submit">Offrir l'objet</button>
         </div>
@@ -110,48 +116,45 @@ const afficherTypeObjet = () => {
 const choixTypeObjet = (data) => {
   let choixTypeObjet = document.querySelector("#choixTypeObjet")
   if (data.length === 0 || !data) {
-
     choixTypeObjet.innerHTML = `Il n'y a aucun type d'objets`
     return;
   }
-  let liste = `<option value="empty" selected hidden>Sélectionner le type</option>
-    <option value="nouveauType">Créer un nouveau type</option>`
+  let liste = `<option value="empty" selected hidden>Sélectionner le type</option>`
   data.forEach((typeObjet) => {
     liste += `<option value=${typeObjet.idType}>${typeObjet.nom}</option>`
   });
   choixTypeObjet.innerHTML = liste;
-  choixTypeObjet.addEventListener("change", surChoixTypeObjet)
+  document.querySelector("#ajouter-type").addEventListener("click", () => {
+    choixTypeObjet.value = "empty"
+    surChoixTypeObjet()
+  })
 }
 
 // Permet la visualition de créer un nouveau type d'objet
 const surChoixTypeObjet = () => {
+  let typeObjet = document.querySelector("#form-type-objet")
   const choixTypeObjet = document.querySelector("#choixTypeObjet")
-  let typeObjet = document.querySelector("#typeObjet")
   const formCreerType = document.querySelector("#formCreerType")
-  if (choixTypeObjet.value === "nouveauType") {
     if (!formCreerType) {
-      document.querySelector(".erreur-type").innerHTML = ""
-      typeObjet.innerHTML += `<div id="formCreerType">
-      <div >
+      if(choixTypeObjet.value === "empty") {
+        document.querySelector(".erreur-type").innerHTML = ""
+        typeObjet.innerHTML += `<div id="formCreerType">
+      <div class="field">
         <label for="nom">Nom du nouveau type de l'objet</label>
         <input type="text" id="nomType">
           <p class="message-erreur erreur-nomType"></p>
       </div>
       <div>
-        <button id="buttonCreerType" class="ui button">Créer nouveau type</button>
+        <button id="buttonCreerType" class="ui green button">Ajouter</button>
       </div>
       </div> `;
-      const buttonCreerType = document.querySelector("#buttonCreerType")
-      const choixTypeObjet = document.querySelector("#choixTypeObjet")
-      buttonCreerType.addEventListener("click", surCreerTypeObjet)
-      choixTypeObjet.addEventListener("change", surChoixTypeObjet)
-      choixTypeObjet.value = "nouveauType"
-    }
-  } else {
-    if (formCreerType) {
+        document.querySelector("#buttonCreerType").addEventListener("click", surCreerTypeObjet)
+        choixTypeObjet.addEventListener("change", surChoixTypeObjet)
+      }
+    }else{
       formCreerType.remove();
     }
-  }
+
 }
 
 // Permet la création d'un nouveau type d'objet
@@ -190,11 +193,10 @@ const surCreerTypeObjet = async (e) => {
           }
           return reponse.json();
         }).then((data) => {
-      afficherTypeObjet()
       const formCreerType = document.querySelector("#formCreerType")
       formCreerType.remove();
-      nomTypeRecu = data.toString()
-
+      choixTypeObjet.innerHTML+=`<option value=${data.idType}>${data.nom}</option>`
+      choixTypeObjet.value = data.idType
       Swal.fire({
         position: 'top-end',
         icon: 'success',
@@ -209,9 +211,7 @@ const surCreerTypeObjet = async (e) => {
           popup: 'animate__animated animate__fadeOutRight'
         }
       })
-      choixTypeObjet.value = data.idType.toString()
     })
-    return nomTypeRecu;
   }
 }
 
