@@ -168,6 +168,10 @@ public class ObjetImpl implements Objet {
     this.setEtatObjet("Confirmé");
   }
 
+  public void estVu() {
+    this.setVue(true);
+  }
+
   @Override
   public String toString() {
     return "Objet{"

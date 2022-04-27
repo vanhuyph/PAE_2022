@@ -794,6 +794,11 @@ Fin Message de bienvenue*/
   padding-left: 0!important;
 }
 
+.objet-attr{
+  padding: 15px 10px;
+  border-bottom: 1px dashed #d7dee7;
+}
+
 footer {
   margin-top: 68px;
   height: 15%;

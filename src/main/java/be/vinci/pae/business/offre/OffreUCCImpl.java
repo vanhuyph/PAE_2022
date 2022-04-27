@@ -385,7 +385,7 @@ public class OffreUCCImpl implements OffreUCC {
     try {
       listeTemp = offreDAO.voirOffreAttribuer(idUtilisateur);
       for (int i = 0; i < listeTemp.size(); i++) {
-        listeTemp.get(i).getObjetDTO().setVue(true);
+        ((Objet) listeTemp.get(i).getObjetDTO()).estVu();
         ObjetDTO objet = objetDAO.miseAJourObjet(listeTemp.get(i).getObjetDTO());
         listeTemp.get(i).setObjetDTO(objet);
         liste.add(listeTemp.get(i));
