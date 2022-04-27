@@ -7,6 +7,7 @@ import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
 import rechecheIcon from "../../img/search.svg";
 import Swal from 'sweetalert2'
+import {logPlugin} from "@babel/preset-env/lib/debug";
 
 // Page d'accueil
 const PageAccueil = () => {
@@ -24,6 +25,49 @@ const PageAccueil = () => {
         commentaire = session.utilisateur.commentaire
       }
     }
+  }
+  if(session){
+    fetch(
+        API_URL + "offres/voirOffreAttribuer/" + session.utilisateur.idUtilisateur,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token
+          },
+        }).then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+      }
+      return reponse.json();
+    }).then((donnees) => {
+      console.log(donnees)
+      let liste = `<p>Pas d'offres</p>`
+      if(donnees.length > 0) {
+        liste=""
+        donnees.forEach((donnee) => {
+          console.log(donnee)
+          liste+=`
+          <div class="objet-attr">
+            <p>${donnee.objetDTO.description}</p>
+          </div>
+          `
+        })
+        Swal.fire({
+          title: '<strong>Liste des offres qui vous ont été attribuées</strong>',
+          html:`${liste}`,
+          focusConfirm: false,
+          confirmButtonText:
+              '<i class="fa fa-thumbs-up"></i> Ok',
+          confirmButtonAriaLabel: 'Thumbs up, great!',
+        })
+      }
+    })
+
+
+
+
   }
 
   // Récupération des objets a évaluer lors de la connexion de l'utilisateur

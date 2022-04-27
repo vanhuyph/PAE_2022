@@ -18,4 +18,6 @@ public interface Objet extends ObjetDTO {
 
   void estEvalue();
 
+  void estVu();
+
 }
