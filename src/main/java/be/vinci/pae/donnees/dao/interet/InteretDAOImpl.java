@@ -116,14 +116,14 @@ public class InteretDAOImpl implements InteretDAO {
   }
 
   /**
-   * Liste les intérêts non-vues pour l'objet dont l'id est passé en paramètre.
+   * Liste les intérêts non-vues pour les objets d'un utilisateur dont l'id est passé en paramètre.
    *
-   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @param idOffreur : l'id de l'offreur dont les personnes sont intéressées ses objets
    * @return liste : la liste des intérêts non-vues
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public List<InteretDTO> listeDesPersonnesInteresseesVue(int idObjet) {
+  public List<InteretDTO> listeDesPersonnesInteresseesVue(int idOffreur) {
     String requetePS = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
         + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
         + "u.etat_inscription, u.commentaire, u.version, u.nb_objet_offert, u.nb_objet_donne, "
@@ -135,14 +135,15 @@ public class InteretDAOImpl implements InteretDAO {
         + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version FROM projet.interets i, "
         + "projet.utilisateurs u, projet.utilisateurs u2, "
         + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
-        + "WHERE o.id_objet = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
+        + "WHERE o.offreur = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
         + "a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur AND t.id_type = o.type_objet "
         + "AND a2.id_adresse = u2.adresse AND i.vue = false AND i.receveur_choisi = false "
-        + "AND i.venu_chercher IS NULL;";
+        + "AND i.venu_chercher IS NULL"
+        + "ORDER BY o.description;";
     InteretDTO interetDTO = factory.getInteret();
     List<InteretDTO> listeDesPersonnesInteressees;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
-      ps.setInt(1, idObjet);
+      ps.setInt(1, idOffreur);
       listeDesPersonnesInteressees = remplirListeInteretDepuisResulSet(interetDTO, ps);
     } catch (SQLException e) {
       e.printStackTrace();

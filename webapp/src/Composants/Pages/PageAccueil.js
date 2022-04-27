@@ -42,12 +42,10 @@ const PageAccueil = () => {
       }
       return reponse.json();
     }).then((donnees) => {
-      console.log(donnees)
       let liste = `<p>Pas d'offres</p>`
       if(donnees.length > 0) {
         liste=""
         donnees.forEach((donnee) => {
-          console.log(donnee)
           liste+=`
           <div class="objet-attr">
             <p>${donnee.objetDTO.description}</p>
@@ -64,7 +62,70 @@ const PageAccueil = () => {
         })
       }
     })
+    fetch(
+        API_URL + "interets/listeDesPersonnesInteresseesVue/" + session.utilisateur.idUtilisateur,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token
+          },
+        }).then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+      }
+      return reponse.json();
+    }).then((donnees) => {
+      console.log(donnees)
+      let liste = `<p>Pas d'interet</p>`
+      if(donnees.length > 0) {
+        liste=""
+        let obj;
+        donnees.forEach((donnee) => {
+          if (!obj){
+            console.log("no obj")
+            obj = donnee.objet.description
+            liste+=`
+          <div class="personne-interesse">
+            <strong>${obj}</strong>
+            `
+          }
+            if(obj === donnee.objet.description){
+              console.log("pers obj")
+              liste+=`
+              <div class="personne"> 
+                  <p class="inf-int">${donnee.utilisateur.nom}</p>
+                  <p class="inf-int">${donnee.utilisateur.prenom}</p>
+                  <p class="inf-int">${donnee.utilisateur.pseudo}</p>
+              </div> 
+              `
+            }else {
+              liste+=`</div>`
+              obj = donnee.objet.description
+              liste+=`
+          <div class="personne-interesse">
+            <strong>${obj}</strong>
+            <div class="personne"> 
+                  <p class="inf-int">${donnee.utilisateur.nom}</p>
+                  <p class="inf-int">${donnee.utilisateur.prenom}</p>
+                  <p class="inf-int">${donnee.utilisateur.pseudo}</p>
+              </div> 
+            `
+          }
 
+        })
+
+        Swal.fire({
+          title: '<strong>Liste des personnes intéressées pour vos objets</strong>',
+          html:`${liste}`,
+          focusConfirm: false,
+          confirmButtonText:
+              '<i class="fa fa-thumbs-up"></i> Ok',
+          confirmButtonAriaLabel: 'Thumbs up, great!',
+        })
+      }
+    })
 
 
 

@@ -798,6 +798,23 @@ Fin Message de bienvenue*/
   padding: 15px 10px;
   border-bottom: 1px dashed #d7dee7;
 }
+.personne-interesse {
+  text-align: left;
+  border-bottom: 1px dashed #d7dee7;
+  padding: 10px 0;
+  margin-top: 15px;
+}
+
+.personne-interesse .personne{
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.personne-interesse .inf-int{
+  width: 33%;
+  text-align: center;
+}
 
 footer {
   margin-top: 68px;
