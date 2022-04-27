@@ -42,6 +42,39 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
     return liste;
   }
 
+  @Override
+  public TypeObjetDTO creerTypeObjet(TypeObjetDTO typeObjetDTO) {
+    String requetePs = "INSERT INTO projet.types_objets VALUES (DEFAULT, ?) RETURNING *;";
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setString(1, typeObjetDTO.getNom());
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          remplirTypeObjetDepuisResulSet(typeObjetDTO, rs);
+        }
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+    return typeObjetDTO;
+  }
+
+  @Override
+  public TypeObjetDTO verifierUniqueTypeObjet(TypeObjetDTO typeObjetDTO) {
+    String requetePs = "SELECT * FROM projet.types_objets WHERE nom = ?;";
+
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setString(1, typeObjetDTO.getNom());
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          remplirTypeObjetDepuisResulSet(typeObjetDTO, rs);
+        }
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+    return typeObjetDTO;
+  }
+
   /**
    * Rempli les données du type d'objet depuis un ResultSet.
    *

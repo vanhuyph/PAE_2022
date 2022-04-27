@@ -6,4 +6,6 @@ public interface TypeObjetUCC {
 
   List<TypeObjetDTO> listerTypeObjet();
 
+  TypeObjetDTO creerTypeObjet(TypeObjetDTO typeObjetDTO);
+
 }

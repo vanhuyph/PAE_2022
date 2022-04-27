@@ -7,4 +7,8 @@ public interface TypeObjetDAO {
 
   List<TypeObjetDTO> listerTypeObjet();
 
+  TypeObjetDTO creerTypeObjet(TypeObjetDTO typeObjetDTO);
+
+  TypeObjetDTO verifierUniqueTypeObjet(TypeObjetDTO typeObjetDTO);
+
 }
