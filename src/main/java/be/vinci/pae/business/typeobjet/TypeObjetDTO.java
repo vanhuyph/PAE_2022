@@ -13,8 +13,4 @@ public interface TypeObjetDTO {
 
   void setNom(String nom);
 
-  int getVersion();
-
-  void setVersion(int version);
-
 }

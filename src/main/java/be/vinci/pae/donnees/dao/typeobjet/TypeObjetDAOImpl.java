@@ -44,11 +44,9 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
 
   @Override
   public TypeObjetDTO creerTypeObjet(TypeObjetDTO typeObjetDTO) {
-    String requetePs = "INSERT INTO projet.types_objets"
-        + " VALUES (DEFAULT, ?, ?) RETURNING *";
+    String requetePs = "INSERT INTO projet.types_objets VALUES (DEFAULT, ?) RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, typeObjetDTO.getNom());
-      ps.setInt(2, typeObjetDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           remplirTypeObjetDepuisResulSet(typeObjetDTO, rs);
@@ -62,11 +60,10 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
 
   @Override
   public TypeObjetDTO verifierUniqueTypeObjet(TypeObjetDTO typeObjetDTO) {
-    String requetePs = "SELECT * FROM projet.types_objets WHERE nom = ? AND version = ?";
+    String requetePs = "SELECT * FROM projet.types_objets WHERE nom = ?;";
 
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, typeObjetDTO.getNom());
-      ps.setInt(2, typeObjetDTO.getVersion());
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           remplirTypeObjetDepuisResulSet(typeObjetDTO, rs);
@@ -89,7 +86,6 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
     try {
       typeObjetDTO.setIdType(rs.getInt(1));
       typeObjetDTO.setNom(rs.getString(2));
-      typeObjetDTO.setVersion(rs.getInt(3));
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);
     }

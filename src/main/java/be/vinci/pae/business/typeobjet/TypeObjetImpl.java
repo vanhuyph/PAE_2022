@@ -12,9 +12,6 @@ public class TypeObjetImpl implements TypeObjet {
   private int idType;
   @JsonView(Vues.Public.class)
   private String nom;
-  @JsonView(Vues.Public.class)
-  private int version;
-
 
   public int getIdType() {
     return idType;
@@ -35,15 +32,6 @@ public class TypeObjetImpl implements TypeObjet {
     this.nom = nom;
   }
 
-
-  public int getVersion() {
-    return version;
-  }
-
-  public void setVersion(int version) {
-    this.version = version;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -54,7 +42,6 @@ public class TypeObjetImpl implements TypeObjet {
     }
     TypeObjetImpl typeObjet = (TypeObjetImpl) o;
     return idType == typeObjet.idType && nom.equals(typeObjet.nom);
-
   }
 
   @Override
