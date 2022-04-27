@@ -24,4 +24,5 @@ public interface OffreDAO {
 
   List<OffreDTO> voirOffreAttribuer(int idUtilisateur);
 
+  List<OffreDTO> objetsOffertsUtilisateur(int idUtilisateur);
 }
