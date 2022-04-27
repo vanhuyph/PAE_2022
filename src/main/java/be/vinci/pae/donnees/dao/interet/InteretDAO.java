@@ -11,7 +11,7 @@ public interface InteretDAO {
 
   List<InteretDTO> listeDesPersonnesInteressees(int idObjet);
 
-  List<InteretDTO> listeDesPersonnesInteresseesVue(int idObjet);
+  List<InteretDTO> listeDesPersonnesInteresseesVue(int idOffreur);
 
   InteretDTO miseAJourInteret(InteretDTO interetDTO);
 

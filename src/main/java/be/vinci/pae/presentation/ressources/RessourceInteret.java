@@ -93,9 +93,9 @@ public class RessourceInteret {
   }
 
   /**
-   * Liste les intérêts non-vues pour l'objet dont l'id est passé en paramètre.
+   * Liste les intérêts non-vues pour l'objet d'un utilisateur dont l'id est passé en paramètre.
    *
-   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @param idOffreur : l'id de l'offreur d'un objet dont les personnes sont intéressées
    * @return liste : la liste des intérêts non-vues
    * @throws PresentationException : est lancée si l'id de l'objet est incorrect
    */
@@ -103,12 +103,12 @@ public class RessourceInteret {
   @Path("/listeDesPersonnesInteresseesVue/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @Autorisation
-  public List<InteretDTO> listeDesPersonnesInteresseesVue(@PathParam("id") int idObjet) {
-    if (idObjet <= 0) {
+  //@Autorisation
+  public List<InteretDTO> listeDesPersonnesInteresseesVue(@PathParam("id") int idOffreur) {
+    if (idOffreur <= 0) {
       throw new PresentationException("L'id de l'objet est incorrect", Status.BAD_REQUEST);
     }
-    List<InteretDTO> liste = interetUCC.listeDesPersonnesInteresseesVue(idObjet);
+    List<InteretDTO> liste = interetUCC.listeDesPersonnesInteresseesVue(idOffreur);
     return liste;
   }
 

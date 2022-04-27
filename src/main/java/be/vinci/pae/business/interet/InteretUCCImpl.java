@@ -121,22 +121,22 @@ public class InteretUCCImpl implements InteretUCC {
   }
 
   /**
-   * Liste les intérêts non-vues pour l'objet dont l'id est passé en paramètre.
+   * Liste les intérêts non-vues pour l'objet d'un utilisateur dont l'id est passé en paramètre.
    *
-   * @param idObjet : l'id de l'objet dont les personnes sont intéressées
+   * @param idOffreur : l'id de l'offreur d'un objet dont les personnes sont intéressées
    * @return liste : la liste des intérêts non-vues
    * @throws BusinessException : est lancée si l'id de l'objet est incorrect
    */
   @Override
-  public List<InteretDTO> listeDesPersonnesInteresseesVue(int idObjet) {
+  public List<InteretDTO> listeDesPersonnesInteresseesVue(int idOffreur) {
     serviceDAL.commencerTransaction();
     List<InteretDTO> listeTemp;
     List<InteretDTO> liste = new ArrayList<>();
     try {
-      if (idObjet <= 0) {
+      if (idOffreur <= 0) {
         throw new BusinessException("L'id de l'objet est incorrect");
       }
-      listeTemp = interetDAO.listeDesPersonnesInteresseesVue(idObjet);
+      listeTemp = interetDAO.listeDesPersonnesInteresseesVue(idOffreur);
       for (int i = 0; i < listeTemp.size(); i++) {
         listeTemp.get(i).setVue(true);
         InteretDTO interetDTO = interetDAO.miseAJourInteret(listeTemp.get(i));
