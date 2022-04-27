@@ -1,4 +1,4 @@
-import logo from '../../img/donnamis.png'
+import logo from '../../img/DonnamisBlanc.png'
 
 const Footer = () => {
   const footer = document.getElementById("footer")
