@@ -336,13 +336,26 @@ public class OffreUCCImpl implements OffreUCC {
       if (interetDAO.miseAJourInteret(interetDTO) == null) {
         throw new OptimisticLockException("Données périmées");
       }
+      ((Utilisateur) interetDTO.getUtilisateur()).incrementerNbObjetsRecus();
+      if (utilisateurDAO.miseAJourUtilisateur(interetDTO.getUtilisateur()) == null) {
+        throw new OptimisticLockException("Données périmées");
+      }
       ((Objet) offreDTO.getObjetDTO()).indiquerReceveur(interetDTO.getUtilisateur());
-      ObjetDTO objet = objetDAO.miseAJourObjet(offreDTO.getObjetDTO());
-      if (objet == null) {
+      if (objetDAO.miseAJourObjet(offreDTO.getObjetDTO()) == null) {
         ObjetDTO objetVerif = objetDAO.rechercheParId(offreDTO.getObjetDTO());
         if (objetVerif == null) {
           throw new PasTrouveException("L'objet n'existe pas");
         }
+        throw new OptimisticLockException("Données périmées");
+      }
+
+      UtilisateurDTO offreur = utilisateurDAO.rechercheParId(
+          offreDTO.getObjetDTO().getOffreur().getIdUtilisateur());
+      if (offreur == null) {
+        throw new PasTrouveException("L'objet n'existe pas");
+      }
+      ((Utilisateur) offreur).incrementerNbObjetsDonnes();
+      if (utilisateurDAO.miseAJourUtilisateur(offreur) == null) {
         throw new OptimisticLockException("Données périmées");
       }
     } catch (Exception e) {
