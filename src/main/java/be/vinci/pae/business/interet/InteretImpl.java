@@ -106,12 +106,6 @@ public class InteretImpl implements Interet {
   }
 
   @Override
-  public InteretDTO changerEtatObjet(String etat) {
-    this.getObjet().setEtatObjet(etat);
-    return this;
-  }
-
-  @Override
   public void indiquerReceveur() {
     this.setVenuChercher(null);
     this.setReceveurChoisi(true);

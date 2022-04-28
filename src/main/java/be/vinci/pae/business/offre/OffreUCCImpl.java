@@ -283,37 +283,6 @@ public class OffreUCCImpl implements OffreUCC {
   }
 
   /**
-   * Permet d'indiquer à un membre en tant que receveur d'une offre.
-   *
-   * @param offreDTO : l'offre à confirmer
-   * @return offre : l'offre confirmée
-   * @throws PasTrouveException      : est lancée si l'objet n'est pas trouvé
-   * @throws OptimisticLockException : est lancée si les données sont périmées
-   */
-  @Override
-  public OffreDTO indiquerMembreReceveur(OffreDTO offreDTO) {
-    serviceDAL.commencerTransaction();
-    Offre offre;
-    try {
-      offre = (Offre) offreDTO;
-      // offre.changerEtatObjet("Confirmé");
-      ObjetDTO objet = objetDAO.miseAJourObjet(offreDTO.getObjetDTO());
-      if (objet == null) {
-        ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
-        if (objetVerif == null) {
-          throw new PasTrouveException("L'objet n'existe pas");
-        }
-        throw new OptimisticLockException("Données périmées");
-      }
-    } catch (Exception e) {
-      serviceDAL.retourEnArriereTransaction();
-      throw e;
-    }
-    serviceDAL.commettreTransaction();
-    return offre;
-  }
-
-  /**
    * Permet de donner une offre.
    *
    * @param offreDTO : l'offre à donné

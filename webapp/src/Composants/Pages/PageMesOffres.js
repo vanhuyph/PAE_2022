@@ -224,7 +224,6 @@ const surListeMesOffres = (data) => {
         })
         let listeInteresseNR = document.querySelector(
             "#liste-interessees-non-remis")
-        console.log(listeInteresseNR)
         if (listeInteresseNR) {
           listeInteresseNR.addEventListener("click", () => {
             listeInteresseNonRemis(objet)
@@ -254,7 +253,6 @@ const surListeMesOffres = (data) => {
 };
 
 const reoffrirObjet = (offre) => {
-  console.log(offre)
   let session = recupUtilisateurDonneesSession()
   fetch(API_URL + "offres/reoffrirObjet", {
     method: "POST",

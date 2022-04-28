@@ -144,16 +144,6 @@ public class ObjetImpl implements Objet {
     this.setEtatObjet("Evalué");
   }
 
-  /**
-   * Verifie si l'état de l'objet permet de le réoffrir.
-   *
-   * @return true : si l'objet peut être réoffert, false sinon.
-   */
-  @Override
-  public boolean verifierEtatPourReoffrirObjet() {
-    return this.etatObjet.equals("Annulé");
-  }
-
   @Override
   public void indiquerReceveur(UtilisateurDTO utilisateur) {
     this.setReceveur(utilisateur);

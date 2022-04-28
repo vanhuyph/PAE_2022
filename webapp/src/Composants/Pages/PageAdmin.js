@@ -202,7 +202,6 @@ const envoyerRecherche = (e) => {
       return reponse.json();
     })
     .then((donnees) => {
-      console.log(donnees)
       surListeConfirme(donnees)
     })
   } else {
@@ -592,7 +591,6 @@ const surListeRefus = (data) => {
           let confirmation = {
             estAdmin: admin,
           }
-          console.log(confirmation)
           fetch(API_URL + "utilisateurs/confirme/" + id, {
             method: "PUT",
             body: JSON.stringify(confirmation),
