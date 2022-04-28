@@ -135,10 +135,10 @@ const surChoixTypeObjet = () => {
   let typeObjet = document.querySelector("#form-type-objet")
   const choixTypeObjet = document.querySelector("#choixTypeObjet")
   const formCreerType = document.querySelector("#formCreerType")
-    if (!formCreerType) {
-      if(choixTypeObjet.value === "empty") {
-        document.querySelector(".erreur-type").innerHTML = ""
-        typeObjet.innerHTML += `<div id="formCreerType">
+  if (!formCreerType) {
+    if (choixTypeObjet.value === "empty") {
+      document.querySelector(".erreur-type").innerHTML = ""
+      typeObjet.innerHTML += `<div id="formCreerType">
       <div class="field">
         <label for="nom">Nom du nouveau type de l'objet</label>
         <input type="text" id="nomType">
@@ -148,12 +148,13 @@ const surChoixTypeObjet = () => {
         <button id="buttonCreerType" class="ui green button">Ajouter</button>
       </div>
       </div> `;
-        document.querySelector("#buttonCreerType").addEventListener("click", surCreerTypeObjet)
-        choixTypeObjet.addEventListener("change", surChoixTypeObjet)
-      }
-    }else{
-      formCreerType.remove();
+      document.querySelector("#buttonCreerType").addEventListener("click",
+          surCreerTypeObjet)
+      choixTypeObjet.addEventListener("change", surChoixTypeObjet)
     }
+  } else {
+    formCreerType.remove();
+  }
 
 }
 
@@ -195,7 +196,7 @@ const surCreerTypeObjet = async (e) => {
         }).then((data) => {
       const formCreerType = document.querySelector("#formCreerType")
       formCreerType.remove();
-      choixTypeObjet.innerHTML+=`<option value=${data.idType}>${data.nom}</option>`
+      choixTypeObjet.innerHTML += `<option value=${data.idType}>${data.nom}</option>`
       choixTypeObjet.value = data.idType
       Swal.fire({
         position: 'top-end',
@@ -236,7 +237,6 @@ const envoyerPhoto = async () => {
     method: 'POST',
     body: formDonnee,
     headers: {
-      "Content-Type": "application/json",
       Authorization: session.token
     },
   };
