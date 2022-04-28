@@ -380,6 +380,36 @@ public class OffreDAOImpl implements OffreDAO {
         + "AND of.date_offre = (SELECT max(of2.date_offre) "
         + "FROM projet.offres of2, projet.objets o2 "
         + "WHERE of2.id_objet = o.id_objet)";
+    return listeObjetsUtilisateur(idUtilisateur, requetePs);
+  }
+
+  /**
+   * Liste les propres offres de l'utilisateur dont l'id est passé en paramètre.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses offres
+   * @return liste : la liste de toutes ses propres offres
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public List<OffreDTO> objetsRecuUtilisateur(int idUtilisateur) {
+    String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
+        + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
+        + "o.etat_objet, o.description, o.photo, o.version, o.vue, of.id_offre, of.date_offre, "
+        + "of.plage_horaire, of.version "
+        + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
+        + "LEFT OUTER JOIN projet.utilisateurs u ON o.receveur = u.id_utilisateur "
+        + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+        + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
+        + "WHERE u.id_utilisateur = ? AND o.etat_objet = 'Donne' "
+        + "AND of.date_offre = (SELECT max(of2.date_offre) "
+        + "FROM projet.offres of2, projet.objets o2 "
+        + "WHERE of2.id_objet = o.id_objet)";
+    return listeObjetsUtilisateur(idUtilisateur, requetePs);
+  }
+
+
+  private List<OffreDTO> listeObjetsUtilisateur(int idUtilisateur, String requetePs) {
     List<OffreDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setInt(1, idUtilisateur);

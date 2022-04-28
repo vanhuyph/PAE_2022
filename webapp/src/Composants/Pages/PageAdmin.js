@@ -319,7 +319,6 @@ const listeObjetsOffert = async (objets, idUtilisateur) => {
     }
   })
   objets.querySelector(".liste-objets").innerHTML = liste
-
 }
 
 // Récupération des utilisateurs en attente

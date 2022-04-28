@@ -36,4 +36,6 @@ public interface OffreUCC {
   List<ObjetDTO> objetsAEvaluerParUtilisateur(int idUtilisateur);
 
   List<OffreDTO> objetsOffertsUtilisateur(int idUtilisateur);
+
+  List<OffreDTO> objetsRecusUtilisateur(int idUtilisateur);
 }

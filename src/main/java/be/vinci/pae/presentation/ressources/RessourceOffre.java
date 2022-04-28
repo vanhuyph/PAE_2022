@@ -356,7 +356,7 @@ public class RessourceOffre {
   @Path("/objetsOfferts/{idUtilisateur}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  //@Autorisation
+  @Autorisation
   public List<OffreDTO> objetsOffertsUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
     List<OffreDTO> objets = null;
     objets = offreUCC.objetsOffertsUtilisateur(idUtilisateur);
@@ -374,9 +374,9 @@ public class RessourceOffre {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public List<ObjetDTO> objetsRecusUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
-    List<ObjetDTO> objets = null;
-    //objets = offreUCC.objetsAEvaluerParUtilisateur(idUtilisateur);
+  public List<OffreDTO> objetsRecusUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
+    List<OffreDTO> objets = null;
+    objets = offreUCC.objetsRecusUtilisateur(idUtilisateur);
     return objets;
   }
 }
