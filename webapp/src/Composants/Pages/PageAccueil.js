@@ -7,7 +7,6 @@ import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
 import rechecheIcon from "../../img/search.svg";
 import Swal from 'sweetalert2'
-import {logPlugin} from "@babel/preset-env/lib/debug";
 
 // Page d'accueil
 const PageAccueil = () => {
@@ -26,9 +25,11 @@ const PageAccueil = () => {
       }
     }
   }
-  if(session){
+  // Lors de la connexion, liste les offres attribuées à l'utilisateur
+  if (session) {
     fetch(
-        API_URL + "offres/voirOffreAttribuer/" + session.utilisateur.idUtilisateur,
+        API_URL + "offres/voirOffreAttribuer/"
+        + session.utilisateur.idUtilisateur,
         {
           method: "GET",
           headers: {
@@ -43,10 +44,10 @@ const PageAccueil = () => {
       return reponse.json();
     }).then((donnees) => {
       let liste = `<p>Pas d'offres</p>`
-      if(donnees.length > 0) {
-        liste=""
+      if (donnees.length > 0) {
+        liste = ""
         donnees.forEach((donnee) => {
-          liste+=`
+          liste += `
           <div class="objet-attr">
             <p>${donnee.objetDTO.description}</p>
           </div>
@@ -54,16 +55,17 @@ const PageAccueil = () => {
         })
         Swal.fire({
           title: '<strong>Liste des offres qui vous ont été attribuées</strong>',
-          html:`${liste}`,
+          html: `${liste}`,
           focusConfirm: false,
           confirmButtonText:
-              '<i class="fa fa-thumbs-up"></i> Ok',
+              '<i class="fa fa-thumbs-up"></i> OK',
           confirmButtonAriaLabel: 'Thumbs up, great!',
         })
       }
     })
     fetch(
-        API_URL + "interets/listeDesPersonnesInteresseesVue/" + session.utilisateur.idUtilisateur,
+        API_URL + "interets/listeDesPersonnesInteresseesVue/"
+        + session.utilisateur.idUtilisateur,
         {
           method: "GET",
           headers: {
@@ -77,33 +79,30 @@ const PageAccueil = () => {
       }
       return reponse.json();
     }).then((donnees) => {
-      console.log(donnees)
-      let liste = `<p>Pas d'interet</p>`
-      if(donnees.length > 0) {
-        liste=""
+      let liste = `<p>Pas d'intérêt</p>`
+      if (donnees.length > 0) {
+        liste = ""
         let obj;
         donnees.forEach((donnee) => {
-          if (!obj){
-            console.log("no obj")
+          if (!obj) {
             obj = donnee.objet.description
-            liste+=`
+            liste += `
           <div class="personne-interesse">
             <strong>${obj}</strong>
             `
           }
-            if(obj === donnee.objet.description){
-              console.log("pers obj")
-              liste+=`
+          if (obj === donnee.objet.description) {
+            liste += `
               <div class="personne"> 
                   <p class="inf-int">${donnee.utilisateur.nom}</p>
                   <p class="inf-int">${donnee.utilisateur.prenom}</p>
                   <p class="inf-int">${donnee.utilisateur.pseudo}</p>
               </div> 
               `
-            }else {
-              liste+=`</div>`
-              obj = donnee.objet.description
-              liste+=`
+          } else {
+            liste += `</div>`
+            obj = donnee.objet.description
+            liste += `
           <div class="personne-interesse">
             <strong>${obj}</strong>
             <div class="personne"> 
@@ -113,25 +112,21 @@ const PageAccueil = () => {
               </div> 
             `
           }
-
         })
-
+        // Popup à la connexion si des personnes ont marqué un intérêt pour les objets de l'utilisateur
         Swal.fire({
           title: '<strong>Liste des personnes intéressées pour vos objets</strong>',
-          html:`${liste}`,
+          html: `${liste}`,
           focusConfirm: false,
           confirmButtonText:
-              '<i class="fa fa-thumbs-up"></i> Ok',
+              '<i class="fa fa-thumbs-up"></i> OK',
           confirmButtonAriaLabel: 'Thumbs up, great!',
         })
       }
     })
-
-
-
   }
 
-  // Récupération des objets a évaluer lors de la connexion de l'utilisateur
+  // Récupération des objets à évaluer lors de la connexion de l'utilisateur
   if (session) {
     fetch(
         API_URL + "offres/objetsAEvaluer/" + session.utilisateur.idUtilisateur,
@@ -255,7 +250,7 @@ const PageAccueil = () => {
   }))
 };
 
-// Affichage des objets a évaluer
+// Affichage des objets à évaluer
 const objetsAEvaluer = (data, session) => {
   let note;
   let com;
@@ -306,6 +301,7 @@ const objetsAEvaluer = (data, session) => {
         validationMessage: 'Nous avons besoin d\'une note',
         currentProgressStep: 0
       })
+      // Commentaire de l'évaluation
       const {value: commentaireEval} = await Queue.fire({
         title: 'Votre commentaire',
         currentProgressStep: 1,
@@ -315,7 +311,6 @@ const objetsAEvaluer = (data, session) => {
         },
         validationMessage: 'Nous avons besoin d\'un commentaire'
       })
-
       // Affichage de la confirmation pour la note et le commentaire
       await Queue.fire({
         title: 'Votre objet a bien été évalué',
@@ -368,7 +363,7 @@ const rechercheObjet = () => {
     <div class="ui text active centered inline loader">Chargement de la liste d'offres</div>
 </div>`
 
-  let critereRecehrche = {
+  let critereRecherche = {
     recherche: recherche,
     dateDebut: dateDebut,
     dateFin: dateFin
@@ -378,7 +373,7 @@ const rechercheObjet = () => {
       !== "2300-12-12") {
     fetch(API_URL + "offres/recherche", {
       method: "POST",
-      body: JSON.stringify(critereRecehrche),
+      body: JSON.stringify(critereRecherche),
       headers: {
         "Content-Type": "application/json",
         Authorization: session.token

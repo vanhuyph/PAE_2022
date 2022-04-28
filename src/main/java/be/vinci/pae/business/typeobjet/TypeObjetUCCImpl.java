@@ -32,6 +32,13 @@ public class TypeObjetUCCImpl implements TypeObjetUCC {
     return liste;
   }
 
+  /**
+   * Permet de créer un nouveau type d'objet à ajouter dans la liste des types.
+   *
+   * @param typeObjetDTO : le type d'objet à créé
+   * @return typeObjet : le type d'objet créé
+   * @throws BusinessException : est lancée si le type d'objet existe déjà dans la liste
+   */
   @Override
   public TypeObjetDTO creerTypeObjet(TypeObjetDTO typeObjetDTO) {
     serviceDAL.commencerTransaction();

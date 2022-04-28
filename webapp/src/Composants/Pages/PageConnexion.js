@@ -110,7 +110,6 @@ const surConUtilisateur = (donnee, souvenir) => {
 const surErreur = (err) => {
   let messageErreur = document.querySelector("#messageErreur");
   let erreurMessage = "";
-  console.log(err)
   if (err.message.includes("401")) {
     erreurMessage = "Pseudo ou mot de passe incorrect";
   } else {

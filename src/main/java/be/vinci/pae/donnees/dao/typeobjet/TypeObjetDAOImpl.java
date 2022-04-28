@@ -21,7 +21,7 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
   /**
    * Liste les types d'objet.
    *
-   * @return typesObjet : la liste des types d'objet
+   * @return liste : la liste des types d'objet
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
@@ -42,6 +42,13 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
     return liste;
   }
 
+  /**
+   * Ajoute un nouveau type d'objet dans la base de données.
+   *
+   * @param typeObjetDTO : le type à ajouter
+   * @return typeObjetDTO : le type ajouté
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
   @Override
   public TypeObjetDTO creerTypeObjet(TypeObjetDTO typeObjetDTO) {
     String requetePs = "INSERT INTO projet.types_objets VALUES (DEFAULT, ?) RETURNING *;";
@@ -58,10 +65,16 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
     return typeObjetDTO;
   }
 
+  /**
+   * Cherche si le type d'objet existe déjà dans la base données.
+   *
+   * @param typeObjetDTO : le type à chercher
+   * @return typeObjetDTO : le type cherché
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
   @Override
   public TypeObjetDTO verifierUniqueTypeObjet(TypeObjetDTO typeObjetDTO) {
     String requetePs = "SELECT * FROM projet.types_objets WHERE nom = ?;";
-
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       ps.setString(1, typeObjetDTO.getNom());
       try (ResultSet rs = ps.executeQuery()) {

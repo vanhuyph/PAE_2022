@@ -23,8 +23,9 @@ public class RessourceEvaluation {
   /**
    * Permet de créer une évaluation.
    *
-   * @param evaluationDTO : l'evaluation a créer
-   * @return l'évaluation créée
+   * @param evaluationDTO : l'evaluation à créer
+   * @return evaluation : l'évaluation créée
+   * @throws PresentationException : est lancée si des erreurs se sont produites
    */
   @POST
   @Path("/creerEvaluation")
@@ -40,7 +41,7 @@ public class RessourceEvaluation {
     }
     EvaluationDTO evaluation = evaluationUCC.creerEvaluation(evaluationDTO);
     if (evaluation == null) {
-      throw new PresentationException("la création a échoué ", Status.INTERNAL_SERVER_ERROR);
+      throw new PresentationException("La création a échoué", Status.INTERNAL_SERVER_ERROR);
     }
     return evaluation;
   }

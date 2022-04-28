@@ -17,16 +17,13 @@ public class TypeObjetImpl implements TypeObjet {
     return idType;
   }
 
-
   public void setIdType(int idType) {
     this.idType = idType;
   }
 
-
   public String getNom() {
     return nom;
   }
-
 
   public void setNom(String nom) {
     this.nom = nom;

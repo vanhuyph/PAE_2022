@@ -89,10 +89,11 @@ public class ObjetDAOImpl implements ObjetDAO {
   }
 
   /**
-   * Recherche un objet que.
+   * Liste les objets reçus de l'utilisateur.
    *
    * @param idReceveur : l'id de l'utilisateur connecté
-   * @return liste la liste des objets reçus par l'utilisateur
+   * @return liste : la liste des objets reçus par l'utilisateur
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public List<ObjetDTO> rechercheObjetParReceveur(int idReceveur) {
@@ -120,7 +121,7 @@ public class ObjetDAOImpl implements ObjetDAO {
   /**
    * Met à jour l'objet.
    *
-   * @param objetDTO : l'objet à mettre a jour
+   * @param objetDTO : l'objet à mettre à jour
    * @return objetDTO : l'objet mis à jour
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
