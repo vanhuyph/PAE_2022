@@ -373,7 +373,7 @@ public class RessourceOffre {
   @Path("/objetsRecus/{idUtilisateur}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @Autorisation
+  //@Autorisation
   public List<OffreDTO> objetsRecusUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
     List<OffreDTO> objets = null;
     objets = offreUCC.objetsRecusUtilisateur(idUtilisateur);
