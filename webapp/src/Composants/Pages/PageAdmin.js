@@ -238,6 +238,7 @@ const surListeConfirme = async (donnees) => {
     <div class="utilisateur">
       <div class="admin-membre">
         <div class="utilisateur-nom-prenom">
+          <input id="id-ut" type="hidden" value="${utilisateur.idUtilisateur}">
           <p>${utilisateur.nom}</p> 
           <p>${utilisateur.prenom}</p>
         </div>
@@ -252,11 +253,119 @@ const surListeConfirme = async (donnees) => {
           </div>
         </div>
       </div>
+      <div class="liste-utilisateur-objets">
+          <div class="ui buttons">
+            <button class="ui positive button" id="obj-offert">Offert</button>
+            <button class="ui button" id="obj-recu">Reçu</button>
+          </div>
+        <div class="liste-objets"></div>
+      </div>
     </div>
     `
   }
   liste += `</div>`
   contenu.innerHTML = liste
+
+  document.querySelectorAll(".utilisateur").forEach((u) => {
+    u.querySelector(".admin-membre").addEventListener("click", () => {
+      let objets = u.querySelector(".liste-utilisateur-objets")
+      objets.classList.toggle("montrer-block")
+      const idUtilisateur = u.querySelector("#id-ut").value
+      if(objets){
+        listeObjetsOffert(objets, idUtilisateur)
+        objets.querySelector("#obj-offert").addEventListener("click", () => {
+          objets.querySelector("#obj-offert").classList.add("positive")
+          objets.querySelector("#obj-recu").classList.remove("positive")
+          listeObjetsOffert(objets, idUtilisateur)
+        })
+        objets.querySelector("#obj-recu").addEventListener("click", () => {
+          objets.querySelector("#obj-offert").classList.remove("positive")
+          objets.querySelector("#obj-recu").classList.add("positive")
+          listeObjetsRecu(objets, idUtilisateur)
+        })
+      }
+
+    })
+  })
+}
+const listeObjetsOffert = async (objets, idUtilisateur) => {
+  let session = recupUtilisateurDonneesSession()
+  let liste = `<p>Pas d'objet offert</p>`
+  await fetch(API_URL + "offres/objetsOfferts/" + idUtilisateur, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token,
+    },
+  })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+    }
+    return reponse.json();
+  })
+  .then((donnees) => {
+    if (donnees.length > 0) {
+      liste = ""
+      donnees.forEach((donnee) => {
+        liste += `
+      <div class="mon-offre">
+      <div class="ui two column grid">
+        <div class="column">
+          <img src="/api/offres/photos/${donnee.objetDTO.photo}" height="110px">
+        </div>
+        <div class="column descri">
+          <p>${donnee.objetDTO.description}</p>
+        </div>
+      </div> 
+      </div>
+      `
+      })
+
+    }
+  })
+  objets.querySelector(".liste-objets").innerHTML = liste
+}
+
+const listeObjetsRecu = async (objets, idUtilisateur) => {
+  let session = recupUtilisateurDonneesSession()
+  let liste = `<p>Pas d'objet reçu</p>`
+  await fetch(API_URL + "offres/objetsRecus/" + idUtilisateur, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token,
+    },
+  })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+    }
+    return reponse.json();
+  })
+  .then((donnees) => {
+    if (donnees.length > 0) {
+      liste = ""
+      donnees.forEach((donnee) => {
+        liste += `
+      <div class="mon-offre">
+      <div class="ui two column grid">
+        <div class="column">
+          <img src="/api/offres/photos/${donnee.objetDTO.photo}" height="110px">
+        </div>
+        <div class="column descri">
+          <p>${donnee.objetDTO.description}</p>
+        </div>
+      </div> 
+      </div>
+      `
+      })
+
+    }
+  })
+  objets.querySelector(".liste-objets").innerHTML = liste
 }
 
 // Récupération des utilisateurs en attente
@@ -368,7 +477,6 @@ const surListeAttente = (data) => {
           let confirmation = {
             estAdmin: admin,
           }
-          console.log(confirmation)
           fetch(API_URL + "utilisateurs/confirme/" + id, {
             method: "PUT",
             body: JSON.stringify(confirmation),

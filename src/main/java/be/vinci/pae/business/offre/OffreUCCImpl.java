@@ -426,4 +426,44 @@ public class OffreUCCImpl implements OffreUCC {
     return liste;
   }
 
+  /**
+   * Récupère tous les objets offerts de l'utilisateur.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur
+   * @return
+   */
+  @Override
+  public List<OffreDTO> objetsOffertsUtilisateur(int idUtilisateur) {
+    serviceDAL.commencerTransaction();
+    List<OffreDTO> objets = null;
+    try {
+      objets = offreDAO.objetsOffertsUtilisateur(idUtilisateur);
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return objets;
+  }
+
+  /**
+   * Récupère tous les objets reçus de l'utilisateur.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur
+   * @return
+   */
+  @Override
+  public List<OffreDTO> objetsRecusUtilisateur(int idUtilisateur) {
+    serviceDAL.commencerTransaction();
+    List<OffreDTO> objets = null;
+    try {
+      objets = offreDAO.objetsRecuUtilisateur(idUtilisateur);
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return objets;
+  }
+
 }

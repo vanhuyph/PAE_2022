@@ -138,7 +138,7 @@ public class InteretDAOImpl implements InteretDAO {
         + "WHERE o.offreur = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
         + "a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur AND t.id_type = o.type_objet "
         + "AND a2.id_adresse = u2.adresse AND i.vue = false AND i.receveur_choisi = false "
-        + "AND i.venu_chercher IS NULL"
+        + "AND i.venu_chercher IS NULL "
         + "ORDER BY o.description;";
     InteretDTO interetDTO = factory.getInteret();
     List<InteretDTO> listeDesPersonnesInteressees;

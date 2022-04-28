@@ -736,7 +736,7 @@ Fin Message de bienvenue*/
   display: block !important;
 }
 
-.offres .mon-offre .descri, .mon-offre .actions {
+.mon-offre .descri, .mon-offre .actions {
   display: flex !important;
   align-items: flex-start !important;
   justify-content: center !important;
@@ -814,6 +814,15 @@ Fin Message de bienvenue*/
 .personne-interesse .inf-int{
   width: 33%;
   text-align: center;
+}
+
+.liste-utilisateurs .utilisateur .admin-membre{
+  cursor: pointer;
+}
+.liste-utilisateur-objets{
+  margin-top: 30px;
+  display: none;
+  text-align: left;
 }
 
 footer {

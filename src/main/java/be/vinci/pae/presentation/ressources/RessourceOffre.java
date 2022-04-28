@@ -345,4 +345,38 @@ public class RessourceOffre {
 
     return objetsAEvaluer;
   }
+
+  /**
+   * Recupere tous les objets offerts d'un utilisateur.
+   *
+   * @param idUtilisateur : id de l'utilisateur
+   * @return objets : la liste des objets que l'utilisateur doit évaluer
+   */
+  @GET
+  @Path("/objetsOfferts/{idUtilisateur}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<OffreDTO> objetsOffertsUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
+    List<OffreDTO> objets = null;
+    objets = offreUCC.objetsOffertsUtilisateur(idUtilisateur);
+    return objets;
+  }
+
+  /**
+   * Recupere tous les objets reçus d'un utilisateur.
+   *
+   * @param idUtilisateur : id de l'utilisateur
+   * @return objets : la liste des objets que l'utilisateur doit évaluer
+   */
+  @GET
+  @Path("/objetsRecus/{idUtilisateur}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  //@Autorisation
+  public List<OffreDTO> objetsRecusUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
+    List<OffreDTO> objets = null;
+    objets = offreUCC.objetsRecusUtilisateur(idUtilisateur);
+    return objets;
+  }
 }
