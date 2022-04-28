@@ -7,8 +7,6 @@ public interface Interet extends InteretDTO {
 
   void marquerInteretObjet();
 
-  InteretDTO changerEtatObjet(String etat);
-
   void indiquerReceveur();
 
   void pasVenuChercher();

@@ -10,8 +10,6 @@ public interface Objet extends ObjetDTO {
 
   void confirmerObjet();
 
-  boolean verifierEtatPourReoffrirObjet();
-
   void indiquerReceveur(UtilisateurDTO utilisateur);
 
   boolean peutEtreEvalue();

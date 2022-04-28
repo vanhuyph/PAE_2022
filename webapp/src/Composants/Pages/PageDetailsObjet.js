@@ -81,14 +81,14 @@ const surDetailObjet = async (offre) => {
       offres.forEach((off) => {
         let daOf = new Date(off.dateOffre[0], off.dateOffre[1] - 1,
             off.dateOffre[2]).toLocaleDateString("fr-BE")
-          offresPrecedentes += `<p>${daOf}</p>`
+        offresPrecedentes += `<p>${daOf}</p>`
       })
     }
   })
 
   // Date de demain pour éviter le choix des dates dans le passé
   var ajd = new Date();
-  var dd = String(ajd.getDate() + 1).padStart(2, '0');
+  var dd = String(ajd.getDate()).padStart(2, '0');
   var mm = String(ajd.getMonth() + 1).padStart(2, '0');
   var yyyy = ajd.getFullYear();
   ajd = yyyy + '-' + mm + '-' + dd;
@@ -300,7 +300,7 @@ const surDetailObjetProprio = async (offre) => {
       offres.forEach((off) => {
         let daOf = new Date(off.dateOffre[0], off.dateOffre[1] - 1,
             off.dateOffre[2]).toLocaleDateString("fr-BE")
-          offresPrecedentes += `<p>${daOf}</p>`
+        offresPrecedentes += `<p>${daOf}</p>`
       })
     }
   })

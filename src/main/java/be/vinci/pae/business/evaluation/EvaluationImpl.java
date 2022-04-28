@@ -57,5 +57,4 @@ public class EvaluationImpl implements Evaluation {
     this.commentaire = commmentaire;
   }
 
-
 }

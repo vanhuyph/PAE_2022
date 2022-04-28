@@ -21,4 +21,5 @@ public interface EvaluationDTO {
   String getCommentaire();
 
   void setCommmentaire(String commmentaire);
+
 }
