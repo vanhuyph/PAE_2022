@@ -360,7 +360,11 @@ const surModifierProfilUtilisateur = (data) => {
           etatInscription: data.etatInscription,
           commentaire: data.commentaire,
           adresse: nouvelleAdresse,
-          version: data.version
+          version: data.version,
+          nbObjetOfferts: data.nbObjetOfferts,
+          nbObjetDonnees: data.nbObjetDonnees,
+          nbObjetRecus : data.nbObjetRecus,
+          nbObjetAbandonnes: data.nbObjetAbandonnes
         }
 
         let session = recupUtilisateurDonneesSession()
