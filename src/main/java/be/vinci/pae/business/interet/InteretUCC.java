@@ -8,6 +8,8 @@ public interface InteretUCC {
 
   int nbPersonnesInteressees(int id);
 
+  InteretDTO interetUtilisateurPourObjet(int idObjet, int idUtilisateur);
+
   List<InteretDTO> listeDesPersonnesInteressees(int idObjet);
 
   List<InteretDTO> listeDesPersonnesInteresseesVue(int idObjet);

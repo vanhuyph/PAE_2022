@@ -96,6 +96,27 @@ public class InteretUCCImpl implements InteretUCC {
   }
 
   /**
+   * Récupère l'intéret de l'utilisateur pour un objet.
+   *
+   * @param idObjet       : l'id de l'objet
+   * @param idUtilisateur : l'id de l'utilisateur
+   * @return interet : l'interet trouvé sinon null
+   */
+  @Override
+  public InteretDTO interetUtilisateurPourObjet(int idObjet, int idUtilisateur) {
+    serviceDAL.commencerTransaction();
+    InteretDTO interet = null;
+    try {
+      interet = interetDAO.interetUtilisateurPourObjet(idObjet, idUtilisateur);
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return interet;
+  }
+
+  /**
    * Liste les intérêts pour l'objet dont l'id est passé en paramètre.
    *
    * @param idObjet : l'id de l'objet dont les personnes sont intéressées

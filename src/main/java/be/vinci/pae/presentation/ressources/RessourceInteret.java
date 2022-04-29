@@ -13,6 +13,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.List;
@@ -70,6 +71,26 @@ public class RessourceInteret {
     }
     int nbInteret = interetUCC.nbPersonnesInteressees(idObjet);
     return nbInteret;
+  }
+
+  /**
+   * Récupère l'intéret de l'utilisateur pour un objet.
+   *
+   * @param idObjet       : l'id de l'objet
+   * @param idUtilisateur : l'id de l'utilisateur
+   * @return interet : l'interet trouvé sinon null
+   */
+  @GET
+  @Path("interetUtilisateurPourObjet/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public InteretDTO interetUtilisateurPourObjet(@PathParam("id") int idObjet,
+      @QueryParam("utilisateur") int idUtilisateur) {
+    if (idObjet <= 0) {
+      throw new PresentationException("L'id de l'objet est incorrect", Status.BAD_REQUEST);
+    }
+    return interetUCC.interetUtilisateurPourObjet(idObjet, idUtilisateur);
   }
 
   /**

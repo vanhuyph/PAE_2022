@@ -52,6 +52,7 @@ public abstract class AutorisationAbstraite {
     } catch (TokenExpiredException e) {
       throw new NonAutoriseException("Token expiré");
     } catch (Exception e) {
+      System.out.println("token: " + token);
       throw new NonAutoriseException("Token malformé");
     }
     return utilisateurUCC.rechercheParId(tokenDecode.getClaim("utilisateur").asInt());

@@ -185,6 +185,29 @@ const surDetailObjet = async (offre) => {
   </div>
   `
   pageDiv.innerHTML = offrePage
+
+  fetch(API_URL+"interets/interetUtilisateurPourObjet/"+offre.objetDTO.idObjet+"?utilisateur="+session.utilisateur.idUtilisateur, {
+    method:"GET",
+    headers:{
+      "Content-Type": "application/json",
+      Authorization: session.token
+    }
+  })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+    if(reponse.statusText === "OK"){
+      return reponse.json();
+    }
+  }).then((donne) => {
+    if (donne){
+      document.querySelector("#marquer-interet").classList.add("disabled")
+    }
+  })
+
   // Marquage de l'intérêt
   document.querySelector("#form-interet").addEventListener("submit", (e) => {
     e.preventDefault();

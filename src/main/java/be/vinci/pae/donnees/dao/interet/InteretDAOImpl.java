@@ -79,6 +79,49 @@ public class InteretDAOImpl implements InteretDAO {
     return nbPers;
   }
 
+
+  /**
+   * Récupère l'intéret de l'utilisateur pour un objet.
+   *
+   * @param idObjet       : l'id de l'objet
+   * @param idUtilisateur : l'id de l'utilisateur
+   * @return interet : l'interet trouvé sinon null
+   */
+  @Override
+  public InteretDTO interetUtilisateurPourObjet(int idObjet, int idUtilisateur) {
+    String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
+        + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, u.version, u.nb_objet_offert, u.nb_objet_donne, "
+        + "u.nb_objet_recu, u.nb_objet_abandonne, a2.id_adresse, a2.rue, a2.numero, a2.boite, "
+        + "a2.code_postal, a2.commune, u2.id_utilisateur, u2.pseudo, u2.nom, u2.prenom, u2.mdp, "
+        + "u2.gsm, u2.est_admin, u2.etat_inscription, u2.commentaire, u2.version, "
+        + "u2.nb_objet_offert, u2.nb_objet_donne, u2.nb_objet_recu, u2.nb_objet_abandonne, "
+        + "t.id_type, t.nom, o.id_objet, o.etat_objet, o.description, o.photo, o.version, o.vue, "
+        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version  FROM projet.interets i, "
+        + "projet.utilisateurs u, projet.utilisateurs u2, "
+        + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
+        + "WHERE o.id_objet = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
+        + "u.id_utilisateur = ? AND "
+        + "a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur AND t.id_type = o.type_objet "
+        + "AND a2.id_adresse = u2.adresse;";
+    InteretDTO interetDTO = factory.getInteret();
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setInt(1, idObjet);
+      ps.setInt(2, idUtilisateur);
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return remplirInteretDepuisResulSet(interetDTO, rs);
+        } else {
+          return null;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+
+  }
+
   /**
    * Liste les intérêts pour l'objet dont l'id est passé en paramètre.
    *
