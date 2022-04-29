@@ -186,7 +186,6 @@ const surProfilUtilisateur = (data) => {
                         + reponse.statusText
                         + " : " + reponse.text())
                   }
-                  console.log(reponse)
                   return reponse.json()
                 })
                 .then((donnee) => {
@@ -207,11 +206,10 @@ const surProfilUtilisateur = (data) => {
                   surProfilUtilisateur(donnee)
                 })
                 .catch((err) => {
-                  console.log(err)
                   Swal.fire({
                     position: 'top-end',
                     icon: 'error',
-                    title: 'Votre mot de passe n\'a pas pu etre changé',
+                    title: 'Votre mot de passe n\'a pas pu être changé',
                     showConfirmButton: false,
                     toast: true,
                     timer: 3000,
@@ -380,7 +378,6 @@ const surModifierProfilUtilisateur = (data) => {
                 "Code d'erreur : " + reponse.status + " : " + reponse.statusText
                 + " : " + reponse.text())
           }
-          console.log(reponse)
           return reponse.json()
         })
         .then((donnee) => {

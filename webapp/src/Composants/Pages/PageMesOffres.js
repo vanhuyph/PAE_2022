@@ -6,7 +6,10 @@ import Swal from "sweetalert2";
 const PageMesOffres = () => {
   const pageDiv = document.querySelector("#page");
   const session = recupUtilisateurDonneesSession();
-  pageDiv.innerHTML = `<div class="offres">
+  if (!session) {
+    Redirect("/connexion");
+  } else {
+    pageDiv.innerHTML = `<div class="offres">
     <h2>Mes offres</h2>
     <div id="mesOffres"></div>
     <h2>Mes offres avec receveur</h2>
@@ -14,20 +17,21 @@ const PageMesOffres = () => {
     <h2>Mes offres annulées</h2>
     <div id="mesOffresAnnulees"></div>
   </div>`;
-  const id = session.utilisateur.idUtilisateur;
-  fetch("/api/offres/mesOffres/" + id, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": session.token,
-    },
-  }).then((reponse) => {
-    if (!reponse.ok) {
-      throw new Error(
-          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
-    }
-    return reponse.json();
-  }).then((data) => surListeMesOffres(data))
+    const id = session.utilisateur.idUtilisateur;
+    fetch("/api/offres/mesOffres/" + id, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": session.token,
+      },
+    }).then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+      }
+      return reponse.json();
+    }).then((data) => surListeMesOffres(data))
+  }
 };
 
 // Affichage des listes d'offres, des listes d'offres avec receveur et des listes d'offres annulées

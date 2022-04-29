@@ -2,6 +2,7 @@ import logo from "../../img/donnamis.png";
 import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import logoD from "../../img/icone.png"
 
+// Affichage de la navbar en fonction des types d'utilisateurs
 const Navbar = () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
   let navbar

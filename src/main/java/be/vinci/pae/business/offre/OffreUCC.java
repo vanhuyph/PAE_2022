@@ -4,7 +4,6 @@ import be.vinci.pae.business.objet.ObjetDTO;
 import java.time.LocalDate;
 import java.util.List;
 
-
 public interface OffreUCC {
 
   OffreDTO creerOffre(OffreDTO offreDTO);
@@ -36,4 +35,5 @@ public interface OffreUCC {
   List<OffreDTO> objetsOffertsUtilisateur(int idUtilisateur);
 
   List<OffreDTO> objetsRecusUtilisateur(int idUtilisateur);
+
 }

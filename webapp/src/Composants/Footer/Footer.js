@@ -1,5 +1,6 @@
 import logo from '../../img/DonnamisBlanc.png'
 
+// Affichage du footer
 const Footer = () => {
   const footer = document.getElementById("footer")
   footer.innerHTML = `

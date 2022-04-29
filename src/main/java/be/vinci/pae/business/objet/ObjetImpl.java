@@ -118,22 +118,12 @@ public class ObjetImpl implements Objet {
     return Objects.hash(idObjet, typeObjet, offreur);
   }
 
-  /**
-   * Verifie si l'état de l'objet permet de le modifier ainsi que son offre.
-   *
-   * @return true si l'objet peut être modifié, false sinon.
-   */
   @Override
   public boolean verifierEtatPourModificationOffre() {
     return this.etatObjet != null && !this.etatObjet.equals("Annulé") && !this.etatObjet.equals(
         "Donné") && !this.etatObjet.equals("Evalué");
   }
 
-  /**
-   * Verifie que l'objet peut être évalué.
-   *
-   * @return true si l'objet peut être évalué , false si non.
-   */
   @Override
   public boolean peutEtreEvalue() {
     return this.etatObjet != null && this.etatObjet.equals("Donné");
@@ -149,10 +139,6 @@ public class ObjetImpl implements Objet {
     this.setReceveur(utilisateur);
   }
 
-
-  /**
-   * Change l'état de l'objet en Confirmé.
-   */
   @Override
   public void confirmerObjet() {
     this.setEtatObjet("Confirmé");

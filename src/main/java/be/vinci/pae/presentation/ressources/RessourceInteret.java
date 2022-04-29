@@ -103,7 +103,7 @@ public class RessourceInteret {
   @Path("/listeDesPersonnesInteresseesVue/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  //@Autorisation
+  @Autorisation
   public List<InteretDTO> listeDesPersonnesInteresseesVue(@PathParam("id") int idOffreur) {
     if (idOffreur <= 0) {
       throw new PresentationException("L'id de l'objet est incorrect", Status.BAD_REQUEST);
