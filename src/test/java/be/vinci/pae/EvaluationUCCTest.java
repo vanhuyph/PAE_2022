@@ -61,7 +61,7 @@ public class EvaluationUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode creerEvaluation renvoie l'évaluation créée.")
+  @DisplayName("Test réussi : méthode creerEvaluation renvoie bien l'évaluation créée.")
   public void testCreerEvaluationV3() {
     objetDTO.setEtatObjet("Donné");
     Mockito.when(objetDAO.rechercheParId(evaluationDTO.getObjet()))

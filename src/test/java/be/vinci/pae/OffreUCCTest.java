@@ -233,17 +233,16 @@ public class OffreUCCTest {
     assertEquals(liste, offreUCC.offresPrecedentes(id));
   }
 
-
   @Test
   @DisplayName("Test raté : méthode modifierOffre ratée car l'offre n'est pas dans un état qui lui "
-      + "permet d'être modifié ")
+      + "permet d'être modifié.")
   public void testModifierOffreV1() {
     offreDTO1.getObjetDTO().setEtatObjet("Donné");
     assertThrows(BusinessException.class, () -> offreUCC.modifierOffre(offreDTO1));
   }
 
   @Test
-  @DisplayName("Test raté : méthode modifierOffre ratée car l'objet n'existe pas")
+  @DisplayName("Test raté : méthode modifierOffre ratée car l'objet n'existe pas.")
   public void testModifierOffreV2() {
     offreDTO1.getObjetDTO().setEtatObjet("Offert");
     Mockito.when(objetDAO.rechercheParId(offreDTO1.getObjetDTO())).thenReturn(null);
@@ -252,7 +251,7 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode modifierOffre raté car l'offre n'existe pas")
+  @DisplayName("Test raté : méthode modifierOffre raté car l'offre n'existe pas.")
   public void testModifierOffreV3() {
     offreDTO1.getObjetDTO().setEtatObjet("Offert");
     Mockito.when(objetDAO.rechercheParId(offreDTO1.getObjetDTO()))
@@ -265,7 +264,7 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode modifierOffre renvoie le bon objet")
+  @DisplayName("Test réussi : méthode modifierOffre renvoie le bon objet.")
   public void testModifierOffreV4() {
     offreDTO1.getObjetDTO().setEtatObjet("Offert");
     Mockito.when(objetDAO.rechercheParId(offreDTO1.getObjetDTO()))
@@ -278,7 +277,7 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode rechercherOffre renvoie une liste")
+  @DisplayName("Test réussi : méthode rechercherOffre renvoie bien une liste.")
   public void testRechercherOffreV1() {
     List<OffreDTO> liste = new ArrayList<>();
     Mockito.when(offreDAO.rechercherOffres("Leh", LocalDate.now(), LocalDate.now()))
@@ -288,14 +287,14 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode donnerOffre car pas de receveur pour l'offre")
+  @DisplayName("Test raté : méthode donnerOffre ratée car pas de receveur pour l'offre.")
   public void testDonnerOffreV1() {
     Mockito.when(interetDAO.receveurActuel(offreDTO1.getObjetDTO().getIdObjet())).thenReturn(null);
     assertThrows(BusinessException.class, () -> offreUCC.donnerOffre(offreDTO1));
   }
 
   @Test
-  @DisplayName("Test raté : méthode donnerOffre car l'objet n'existe pas")
+  @DisplayName("Test raté : méthode donnerOffre ratée car l'objet n'existe pas.")
   public void testDonnerOffreV2() {
     Mockito.when(interetDAO.receveurActuel(offreDTO1.getObjetDTO().getIdObjet()))
         .thenReturn(interetDTO);
@@ -308,7 +307,7 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode donnerOffre car l'offreur de l'objet n'exsite pas")
+  @DisplayName("Test raté : méthode donnerOffre car l'offreur de l'objet n'existe pas.")
   public void testDonnerOffreV3() {
     Mockito.when(interetDAO.receveurActuel(offreDTO1.getObjetDTO().getIdObjet()))
         .thenReturn(interetDTO);
@@ -326,7 +325,7 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode donnerOffre renvoie l'objet donné")
+  @DisplayName("Test réussi : méthode donnerOffre renvoie l'objet donné.")
   public void testDonnerOffreV4() {
     Mockito.when(interetDAO.receveurActuel(offreDTO1.getObjetDTO().getIdObjet()))
         .thenReturn(interetDTO);
@@ -346,7 +345,7 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode objetsAEvaluerParUtilisateur renvoie une liste")
+  @DisplayName("Test réussi : méthode objetsAEvaluerParUtilisateur renvoie bien une liste.")
   public void testObjetsAEvaluerParUtilisateurV1() {
     List<ObjetDTO> liste = new ArrayList<>();
     Mockito.when(objetDAO.rechercheObjetParReceveur(1)).thenReturn(liste);
@@ -355,7 +354,7 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode objetsOffertsUtilisateur renvoie une liste")
+  @DisplayName("Test réussi : méthode objetsOffertsUtilisateur renvoie bien une liste.")
   public void testObjetsOffertsUtilisateurV1() {
     List<OffreDTO> liste = new ArrayList<>();
     Mockito.when(offreDAO.objetsOffertsUtilisateur(1)).thenReturn(liste);
@@ -364,40 +363,13 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode objetsRecusUtilisateur renvoie une liste")
+  @DisplayName("Test réussi : méthode objetsRecusUtilisateur renvoie bien une liste.")
   public void testObjetsRecusUtilisateurV1() {
     List<OffreDTO> liste = new ArrayList<>();
-    Mockito.when(offreDAO.objetsRecuUtilisateur(1)).thenReturn(liste);
+    Mockito.when(offreDAO.objetsRecusUtilisateur(1)).thenReturn(liste);
     assertEquals(liste,
         offreUCC.objetsRecusUtilisateur(1));
   }
-  //  @Test
-  //  @DisplayName("Test réussi : méthode rechercherOffre renvoie une liste "
-  //      + "avec toutes les offres ayant le statut offert.")
-  //  public void testRechercherOffreV1() {
-  //    List<OffreDTO> liste = new ArrayList<>();
-  //    Mockito.when(offreDAO.rechercherOffres("Offert")).thenReturn(liste);
-  //    assertEquals(liste, offreDAO.rechercherOffres("Offert"));
-  //  }
-
-  /*@Test
-  @DisplayName("Test réussi : méthode indiquerMembreReceveur renvoie l'offre confirmé.")
-  public void testIndiquerMembreReceveurV1() {
-    offreDTO1.setObjetDTO(objetDTO1);
-    assertEquals("confirmé",
-        offreUCC.indiquerMembreReceveur(offreDTO1).getObjetDTO().getEtatObjet());
-  }
-
-  @Test
-  @DisplayName("Test réussi : méthode donnerOffre renvoie l'offre donné.")
-  public void testDonnerOffreV1() {
-    objetDTO1.setReceveur(utilisateurDTO);
-    offreDTO1.setObjetDTO(objetDTO1);
-    Mockito.when(objetDAO.creerObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO1);
-    Mockito.when(offreDAO.creerOffre(offreDTO1)).thenReturn(offreDTO1);
-    Mockito.when(offreUCC.donnerOffre(offreDTO1)).thenReturn(offreDTO1);
-    assertEquals("Donné", offreDTO1.getObjetDTO().getEtatObjet());
-  }*/
 
   @Test
   @DisplayName("Test réussi : méthode mesOffres renvoie bien une liste.")
@@ -418,13 +390,13 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode reoffrirObjet avec en paramètre objet sans l'état annulé")
+  @DisplayName("Test raté : méthode reoffrirObjet avec en paramètre objet sans l'état annulé.")
   public void testReoffrirObjetV1() {
     assertThrows(PasTrouveException.class, () -> offreUCC.reoffrirObjet(offreDTO3));
   }
 
   @Test
-  @DisplayName("Test raté : méthode reoffrirObjet avec en paramètre un objet qui n'existe pas")
+  @DisplayName("Test raté : méthode reoffrirObjet avec en paramètre un objet qui n'existe pas.")
   public void testReoffrirObjetV2() {
     Mockito.when(objetDAO.miseAJourObjet(objetDTO5)).thenReturn(null);
     Mockito.when(objetDAO.rechercheParId(objetDTO5)).thenReturn(null);
@@ -432,21 +404,11 @@ public class OffreUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode reoffrirObjet avec créer une offre qui échoue")
+  @DisplayName("Test raté : méthode reoffrirObjet avec creerOffre qui échoue.")
   public void testReoffrirObjetV3() {
     Mockito.when(objetDAO.miseAJourObjet(objetDTO5)).thenReturn(objetDTO5);
     Mockito.when(offreDAO.creerOffre(offreDTO5)).thenReturn(null);
     assertThrows(BusinessException.class, () -> offreUCC.reoffrirObjet(offreDTO4));
   }
-
-  // TO DO , problème de jenkins qui accepte pas le test
-
-  //@Test
-  //@DisplayName("Test réussi : méthode reoffrirObjet renvoit bien une nouvelle offre")
-  //public void testReoffrirObjetV4() {
-  //  Mockito.when(objetDAO.miseAJourObjet(objetDTO4)).thenReturn(objetDTO5);
-  //  Mockito.when(offreDAO.creerOffre(offreDTO5)).thenReturn(offreDTO5);
-  //  assertEquals(offreDTO5, offreUCC.reoffrirObjet(offreDTO4));
-  //}
 
 }

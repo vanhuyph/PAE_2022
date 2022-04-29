@@ -128,7 +128,8 @@ public class InteretUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode indiquerReceveur raté car le receveur n'a pas pu être indiqué.")
+  @DisplayName("Test raté : méthode indiquerReceveur ratée car le receveur n'a pas pu "
+      + "être indiqué.")
   public void testIndiquerReceveurV1() {
     Mockito.when(interetDAO.miseAJourInteret(interetDTO)).thenReturn(null);
     assertThrows(BusinessException.class, () -> interetUCC.indiquerReceveur(interetDTO));
@@ -146,7 +147,7 @@ public class InteretUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode nonRemis raté car l'objet n'a pas de receveur actuellement.")
+  @DisplayName("Test raté : méthode nonRemis ratée car l'objet n'a pas de receveur actuellement.")
   public void testNonRemisV1() {
     int id = objetDTO.getIdObjet();
     Mockito.when(interetDAO.receveurActuel(id)).thenReturn(null);
@@ -154,7 +155,7 @@ public class InteretUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode nonRemis réussi renvoie que l'objet a été non remis "
+  @DisplayName("Test réussi : méthode nonRemis renvoie bien que l'objet a été non remis "
       + "car le receveur n'est pas venu chercher l'objet.")
   public void testNonRemisV2() {
     int id = objetDTO.getIdObjet();
@@ -164,7 +165,6 @@ public class InteretUCCTest {
     Mockito.when(interetDAO.miseAJourInteret(interetDTO)).thenReturn(interetDTO);
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(interetDTO.getUtilisateur()))
         .thenReturn(interetDTO.getUtilisateur());
-    System.out.println(interetDTO);
     assertEquals(interetDTO, interetUCC.nonRemis(id));
   }
 
