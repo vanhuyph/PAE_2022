@@ -1,8 +1,10 @@
-import "./stylesheets/style.css"; // If you prefer to style your app with vanilla CSS rather than with Bootstrap
+import "./stylesheets/style.css";
 import Navbar from "./Composants/Navbar/Navbar";
 import {Router} from "./Composants/Router/Router";
 import {verifierTokenAuChargement} from "./utilitaires/session";
+import Footer from "./Composants/Footer/Footer";
 
 verifierTokenAuChargement();
 Navbar();
-Router(); // The router will automatically load the root page
+Router(); // Le routeur va automatiquement charger la page root
+Footer();

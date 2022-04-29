@@ -22,8 +22,12 @@ public class ObjetImpl implements Objet {
   private UtilisateurDTO offreur;
   @JsonView(Vues.Public.class)
   private UtilisateurDTO receveur;
-  @JsonView(Vues.Public.class)//vérifier type d'objet
+  @JsonView(Vues.Public.class)
   private String photo;
+  @JsonView(Vues.Public.class)
+  private boolean vue;
+  @JsonView(Vues.Public.class)
+  private int version;
 
   public int getIdObjet() {
     return idObjet;
@@ -81,6 +85,22 @@ public class ObjetImpl implements Objet {
     this.photo = photo;
   }
 
+  public int getVersion() {
+    return version;
+  }
+
+  public void setVersion(int version) {
+    this.version = version;
+  }
+
+  public boolean isVue() {
+    return vue;
+  }
+
+  public void setVue(boolean vue) {
+    this.vue = vue;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -99,6 +119,36 @@ public class ObjetImpl implements Objet {
   }
 
   @Override
+  public boolean verifierEtatPourModificationOffre() {
+    return this.etatObjet != null && !this.etatObjet.equals("Annulé") && !this.etatObjet.equals(
+        "Donné") && !this.etatObjet.equals("Evalué");
+  }
+
+  @Override
+  public boolean peutEtreEvalue() {
+    return this.etatObjet != null && this.etatObjet.equals("Donné");
+  }
+
+  @Override
+  public void estEvalue() {
+    this.setEtatObjet("Evalué");
+  }
+
+  @Override
+  public void indiquerReceveur(UtilisateurDTO utilisateur) {
+    this.setReceveur(utilisateur);
+  }
+
+  @Override
+  public void confirmerObjet() {
+    this.setEtatObjet("Confirmé");
+  }
+
+  public void estVu() {
+    this.setVue(true);
+  }
+
+  @Override
   public String toString() {
     return "Objet{"
         + "id objet= " + idObjet
@@ -108,6 +158,8 @@ public class ObjetImpl implements Objet {
         + ", offreur= " + offreur
         + ", receveur= " + receveur
         + ", photo= " + photo
+        + ", vue= " + vue
+        + ", version= " + version
         + '}';
   }
 

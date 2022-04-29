@@ -20,6 +20,8 @@ public class AdresseImpl implements AdresseDTO, Adresse {
   private int codePostal;
   @JsonView(Vues.Public.class)
   private String commune;
+  @JsonView(Vues.Public.class)
+  private int version;
 
   @Override
   public int getIdAdresse() {
@@ -82,6 +84,16 @@ public class AdresseImpl implements AdresseDTO, Adresse {
   }
 
   @Override
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -109,6 +121,7 @@ public class AdresseImpl implements AdresseDTO, Adresse {
         + ", boite=" + boite
         + ", codePostal=" + codePostal
         + ", commune='" + commune + '\''
+        + ", version='" + version + '\''
         + '}';
   }
 

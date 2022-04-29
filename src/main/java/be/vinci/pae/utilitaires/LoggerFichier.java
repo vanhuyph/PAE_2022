@@ -10,28 +10,38 @@ public class LoggerFichier {
 
   protected static final Logger logger = Logger.getLogger("MonLogger");
 
-  /**
-   * Méthode permettant de logger la stacktrace de toutes les exceptions dans un fichier
-   * logger.log.
-   *
-   * @param exception : exception à logger
-   */
-  public static void log(Exception exception) {
-    FileHandler fh = null;
+  static {
+    FileHandler fh;
     try {
       fh = new FileHandler("logger.log", 1000000, 5, true);
       logger.addHandler(fh);
-      SimpleFormatter formatter = new SimpleFormatter();
-      fh.setFormatter(formatter);
+      fh.setFormatter(new SimpleFormatter());
       logger.setLevel(Level.ALL);
-      logger.log(Level.ALL, exception, exception::getMessage);
-    } catch (SecurityException | IOException e) {
-      logger.log(Level.SEVERE, null, e);
-    } finally {
-      if (fh != null) {
-        fh.close();
-      }
+    } catch (IOException | SecurityException ex1) {
+      logger.log(Level.ALL, null, ex1);
     }
+  }
+
+  /**
+   * Méthode permettant de logger la stacktrace de toutes les exceptions et de préciser le niveau du
+   * message dans un fichier logger.log.
+   *
+   * @param niveau    : le niveau définit du message
+   * @param exception : l'exception à logger
+   */
+  public static void log(Level niveau, Exception exception) {
+    logger.log(niveau, exception, exception::getMessage);
+  }
+
+  /**
+   * Surcharge de la méthode log permettant de logger un message définit et de préciser le niveau du
+   * message dans un fichier logger.log.
+   *
+   * @param niveau  : le niveau définit du message
+   * @param message : le message à logger
+   */
+  public static void log(Level niveau, String message) {
+    logger.log(niveau, message);
   }
 
 }

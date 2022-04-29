@@ -35,4 +35,12 @@ public interface ObjetDTO {
 
   void setPhoto(String photo);
 
+  int getVersion();
+
+  void setVersion(int version);
+
+  boolean isVue();
+
+  void setVue(boolean vue);
+
 }

@@ -18,6 +18,8 @@ public class OffreImpl implements Offre {
   private ObjetDTO objetDTO;
   @JsonView(Vues.Public.class)
   private String plageHoraire;
+  @JsonView(Vues.Public.class)
+  private int version;
 
   public int getIdOffre() {
     return idOffre;
@@ -51,6 +53,14 @@ public class OffreImpl implements Offre {
     this.plageHoraire = plageHoraire;
   }
 
+  public int getVersion() {
+    return version;
+  }
+
+  public void setVersion(int version) {
+    this.version = version;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -60,7 +70,7 @@ public class OffreImpl implements Offre {
       return false;
     }
     OffreImpl offre = (OffreImpl) o;
-    return idOffre == offre.idOffre && dateOffre.equals(offre.dateOffre);
+    return idOffre == offre.idOffre;
   }
 
   @Override
@@ -69,12 +79,38 @@ public class OffreImpl implements Offre {
   }
 
   @Override
+  public void offrirObjet() {
+    this.getObjetDTO().setEtatObjet("Offert");
+  }
+
+  @Override
+  public void interesseObjet() {
+    this.getObjetDTO().setEtatObjet("Intéressé");
+  }
+
+  @Override
+  public void annulerOffre() {
+    this.getObjetDTO().setEtatObjet("Annulé");
+  }
+
+  @Override
+  public void objetNonVu() {
+    this.getObjetDTO().setVue(false);
+  }
+
+  @Override
+  public void donnerObjet() {
+    this.getObjetDTO().setEtatObjet("Donné");
+  }
+
+  @Override
   public String toString() {
     return "Offre{"
         + "id offre= " + idOffre
         + ", date offre= " + dateOffre
-        + ", objetDTO= " + objetDTO.toString()
+        + ", objetDTO= " + objetDTO
         + ", plage horaire= " + plageHoraire
+        + ", version= " + version
         + '}';
   }
 

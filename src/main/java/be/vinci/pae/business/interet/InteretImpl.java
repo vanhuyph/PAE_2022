@@ -17,6 +17,14 @@ public class InteretImpl implements Interet {
   private ObjetDTO objet;
   @JsonView(Vues.Public.class)
   private Date dateRdv;
+  @JsonView(Vues.Public.class)
+  private boolean vue;
+  @JsonView(Vues.Public.class)
+  private int version;
+  @JsonView(Vues.Internal.class)
+  private boolean receveurChoisi;
+  @JsonView(Vues.Internal.class)
+  private Boolean venuChercher;
 
   public UtilisateurDTO getUtilisateur() {
     return utilisateur;
@@ -42,6 +50,38 @@ public class InteretImpl implements Interet {
     this.dateRdv = dateRdv;
   }
 
+  public boolean isVue() {
+    return vue;
+  }
+
+  public void setVue(boolean vue) {
+    this.vue = vue;
+  }
+
+  public int getVersion() {
+    return version;
+  }
+
+  public void setVersion(int version) {
+    this.version = version;
+  }
+
+  public boolean isReceveurChoisi() {
+    return receveurChoisi;
+  }
+
+  public void setReceveurChoisi(boolean receveurChoisi) {
+    this.receveurChoisi = receveurChoisi;
+  }
+
+  public Boolean isVenuChercher() {
+    return venuChercher;
+  }
+
+  public void setVenuChercher(Boolean venuChercher) {
+    this.venuChercher = venuChercher;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -61,11 +101,36 @@ public class InteretImpl implements Interet {
   }
 
   @Override
+  public void marquerInteretObjet() {
+    this.getObjet().setEtatObjet("Intéressé");
+  }
+
+  @Override
+  public void indiquerReceveur() {
+    this.setVenuChercher(null);
+    this.setReceveurChoisi(true);
+  }
+
+  @Override
+  public void pasVenuChercher() {
+    this.setVenuChercher(false);
+  }
+
+  @Override
+  public void venuChercher() {
+    this.setVenuChercher(true);
+  }
+
+  @Override
   public String toString() {
     return "InteretImpl{"
         + "utilisateur=" + utilisateur
         + ", objet=" + objet
         + ", dateRdv=" + dateRdv
+        + ", vue =" + vue
+        + ", version=" + version
+        + ", receveur choisi=" + receveurChoisi
+        + ", est venu=" + venuChercher
         + '}';
   }
 

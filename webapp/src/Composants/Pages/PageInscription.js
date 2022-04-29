@@ -4,6 +4,7 @@ import {
 } from "../../utilitaires/session";
 import Navbar from "../Navbar/Navbar";
 import {Redirect} from "../Router/Router";
+import {API_URL} from "../../utilitaires/serveur";
 
 // Formulaire d'inscription
 let inscription = `
@@ -133,20 +134,20 @@ const surInscription = (e) => {
       mdp: mdp,
       adresse: nouvelleAdresse
     }
-    fetch("/api/utilisateurs/inscription", {
+    fetch(API_URL + "utilisateurs/inscription", {
       method: "POST",
       body: JSON.stringify(nouvelUtilisateur),
       headers: {
         "Content-Type": "application/json",
       }
     })
-    .then((response) => {
-      if (!response.ok) {
+    .then((reponse) => {
+      if (!reponse.ok) {
         throw new Error(
-            "Code d'erreur : " + response.status + " : " + response.statusText
-            + " : " + response.text())
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+            + " : " + reponse.text())
       }
-      return response.json()
+      return reponse.json()
     })
     .then((donnee) => surInscrUtilisateur(donnee))
     .catch(err => surErreur(err))

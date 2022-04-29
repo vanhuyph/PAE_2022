@@ -30,6 +30,16 @@ public class UtilisateurImpl implements Utilisateur {
   private String commentaire;
   @JsonView(Vues.Internal.class)
   private AdresseDTO adresse;
+  @JsonView(Vues.Public.class)
+  private int version;
+  @JsonView(Vues.Internal.class)
+  private int nbObjetOfferts;
+  @JsonView(Vues.Internal.class)
+  private int nbObjetDonnees;
+  @JsonView(Vues.Internal.class)
+  private int nbObjetRecus;
+  @JsonView(Vues.Internal.class)
+  private int nbObjetAbandonnes;
 
   @Override
   public int getIdUtilisateur() {
@@ -132,6 +142,56 @@ public class UtilisateurImpl implements Utilisateur {
   }
 
   @Override
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
+  }
+
+  @Override
+  public int getNbObjetOfferts() {
+    return nbObjetOfferts;
+  }
+
+  @Override
+  public void setNbObjetOfferts(int nbObjetOfferts) {
+    this.nbObjetOfferts = nbObjetOfferts;
+  }
+
+  @Override
+  public int getNbObjetDonnees() {
+    return nbObjetDonnees;
+  }
+
+  @Override
+  public void setNbObjetDonnees(int nbObjetDonnees) {
+    this.nbObjetDonnees = nbObjetDonnees;
+  }
+
+  @Override
+  public int getNbObjetRecus() {
+    return nbObjetRecus;
+  }
+
+  @Override
+  public void setNbObjetRecus(int nbObjetRecus) {
+    this.nbObjetRecus = nbObjetRecus;
+  }
+
+  @Override
+  public int getNbObjetAbandonnes() {
+    return nbObjetAbandonnes;
+  }
+
+  @Override
+  public void setNbObjetAbandonnes(int nbObjetAbandonnes) {
+    this.nbObjetAbandonnes = nbObjetAbandonnes;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -159,6 +219,59 @@ public class UtilisateurImpl implements Utilisateur {
   }
 
   @Override
+  public boolean mettreEnAttente() {
+    String enAttente = "En attente";
+    if (this.getEtatInscription() == null || !this.getEtatInscription().equals(enAttente)) {
+      this.setEtatInscription(enAttente);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean confirmerInscription(boolean estAdmin) {
+    String confirme = "Confirmé";
+    if (this.getEtatInscription() == null || !this.getEtatInscription().equals(confirme)) {
+      this.setEtatInscription(confirme);
+      this.setEstAdmin(estAdmin);
+      this.setCommentaire(null);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean refuserInscription(String commentaire) {
+    String refuse = "Refusé";
+    if (this.getEtatInscription() == null || !this.getEtatInscription().equals(refuse)) {
+      this.setEtatInscription(refuse);
+      this.setCommentaire(commentaire);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public void incrementerNbObjetsOfferts() {
+    this.setNbObjetOfferts(this.getNbObjetOfferts() + 1);
+  }
+
+  @Override
+  public void incrementerNbObjetsDonnes() {
+    this.setNbObjetDonnees(this.getNbObjetDonnees() + 1);
+  }
+
+  @Override
+  public void incrementerNbObjetsRecus() {
+    this.setNbObjetRecus(this.getNbObjetRecus() + 1);
+  }
+
+  @Override
+  public void incrementerNbObjetsAbandonnes() {
+    this.setNbObjetAbandonnes(this.getNbObjetAbandonnes() + 1);
+  }
+
+  @Override
   public String toString() {
     return "UtilisateurImpl{"
         + "idUtilisateur=" + idUtilisateur
@@ -170,7 +283,12 @@ public class UtilisateurImpl implements Utilisateur {
         + ", estAdmin=" + estAdmin
         + ", etatInscription='" + etatInscription + '\''
         + ", commentaire='" + commentaire + '\''
-        + ", adresse=" + adresse.toString()
+        + ", adresse=" + adresse
+        + ", version='" + version + '\''
+        + ", nombre d'objets offerts='" + nbObjetOfferts + '\''
+        + ", nombre d'objets données='" + nbObjetDonnees + '\''
+        + ", nombre d'objets reçus='" + nbObjetRecus + '\''
+        + ", nombre d'objets abandonnées='" + nbObjetAbandonnes + '\''
         + '}';
   }
 

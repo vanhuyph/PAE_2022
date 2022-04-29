@@ -1,12 +1,15 @@
 import {recupUtilisateurDonneesSession} from "../../utilitaires/session";
 import {Redirect} from "../Router/Router";
+import {API_URL} from "../../utilitaires/serveur";
+import autocomplete from 'autocompleter';
+import rechecheIcon from "../../img/search.svg"
 
 const barVertical = `
 <div id="bar-vertical" class="ui left sidebar visible vertical menu">
 <h2 class="ui large header">Admin</h2>
   <div class="contenu-bar-vert">
-    <a class="item active">Inscription</a>
-    <a class="item">Membres</a>
+    <a class="item active" id="inscriptions">Inscription</a>
+    <a class="item" id="membres">Membres</a>
   </div>
 </div>
 `
@@ -14,21 +17,37 @@ const barHori = `
 <div id="bar-hori">
   <h2 class="ui large header">Admin</h2>
   <div id="choix-page" class="ui buttons">
-    <button class="ui active button">Inscription</button>
-    <button class="ui button">Membres</button>
+    <button class="ui active button" id="inscriptions">Inscription</button>
+    <button class="ui button" id="membres">Membres</button>
   </div>
 </div>
 `
 
-// Contenu pricipal de la page
-const pricipal = `
-<div id="principal">
+// Contenu principal de la page
+const pagePrincipal = `
   <div id="choix-demande" class="ui buttons">
     <button id="demandes" class="ui positive button">Demandes</button>
     <button id="refus" class="ui button">Refus</button>
   </div>
   <div id="contenu">
     
+  </div>
+`
+
+const pageMembres = `
+<div class="rechercher-membre">
+  <h2>Recherche sur les membres</h2>
+  <div class="form-recherche">
+    <form id="rechercherMembre" class="ui form">
+    <div class="field">
+      <input id="autoComplete" type="search">
+      <button type="submit" class="button"><img src=${rechecheIcon} alt="recheche icon" height="20px"></button>
+    </div>
+    </form>
+    
+  </div>
+  <div id="contenu">
+  
   </div>
 </div>
 `
@@ -38,7 +57,9 @@ const page = `
   <div id="bar">
     ${barVertical}
   </div>
-  ${pricipal}
+ <div id="principal"> 
+  ${pagePrincipal}
+ </div>
 </div>
 `
 
@@ -51,6 +72,7 @@ const PageAdmin = () => {
     pageDiv.innerHTML = page;
 
     // Gestion responsive avec la barre verticale pour pc et horizontale pour mobile
+    /*
     if (window.innerWidth < 576) {
       document.getElementById("bar").innerHTML = barHori;
     } else {
@@ -62,46 +84,301 @@ const PageAdmin = () => {
       } else {
         document.getElementById("bar").innerHTML = barVertical;
       }
-    };
+    };*/
 
-    // Récupération des utilisateurs en attente
-    recupEnAttente()
-    const demandesPage = document.querySelector("#demandes")
-    const refusPage = document.querySelector("#refus")
-    const contenu = document.querySelector("#contenu")
-    const demandes = "<h2>Liste des demandes d'inscriptions</h2>"
-    contenu.innerHTML = demandes
-
-    // Changement contenu pricipal
-    demandesPage.addEventListener("click", () => {
-      refusPage.classList.remove("positive")
-      demandesPage.classList.add("positive")
-      recupEnAttente()
+    afficherDemandes()
+    const listeInscriptions = document.querySelector("#inscriptions")
+    const listeMembres = document.querySelector("#membres")
+    listeInscriptions.addEventListener("click", () => {
+      listeMembres.classList.remove("active")
+      listeInscriptions.classList.add("active")
+      afficherDemandes()
     })
-    refusPage.addEventListener("click", () => {
-      demandesPage.classList.remove("positive")
-      refusPage.classList.add("positive")
-      recupRefuse()
+    listeMembres.addEventListener("click", () => {
+      listeInscriptions.classList.remove("active")
+      listeMembres.classList.add("active")
+      afficherMembres()
     })
   }
 }
 
-// Récupération des utilisateurs en attente
-const recupEnAttente = () => {
-  const session = recupUtilisateurDonneesSession();
-  fetch("/api/utilisateurs/attente", {
+const afficherDemandes = () => {
+  const principal = document.querySelector("#principal")
+  principal.innerHTML = pagePrincipal
+  // Récupération des utilisateurs en attente
+  recupEnAttente()
+  const demandesPage = document.querySelector("#demandes")
+  const refusPage = document.querySelector("#refus")
+  const contenu = document.querySelector("#contenu")
+  const demandes = "<h2>Liste des demandes d'inscriptions</h2>"
+  contenu.innerHTML = demandes
+
+  // Changement contenu principal
+  demandesPage.addEventListener("click", () => {
+    refusPage.classList.remove("positive")
+    demandesPage.classList.add("positive")
+    recupEnAttente()
+  })
+  refusPage.addEventListener("click", () => {
+    demandesPage.classList.remove("positive")
+    refusPage.classList.add("positive")
+    recupRefuse()
+  })
+}
+
+const afficherMembres = () => {
+  const session = recupUtilisateurDonneesSession()
+  const principal = document.querySelector("#principal")
+  principal.innerHTML = pageMembres
+
+  var recherche = [];
+  fetch(API_URL + "utilisateurs/confirme", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: session.token,
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : " + response.statusText);
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
     }
-    return response.json();
+    return reponse.json();
+  })
+  .then((donnees) => {
+    donnees.forEach((u) => {
+      if (recherche.findIndex(l => l.label === u.nom) === -1) {
+        recherche.push({label: u.nom})
+      }
+      if (recherche.findIndex(l => l.label === u.adresse.commune) === -1) {
+        recherche.push({label: u.adresse.commune})
+      }
+      if (recherche.findIndex(l => l.label === u.adresse.codePostal.toString())
+          === -1) {
+        recherche.push({label: u.adresse.codePostal.toString()})
+      }
+    })
+    surListeConfirme(donnees)
+  })
+
+  // Autocomplétion barre de recherche admin
+  var input = document.getElementById("autoComplete");
+  autocomplete({
+    input: input,
+    minLength: 1,
+    emptyMsg: "Recherche non trouvée",
+    fetch: function (text, update) {
+      text = text.toLowerCase();
+      var suggestions = recherche.filter(
+          n => n.label.toLowerCase().startsWith(text))
+      update(suggestions);
+    },
+    onSelect: function (item) {
+      input.value = item.label;
+    },
+  });
+  document.getElementById("rechercherMembre").addEventListener("submit",
+      envoyerRecherche)
+}
+const envoyerRecherche = (e) => {
+  e.preventDefault()
+  let session = recupUtilisateurDonneesSession()
+  let rechercher = document.getElementById("autoComplete").value
+  if (rechercher !== "") {
+    fetch(API_URL + "utilisateurs/recherche/" + rechercher, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token,
+      },
+    })
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+      }
+      return reponse.json();
+    })
+    .then((donnees) => {
+      surListeConfirme(donnees)
+    })
+  } else {
+    fetch(API_URL + "utilisateurs/confirme", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token,
+      },
+    })
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+      }
+      return reponse.json();
+    })
+    .then((donnees) => surListeConfirme(donnees))
+  }
+}
+
+const surListeConfirme = async (donnees) => {
+  const session = recupUtilisateurDonneesSession()
+  let contenu = document.getElementById("contenu")
+  let liste = `<div class="liste-utilisateurs">`
+
+  contenu.innerHTML = `<div class="chargement-membres">
+    <div class="ui text active centred inline loader">Chargement de la liste des membres</div>
+</div>`
+  // Affichage de tous les membres avec leur nombre d'objets
+  for (const utilisateur of donnees) {
+    liste += `
+    <div class="utilisateur">
+      <div class="admin-membre">
+        <div class="utilisateur-nom-prenom">
+          <input id="id-ut" type="hidden" value="${utilisateur.idUtilisateur}">
+          <p>${utilisateur.nom}</p> 
+          <p>${utilisateur.prenom}</p>
+        </div>
+        <div class="utilisateur-pseudo"><p>${utilisateur.pseudo}</p></div>
+        <div class="utilisateur-objets">
+        <h4>Nombre d'objets</h4>
+          <div class="utilisateur-objets-spe">
+            <div><strong>Offerts : </strong><p>${utilisateur.nbObjetOfferts}</p></div>
+            <div><strong>Donnés : </strong><p>${utilisateur.nbObjetDonnees}</p></div>
+            <div><strong>Reçus : </strong><p>${utilisateur.nbObjetRecus}</p></div>
+            <div><strong>Abandonnés : </strong><p>${utilisateur.nbObjetAbandonnes}</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="liste-utilisateur-objets">
+          <div class="ui buttons">
+            <button class="ui positive button" id="obj-offert">Offert</button>
+            <button class="ui button" id="obj-recu">Reçu</button>
+          </div>
+        <div class="liste-objets"></div>
+      </div>
+    </div>
+    `
+  }
+  liste += `</div>`
+  contenu.innerHTML = liste
+
+  document.querySelectorAll(".utilisateur").forEach((u) => {
+    u.querySelector(".admin-membre").addEventListener("click", () => {
+      let objets = u.querySelector(".liste-utilisateur-objets")
+      objets.classList.toggle("montrer-block")
+      const idUtilisateur = u.querySelector("#id-ut").value
+      if (objets) {
+        listeObjetsOffert(objets, idUtilisateur)
+        objets.querySelector("#obj-offert").addEventListener("click", () => {
+          objets.querySelector("#obj-offert").classList.add("positive")
+          objets.querySelector("#obj-recu").classList.remove("positive")
+          listeObjetsOffert(objets, idUtilisateur)
+        })
+        objets.querySelector("#obj-recu").addEventListener("click", () => {
+          objets.querySelector("#obj-offert").classList.remove("positive")
+          objets.querySelector("#obj-recu").classList.add("positive")
+          listeObjetsRecu(objets, idUtilisateur)
+        })
+      }
+    })
+  })
+}
+const listeObjetsOffert = async (objets, idUtilisateur) => {
+  let session = recupUtilisateurDonneesSession()
+  let liste = `<p>Pas d'objet offert</p>`
+  await fetch(API_URL + "offres/objetsOfferts/" + idUtilisateur, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token,
+    },
+  })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+    }
+    return reponse.json();
+  })
+  .then((donnees) => {
+    if (donnees.length > 0) {
+      liste = ""
+      donnees.forEach((donnee) => {
+        liste += `
+      <div class="mon-offre">
+      <div class="ui two column grid">
+        <div class="column">
+          <img src="/api/offres/photos/${donnee.objetDTO.photo}" height="110px">
+        </div>
+        <div class="column descri">
+          <p>${donnee.objetDTO.description}</p>
+        </div>
+      </div> 
+      </div>
+      `
+      })
+    }
+  })
+  objets.querySelector(".liste-objets").innerHTML = liste
+}
+
+const listeObjetsRecu = async (objets, idUtilisateur) => {
+  let session = recupUtilisateurDonneesSession()
+  let liste = `<p>Pas d'objet reçu</p>`
+  await fetch(API_URL + "offres/objetsRecus/" + idUtilisateur, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token,
+    },
+  })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+    }
+    return reponse.json();
+  })
+  .then((donnees) => {
+    if (donnees.length > 0) {
+      liste = ""
+      donnees.forEach((donnee) => {
+        liste += `
+      <div class="mon-offre">
+      <div class="ui two column grid">
+        <div class="column">
+          <img src="/api/offres/photos/${donnee.objetDTO.photo}" height="110px">
+        </div>
+        <div class="column descri">
+          <p>${donnee.objetDTO.description}</p>
+        </div>
+      </div> 
+      </div>
+      `
+      })
+    }
+  })
+  objets.querySelector(".liste-objets").innerHTML = liste
+}
+
+// Récupération des utilisateurs en attente
+const recupEnAttente = () => {
+  const session = recupUtilisateurDonneesSession();
+  fetch(API_URL + "utilisateurs/attente", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token,
+    },
+  })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+    }
+    return reponse.json();
   })
   .then((data) => surListeAttente(data))
 }
@@ -109,19 +386,19 @@ const recupEnAttente = () => {
 // Récupération des utilisateurs refusés
 const recupRefuse = () => {
   const session = recupUtilisateurDonneesSession();
-  fetch("/api/utilisateurs/refuse", {
+  fetch(API_URL + "utilisateurs/refuse", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: session.token,
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : " + response.statusText);
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
     }
-    return response.json();
+    return reponse.json();
   })
   .then((data) => surListeRefus(data))
 }
@@ -156,9 +433,9 @@ const surListeAttente = (data) => {
     <div class="utilisateur">
         <form id="formulaire-confirme">
             <input id="id-utilisateur" type="hidden" value=${element.idUtilisateur}>
-            <p>${element.pseudo}</p>
-            <p>${element.nom}</p>
-            <p>${element.prenom}</p>
+            <p id="pseudo-utilisateur">${element.pseudo}</p>
+            <p id="nom-utilisateur">${element.nom}</p>
+            <p id="prenom-utilisateur">${element.prenom}</p>
             <div class="est-admin">
               <div class="ui checkbox">
               <input id="check" type="checkbox">
@@ -184,21 +461,18 @@ const surListeAttente = (data) => {
   });
   liste += `</div>`;
   contenu.innerHTML = liste;
-
   document.querySelectorAll(".utilisateur").forEach((item) => {
     const session = recupUtilisateurDonneesSession();
-
     // Confirmation de l'utilisateur
     item.querySelector("#formulaire-confirme").addEventListener("submit",
         (e) => {
           e.preventDefault()
           const admin = item.querySelector("#check").checked
           const id = item.querySelector("#id-utilisateur").value
-
           let confirmation = {
-            estAdmin: admin
+            estAdmin: admin,
           }
-          fetch("/api/utilisateurs/confirme/" + id, {
+          fetch(API_URL + "utilisateurs/confirme/" + id, {
             method: "PUT",
             body: JSON.stringify(confirmation),
             headers: {
@@ -224,7 +498,6 @@ const surListeAttente = (data) => {
       // Afficher la div de refus
       const refus = item.querySelector(".raison-refus")
       refus.classList.toggle("montrer-block")
-
       const refusForm = refus.querySelector("#refus-form")
       refusForm.addEventListener("submit", (e) => {
         e.preventDefault()
@@ -233,7 +506,7 @@ const surListeAttente = (data) => {
         const refus = {
           commentaire: commentaire
         }
-        fetch("/api/utilisateurs/refuse/" + id, {
+        fetch(API_URL + "utilisateurs/refuse/" + id, {
           method: "PUT",
           body: JSON.stringify(refus),
           headers: {
@@ -281,9 +554,9 @@ const surListeRefus = (data) => {
     <div class="utilisateur">
         <form id="formulaire-confirme">
             <input id="id-utilisateur" type="hidden" value=${element.idUtilisateur}>
-            <p>${element.pseudo}</p>
-            <p>${element.nom}</p>
-            <p>${element.prenom}</p>
+            <p id="pseudo-utilisateur">${element.pseudo}</p>
+            <p id="nom-utilisateur">${element.nom}</p>
+            <p id="prenom-utilisateur">${element.prenom}</p>
             <div class="est-admin">
               <div class="ui checkbox">
                 <input id="check" type="checkbox">
@@ -310,10 +583,11 @@ const surListeRefus = (data) => {
           e.preventDefault()
           const admin = item.querySelector("#check").checked
           const id = item.querySelector("#id-utilisateur").value
+
           let confirmation = {
-            estAdmin: admin
+            estAdmin: admin,
           }
-          fetch("/api/utilisateurs/confirme/" + id, {
+          fetch(API_URL + "utilisateurs/confirme/" + id, {
             method: "PUT",
             body: JSON.stringify(confirmation),
             headers: {
