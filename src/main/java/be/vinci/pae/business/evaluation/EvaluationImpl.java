@@ -77,12 +77,12 @@ public class EvaluationImpl implements Evaluation {
 
   @Override
   public String toString() {
-    return "EvaluationImpl{" +
-        "idEvaluation=" + idEvaluation +
-        ", note=" + note +
-        ", objet=" + objet +
-        ", commentaire='" + commentaire + '\'' +
-        '}';
+    return "EvaluationImpl{"
+        + "idEvaluation=" + idEvaluation
+        + ", note=" + note
+        + ", objet=" + objet
+        + ", commentaire='" + commentaire + '\''
+        + '}';
   }
 
 }
