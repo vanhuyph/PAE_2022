@@ -74,11 +74,12 @@ public class RessourceInteret {
   }
 
   /**
-   * Récupère l'intéret de l'utilisateur pour un objet.
+   * Récupère l'intérêt de l'utilisateur pour un objet.
    *
    * @param idObjet       : l'id de l'objet
    * @param idUtilisateur : l'id de l'utilisateur
-   * @return interet : l'interet trouvé sinon null
+   * @return interet : l'interet trouvé, sinon null
+   * @throws PresentationException : est lancée si l'id de l'objet est incorrect
    */
   @GET
   @Path("interetUtilisateurPourObjet/{id}")

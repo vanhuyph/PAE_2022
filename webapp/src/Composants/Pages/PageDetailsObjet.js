@@ -5,31 +5,38 @@ import Swal from "sweetalert2";
 
 const PageDetailsObjet = (id) => {
   const session = recupUtilisateurDonneesSession()
+  // Redirige vers connexion si pas de session
+  if (!session) {
+    Redirect("/connexion");
+  }
   // Récupère l'objet
-  fetch(API_URL + "offres/voirDetailsOffre/" + id, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: session.token
-    },
-  })
-  .then((reponse) => {
-    if (!reponse.ok) {
-      throw new Error(
-          "Code d'erreur : " + reponse.status + " : " + reponse.statusText
-      )
-    }
-    return reponse.json()
-  })
-  .then((donnee) => {
-    if (donnee.objetDTO.offreur.idUtilisateur
-        === session.utilisateur.idUtilisateur) {
-      surDetailObjetProprio(donnee)
-    } else {
-      surDetailObjet(donnee)
-    }
-  })
+  else {
+    fetch(API_URL + "offres/voirDetailsOffre/" + id, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token
+      },
+    })
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+        )
+      }
+      return reponse.json()
+    })
+    .then((donnee) => {
+      if (donnee.objetDTO.offreur.idUtilisateur
+          === session.utilisateur.idUtilisateur) {
+        surDetailObjetProprio(donnee)
+      } else {
+        surDetailObjet(donnee)
+      }
+    })
+  }
 }
+
 const surDetailObjet = async (offre) => {
   // Page détails de l'objet
   let dateOffre = new Date(offre.dateOffre[0], offre.dateOffre[1] - 1,
@@ -186,24 +193,27 @@ const surDetailObjet = async (offre) => {
   `
   pageDiv.innerHTML = offrePage
 
-  fetch(API_URL+"interets/interetUtilisateurPourObjet/"+offre.objetDTO.idObjet+"?utilisateur="+session.utilisateur.idUtilisateur, {
-    method:"GET",
-    headers:{
-      "Content-Type": "application/json",
-      Authorization: session.token
-    }
-  })
+  // Vérifie si l'utilisateur à déjà marqué un intérêt pour l'objet pour disable le boutton
+  fetch(
+      API_URL + "interets/interetUtilisateurPourObjet/" + offre.objetDTO.idObjet
+      + "?utilisateur=" + session.utilisateur.idUtilisateur, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: session.token
+        }
+      })
   .then((reponse) => {
     if (!reponse.ok) {
       throw new Error(
           "Code d'erreur : " + reponse.status + " : " + reponse.statusText
       );
     }
-    if(reponse.statusText === "OK"){
+    if (reponse.statusText === "OK") {
       return reponse.json();
     }
   }).then((donne) => {
-    if (donne){
+    if (donne) {
       document.querySelector("#marquer-interet").classList.add("disabled")
     }
   })

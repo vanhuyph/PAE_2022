@@ -79,13 +79,13 @@ public class InteretDAOImpl implements InteretDAO {
     return nbPers;
   }
 
-
   /**
-   * Récupère l'intéret de l'utilisateur pour un objet.
+   * Récupère l'intérêt de l'utilisateur pour un objet.
    *
    * @param idObjet       : l'id de l'objet
    * @param idUtilisateur : l'id de l'utilisateur
-   * @return interet : l'interet trouvé sinon null
+   * @return interet : l'intérêt trouvé, sinon null
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public InteretDTO interetUtilisateurPourObjet(int idObjet, int idUtilisateur) {
@@ -119,7 +119,6 @@ public class InteretDAOImpl implements InteretDAO {
       e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
-
   }
 
   /**
