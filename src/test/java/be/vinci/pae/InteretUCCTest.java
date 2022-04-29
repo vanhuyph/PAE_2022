@@ -9,7 +9,10 @@ import be.vinci.pae.business.interet.InteretUCC;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.donnees.dao.interet.InteretDAO;
+import be.vinci.pae.donnees.dao.objet.ObjetDAO;
+import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
+import be.vinci.pae.utilitaires.exceptions.PasTrouveException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -32,7 +35,9 @@ public class InteretUCCTest {
   private InteretDTO interetDTO;
   private InteretUCC interetUCC;
   private UtilisateurDTO utilisateurDTO;
+  private UtilisateurDAO utilisateurDAO;
   private ObjetDTO objetDTO;
+  private ObjetDAO objetDAO;
 
   @BeforeAll
   void initTout() {
@@ -40,6 +45,8 @@ public class InteretUCCTest {
     this.domaineFactory = locator.getService(DomaineFactory.class);
     this.interetDAO = locator.getService(InteretDAO.class);
     this.interetUCC = locator.getService(InteretUCC.class);
+    this.objetDAO = locator.getService(ObjetDAO.class);
+    this.utilisateurDAO = locator.getService(UtilisateurDAO.class);
     interetDTO = domaineFactory.getInteret();
     utilisateurDTO = domaineFactory.getUtilisateur();
     objetDTO = domaineFactory.getObjet();
@@ -101,7 +108,7 @@ public class InteretUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode listeDesPersonnesInteressees renvoie bien une liste")
+  @DisplayName("Test réussi : méthode listeDesPersonnesInteressees renvoie bien une liste.")
   public void testlisteDesPersonnesInteresseesV1() {
     List<InteretDTO> liste = new ArrayList<>();
     Mockito.when(interetDAO.listeDesPersonnesInteressees(interetDTO.getObjet().getIdObjet()))
@@ -111,13 +118,54 @@ public class InteretUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode listeDesPersonnesInteresseesVue renvoie bien une liste")
+  @DisplayName("Test réussi : méthode listeDesPersonnesInteresseesVue renvoie bien une liste.")
   public void testlisteDesPersonnesInteresseesVueV1() {
     List<InteretDTO> liste = new ArrayList<>();
     Mockito.when(interetDAO.listeDesPersonnesInteresseesVue(interetDTO.getObjet().getIdObjet()))
         .thenReturn(liste);
     assertEquals(liste,
         interetUCC.listeDesPersonnesInteresseesVue(interetDTO.getObjet().getIdObjet()));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode indiquerReceveur ratée car le receveur n'a pas pu "
+      + "être indiqué.")
+  public void testIndiquerReceveurV1() {
+    Mockito.when(interetDAO.miseAJourInteret(interetDTO)).thenReturn(null);
+    assertThrows(BusinessException.class, () -> interetUCC.indiquerReceveur(interetDTO));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode indiquerReceveur indique bien à une personne intéressée "
+      + "comme étant receveur de l'objet.")
+  public void testIndiquerReceveurV2() {
+    Mockito.when(interetDAO.miseAJourInteret(interetDTO)).thenReturn(interetDTO);
+    interetDTO.getObjet().setEtatObjet("Confirmé");
+    interetDTO.getObjet().setReceveur(utilisateurDTO);
+    Mockito.when(objetDAO.miseAJourObjet(interetDTO.getObjet())).thenReturn(interetDTO.getObjet());
+    assertEquals(interetDTO, interetUCC.indiquerReceveur(interetDTO));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode nonRemis ratée car l'objet n'a pas de receveur actuellement.")
+  public void testNonRemisV1() {
+    int id = objetDTO.getIdObjet();
+    Mockito.when(interetDAO.receveurActuel(id)).thenReturn(null);
+    assertThrows(PasTrouveException.class, () -> interetUCC.nonRemis(id));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode nonRemis renvoie bien que l'objet a été non remis "
+      + "car le receveur n'est pas venu chercher l'objet.")
+  public void testNonRemisV2() {
+    int id = objetDTO.getIdObjet();
+    interetDTO.setVenuChercher(false);
+    interetDTO.setReceveurChoisi(true);
+    Mockito.when(interetDAO.receveurActuel(id)).thenReturn(interetDTO);
+    Mockito.when(interetDAO.miseAJourInteret(interetDTO)).thenReturn(interetDTO);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(interetDTO.getUtilisateur()))
+        .thenReturn(interetDTO.getUtilisateur());
+    assertEquals(interetDTO, interetUCC.nonRemis(id));
   }
 
 }
