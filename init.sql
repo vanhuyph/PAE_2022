@@ -133,19 +133,19 @@ VALUES (DEFAULT, 'Vêtements');
 
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'Offert', 3, 'Décorations de Noël de couleur rouge.', 3, NULL,
-        'christmas-1869533_640.png', 1, false);
+        'christmas-1869533_640.png', 0, false);
 INSERT INTO projet.objets
 VALUES (DEFAULT, 'Offert', 3, 'Cadre représentant un chien noir sur un fond noir.', 3, NULL,
-        'dog-4118585_640.jpg', 1, false);
+        'dog-4118585_640.jpg', 0, false);
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'BureauEcolier-7.JPG', 1, false);
+VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'BureauEcolier-7.JPG', 0, false);
 
 INSERT INTO projet.offres
-VALUES (DEFAULT, 1, '21-03-22', 'Mardi de 17h à 22h', 1);
+VALUES (DEFAULT, 1, '21-03-22', 'Mardi de 17h à 22h', 0);
 INSERT INTO projet.offres
-VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h', 1);
+VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h', 0);
 INSERT INTO projet.offres
-VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h', 1);
+VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h', 0);
 
 INSERT INTO projet.interets
 VALUES (3, 3, '25-03-22', 0, false, false, NULL);
