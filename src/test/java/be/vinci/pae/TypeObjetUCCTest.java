@@ -20,14 +20,13 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mockito;
 
 @TestInstance(Lifecycle.PER_CLASS)
-public class TypeObjetTest {
+public class TypeObjetUCCTest {
 
   private TypeObjetDAO typeObjetDAO;
   private TypeObjetUCC typeObjetUCC;
   private TypeObjetDTO typeObjetDTO1;
   private TypeObjetDTO typeObjetDTO2;
   private TypeObjetDTO typeObjetDTO3;
-
 
   @BeforeAll
   void initTout() {
@@ -52,21 +51,18 @@ public class TypeObjetTest {
   }
 
   @Test
-  @DisplayName("Test raté : le type d'objet existe déjà")
-  public void creerTypeObjetV1() {
-
+  @DisplayName("Test raté : méthode creerTypeObjet raté car le type d'objet existe déjà.")
+  public void testCreerTypeObjetV1() {
     Mockito.when(typeObjetDAO.verifierUniqueTypeObjet(typeObjetDTO1)).thenReturn(typeObjetDTO2);
     assertThrows(BusinessException.class, () -> typeObjetUCC.creerTypeObjet(typeObjetDTO1));
   }
 
   @Test
-  @DisplayName("Test réussi : le type d'objet renvoie bien le type d'objet créé")
-  public void creerTypeObjetV2() {
-
+  @DisplayName("Test réussi : méthode creerTypeObjet renvoie bien le type d'objet créé.")
+  public void testCreerTypeObjetV2() {
     Mockito.when(typeObjetDAO.verifierUniqueTypeObjet(typeObjetDTO1)).thenReturn(typeObjetDTO1);
     Mockito.when(typeObjetDAO.creerTypeObjet(typeObjetDTO1)).thenReturn(typeObjetDTO3);
     assertEquals(typeObjetDTO3, typeObjetUCC.creerTypeObjet(typeObjetDTO1));
   }
-
 
 }

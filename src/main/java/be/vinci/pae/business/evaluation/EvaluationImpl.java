@@ -4,6 +4,7 @@ import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.vue.Vues;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EvaluationImpl implements Evaluation {
@@ -55,6 +56,33 @@ public class EvaluationImpl implements Evaluation {
   @Override
   public void setCommmentaire(String commmentaire) {
     this.commentaire = commmentaire;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    EvaluationImpl that = (EvaluationImpl) o;
+    return idEvaluation == that.idEvaluation && Objects.equals(objet, that.objet);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(idEvaluation, objet);
+  }
+
+  @Override
+  public String toString() {
+    return "EvaluationImpl{" +
+        "idEvaluation=" + idEvaluation +
+        ", note=" + note +
+        ", objet=" + objet +
+        ", commentaire='" + commentaire + '\'' +
+        '}';
   }
 
 }
