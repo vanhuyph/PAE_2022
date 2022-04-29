@@ -9,6 +9,8 @@ public interface InteretDAO {
 
   int nbPersonnesInteressees(int idObjet);
 
+  InteretDTO interetUtilisateurPourObjet(int idObjet, int idUtilisateur);
+
   List<InteretDTO> listeDesPersonnesInteressees(int idObjet);
 
   List<InteretDTO> listeDesPersonnesInteresseesVue(int idOffreur);
