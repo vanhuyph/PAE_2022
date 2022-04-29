@@ -317,7 +317,6 @@ public class OffreUCCImpl implements OffreUCC {
         }
         throw new OptimisticLockException("Données périmées");
       }
-
       UtilisateurDTO offreur = utilisateurDAO.rechercheParId(
           offreDTO.getObjetDTO().getOffreur().getIdUtilisateur());
       if (offreur == null) {
@@ -409,43 +408,43 @@ public class OffreUCCImpl implements OffreUCC {
   }
 
   /**
-   * Récupère tous les objets offerts de l'utilisateur.
+   * Récupère tous les objets offerts de l'utilisateur dont l'id est passé en paramètre.
    *
-   * @param idUtilisateur : l'id de l'utilisateur
-   * @return
+   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses objets offerts
+   * @return liste : la liste des objets offerts
    */
   @Override
   public List<OffreDTO> objetsOffertsUtilisateur(int idUtilisateur) {
     serviceDAL.commencerTransaction();
-    List<OffreDTO> objets = null;
+    List<OffreDTO> liste;
     try {
-      objets = offreDAO.objetsOffertsUtilisateur(idUtilisateur);
+      liste = offreDAO.objetsOffertsUtilisateur(idUtilisateur);
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
     }
     serviceDAL.commettreTransaction();
-    return objets;
+    return liste;
   }
 
   /**
-   * Récupère tous les objets reçus de l'utilisateur.
+   * Récupère tous les objets reçus de l'utilisateur dont l'id est passé en paramètre.
    *
-   * @param idUtilisateur : l'id de l'utilisateur
-   * @return
+   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses objets reçus
+   * @return liste : la liste des objets reçus
    */
   @Override
   public List<OffreDTO> objetsRecusUtilisateur(int idUtilisateur) {
     serviceDAL.commencerTransaction();
-    List<OffreDTO> objets = null;
+    List<OffreDTO> liste;
     try {
-      objets = offreDAO.objetsRecuUtilisateur(idUtilisateur);
+      liste = offreDAO.objetsRecusUtilisateur(idUtilisateur);
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
     }
     serviceDAL.commettreTransaction();
-    return objets;
+    return liste;
   }
 
 }

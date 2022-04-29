@@ -21,7 +21,7 @@ public class EvaluationUCCImpl implements EvaluationUCC {
   /**
    * Permet de créer une évaluation.
    *
-   * @param evaluationDTO : l'évaluation a créer
+   * @param evaluationDTO : l'évaluation à créer
    * @return evaluation : l'évaluation créée
    * @throws BusinessException       : est lancée si l'objet n'est pas dans un état permettant
    *                                 d'être évalué
@@ -38,7 +38,7 @@ public class EvaluationUCCImpl implements EvaluationUCC {
         throw new PasTrouveException("L'objet n'existe pas");
       }
       if (!objetEvalue.peutEtreEvalue()) {
-        throw new BusinessException("l'objet n'est pas prêt a être évalué ou a déjà été évalué");
+        throw new BusinessException("L'objet n'est pas prêt a être évalué ou a déjà été évalué");
       }
       if (evaluationDTO.getNote() > -1 && evaluationDTO.getNote() < 6) {
         objetEvalue.estEvalue();

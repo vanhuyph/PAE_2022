@@ -39,10 +39,11 @@ public class RessourceTypeObjet {
   }
 
   /**
-   * Creer un nouveau type d'objet.
+   * Créer un nouveau type d'objet.
    *
-   * @param typeObjetDTO : type d'objet recu du formulaire créer un type d'objet
+   * @param typeObjetDTO : type d'objet reç du formulaire créer un type d'objet
    * @return typeObjetDTO : le type d'objet créé
+   * @throws PresentationException : est lancée si le type d'objet est vide
    */
   @POST
   @Path("/creerTypeObjet")
@@ -50,12 +51,12 @@ public class RessourceTypeObjet {
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
   public TypeObjetDTO creerTypeObjet(TypeObjetDTO typeObjetDTO) {
-
     if (typeObjetDTO.getNom().isBlank() || typeObjetDTO.getNom().isEmpty()) {
-      throw new PresentationException("Le nom du nouveau type d'objet ne peut pas etre vide",
+      throw new PresentationException("Le nom du nouveau type d'objet ne peut pas être vide",
           Response.Status.BAD_REQUEST);
     }
     typeObjetDTO = typeObjetUCC.creerTypeObjet(typeObjetDTO);
     return typeObjetDTO;
   }
+
 }

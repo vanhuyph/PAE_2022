@@ -14,10 +14,11 @@ public class EvaluationDAOImpl implements EvaluationDAO {
   private ServiceBackendDAL serviceBackendDAL;
 
   /**
-   * Creer une evaluation.
+   * Ajoute une évaluation dans la base de données.
    *
-   * @param evaluationDTO : l'évaluation a créé
-   * @return l'évaluation créée
+   * @param evaluationDTO : l'évaluation à créé
+   * @return evaluationDTO : l'évaluation créée
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public EvaluationDTO creerEvaluation(EvaluationDTO evaluationDTO) {
@@ -26,7 +27,6 @@ public class EvaluationDAOImpl implements EvaluationDAO {
       ps.setInt(1, evaluationDTO.getObjet().getIdObjet());
       ps.setInt(2, evaluationDTO.getNote());
       ps.setString(3, evaluationDTO.getCommentaire());
-
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           return evaluationDTO;
@@ -38,4 +38,5 @@ public class EvaluationDAOImpl implements EvaluationDAO {
       throw new FatalException(e.getMessage(), e);
     }
   }
+
 }

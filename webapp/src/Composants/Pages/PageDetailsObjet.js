@@ -147,7 +147,9 @@ const surDetailObjet = async (offre) => {
       </div>
       <div class="row">
         <div class="column">
-          <h4>Disponibilités de l'offreur : ${offre.plageHoraire}</h4>
+          <h4>Disponibilités de l'offreur</h4>
+          <p>${offre.plageHoraire}</p>
+          <p></p>
         </div>
       </div>
     </div>
@@ -156,7 +158,7 @@ const surDetailObjet = async (offre) => {
         <div class="row">
           <div class="column">
           <div class="field">
-            <label for="dateRdv">Indiquer votre disponibilité :</label>
+            <label for="dateRdv">Indiquer votre disponibilité</label>
             <input type="date" id="dateRdv" min=${ajd} class="date-rdv">
             <div id="messageErreur" class="message-erreur"></div>
             </div>
@@ -183,7 +185,7 @@ const surDetailObjet = async (offre) => {
   </div>
   `
   pageDiv.innerHTML = offrePage
-
+  // Marquage de l'intérêt
   document.querySelector("#form-interet").addEventListener("submit", (e) => {
     e.preventDefault();
     let dateRdv = document.querySelector("#dateRdv").value;
@@ -245,7 +247,6 @@ const surDetailObjet = async (offre) => {
           clearInterval(deuxiemeInter)
           Redirect("/")
         }, 5000)
-
       })
       .catch(err => surErreur(err))
     }
@@ -272,10 +273,10 @@ const surDetailObjetProprio = async (offre) => {
           "Code erreur : " + reponse.status + " : " + reponse.statusText
       );
     }
-
     return reponse.json();
   })
   .then((nbInt) => nbInteressees = nbInt)
+
   let offresPrecedentes = "Pas d'offres précédentes";
   await fetch(
       API_URL + 'offres/offresPrecedentes/' + offre.objetDTO.idObjet, {
@@ -294,7 +295,6 @@ const surDetailObjetProprio = async (offre) => {
     return reponse.json();
   })
   .then((offres) => {
-    console.log(offres)
     if (offres.length > 0) {
       offresPrecedentes = ""
       offres.forEach((off) => {
@@ -353,17 +353,23 @@ const surDetailObjetProprio = async (offre) => {
       </div>
       <div class="row">
         <div class="column">
-          <h4>Disponibilités de l'offreur : ${offre.plageHoraire}</h4>
+          <h4>Disponibilités de l'offreur</h4>
+          <p>${offre.plageHoraire}</p>
         </div>
       </div>
     </div>
     <div class="ui two column grid">
       <div class="column">
-      <div class="ui buttons">
-        <button id="modifier-offre" class="ui green button">Modifier votre offre</button>
-        <button id="annuler-offre" class="ui negative button">Annuler votre offre</button>
+      <div class="two fields">
+        <div class="field">
+          <button id="modifier-offre" class="ui green button">Modifier votre offre</button>
+        </div>
+        <div class="field">
+          <button id="annuler-offre" class="ui negative button">Annuler votre offre</button>
+        </div>
+      </div> 
       </div>
-      </div>
+    </div>
     </div>
   </div>
   `
@@ -444,7 +450,6 @@ const surDetailObjetProprioModifier = async (offre) => {
     if (offres.length > 0) {
       offresPrecedentes = ""
       offres.forEach((off) => {
-        console.log(off)
         let daOf = new Date(off.dateOffre[0], off.dateOffre[1] - 1,
             off.dateOffre[2]).toLocaleDateString("fr-BE")
         offresPrecedentes += `<p>${daOf}</p>`
@@ -517,10 +522,15 @@ const surDetailObjetProprioModifier = async (offre) => {
       <div class="column">
       <div class="field">
       <div id="modifier-erreur" class="message-erreur"></div>
-        <div class="ui bouttons">
-          <button id="confirmer" type="submit" class="ui positive button">Confirmer</button>
-          <button id="annuler" class="ui negative button">Annuler</button>
-        </div>
+        <div class="two fields">
+          <div class="field">
+            <button id="confirmer" type="submit" class="ui positive button">Confirmer</button>
+          </div>
+          <div class="field">
+            <button id="annuler" class="ui negative button">Annuler</button>
+          </div>
+        </div> 
+          </div>
       </div>
       </div>
     </div>

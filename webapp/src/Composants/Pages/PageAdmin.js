@@ -61,7 +61,6 @@ const page = `
   ${pagePrincipal}
  </div>
 </div>
-
 `
 
 const PageAdmin = () => {
@@ -100,7 +99,6 @@ const PageAdmin = () => {
       listeMembres.classList.add("active")
       afficherMembres()
     })
-
   }
 }
 
@@ -164,6 +162,7 @@ const afficherMembres = () => {
     surListeConfirme(donnees)
   })
 
+  // Autocomplétion barre de recherche admin
   var input = document.getElementById("autoComplete");
   autocomplete({
     input: input,
@@ -231,7 +230,7 @@ const surListeConfirme = async (donnees) => {
   contenu.innerHTML = `<div class="chargement-membres">
     <div class="ui text active centred inline loader">Chargement de la liste des membres</div>
 </div>`
-
+  // Affichage de tous les membres avec leur nombre d'objets
   for (const utilisateur of donnees) {
     liste += `
     <div class="utilisateur">
@@ -270,7 +269,7 @@ const surListeConfirme = async (donnees) => {
       let objets = u.querySelector(".liste-utilisateur-objets")
       objets.classList.toggle("montrer-block")
       const idUtilisateur = u.querySelector("#id-ut").value
-      if(objets){
+      if (objets) {
         listeObjetsOffert(objets, idUtilisateur)
         objets.querySelector("#obj-offert").addEventListener("click", () => {
           objets.querySelector("#obj-offert").classList.add("positive")
@@ -283,7 +282,6 @@ const surListeConfirme = async (donnees) => {
           listeObjetsRecu(objets, idUtilisateur)
         })
       }
-
     })
   })
 }
@@ -321,7 +319,6 @@ const listeObjetsOffert = async (objets, idUtilisateur) => {
       </div>
       `
       })
-
     }
   })
   objets.querySelector(".liste-objets").innerHTML = liste
@@ -361,7 +358,6 @@ const listeObjetsRecu = async (objets, idUtilisateur) => {
       </div>
       `
       })
-
     }
   })
   objets.querySelector(".liste-objets").innerHTML = liste

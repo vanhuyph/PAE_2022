@@ -359,15 +359,15 @@ public class OffreDAOImpl implements OffreDAO {
   }
 
   /**
-   * Liste les propres offres de l'utilisateur dont l'id est passé en paramètre.
+   * Liste les objets offerts de l'utilisateur dont l'id est passé en paramètre.
    *
-   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses offres
-   * @return liste : la liste de toutes ses propres offres
+   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses objets offerts
+   * @return liste : la liste de ses objets offerts
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
   public List<OffreDTO> objetsOffertsUtilisateur(int idUtilisateur) {
-    String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
+    String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
         + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
         + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
         + "o.etat_objet, o.description, o.photo, o.version, o.vue, of.id_offre, of.date_offre, "
@@ -377,21 +377,21 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
         + "WHERE u.id_utilisateur = ? AND o.etat_objet = 'Offert' "
-        + "AND of.date_offre = (SELECT max(of2.date_offre) "
+        + "AND of.date_offre = (SELECT MAX(of2.date_offre) "
         + "FROM projet.offres of2, projet.objets o2 "
         + "WHERE of2.id_objet = o.id_objet)";
     return listeObjetsUtilisateur(idUtilisateur, requetePs);
   }
 
   /**
-   * Liste les propres offres de l'utilisateur dont l'id est passé en paramètre.
+   * Liste les objets reçus de l'utilisateur dont l'id est passé en paramètre.
    *
-   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses offres
-   * @return liste : la liste de toutes ses propres offres
+   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses objets reçus
+   * @return liste : la liste de ses objets reçus
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public List<OffreDTO> objetsRecuUtilisateur(int idUtilisateur) {
+  public List<OffreDTO> objetsRecusUtilisateur(int idUtilisateur) {
     String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
         + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
         + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
@@ -401,15 +401,21 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.receveur = u.id_utilisateur "
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-        + "WHERE o.receveur = ? AND (o.etat_objet = 'Donné' OR o.etat_objet = 'Evalué')"
-        + "AND of.date_offre = (SELECT max(of2.date_offre) "
+        + "WHERE o.receveur = ? AND (o.etat_objet = 'Donné' OR o.etat_objet = 'Evalué') "
+        + "AND of.date_offre = (SELECT MAX(of2.date_offre) "
         + "FROM projet.offres of2, projet.objets o2 "
         + "WHERE of2.id_objet = o.id_objet)";
-    List<OffreDTO> offres = listeObjetsUtilisateur(idUtilisateur, requetePs);
-    return offres;
+    return listeObjetsUtilisateur(idUtilisateur, requetePs);
   }
 
-
+  /**
+   * Liste les objets de l'utilisateur dont l'id est passé en paramètre.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses objets
+   * @param requetePs     : la requête
+   * @return liste : la liste remplie
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
   private List<OffreDTO> listeObjetsUtilisateur(int idUtilisateur, String requetePs) {
     List<OffreDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
@@ -422,13 +428,12 @@ public class OffreDAOImpl implements OffreDAO {
     return liste;
   }
 
-
   /**
    * Rempli une liste d'offres depuis un ResultSet.
    *
    * @param offreDTO : l'offre vide, qui va être remplie
    * @param ps       : le PreparedStatement déjà mis en place
-   * @return liste : la liste rempli
+   * @return liste : la liste remplie
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   private List<OffreDTO> remplirListeOffresDepuisResulSet(OffreDTO offreDTO, PreparedStatement ps) {

@@ -99,13 +99,13 @@ const afficherTypeObjet = () => {
       Authorization: session.token,
     },
   })
-  .then((response) => {
-    if (!response.ok) {
+  .then((reponse) => {
+    if (!reponse.ok) {
       throw new Error(
-          "Code d'erreur : " + response.status + " : " + response.statusText
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText
       );
     }
-    return response.json();
+    return reponse.json();
   })
   .then((data) => choixTypeObjet(data));
 

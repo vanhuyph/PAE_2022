@@ -63,10 +63,9 @@ public class RessourceOffre {
   /**
    * Réoffrir l'objet.
    *
-   * @param offreDTO : l'offre précédente avec l'état annulé.
-   * @return offreDTO : l'offre recréée.
-   * @throws PresentationException : est lancée s'il y a eu un problème lors de la création d'une
-   *                               offre
+   * @param offreDTO : l'offre précédente avec l'état annulé
+   * @return offreDTO : l'offre réoffert.
+   * @throws PresentationException : est lancée s'il y a eu un problème lors de la réoffre
    */
   @POST
   @Path("reoffrirObjet")
@@ -157,12 +156,11 @@ public class RessourceOffre {
   }
 
   /**
-   * Permet de voir les détails de l'offre avec l'id passé en paramètre.
+   * Permet de lister les dates de l'offre précédente lorsqu'on offre à nouveau l'objet.
    *
-   * @param idObjet : l'id de l'objet
-   * @return offreDTO : les détails de l'offre avec l'id passé en paramètre
-   * @throws PresentationException : est lancée si l'id de l'offre est invalide ou que l'offre n'a
-   *                               pas pu être trouvée
+   * @param idObjet : l'id de l'objet à qui lister les dates
+   * @return liste : la liste des dates de l'offre précédente
+   * @throws PresentationException : est lancée si l'id de l'offre est invalide
    */
   @GET
   @Path("offresPrecedentes/{idObjet}")
@@ -172,11 +170,8 @@ public class RessourceOffre {
     if (idObjet <= 0) {
       throw new PresentationException("L'id de l'offre est incorrect", Status.BAD_REQUEST);
     }
-    List<OffreDTO> listeOffreDTO = offreUCC.offresPrecedentes(idObjet);
-    if (listeOffreDTO == null) {
-      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
-    }
-    return listeOffreDTO;
+    List<OffreDTO> liste = offreUCC.offresPrecedentes(idObjet);
+    return liste;
   }
 
   /**
@@ -286,8 +281,7 @@ public class RessourceOffre {
    *
    * @param idUtilisateur : l'id de l'utilisateur à qui lister ses offres
    * @return liste : la liste de toutes ses propres offres
-   * @throws PresentationException : est lancée si l'id de l'utilisateur est incorrect ou que
-   *                               l'offre n'a pas été trouvée
+   * @throws PresentationException : est lancée si l'id de l'utilisateur est incorrect
    */
   @GET
   @Path("/mesOffres/{idUtilisateur}")
@@ -298,9 +292,6 @@ public class RessourceOffre {
       throw new PresentationException("L'id de l'utilisateur est incorrect", Status.BAD_REQUEST);
     }
     List<OffreDTO> liste = offreUCC.mesOffres(idUtilisateur);
-    if (liste == null) {
-      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
-    }
     return liste;
   }
 
@@ -309,8 +300,7 @@ public class RessourceOffre {
    *
    * @param idUtilisateur : l'id de l'utilisateur à qui lister ses offres attribuées
    * @return liste : la liste de toutes ses offres attribuées
-   * @throws PresentationException : est lancée si l'id de l'utilisateur est incorrect ou que
-   *                               l'offre n'a pas été trouvée
+   * @throws PresentationException : est lancée si l'id de l'utilisateur est incorrect
    */
   @GET
   @Path("/voirOffreAttribuer/{idUtilisateur}")
@@ -321,17 +311,14 @@ public class RessourceOffre {
       throw new PresentationException("L'id de l'utilisateur est incorrect", Status.BAD_REQUEST);
     }
     List<OffreDTO> liste = offreUCC.voirOffreAttribuer(idUtilisateur);
-    if (liste == null) {
-      throw new PresentationException("L'offre n'a pas été trouvée", Status.BAD_REQUEST);
-    }
     return liste;
   }
 
   /**
-   * Recupere tous les objets qui doivent etre évalués par un utilisateur.
+   * Récupère tous les objets que l'utilisateur doit évaluer.
    *
-   * @param idUtilisateur : id de l'utilisateur
-   * @return objetsAEvaluer : la liste des objets que l'utilisateur doit évaluer
+   * @param idUtilisateur : l'id de l'utilisateur concerné
+   * @return liste : la liste des objets à évaluer par l'utilisateur
    */
   @GET
   @Path("/objetsAEvaluer/{idUtilisateur}")
@@ -340,17 +327,16 @@ public class RessourceOffre {
   @Autorisation
   public List<ObjetDTO> objetsAEvaluerParUtilisateur(
       @PathParam("idUtilisateur") int idUtilisateur) {
-    List<ObjetDTO> objetsAEvaluer;
-    objetsAEvaluer = offreUCC.objetsAEvaluerParUtilisateur(idUtilisateur);
-
-    return objetsAEvaluer;
+    List<ObjetDTO> liste;
+    liste = offreUCC.objetsAEvaluerParUtilisateur(idUtilisateur);
+    return liste;
   }
 
   /**
-   * Recupere tous les objets offerts d'un utilisateur.
+   * Récupère tous les objets offerts de l'utilisateur dont l'id est passé en paramètre.
    *
-   * @param idUtilisateur : id de l'utilisateur
-   * @return objets : la liste des objets que l'utilisateur doit évaluer
+   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses objets offerts
+   * @return liste : la liste des objets offerts
    */
   @GET
   @Path("/objetsOfferts/{idUtilisateur}")
@@ -358,25 +344,26 @@ public class RessourceOffre {
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
   public List<OffreDTO> objetsOffertsUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
-    List<OffreDTO> objets = null;
-    objets = offreUCC.objetsOffertsUtilisateur(idUtilisateur);
-    return objets;
+    List<OffreDTO> liste;
+    liste = offreUCC.objetsOffertsUtilisateur(idUtilisateur);
+    return liste;
   }
 
   /**
-   * Recupere tous les objets reçus d'un utilisateur.
+   * Récupère tous les objets reçus de l'utilisateur dont l'id est passé en paramètre.
    *
-   * @param idUtilisateur : id de l'utilisateur
-   * @return objets : la liste des objets que l'utilisateur doit évaluer
+   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses objets reçus
+   * @return liste : la liste des objets reçus
    */
   @GET
   @Path("/objetsRecus/{idUtilisateur}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  //@Autorisation
+  @Autorisation
   public List<OffreDTO> objetsRecusUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
-    List<OffreDTO> objets = null;
-    objets = offreUCC.objetsRecusUtilisateur(idUtilisateur);
-    return objets;
+    List<OffreDTO> liste;
+    liste = offreUCC.objetsRecusUtilisateur(idUtilisateur);
+    return liste;
   }
+
 }
