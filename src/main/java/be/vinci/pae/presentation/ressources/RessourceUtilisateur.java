@@ -290,6 +290,26 @@ public class RessourceUtilisateur {
     return utilisateurUCC.miseAJourUtilisateur(utilisateurDTO);
   }
 
+  @PUT
+  @Path("modifierEtatUtilisateur/{idUtilisateur}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AutorisationAdmin
+  public UtilisateurDTO modifierEtatUtilisateur(@PathParam("idUtilisateur") int idUtilisateur,
+      JsonNode json) {
+    if (idUtilisateur < 1) {
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
+    }
+    if (!json.hasNonNull("etatUtilisateur") || json.get("etatUtilisateur").asText().isBlank()) {
+      throw new PresentationException("Pas d'état d'utilisateur", Status.BAD_REQUEST);
+    }
+
+    String etatUtilisateur = json.get("etatUtilisateur").asText();
+
+    UtilisateurDTO utilisateurDTO = utilisateurUCC.rechercheParId(idUtilisateur);
+    return utilisateurUCC.miseAJourEtatUtilisateur(utilisateurDTO, etatUtilisateur);
+  }
+
   /**
    * Modifie le mot de passe de l'utilisateur.
    *

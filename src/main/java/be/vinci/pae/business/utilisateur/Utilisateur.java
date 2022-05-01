@@ -23,4 +23,8 @@ public interface Utilisateur extends UtilisateurDTO {
 
   void incrementerNbObjetsAbandonnes();
 
+  void modifierEtatUtilisateur(String etatUtilisateur);
+
+
+
 }

@@ -216,6 +216,10 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     try {
       liste = utilisateurDAO.listerUtilisateursEtatsInscriptions(
           etatInscription);
+      if (etatInscription.equals("Confirmé")) {
+        liste.addAll(utilisateurDAO.listerUtilisateursEtatsInscriptions("Empêché"));
+
+      }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
@@ -253,6 +257,34 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
         }
         throw new OptimisticLockException("Données de l'adresse sont périmées");
       }
+      utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
+      if (utilisateur == null) {
+        if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {
+          throw new PasTrouveException("L'utilisateur n'existe pas");
+        }
+        throw new OptimisticLockException("Données de l'utilisateur sont périmées");
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return utilisateur;
+  }
+
+  @Override
+  public UtilisateurDTO miseAJourEtatUtilisateur(UtilisateurDTO utilisateurDTO, String etatUtilisateur){
+    serviceDAL.commencerTransaction();
+    UtilisateurDTO utilisateur;
+
+    try {
+
+      if (!etatUtilisateur.equals("Empêché") && !etatUtilisateur.equals("Confirmé")) {
+        throw new BusinessException("l'état voulu n'existe pas");
+      }
+
+      ((Utilisateur) utilisateurDTO).modifierEtatUtilisateur(etatUtilisateur);
+
       utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
       if (utilisateur == null) {
         if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {

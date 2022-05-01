@@ -234,6 +234,19 @@ const surListeConfirme = async (donnees) => {
   for (const utilisateur of donnees) {
     liste += `
     <div class="utilisateur">
+    
+      <div>        
+        <div class="est-empeche">
+          
+          <div class="ui buttons">
+            <button class="ui positive button" id="buttonUtilisateurEmpeche">Est empêché</button>
+          </div>
+            
+          <input id="etat-ut" type="hidden" value="${utilisateur.etatInscription}">
+        </div>
+      </div>
+           
+      
       <div class="admin-membre">
         <div class="utilisateur-nom-prenom">
           <input id="id-ut" type="hidden" value="${utilisateur.idUtilisateur}">
@@ -250,6 +263,7 @@ const surListeConfirme = async (donnees) => {
             <div><strong>Abandonnés : </strong><p>${utilisateur.nbObjetAbandonnes}</p></div>
           </div>
         </div>
+        
       </div>
       <div class="liste-utilisateur-objets">
           <div class="ui buttons">
@@ -258,6 +272,7 @@ const surListeConfirme = async (donnees) => {
           </div>
         <div class="liste-objets"></div>
       </div>
+      
     </div>
     `
   }
@@ -265,10 +280,24 @@ const surListeConfirme = async (donnees) => {
   contenu.innerHTML = liste
 
   document.querySelectorAll(".utilisateur").forEach((u) => {
+    const idUtilisateur = u.querySelector("#id-ut").value
+    let boutonEmpeche = u.querySelector("#buttonUtilisateurEmpeche")
+    let etatUtilisateur = u.querySelector("#etat-ut").value
+    if (etatUtilisateur === "Confirmé") {
+      boutonEmpeche.textContent = "Est empêché"
+    }
+    if (etatUtilisateur === "Empêché") {
+      boutonEmpeche.textContent = "Est de retour"
+    }
+
+    boutonEmpeche.addEventListener("click", () => {
+      changerEtatUtilisateur(idUtilisateur, etatUtilisateur)
+    })
+
     u.querySelector(".admin-membre").addEventListener("click", () => {
       let objets = u.querySelector(".liste-utilisateur-objets")
       objets.classList.toggle("montrer-block")
-      const idUtilisateur = u.querySelector("#id-ut").value
+
       if (objets) {
         listeObjetsOffert(objets, idUtilisateur)
         objets.querySelector("#obj-offert").addEventListener("click", () => {
@@ -282,9 +311,50 @@ const surListeConfirme = async (donnees) => {
           listeObjetsRecu(objets, idUtilisateur)
         })
       }
+
     })
+
   })
 }
+
+const changerEtatUtilisateur = async (idUtilisateur, etatUtilisateur) => {
+  let session = recupUtilisateurDonneesSession()
+  let etatUtilisateurInverse
+  if (etatUtilisateur === "Confirmé") {
+    etatUtilisateurInverse = "Empêché"
+  }
+  if (etatUtilisateur === "Empêché") {
+    etatUtilisateurInverse = "Confirmé"
+  }
+  let etatUtilisateurJson = {
+    etatUtilisateur: etatUtilisateurInverse
+
+  }
+      console.log("id utilisateur et etat :"+idUtilisateur, etatUtilisateur)
+  fetch(API_URL + "utilisateurs/modifierEtatUtilisateur/" + idUtilisateur, {
+    method: "PUT",
+    body: JSON.stringify(etatUtilisateurJson),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token
+    },
+  })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+
+    return reponse.json();
+
+  })
+  .then((data) => {
+    afficherMembres()
+  })
+}
+
+
 const listeObjetsOffert = async (objets, idUtilisateur) => {
   let session = recupUtilisateurDonneesSession()
   let liste = `<p>Pas d'objet offert</p>`
