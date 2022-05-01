@@ -284,8 +284,18 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     return utilisateur;
   }
 
+  /**
+   *
+   * @param utilisateurDTO : l'utilisateur dont on met à jour l'état.
+   * @param etatUtilisateur : l'état de l'utilisateur après changement.
+   * @throws BusinessException : si l'état spécifié n'est pas accepté.
+   * @throws PasTrouveException : si L'objet ou l'utilisateur ou l'offre n'existe pas.
+   * @throws OptimisticLockException : si les données de l'objet , l'utilisateur ou l'offre sont périmées.
+   * @return utilisateurDTO : renvoit l'utilisateur avec son état changé.
+   */
   @Override
-  public UtilisateurDTO miseAJourEtatUtilisateur(UtilisateurDTO utilisateurDTO, String etatUtilisateur){
+  public UtilisateurDTO miseAJourEtatUtilisateur(UtilisateurDTO utilisateurDTO,
+      String etatUtilisateur) {
     serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateur;
 
@@ -313,19 +323,20 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
               System.out.println("UCCImpl : dans confirmé 1 + etat objet : "
                   + offre.getObjetDTO().getEtatObjet());
             } else {
-                if (interetDAO.listeDesPersonnesInteressees(offre.getObjetDTO()
-                    .getIdObjet()).isEmpty()) {
-                  System.out.println("UCCImpl : dans confirmé 2 + etat objet : "
-                      + offre.getObjetDTO().getEtatObjet());
-                  ((Offre) offre).offrirObjet();
-                } else {
-                  ((Offre) offre).interesseObjet();
-                  System.out.println("UCCImpl : dans confirmé 3 + etat objet : " + offre.getObjetDTO().getEtatObjet());
-                }
-
+              if (interetDAO.listeDesPersonnesInteressees(offre.getObjetDTO()
+                  .getIdObjet()).isEmpty()) {
+                System.out.println("UCCImpl : dans confirmé 2 + etat objet : "
+                    + offre.getObjetDTO().getEtatObjet());
+                ((Offre) offre).offrirObjet();
+              } else {
+                ((Offre) offre).interesseObjet();
+                System.out.println("UCCImpl : dans confirmé 3 + etat objet : "
+                    + offre.getObjetDTO().getEtatObjet());
+              }
             }
             ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
-            System.out.println("UCCImpl : après modif etat objet : " + offre.getObjetDTO().getEtatObjet());
+            System.out.println("UCCImpl : après modif etat objet : "
+                + offre.getObjetDTO().getEtatObjet());
 
             if (objet == null) {
               ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());

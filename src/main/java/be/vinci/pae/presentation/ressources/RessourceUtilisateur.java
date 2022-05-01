@@ -291,6 +291,16 @@ public class RessourceUtilisateur {
     return utilisateurUCC.miseAJourUtilisateur(utilisateurDTO);
   }
 
+
+  /**
+   *
+   * @param idUtilisateur : l'id de l'utilisateur dont on veut modifier l'état.
+   * @param json : le json contenant l'état voulu après le changement.
+   * @throws PresentationException : si l'utilisateur n'existe pas
+   * ou si le json ne possède pas l'état de l'utilisateur.
+   * @throws BusinessException : si l'utilisateur n'existe pas.
+   * @return utilisateurDTO ayant son etat modifié.
+   */
   @PUT
   @Path("modifierEtatUtilisateur/{idUtilisateur}")
   @Consumes(MediaType.APPLICATION_JSON)
