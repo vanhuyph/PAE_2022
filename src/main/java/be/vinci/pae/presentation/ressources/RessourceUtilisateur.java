@@ -6,6 +6,7 @@ import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.presentation.ressources.filtres.AutorisationAdmin;
 import be.vinci.pae.presentation.ressources.utilitaires.Json;
 import be.vinci.pae.utilitaires.Config;
+import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -297,6 +298,8 @@ public class RessourceUtilisateur {
   @AutorisationAdmin
   public UtilisateurDTO modifierEtatUtilisateur(@PathParam("idUtilisateur") int idUtilisateur,
       JsonNode json) {
+
+
     if (idUtilisateur < 1) {
       throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
@@ -307,6 +310,10 @@ public class RessourceUtilisateur {
     String etatUtilisateur = json.get("etatUtilisateur").asText();
 
     UtilisateurDTO utilisateurDTO = utilisateurUCC.rechercheParId(idUtilisateur);
+    if (utilisateurDTO.getIdUtilisateur() != idUtilisateur) {
+      throw new BusinessException("L'utilisateur n'existe pas");
+    }
+
     return utilisateurUCC.miseAJourEtatUtilisateur(utilisateurDTO, etatUtilisateur);
   }
 

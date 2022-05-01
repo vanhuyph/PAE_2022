@@ -309,7 +309,7 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
         + "WHERE u.id_utilisateur = ? AND (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
-        + "OR o.etat_objet = 'Annulé' OR o.etat_objet = 'Confirmé' ) "
+        + "OR o.etat_objet = 'Annulé' OR o.etat_objet = 'Confirmé' OR o.etat_objet = 'Empêché' ) "
         + "AND of.date_offre = (SELECT max(of2.date_offre) "
         + "FROM projet.offres of2, projet.objets o2 "
         + "WHERE of2.id_objet = o.id_objet)"

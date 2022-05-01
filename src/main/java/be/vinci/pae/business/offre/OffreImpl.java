@@ -89,6 +89,11 @@ public class OffreImpl implements Offre {
   }
 
   @Override
+  public void confirmerOffre() {
+    this.getObjetDTO().setEtatObjet("Confirmé");
+  }
+
+  @Override
   public void annulerOffre() {
     this.getObjetDTO().setEtatObjet("Annulé");
   }
@@ -96,6 +101,11 @@ public class OffreImpl implements Offre {
   @Override
   public void objetNonVu() {
     this.getObjetDTO().setVue(false);
+  }
+
+  @Override
+  public void empecherOffre() {
+    this.getObjetDTO().setEtatObjet("Empêché");
   }
 
   @Override
