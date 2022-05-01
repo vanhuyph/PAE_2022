@@ -292,7 +292,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
 
     try {
       List<OffreDTO> listeMesOffres;
-      System.out.println("uccImpl avant mes offres : "+utilisateurDTO.getIdUtilisateur());
+      System.out.println("uccImpl avant mes offres : " + utilisateurDTO.getIdUtilisateur());
       listeMesOffres = offreDAO.mesOffres(utilisateurDTO.getIdUtilisateur());
 
       if (!etatUtilisateur.equals("Empêché") && !etatUtilisateur.equals("Confirmé")) {
@@ -305,28 +305,27 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
       if (etatUtilisateur.equals("Confirmé")) {
         //réoffrir toutes les offres à l'état empéché
         for (OffreDTO offre : listeMesOffres) {
-          System.out.println("id objet : "+offre.getObjetDTO().getIdObjet());
+          System.out.println("id objet : " + offre.getObjetDTO().getIdObjet());
           if (!offre.getObjetDTO().getEtatObjet().equals("Annulé")) {
             System.out.println("Dans le for de utilisateur confirmé");
             if (interetDAO.receveurActuel(offre.getObjetDTO().getIdObjet()) != null) {
               ((Offre) offre).confirmerOffre();
-              System.out.println("UCCImpl : dans confirmé 1 + etat objet : "+offre.getObjetDTO().getEtatObjet());
-            }
-             else {
-              if (interetDAO.listeDesPersonnesInteressees(offre.getObjetDTO().getIdObjet()).isEmpty()) {
-                System.out.println("UCCImpl : dans confirmé 2 + etat objet : "+offre.getObjetDTO().getEtatObjet());
-                ((Offre) offre).offrirObjet();
-              }
-
-
-              else {
-                ((Offre) offre).interesseObjet();
-                System.out.println("UCCImpl : dans confirmé 3 + etat objet : "+offre.getObjetDTO().getEtatObjet());
-              }
+              System.out.println("UCCImpl : dans confirmé 1 + etat objet : "
+                  + offre.getObjetDTO().getEtatObjet());
+            } else {
+                if (interetDAO.listeDesPersonnesInteressees(offre.getObjetDTO()
+                    .getIdObjet()).isEmpty()) {
+                  System.out.println("UCCImpl : dans confirmé 2 + etat objet : "
+                      + offre.getObjetDTO().getEtatObjet());
+                  ((Offre) offre).offrirObjet();
+                } else {
+                  ((Offre) offre).interesseObjet();
+                  System.out.println("UCCImpl : dans confirmé 3 + etat objet : " + offre.getObjetDTO().getEtatObjet());
+                }
 
             }
             ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
-            System.out.println("UCCImpl : après modif etat objet : "+offre.getObjetDTO().getEtatObjet());
+            System.out.println("UCCImpl : après modif etat objet : " + offre.getObjetDTO().getEtatObjet());
 
             if (objet == null) {
               ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
@@ -335,7 +334,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
               }
               throw new OptimisticLockException("Données périmées");
             }
-            System.out.println("Etat objet après modif"+ objet.getEtatObjet());
+            System.out.println("Etat objet après modif" + objet.getEtatObjet());
           }
 
 
@@ -355,11 +354,14 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
             if (offre.getObjetDTO().getEtatObjet().equals("Annulé")) {
               System.out.println("offre a l'état annulé");
             } else {
-              System.out.println("modifier etat utilisateur offre numero : " + offre.getIdOffre());
-              System.out.println("etat objet de l'offre avant empeche offre : " + offre.getObjetDTO()
+              System.out.println("modifier etat utilisateur offre numero : "
+                  + offre.getIdOffre());
+              System.out.println("etat objet de l'offre avant empeche offre : "
+                  + offre.getObjetDTO()
                   .getEtatObjet());
               ((Offre) offre).empecherOffre();
-              System.out.println("etat objet de l'offre après empeche offre : " + offre.getObjetDTO()
+              System.out.println("etat objet de l'offre après empeche offre : "
+                  + offre.getObjetDTO()
                   .getEtatObjet());
               ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
 
@@ -370,7 +372,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
                 }
                 throw new OptimisticLockException("Données périmées");
               }
-              System.out.println("Etat objet après modif"+ objet.getEtatObjet());
+              System.out.println("Etat objet après modif" + objet.getEtatObjet());
 
             }
           }
