@@ -152,6 +152,12 @@ VALUES (3, 3, '25-03-22', 0, false, false, NULL);
 INSERT INTO projet.interets
 VALUES (2, 3, '25-03-22', 0, false, false, NULL);
 
+/*UPDATE projet.objets SET etat_objet = 'Intéressé' WHERE id_objet = 3;
+
+UPDATE projet.utilisateurs SET etat_inscription = 'Empêché' WHERE id_utilisateur = 3;
+
+UPDATE projet.interets SET vue = false WHERE utilisateur = 3 AND objet = 3;
+*/
 -- Requêtes démo 1 client
 -- SELECT u.id_utilisateur, u.pseudo, u.est_admin, u.etat_inscription, u.commentaire
 -- FROM projet.utilisateurs u

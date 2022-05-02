@@ -20,7 +20,9 @@ public interface UtilisateurUCC {
 
   UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateur);
 
-  UtilisateurDTO miseAJourEtatUtilisateur(UtilisateurDTO utilisateurDTO, String etatUtilisateur);
+  UtilisateurDTO indiquerEmpecherUtilisateur(UtilisateurDTO utilisateurDTO);
+
+  UtilisateurDTO indiquerConfirmerUtilisateur(UtilisateurDTO utilisateurDTO);
 
   UtilisateurDTO modifierMdp(int id, String mdpActuel, String nouvMdp);
 

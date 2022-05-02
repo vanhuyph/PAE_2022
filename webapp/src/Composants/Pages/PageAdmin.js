@@ -319,40 +319,50 @@ const surListeConfirme = async (donnees) => {
 
 const changerEtatUtilisateur = async (idUtilisateur, etatUtilisateur) => {
   let session = recupUtilisateurDonneesSession()
-  let etatUtilisateurInverse
+
   if (etatUtilisateur === "Confirmé") {
-    etatUtilisateurInverse = "Empêché"
+    await fetch(API_URL + "utilisateurs/indiquerEmpecherUtilisateur/" + idUtilisateur, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token
+      },
+    })
+        .then((reponse) => {
+          if (!reponse.ok) {
+            throw new Error(
+                "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+            );
+          }
+          return reponse.json();
+        })
+
   }
+
   if (etatUtilisateur === "Empêché") {
-    etatUtilisateurInverse = "Confirmé"
-  }
-  let etatUtilisateurJson = {
-    etatUtilisateur: etatUtilisateurInverse
+
+    await fetch(API_URL + "utilisateurs/indiquerConfirmerUtilisateur/" + idUtilisateur, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token
+      },
+    })
+        .then((reponse) => {
+          if (!reponse.ok) {
+            throw new Error(
+                "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+            );
+          }
+          return reponse.json();
+        })
 
   }
-      console.log("id utilisateur et etat :"+idUtilisateur, etatUtilisateur)
-  fetch(API_URL + "utilisateurs/modifierEtatUtilisateur/" + idUtilisateur, {
-    method: "PUT",
-    body: JSON.stringify(etatUtilisateurJson),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: session.token
-    },
-  })
-  .then((reponse) => {
-    if (!reponse.ok) {
-      throw new Error(
-          "Code d'erreur : " + reponse.status + " : " + reponse.statusText
-      );
-    }
-
-    return reponse.json();
-
-  })
-  .then((data) => {
-    afficherMembres()
-  })
+  afficherMembres()
 }
+
+
+
 
 
 const listeObjetsOffert = async (objets, idUtilisateur) => {

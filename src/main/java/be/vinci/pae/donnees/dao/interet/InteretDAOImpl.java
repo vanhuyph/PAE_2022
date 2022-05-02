@@ -143,8 +143,8 @@ public class InteretDAOImpl implements InteretDAO {
         + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
         + "WHERE o.id_objet = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
         + "a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur AND t.id_type = o.type_objet "
-        + "AND a2.id_adresse = u2.adresse AND i.receveur_choisi = false AND i.venu_chercher "
-        + "IS NULL;";
+        + "AND a2.id_adresse = u2.adresse AND u.etat_inscription = 'Confirmé' AND "
+        + "i.receveur_choisi = false AND i.venu_chercher IS NULL;";
     InteretDTO interetDTO = factory.getInteret();
     List<InteretDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
@@ -179,8 +179,8 @@ public class InteretDAOImpl implements InteretDAO {
         + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
         + "WHERE o.offreur = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
         + "a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur AND t.id_type = o.type_objet "
-        + "AND a2.id_adresse = u2.adresse AND i.vue = false AND i.receveur_choisi = false "
-        + "AND i.venu_chercher IS NULL "
+        + "AND a2.id_adresse = u2.adresse AND i.vue = false AND u.etat_inscription = 'Confirmé' "
+        + "AND i.receveur_choisi = false AND i.venu_chercher IS NULL "
         + "ORDER BY o.description;";
     InteretDTO interetDTO = factory.getInteret();
     List<InteretDTO> listeDesPersonnesInteressees;
@@ -274,7 +274,6 @@ public class InteretDAOImpl implements InteretDAO {
       throw new FatalException(e.getMessage(), e);
     }
   }
-
 
 
   /**
