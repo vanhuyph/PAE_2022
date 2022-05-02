@@ -251,6 +251,13 @@ const surListeMesOffres = (data) => {
             Swal.close()
           })
         }
+        if(session.utilisateur.etatInscription === "Empêché"){
+          offre.querySelector("#liste-interessees").classList.add("disabled")
+          offre.querySelector("#offrir").classList.add("disabled")
+          offre.querySelector("#liste-interessees").classList.add("disabled")
+          document.querySelector("#liste-interessees-non-remis").classList.add("disabled")
+          document.querySelector("#offrir-non-remis").classList.add("disabled")
+        }
       })
     }
   })
