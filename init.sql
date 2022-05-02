@@ -96,7 +96,7 @@ VALUES (DEFAULT, 'caro', 'Line', 'Caroline',
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'achil', 'Ile', 'Achille',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 2,
-        'Confirmé', NULL, 0, 0, 0, 0, 0);
+        'Empêché', NULL, 0, 0, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bazz', 'Ile', 'Basile',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 3, 'Confirmé',

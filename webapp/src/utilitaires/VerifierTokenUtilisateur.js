@@ -3,9 +3,11 @@ import {API_URL} from "./serveur";
 import {creationDonneeSessionUtilisateur} from "./session";
 
 let tokenLocal = null
+let empeche = null
 
 const VerifierTokenUtilisateur = (token, itemLocal) => {
   tokenLocal = itemLocal
+  empeche = token.empeche
   fetch(API_URL + "utilisateurs/moi", {
     method: "GET",
     headers: {
@@ -26,7 +28,7 @@ const VerifierTokenUtilisateur = (token, itemLocal) => {
 }
 
 const surUtilisateurTrouve = (donneeUtilisateur) => {
-  const utilisateur = {...donneeUtilisateur, isAutenticated: true}
+  const utilisateur = {...donneeUtilisateur, isAutenticated: true, empeche: empeche}
   creationDonneeSessionUtilisateur(utilisateur, tokenLocal)
   Navbar()
 }
