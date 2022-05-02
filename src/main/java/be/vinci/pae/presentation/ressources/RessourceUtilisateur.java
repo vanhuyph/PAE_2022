@@ -6,6 +6,7 @@ import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.presentation.ressources.filtres.AutorisationAdmin;
 import be.vinci.pae.presentation.ressources.utilitaires.Json;
 import be.vinci.pae.utilitaires.Config;
+import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -288,6 +289,41 @@ public class RessourceUtilisateur {
       throw new PresentationException("Des champs sont manquants", Status.BAD_REQUEST);
     }
     return utilisateurUCC.miseAJourUtilisateur(utilisateurDTO);
+  }
+
+
+  /**
+   * @param idUtilisateur : l'id de l'utilisateur dont on veut modifier l'état.
+   * @param json          : le json contenant l'état voulu après le changement.
+   * @return utilisateurDTO ayant son etat modifié.
+   * @throws PresentationException : si l'utilisateur n'existe pas ou si le json ne possède pas
+   *                               l'état de l'utilisateur.
+   * @throws BusinessException     : si l'utilisateur n'existe pas.
+   */
+  @PUT
+  @Path("modifierEtatUtilisateur/{idUtilisateur}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  //@AutorisationAdmin
+  @Autorisation
+  public UtilisateurDTO modifierEtatUtilisateur(@PathParam("idUtilisateur") int idUtilisateur,
+      JsonNode json) {
+
+    if (idUtilisateur < 1) {
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
+    }
+    if (!json.hasNonNull("etatUtilisateur") || json.get("etatUtilisateur").asText().isBlank()) {
+      throw new PresentationException("Pas d'état d'utilisateur", Status.BAD_REQUEST);
+    }
+
+    String etatUtilisateur = json.get("etatUtilisateur").asText();
+
+    UtilisateurDTO utilisateurDTO = utilisateurUCC.rechercheParId(idUtilisateur);
+    if (utilisateurDTO.getIdUtilisateur() != idUtilisateur) {
+      throw new BusinessException("L'utilisateur n'existe pas");
+    }
+
+    return utilisateurUCC.miseAJourEtatUtilisateur(utilisateurDTO, etatUtilisateur);
   }
 
   /**

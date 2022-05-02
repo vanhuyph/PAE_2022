@@ -275,6 +275,8 @@ public class InteretDAOImpl implements InteretDAO {
     }
   }
 
+
+
   /**
    * Rempli une liste d'intérêts depuis un PreparedStatement.
    *

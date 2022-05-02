@@ -1,7 +1,13 @@
 package be.vinci.pae.business.utilisateur;
 
 import be.vinci.pae.business.adresse.AdresseDTO;
+import be.vinci.pae.business.objet.ObjetDTO;
+import be.vinci.pae.business.offre.Offre;
+import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
+import be.vinci.pae.donnees.dao.interet.InteretDAO;
+import be.vinci.pae.donnees.dao.objet.ObjetDAO;
+import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
@@ -19,7 +25,13 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   @Inject
   AdresseDAO adresseDAO;
   @Inject
+  OffreDAO offreDAO;
+  @Inject
   ServiceDAL serviceDAL;
+  @Inject
+  ObjetDAO objetDAO;
+  @Inject
+  InteretDAO interetDAO;
 
   /**
    * Vérifie si le mot de passe de l'utilisateur est correct à sa connexion.
@@ -216,6 +228,10 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     try {
       liste = utilisateurDAO.listerUtilisateursEtatsInscriptions(
           etatInscription);
+      if (etatInscription.equals("Confirmé")) {
+        liste.addAll(utilisateurDAO.listerUtilisateursEtatsInscriptions("Empêché"));
+
+      }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
@@ -253,6 +269,131 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
         }
         throw new OptimisticLockException("Données de l'adresse sont périmées");
       }
+      utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
+      if (utilisateur == null) {
+        if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {
+          throw new PasTrouveException("L'utilisateur n'existe pas");
+        }
+        throw new OptimisticLockException("Données de l'utilisateur sont périmées");
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return utilisateur;
+  }
+
+  /**
+   *
+   * @param utilisateurDTO : l'utilisateur dont on met à jour l'état.
+   * @param etatUtilisateur : l'état de l'utilisateur après changement.
+   * @throws BusinessException : si l'état spécifié n'est pas accepté.
+   * @throws PasTrouveException : si L'objet ou l'utilisateur ou l'offre n'existe pas.
+   * @throws OptimisticLockException : si les données de l'objet , l'utilisateur ou l'offre sont périmées.
+   * @return utilisateurDTO : renvoit l'utilisateur avec son état changé.
+   */
+  @Override
+  public UtilisateurDTO miseAJourEtatUtilisateur(UtilisateurDTO utilisateurDTO,
+      String etatUtilisateur) {
+    serviceDAL.commencerTransaction();
+    UtilisateurDTO utilisateur;
+
+
+    try {
+      List<OffreDTO> listeMesOffres;
+      System.out.println("uccImpl avant mes offres : " + utilisateurDTO.getIdUtilisateur());
+      listeMesOffres = offreDAO.mesOffres(utilisateurDTO.getIdUtilisateur());
+
+      if (!etatUtilisateur.equals("Empêché") && !etatUtilisateur.equals("Confirmé")) {
+        throw new BusinessException("l'état voulu n'existe pas");
+      }
+
+      ((Utilisateur) utilisateurDTO).modifierEtatUtilisateur(etatUtilisateur);
+
+      System.out.println("UCCImpl : avant confirmé");
+      if (etatUtilisateur.equals("Confirmé")) {
+        //réoffrir toutes les offres à l'état empéché
+        for (OffreDTO offre : listeMesOffres) {
+          System.out.println("id objet : " + offre.getObjetDTO().getIdObjet());
+          if (!offre.getObjetDTO().getEtatObjet().equals("Annulé")) {
+            System.out.println("Dans le for de utilisateur confirmé");
+            if (interetDAO.receveurActuel(offre.getObjetDTO().getIdObjet()) != null) {
+              ((Offre) offre).confirmerOffre();
+              System.out.println("UCCImpl : dans confirmé 1 + etat objet : "
+                  + offre.getObjetDTO().getEtatObjet());
+            } else {
+              if (interetDAO.listeDesPersonnesInteressees(offre.getObjetDTO()
+                  .getIdObjet()).isEmpty()) {
+                System.out.println("UCCImpl : dans confirmé 2 + etat objet : "
+                    + offre.getObjetDTO().getEtatObjet());
+                ((Offre) offre).offrirObjet();
+              } else {
+                ((Offre) offre).interesseObjet();
+                System.out.println("UCCImpl : dans confirmé 3 + etat objet : "
+                    + offre.getObjetDTO().getEtatObjet());
+              }
+            }
+            ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
+            System.out.println("UCCImpl : après modif etat objet : "
+                + offre.getObjetDTO().getEtatObjet());
+
+            if (objet == null) {
+              ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
+              if (objetVerif == null) {
+                throw new PasTrouveException("L'objet n'existe pas");
+              }
+              throw new OptimisticLockException("Données périmées");
+            }
+            System.out.println("Etat objet après modif" + objet.getEtatObjet());
+          }
+
+
+        }
+      }
+      System.out.println("UCCImpl : avant empeché");
+      if (etatUtilisateur.equals("Empêché")) {
+
+
+        //Prévenir tous les receveurs des offres à l'état confirmé
+        //TO DO
+
+        // passer toutes mes offres  (offert,intéréssé et confirmé) à empecher
+
+        for (OffreDTO offre : listeMesOffres) {
+          if (!offre.getObjetDTO().getEtatObjet().equals("Annulé")) {
+            if (offre.getObjetDTO().getEtatObjet().equals("Annulé")) {
+              System.out.println("offre a l'état annulé");
+            } else {
+              System.out.println("modifier etat utilisateur offre numero : "
+                  + offre.getIdOffre());
+              System.out.println("etat objet de l'offre avant empeche offre : "
+                  + offre.getObjetDTO()
+                  .getEtatObjet());
+              ((Offre) offre).empecherOffre();
+              System.out.println("etat objet de l'offre après empeche offre : "
+                  + offre.getObjetDTO()
+                  .getEtatObjet());
+              ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
+
+              if (objet == null) {
+                ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
+                if (objetVerif == null) {
+                  throw new PasTrouveException("L'objet n'existe pas");
+                }
+                throw new OptimisticLockException("Données périmées");
+              }
+              System.out.println("Etat objet après modif" + objet.getEtatObjet());
+
+            }
+          }
+
+        }
+      }
+
+
+
+
       utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
       if (utilisateur == null) {
         if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {

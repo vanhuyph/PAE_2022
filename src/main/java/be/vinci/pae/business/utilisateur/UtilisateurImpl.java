@@ -272,6 +272,13 @@ public class UtilisateurImpl implements Utilisateur {
   }
 
   @Override
+  public void modifierEtatUtilisateur(String etatUtilisateur) {
+    this.setEtatInscription(etatUtilisateur);
+  }
+
+
+
+  @Override
   public String toString() {
     return "UtilisateurImpl{"
         + "idUtilisateur=" + idUtilisateur
