@@ -308,7 +308,7 @@ const donnerObjet = (offre) => {
     }
     return reponse.json();
   })
-  .then((donnee) => {
+  .then(() => {
     Redirect("/mesOffres")
   })
 }
@@ -330,8 +330,6 @@ const nonRemis = (objet) => {
       );
     }
     return reponse.json();
-  })
-  .then((donnee) => {
   })
 }
 
