@@ -9,20 +9,51 @@ import rechecheIcon from "../../img/search.svg";
 import Swal from 'sweetalert2'
 
 // Page d'accueil
-const PageAccueil = () => {
+const PageAccueil =  async () => {
   const pageDiv = document.querySelector("#page");
   const session = recupUtilisateurDonneesSession()
   let etatInscription
   let commentaire
 
   if (session) {
-    if (session.utilisateur.etatInscription !== "Confirmé") {
+    if (session.utilisateur.etatInscription !== "Confirmé"
+        && session.utilisateur.etatInscription !== "Empêché") {
       etatInscription = session.utilisateur.etatInscription
       if (session.utilisateur.etatInscription === "En attente") {
         commentaire = "Vous pourrez accéder aux fonctionnalités lorsqu'un administrateur aura confirmé votre inscription."
       } else {
         commentaire = session.utilisateur.commentaire
       }
+    }
+    if (session.utilisateur.etatInscription === "Empêché") {
+      const {value: reponse} =  await  Swal.fire({
+        title: 'Vous avez été marqué comme Empêché(e)',
+        confirmButtonText: 'Confirmer',
+        input: 'select',
+        inputOptions: {
+          oui: 'Oui',
+          non: 'Non',
+        },
+        inputAttributes: {
+          required: true,
+        },
+        inputPlaceholder: 'Sélectionnez une réponse',
+        validationMessage: 'Nous avons besoin d\'une réponse',
+        allowOutsideClick: false,
+        html: `<p>Etes vous toujours Empêché(e) ? :</p>`,
+      })
+      if (reponse.equals("non")){
+         changerEtatUtilisateur(session.utilisateur.idUtilisateur,
+            session.utilisateur.etatInscription)
+      }/*else{
+        Swal.fire({
+          title: 'Vous avez été marqué comme Empêché(e)',
+          confirmButtonText: 'Confirmer',
+          allowOutsideClick: false,
+          html: `<p>Cela implique que : ...</p>`,
+        })
+      }*/
+
     }
   }
   // Lors de la connexion, liste les offres attribuées à l'utilisateur
@@ -181,7 +212,8 @@ const PageAccueil = () => {
     return reponse.json();
   }).then((data) => surListeOffresRecentes(data))
   if (session) {
-    if (session.utilisateur.etatInscription !== "Confirmé") {
+    if (session.utilisateur.etatInscription !== "Confirmé"
+        && session.utilisateur.etatInscription !== "Empêché") {
       conteneurModal.classList.add('active')
       enleverDonneeSession()
       Navbar()
@@ -249,6 +281,39 @@ const PageAccueil = () => {
     conteneurModal.classList.toggle("active")
   }))
 };
+//change l'état d'un utilisateur
+const changerEtatUtilisateur = async (idUtilisateur, etatUtilisateur) => {
+  let session = recupUtilisateurDonneesSession()
+  let etatUtilisateurInverse
+  if (etatUtilisateur === "Confirmé") {
+    etatUtilisateurInverse = "Empêché"
+  }
+  if (etatUtilisateur === "Empêché") {
+    etatUtilisateurInverse = "Confirmé"
+  }
+  let etatUtilisateurJson = {
+    etatUtilisateur: etatUtilisateurInverse
+
+  }
+  fetch(API_URL + "utilisateurs/modifierEtatUtilisateur/" + idUtilisateur, {
+    method: "PUT",
+    body: JSON.stringify(etatUtilisateurInverse),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token
+    },
+  })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+
+    return reponse.json();
+
+  })
+}
 
 // Affichage des objets à évaluer
 const objetsAEvaluer = (data, session) => {
