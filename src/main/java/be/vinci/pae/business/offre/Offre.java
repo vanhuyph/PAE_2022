@@ -17,5 +17,4 @@ public interface Offre extends OffreDTO {
 
   void empecherOffre();
 
-  void confirmerOffre();
 }
