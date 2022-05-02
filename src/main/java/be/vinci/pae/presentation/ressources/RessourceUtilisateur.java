@@ -306,8 +306,8 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public UtilisateurDTO confirmerUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
-
+  public UtilisateurDTO indiquerConfirmerUtilisateur(
+      @PathParam("idUtilisateur") int idUtilisateur) {
     if (idUtilisateur < 1) {
       throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
@@ -317,7 +317,7 @@ public class RessourceUtilisateur {
       throw new BusinessException("L'utilisateur n'existe pas");
     }
 
-    return utilisateurUCC.confirmerUtilisateur(utilisateurDTO);
+    return utilisateurUCC.indiquerConfirmerUtilisateur(utilisateurDTO);
   }
 
   /**
@@ -334,7 +334,7 @@ public class RessourceUtilisateur {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
-  public UtilisateurDTO empecherUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
+  public UtilisateurDTO indiquerEmpecherUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
 
     if (idUtilisateur < 1) {
       throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
@@ -345,7 +345,7 @@ public class RessourceUtilisateur {
       throw new BusinessException("L'utilisateur n'existe pas");
     }
 
-    return utilisateurUCC.empecherUtilisateur(utilisateurDTO);
+    return utilisateurUCC.indiquerEmpecherUtilisateur(utilisateurDTO);
   }
 
 

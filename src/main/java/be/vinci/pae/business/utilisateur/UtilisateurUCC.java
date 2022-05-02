@@ -20,14 +20,13 @@ public interface UtilisateurUCC {
 
   UtilisateurDTO miseAJourUtilisateur(UtilisateurDTO utilisateur);
 
-  UtilisateurDTO empecherUtilisateur(UtilisateurDTO utilisateurDTO);
+  UtilisateurDTO indiquerEmpecherUtilisateur(UtilisateurDTO utilisateurDTO);
 
-  UtilisateurDTO confirmerUtilisateur(UtilisateurDTO utilisateurDTO);
+  UtilisateurDTO indiquerConfirmerUtilisateur(UtilisateurDTO utilisateurDTO);
 
   UtilisateurDTO modifierMdp(int id, String mdpActuel, String nouvMdp);
 
   List<UtilisateurDTO> rechercherMembres(String recherche);
-
 
 
 }

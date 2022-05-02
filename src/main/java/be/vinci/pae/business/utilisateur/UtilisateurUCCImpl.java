@@ -295,7 +295,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    *                                 périmées.
    */
   @Override
-  public UtilisateurDTO confirmerUtilisateur(UtilisateurDTO utilisateurDTO) {
+  public UtilisateurDTO indiquerConfirmerUtilisateur(UtilisateurDTO utilisateurDTO) {
     serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateur;
 
@@ -360,7 +360,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
    *                                 périmées.
    */
   @Override
-  public UtilisateurDTO empecherUtilisateur(UtilisateurDTO utilisateurDTO) {
+  public UtilisateurDTO indiquerEmpecherUtilisateur(UtilisateurDTO utilisateurDTO) {
     serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateur;
 
