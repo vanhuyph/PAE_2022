@@ -284,6 +284,10 @@ const surDetailObjet = async (offre) => {
       .catch(err => surErreur(err))
     }
   })
+
+  if(session.utilisateur.etatInscription === "Empêché"){
+    document.querySelector("#marquer-interet").classList.add("disabled")
+  }
 }
 
 const surDetailObjetProprio = async (offre) => {
@@ -409,6 +413,9 @@ const surDetailObjetProprio = async (offre) => {
   pageDiv.innerHTML = offrePage
   if (offre.objetDTO.etatObjet === "Annulé") {
     document.querySelector("#annuler-offre").classList.add("disabled");
+  }
+  if(session.utilisateur.etatInscription === "Empêché"){
+    document.querySelector("#modifier-offre").classList.add("disabled");
   }
   document.querySelector("#modifier-offre").addEventListener("click", () => {
     surDetailObjetProprioModifier(offre)

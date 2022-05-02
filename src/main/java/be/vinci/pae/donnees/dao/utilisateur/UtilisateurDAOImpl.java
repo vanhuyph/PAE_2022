@@ -267,7 +267,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
             + "a.boite, a.code_postal, a.commune, a.version FROM projet.utilisateurs u "
             + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
             + "WHERE (lower(u.nom) LIKE lower(?) OR a.code_postal::TEXT LIKE ? OR lower(a.commune) "
-            + "LIKE lower(?)) AND u.etat_inscription = 'Confirmé';";
+            + "LIKE lower(?)) AND u.etat_inscription = 'Confirmé' OR "
+            + "u.etat_inscription = 'Empêché';";
     List<UtilisateurDTO> liste = new ArrayList<>();
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       recherche = '%' + recherche + '%';

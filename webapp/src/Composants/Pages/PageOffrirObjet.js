@@ -54,7 +54,7 @@ const pageOffrirObjet = `
         </div>
         <div id="form-type-objet"></div>
         <div class=" tertiary inverted ">
-        <button class="ui button " type="submit">Offrir l'objet</button>
+        <button class="ui button " type="submit" id="offrir-objet">Offrir l'objet</button>
         </div>
     </form> 
      </div>
@@ -85,6 +85,9 @@ const PageOffrirObjet = () => {
 
   } else {
     Redirect("/connexion");
+  }
+  if(session.utilisateur.etatInscription === "Empêché") {
+    document.querySelector("#offrir-objet").classList.add("disabled");
   }
 }
 
