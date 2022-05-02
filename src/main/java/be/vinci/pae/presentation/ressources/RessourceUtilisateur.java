@@ -6,7 +6,6 @@ import be.vinci.pae.presentation.ressources.filtres.Autorisation;
 import be.vinci.pae.presentation.ressources.filtres.AutorisationAdmin;
 import be.vinci.pae.presentation.ressources.utilitaires.Json;
 import be.vinci.pae.utilitaires.Config;
-import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.PresentationException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -292,13 +291,12 @@ public class RessourceUtilisateur {
   }
 
   /**
-   * Modifier l'état de l'utilisateur de empêcher à confirmer.
+   * Modifie l'état de l'utilisateur de "Empêché à Confirmé".
    *
-   * @param idUtilisateur : l'id de l'utilisateur dont on veut modifier l'état.
-   * @return utilisateurDTO ayant son etat modifié.
+   * @param idUtilisateur : l'id de l'utilisateur dont on veut modifier l'état
+   * @return utilisateurDTO ayant son état modifié
    * @throws PresentationException : si l'utilisateur n'existe pas ou si le json ne possède pas
-   *                               l'état de l'utilisateur.
-   * @throws BusinessException     : si l'utilisateur n'existe pas.
+   *                               l'état de l'utilisateur
    */
   @PUT
   @Path("indiquerConfirmerUtilisateur/{idUtilisateur}")
@@ -310,23 +308,20 @@ public class RessourceUtilisateur {
     if (idUtilisateur < 1) {
       throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
-
     UtilisateurDTO utilisateurDTO = utilisateurUCC.rechercheParId(idUtilisateur);
     if (utilisateurDTO.getIdUtilisateur() != idUtilisateur) {
-      throw new BusinessException("L'utilisateur n'existe pas");
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
-
     return utilisateurUCC.indiquerConfirmerUtilisateur(utilisateurDTO);
   }
 
   /**
-   * Modifier l'état de l'utilisateur de confirmer à empêcher.
+   * Modifie l'état de l'utilisateur de "Confirmé à Empêché".
    *
-   * @param idUtilisateur : l'id de l'utilisateur dont on veut modifier l'état.
-   * @return utilisateurDTO ayant son etat modifié.
+   * @param idUtilisateur : l'id de l'utilisateur dont on veut modifier l'état
+   * @return utilisateurDTO ayant son etat modifié
    * @throws PresentationException : si l'utilisateur n'existe pas ou si le json ne possède pas
    *                               l'état de l'utilisateur
-   * @throws BusinessException     : si l'utilisateur n'existe pas
    */
   @PUT
   @Path("indiquerEmpecherUtilisateur/{idUtilisateur}")
@@ -339,7 +334,7 @@ public class RessourceUtilisateur {
     }
     UtilisateurDTO utilisateurDTO = utilisateurUCC.rechercheParId(idUtilisateur);
     if (utilisateurDTO.getIdUtilisateur() != idUtilisateur) {
-      throw new BusinessException("L'utilisateur n'existe pas");
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
     return utilisateurUCC.indiquerEmpecherUtilisateur(utilisateurDTO);
   }
