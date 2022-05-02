@@ -408,7 +408,6 @@ const surDetailObjetProprio = async (offre) => {
   `
   pageDiv.innerHTML = offrePage
   if (offre.objetDTO.etatObjet === "Annulé") {
-    document.querySelector("#modifier-offre").classList.add("disabled");
     document.querySelector("#annuler-offre").classList.add("disabled");
   }
   document.querySelector("#modifier-offre").addEventListener("click", () => {
