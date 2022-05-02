@@ -638,6 +638,20 @@ const envoiModification = async (offre) => {
       return reponse.json()
     })
     .then((donnee) => {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Vous avez bien modifié les informations de votre objet',
+        showConfirmButton: false,
+        toast: true,
+        timer: 3000,
+        showClass: {
+          popup: 'animate__animated animate__fadeInRight'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutRight'
+        }
+      })
       surDetailObjetProprio(donnee)
     })
   } else {
