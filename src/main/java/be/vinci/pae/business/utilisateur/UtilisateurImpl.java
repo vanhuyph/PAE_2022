@@ -281,7 +281,7 @@ public class UtilisateurImpl implements Utilisateur {
 
   @Override
   public void empecherUtilisateur() {
-    if (this.getEtatInscription().equals("Confirmé") ) {
+    if (this.getEtatInscription().equals("Confirmé")) {
       this.setEtatInscription("Empêché");
     }
   }
