@@ -75,7 +75,6 @@ const PageAccueil =  async () => {
         })
         let dansLocalStorage = localStorage.getItem("utilisateur")
         let souvenir = false;
-        let utilisateur
         let uti = {...session, isAutenticated: true, empeche: true}
         if (dansLocalStorage) souvenir=true;
 
