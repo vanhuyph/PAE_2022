@@ -79,6 +79,7 @@ public class OffreUCCTest {
     objetDTO1.setIdObjet(1);
     objetDTO1.setReceveur(null);
     objetDTO1.setTypeObjet(typeObjetDTO);
+    objetDTO1.setEtatObjet("Confirmé");
 
     objetDTO2 = domaineFactory.getObjet();
     objetDTO2.setIdObjet(2);
