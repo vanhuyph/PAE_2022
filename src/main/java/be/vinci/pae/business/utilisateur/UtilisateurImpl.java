@@ -276,8 +276,6 @@ public class UtilisateurImpl implements Utilisateur {
     this.setEtatInscription(etatUtilisateur);
   }
 
-
-
   @Override
   public String toString() {
     return "UtilisateurImpl{"

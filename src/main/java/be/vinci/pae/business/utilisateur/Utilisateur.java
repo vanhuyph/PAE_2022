@@ -25,6 +25,4 @@ public interface Utilisateur extends UtilisateurDTO {
 
   void modifierEtatUtilisateur(String etatUtilisateur);
 
-
-
 }

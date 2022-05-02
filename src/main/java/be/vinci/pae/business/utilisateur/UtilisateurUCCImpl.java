@@ -285,21 +285,21 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   }
 
   /**
+   * Met à jour l'état de l'utilisateur.
    *
-   * @param utilisateurDTO : l'utilisateur dont on met à jour l'état.
-   * @param etatUtilisateur : l'état de l'utilisateur après changement.
-   * @throws BusinessException : si l'état spécifié n'est pas accepté.
-   * @throws PasTrouveException : si L'objet ou l'utilisateur ou l'offre n'existe pas.
-   * @throws OptimisticLockException : si les données de l'objet , l'utilisateur ou l'offre sont périmées.
-   * @return utilisateurDTO : renvoit l'utilisateur avec son état changé.
+   * @param utilisateurDTO  : l'utilisateur dont on met à jour l'état
+   * @param etatUtilisateur : l'état de l'utilisateur après changement
+   * @return utilisateurDTO : renvoit l'utilisateur avec son état changé
+   * @throws BusinessException       : si l'état spécifié n'est pas accepté
+   * @throws PasTrouveException      : si l'objet ou l'utilisateur ou l'offre n'existent pas
+   * @throws OptimisticLockException : si les données de l'objet, l'utilisateur ou l'offre sont
+   *                                 périmées
    */
   @Override
   public UtilisateurDTO miseAJourEtatUtilisateur(UtilisateurDTO utilisateurDTO,
       String etatUtilisateur) {
     serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateur;
-
-
     try {
       List<OffreDTO> listeMesOffres;
       System.out.println("uccImpl avant mes offres : " + utilisateurDTO.getIdUtilisateur());
@@ -354,7 +354,6 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
       System.out.println("UCCImpl : avant empeché");
       if (etatUtilisateur.equals("Empêché")) {
 
-
         //Prévenir tous les receveurs des offres à l'état confirmé
         //TO DO
 
@@ -384,16 +383,10 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
                 throw new OptimisticLockException("Données périmées");
               }
               System.out.println("Etat objet après modif" + objet.getEtatObjet());
-
             }
           }
-
         }
       }
-
-
-
-
       utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
       if (utilisateur == null) {
         if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {
