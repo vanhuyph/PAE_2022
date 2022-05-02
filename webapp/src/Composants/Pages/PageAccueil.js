@@ -15,6 +15,22 @@ const PageAccueil = () => {
   let etatInscription
   let commentaire
 
+  if(localStorage.getItem("utilisateur")){
+    let ut = localStorage.getItem("utilisateur")
+    console.log("local")
+    console.log(ut)
+    let utilisateur = {...JSON.parse(ut), empeche:true}
+    console.log(utilisateur)
+  }else{
+    if (sessionStorage.getItem("utilisateur")){
+      let ut = sessionStorage.getItem("utilisateur")
+      console.log("session")
+      console.log(ut)
+      let utilisateur = {...JSON.parse(ut), empeche:true}
+      console.log(utilisateur)
+    }
+  }
+
   if (session) {
     if (session.utilisateur.etatInscription !== "Confirmé") {
       etatInscription = session.utilisateur.etatInscription
