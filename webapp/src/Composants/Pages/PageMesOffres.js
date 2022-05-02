@@ -106,7 +106,7 @@ const surListeMesOffres = (data) => {
               </div>
             </div>
             `;
-    } else if (offre.objetDTO.etatObjet === "Annulé") {
+    } else if (offre.objetDTO.etatObjet === "Annulé" || offre.objetDTO.etatObjet === "Empêché") {
       listeMesOffresAnnulees += ` 
               <div class="mon-offre">
               <div>
