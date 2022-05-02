@@ -302,7 +302,7 @@ public class RessourceUtilisateur {
    * @throws BusinessException     : si l'utilisateur n'existe pas.
    */
   @PUT
-  @Path("confirmerUtilisateur/{idUtilisateur}")
+  @Path("indiquerConfirmerUtilisateur/{idUtilisateur}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation
@@ -330,7 +330,7 @@ public class RessourceUtilisateur {
    * @throws BusinessException     : si l'utilisateur n'existe pas.
    */
   @PUT
-  @Path("empecherUtilisateur/{idUtilisateur}")
+  @Path("indiquerEmpecherUtilisateur/{idUtilisateur}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Autorisation

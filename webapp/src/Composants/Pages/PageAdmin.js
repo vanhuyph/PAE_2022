@@ -321,7 +321,7 @@ const changerEtatUtilisateur = async (idUtilisateur, etatUtilisateur) => {
   let session = recupUtilisateurDonneesSession()
 
   if (etatUtilisateur === "Confirmé") {
-    await fetch(API_URL + "utilisateurs/empecherUtilisateur/" + idUtilisateur, {
+    await fetch(API_URL + "utilisateurs/indiquerEmpecherUtilisateur/" + idUtilisateur, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -341,7 +341,7 @@ const changerEtatUtilisateur = async (idUtilisateur, etatUtilisateur) => {
 
   if (etatUtilisateur === "Empêché") {
 
-    await fetch(API_URL + "utilisateurs/confirmerUtilisateur/" + idUtilisateur, {
+    await fetch(API_URL + "utilisateurs/indiquerConfirmerUtilisateur/" + idUtilisateur, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

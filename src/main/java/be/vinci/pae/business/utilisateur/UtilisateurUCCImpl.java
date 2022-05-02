@@ -303,33 +303,29 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
 
       //recupérer ses offres
       List<OffreDTO> listeMesOffres;
-      listeMesOffres = offreDAO.mesOffres(utilisateurDTO.getIdUtilisateur());
+      listeMesOffres = offreDAO.mesOffresEmpecher(utilisateurDTO.getIdUtilisateur());
 
       //réoffrir toutes les offres à l'état empéché
       for (OffreDTO offre : listeMesOffres) {
 
-        if (!offre.getObjetDTO().getEtatObjet().equals("Annulé")
-            && !offre.getObjetDTO().getEtatObjet().equals("Confirmé")) {
+        if (interetDAO.listeDesPersonnesInteressees(offre.getObjetDTO()
+            .getIdObjet()).isEmpty()) {
 
-          if (interetDAO.listeDesPersonnesInteressees(offre.getObjetDTO()
-              .getIdObjet()).isEmpty()) {
+          ((Offre) offre).offrirObjet();
+        } else {
 
-            ((Offre) offre).offrirObjet();
-          } else {
+          ((Offre) offre).interesseObjet();
 
-            ((Offre) offre).interesseObjet();
+        }
 
+        ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
+
+        if (objet == null) {
+          ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
+          if (objetVerif == null) {
+            throw new PasTrouveException("L'objet n'existe pas");
           }
-
-          ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
-
-          if (objet == null) {
-            ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
-            if (objetVerif == null) {
-              throw new PasTrouveException("L'objet n'existe pas");
-            }
-            throw new OptimisticLockException("Données périmées");
-          }
+          throw new OptimisticLockException("Données périmées");
         }
       }
 
@@ -367,7 +363,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     try {
       //recupérer ses offres
       List<OffreDTO> listeMesOffres;
-      listeMesOffres = offreDAO.mesOffres(utilisateurDTO.getIdUtilisateur());
+      listeMesOffres = offreDAO.mesOffresAEmpecher(utilisateurDTO.getIdUtilisateur());
 
       //Prévenir tous les receveurs des offres à l'état confirmé
       //TO DO
