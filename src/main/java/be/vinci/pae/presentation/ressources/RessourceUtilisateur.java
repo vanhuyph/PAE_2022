@@ -296,10 +296,10 @@ public class RessourceUtilisateur {
    * Modifier l'état de l'utilisateur de empêcher à confirmer.
    *
    * @param idUtilisateur : l'id de l'utilisateur dont on veut modifier l'état.
-   * @throws PresentationException : si l'utilisateur n'existe pas
-   * ou si le json ne possède pas l'état de l'utilisateur.
-   * @throws BusinessException : si l'utilisateur n'existe pas.
    * @return utilisateurDTO ayant son etat modifié.
+   * @throws PresentationException : si l'utilisateur n'existe pas ou si le json ne possède pas
+   *                               l'état de l'utilisateur.
+   * @throws BusinessException     : si l'utilisateur n'existe pas.
    */
   @PUT
   @Path("confirmerUtilisateur/{idUtilisateur}")
@@ -308,11 +308,9 @@ public class RessourceUtilisateur {
   @Autorisation
   public UtilisateurDTO confirmerUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
 
-
     if (idUtilisateur < 1) {
       throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
-
 
     UtilisateurDTO utilisateurDTO = utilisateurUCC.rechercheParId(idUtilisateur);
     if (utilisateurDTO.getIdUtilisateur() != idUtilisateur) {
@@ -326,10 +324,10 @@ public class RessourceUtilisateur {
    * Modifier l'état de l'utilisateur de confirmer à empêcher.
    *
    * @param idUtilisateur : l'id de l'utilisateur dont on veut modifier l'état.
-   * @throws PresentationException : si l'utilisateur n'existe pas
-   * ou si le json ne possède pas l'état de l'utilisateur.
-   * @throws BusinessException : si l'utilisateur n'existe pas.
    * @return utilisateurDTO ayant son etat modifié.
+   * @throws PresentationException : si l'utilisateur n'existe pas ou si le json ne possède pas
+   *                               l'état de l'utilisateur.
+   * @throws BusinessException     : si l'utilisateur n'existe pas.
    */
   @PUT
   @Path("empecherUtilisateur/{idUtilisateur}")
@@ -338,11 +336,9 @@ public class RessourceUtilisateur {
   @Autorisation
   public UtilisateurDTO empecherUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
 
-
     if (idUtilisateur < 1) {
       throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
     }
-
 
     UtilisateurDTO utilisateurDTO = utilisateurUCC.rechercheParId(idUtilisateur);
     if (utilisateurDTO.getIdUtilisateur() != idUtilisateur) {
