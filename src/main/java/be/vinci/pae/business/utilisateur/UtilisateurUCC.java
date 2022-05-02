@@ -28,5 +28,4 @@ public interface UtilisateurUCC {
 
   List<UtilisateurDTO> rechercherMembres(String recherche);
 
-
 }

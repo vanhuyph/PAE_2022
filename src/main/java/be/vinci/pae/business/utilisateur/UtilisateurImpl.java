@@ -276,7 +276,6 @@ public class UtilisateurImpl implements Utilisateur {
     if (this.getEtatInscription().equals("Empêché")) {
       this.setEtatInscription("Confirmé");
     }
-
   }
 
   @Override
@@ -285,7 +284,6 @@ public class UtilisateurImpl implements Utilisateur {
       this.setEtatInscription("Empêché");
     }
   }
-
 
   @Override
   public String toString() {

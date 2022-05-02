@@ -412,7 +412,6 @@ const surDetailObjetProprio = async (offre) => {
   `
   pageDiv.innerHTML = offrePage
   if (offre.objetDTO.etatObjet === "Annulé") {
-    document.querySelector("#modifier-offre").classList.add("disabled");
     document.querySelector("#annuler-offre").classList.add("disabled");
   }
   if(session.utilisateur.etatInscription === "Empêché"){
@@ -646,6 +645,20 @@ const envoiModification = async (offre) => {
       return reponse.json()
     })
     .then((donnee) => {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Vous avez bien modifié les informations de votre objet',
+        showConfirmButton: false,
+        toast: true,
+        timer: 3000,
+        showClass: {
+          popup: 'animate__animated animate__fadeInRight'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutRight'
+        }
+      })
       surDetailObjetProprio(donnee)
     })
   } else {

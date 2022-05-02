@@ -8,14 +8,11 @@ import {Redirect} from "../Router/Router";
 import {API_URL} from "../../utilitaires/serveur";
 import rechecheIcon from "../../img/search.svg";
 import Swal from 'sweetalert2'
-import VerifierTokenUtilisateur
-  from "../../utilitaires/VerifierTokenUtilisateur";
 
 // Page d'accueil
-const PageAccueil =  async () => {
+const PageAccueil = async () => {
   const pageDiv = document.querySelector("#page");
-  const session =  recupUtilisateurDonneesSession()
-
+  const session = recupUtilisateurDonneesSession()
   let etatInscription
   let commentaire
   if (session) {
@@ -29,8 +26,7 @@ const PageAccueil =  async () => {
       }
     }
     if (session.utilisateur.etatInscription === "Empêché" && !session.empeche) {
-
-      const {value: reponse} =  await  Swal.fire({
+      const {value: reponse} = await Swal.fire({
         title: 'Vous avez été marqué comme Empêché(e)',
         confirmButtonText: 'Confirmer',
         input: 'select',
@@ -46,27 +42,37 @@ const PageAccueil =  async () => {
         allowOutsideClick: false,
         html: `<p>Etes vous toujours Empêché(e) ? :</p>`,
       })
-      if (reponse === "non"){
-         await changerEtatUtilisateur(session.utilisateur.idUtilisateur)
+      if (reponse === "non") {
+        await changerEtatUtilisateur(session.utilisateur.idUtilisateur)
         let dansLocalStorage = localStorage.getItem("utilisateur")
         let souvenir = false;
         let utilisateur
-        if (!dansLocalStorage){
-
-          session.utilisateur.etatInscription="Confirmé"
-           utilisateur = {...session, isAutenticated: true}
-        }else{
-
-          souvenir=true;
+        if (!dansLocalStorage) {
+          session.utilisateur.etatInscription = "Confirmé"
+          utilisateur = {...session, isAutenticated: true}
+        } else {
+          souvenir = true;
           let ut = JSON.parse(localStorage.getItem("utilisateur"))
-          ut.utilisateur.etatInscription="Confirmé"
-
-          utilisateur={...ut,isAutenticated: true}
-
+          ut.utilisateur.etatInscription = "Confirmé"
+          utilisateur = {...ut, isAutenticated: true}
         }
-        creationDonneeSessionUtilisateur(utilisateur,souvenir)
-
-      }else{
+        creationDonneeSessionUtilisateur(utilisateur, souvenir)
+        fetch(API_URL + "utilisateurs/indiquerConfirmerUtilisateur/"
+            + session.utilisateur.idUtilisateur, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token
+          },
+        }).then((reponse) => {
+          if (!reponse.ok) {
+            throw new Error(
+                "Code d'erreur : " + reponse.status + " : "
+                + reponse.statusText);
+          }
+          return reponse.json();
+        })
+      } else {
         Swal.fire({
           title: 'Vous avez été marqué comme Empêché(e)',
           confirmButtonText: 'Confirmer',
@@ -76,12 +82,14 @@ const PageAccueil =  async () => {
         let dansLocalStorage = localStorage.getItem("utilisateur")
         let souvenir = false;
         let uti = {...session, isAutenticated: true, empeche: true}
-        if (dansLocalStorage) souvenir=true;
-
-        creationDonneeSessionUtilisateur(uti,souvenir)
+        if (dansLocalStorage) {
+          souvenir = true;
+        }
+        creationDonneeSessionUtilisateur(uti, souvenir)
       }
     }
   }
+
   // Lors de la connexion, liste les offres attribuées à l'utilisateur
   if (session) {
     fetch(
@@ -315,7 +323,7 @@ const changerEtatUtilisateur = async (idUtilisateur) => {
     etatUtilisateur: "Confirmé"
 
   }
-  fetch(API_URL + "utilisateurs/modifierEtatUtilisateur/" + idUtilisateur, {
+  fetch(API_URL + "utilisateurs/indiquerEmpecherUtilisateur/" + idUtilisateur, {
     method: "PUT",
     body: JSON.stringify(etatUtilisateurJson),
     headers: {

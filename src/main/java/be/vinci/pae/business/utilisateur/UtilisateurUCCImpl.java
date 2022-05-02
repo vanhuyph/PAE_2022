@@ -287,12 +287,12 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   /**
    * Modifier l'état de l'utilisateur de empêcher à confirmer.
    *
-   * @param utilisateurDTO : l'utilisateur dont on met à jour l'état.
-   * @return utilisateurDTO : renvoit l'utilisateur avec son état changé.
-   * @throws BusinessException       : si l'état spécifié n'est pas accepté.
-   * @throws PasTrouveException      : si L'objet ou l'utilisateur ou l'offre n'existe pas.
+   * @param utilisateurDTO  : l'utilisateur dont on met à jour l'état
+   * @return utilisateurDTO : renvoit l'utilisateur avec son état changé
+   * @throws BusinessException       : si l'état spécifié n'est pas accepté
+   * @throws PasTrouveException      : si l'objet ou l'utilisateur ou l'offre n'existent pas
    * @throws OptimisticLockException : si les données de l'objet, l'utilisateur ou l'offre sont
-   *                                 périmées.
+   *                                 périmées
    */
   @Override
   public UtilisateurDTO indiquerConfirmerUtilisateur(UtilisateurDTO utilisateurDTO) {
