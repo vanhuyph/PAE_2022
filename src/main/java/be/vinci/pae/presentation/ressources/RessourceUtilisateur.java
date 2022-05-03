@@ -291,7 +291,7 @@ public class RessourceUtilisateur {
   }
 
   /**
-   * Modifie l'état de l'utilisateur de "Empêché à Confirmé".
+   * Passe l'état de l'utilisateur de "Empêché à Confirmé".
    *
    * @param idUtilisateur : l'id de l'utilisateur dont on veut modifier l'état
    * @return utilisateurDTO ayant son état modifié
@@ -316,7 +316,7 @@ public class RessourceUtilisateur {
   }
 
   /**
-   * Modifie l'état de l'utilisateur de "Confirmé à Empêché".
+   * Passe l'état de l'utilisateur de "Confirmé à Empêché".
    *
    * @param idUtilisateur : l'id de l'utilisateur dont on veut modifier l'état
    * @return utilisateurDTO ayant son etat modifié

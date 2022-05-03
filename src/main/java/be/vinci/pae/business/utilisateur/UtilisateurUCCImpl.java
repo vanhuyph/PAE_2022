@@ -285,41 +285,30 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   }
 
   /**
-   * Modifier l'état de l'utilisateur de empêcher à confirmer.
+   * Passe l'état de l'utilisateur de "Empêché" à "Confirmé".
    *
-   * @param utilisateurDTO  : l'utilisateur dont on met à jour l'état
+   * @param utilisateurDTO : l'utilisateur dont on met à jour l'état
    * @return utilisateurDTO : renvoit l'utilisateur avec son état changé
-   * @throws BusinessException       : si l'état spécifié n'est pas accepté
-   * @throws PasTrouveException      : si l'objet ou l'utilisateur ou l'offre n'existent pas
-   * @throws OptimisticLockException : si les données de l'objet, l'utilisateur ou l'offre sont
-   *                                 périmées
+   * @throws BusinessException       : est lancée si l'état spécifié n'est pas accepté
+   * @throws PasTrouveException      : est lancée si l'objet ou l'utilisateur ou l'offre n'existent
+   *                                 pas
+   * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
   public UtilisateurDTO indiquerConfirmerUtilisateur(UtilisateurDTO utilisateurDTO) {
     serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateur;
-
     try {
-
-      //recupérer ses offres
-      List<OffreDTO> listeMesOffres;
-      listeMesOffres = offreDAO.mesOffresEmpecher(utilisateurDTO.getIdUtilisateur());
-
-      //réoffrir toutes les offres à l'état empéché
-      for (OffreDTO offre : listeMesOffres) {
-
+      List<OffreDTO> liste;
+      liste = offreDAO.mesOffresEmpecher(utilisateurDTO.getIdUtilisateur());
+      for (OffreDTO offre : liste) {
         if (interetDAO.listeDesPersonnesInteressees(offre.getObjetDTO()
             .getIdObjet()).isEmpty()) {
-
           ((Offre) offre).offrirObjet();
         } else {
-
           ((Offre) offre).interesseObjet();
-
         }
-
         ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
-
         if (objet == null) {
           ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
           if (objetVerif == null) {
@@ -328,7 +317,6 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
           throw new OptimisticLockException("Données périmées");
         }
       }
-
       ((Utilisateur) utilisateurDTO).confirmerUtilisateur();
       utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
       if (utilisateur == null) {
@@ -346,38 +334,27 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   }
 
   /**
-   * Modifier l'état de l'utilisateur de confirmer à empêcher.
+   * Passe l'état de l'utilisateur de "Confirmé" à "Empêché".
    *
-   * @param utilisateurDTO : l'utilisateur dont on met à jour l'état.
-   * @return utilisateurDTO : renvoit l'utilisateur avec son état changé.
-   * @throws BusinessException       : si l'état spécifié n'est pas accepté.
-   * @throws PasTrouveException      : si L'objet ou l'utilisateur ou l'offre n'existe pas.
-   * @throws OptimisticLockException : si les données de l'objet, l'utilisateur ou l'offre sont
-   *                                 périmées.
+   * @param utilisateurDTO : l'utilisateur dont on met à jour l'état
+   * @return utilisateurDTO : renvoit l'utilisateur avec son état changé
+   * @throws BusinessException       : est lancée si l'état spécifié n'est pas accepté
+   * @throws PasTrouveException      : est lancée si L'objet ou l'utilisateur ou l'offre n'existent
+   *                                 pas
+   * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
   public UtilisateurDTO indiquerEmpecherUtilisateur(UtilisateurDTO utilisateurDTO) {
     serviceDAL.commencerTransaction();
     UtilisateurDTO utilisateur;
-
     try {
-      //recupérer ses offres
-      List<OffreDTO> listeMesOffres;
-      listeMesOffres = offreDAO.mesOffresAEmpecher(utilisateurDTO.getIdUtilisateur());
-
-      //Prévenir tous les receveurs des offres à l'état confirmé
-      //TO DO
-
-      // passer toutes mes offres  (offert,intéréssé et PAS confirmé) à empecher
-      for (OffreDTO offre : listeMesOffres) {
-
+      List<OffreDTO> liste;
+      liste = offreDAO.mesOffresAEmpecher(utilisateurDTO.getIdUtilisateur());
+      for (OffreDTO offre : liste) {
         if (!offre.getObjetDTO().getEtatObjet().equals("Annulé")
             && !offre.getObjetDTO().getEtatObjet().equals("Confirmé")) {
-
           ((Offre) offre).empecherOffre();
-
           ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
-
           if (objet == null) {
             ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
             if (objetVerif == null) {
@@ -387,7 +364,6 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
           }
         }
       }
-
       ((Utilisateur) utilisateurDTO).empecherUtilisateur();
       utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
       if (utilisateur == null) {

@@ -37,11 +37,12 @@ const PageAccueil = async () => {
         inputAttributes: {
           required: true,
         },
-        inputPlaceholder: 'Sélectionnez une réponse',
+        inputPlaceholder: 'Sélectionner une réponse',
         validationMessage: 'Nous avons besoin d\'une réponse',
         allowOutsideClick: false,
-        html: `<p>Etes vous toujours Empêché(e) ? :</p>`,
+        html: `<p>Êtes-vous toujours Empêché(e) ? :</p>`,
       })
+      // Passe l'état de l'utilisateur de "Empêché" à "Confirmé"
       if (reponse === "non") {
         await changerEtatUtilisateur(session.utilisateur.idUtilisateur)
         let dansLocalStorage = localStorage.getItem("utilisateur")
@@ -77,7 +78,7 @@ const PageAccueil = async () => {
           title: 'Vous avez été marqué comme Empêché(e)',
           confirmButtonText: 'Confirmer',
           allowOutsideClick: false,
-          html: `<p>Cela implique que : ...</p>`,
+          html: `<p>Certaines fonctionnalités vous sont désactivées tant que vous êtes Empêché(e)</p>`,
         })
         let dansLocalStorage = localStorage.getItem("utilisateur")
         let souvenir = false;
@@ -236,7 +237,6 @@ const PageAccueil = async () => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-
     },
   }).then((reponse) => {
     if (!reponse.ok) {
@@ -315,13 +315,12 @@ const PageAccueil = async () => {
     conteneurModal.classList.toggle("active")
   }))
 };
-//change l'état d'un utilisateur
+
+// Change l'état d'un utilisateur
 const changerEtatUtilisateur = async (idUtilisateur) => {
   let session = recupUtilisateurDonneesSession()
-
   let etatUtilisateurJson = {
     etatUtilisateur: "Confirmé"
-
   }
   fetch(API_URL + "utilisateurs/indiquerEmpecherUtilisateur/" + idUtilisateur, {
     method: "PUT",
@@ -337,9 +336,7 @@ const changerEtatUtilisateur = async (idUtilisateur) => {
           "Code d'erreur : " + reponse.status + " : " + reponse.statusText
       );
     }
-
     return reponse.json();
-
   })
 }
 
@@ -361,7 +358,7 @@ const objetsAEvaluer = (data, session) => {
       inputAttributes: {
         required: true,
       },
-      inputPlaceholder: 'Sélectionnez une réponse',
+      inputPlaceholder: 'Sélectionner une réponse',
       validationMessage: 'Nous avons besoin d\'une réponse',
       allowOutsideClick: false,
       html: `<p>Voulez-vous évaluer l'objet suivant :</p> 
@@ -390,7 +387,7 @@ const objetsAEvaluer = (data, session) => {
           4: '4',
           5: '5',
         },
-        inputPlaceholder: 'Sélectionnez une note',
+        inputPlaceholder: 'Sélectionner une note',
         validationMessage: 'Nous avons besoin d\'une note',
         currentProgressStep: 0
       })
