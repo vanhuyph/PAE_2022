@@ -377,9 +377,12 @@ const listeInteresse = (objet) => {
   })
   .then((donnees) => {
     let listeInteret = `<div class="interets">`;
-    donnees.forEach((interet) => {
-      let date = new Date(interet.dateRdv).toLocaleDateString("fr-BE")
-      listeInteret += `
+    if (donnees.length === 0) {
+      listeInteret += `<p>Personne n\'a encore marqué d\'intérêt</p>`;
+    } else {
+      donnees.forEach((interet) => {
+        let date = new Date(interet.dateRdv).toLocaleDateString("fr-BE")
+        listeInteret += `
               <div class="interet">
                 <input type="hidden" id="ut" value="${interet.utilisateur.idUtilisateur}">
                 <input type="hidden" id="version" value="${interet.version}">
@@ -390,7 +393,8 @@ const listeInteresse = (objet) => {
                 <p>${interet.utilisateur.pseudo}</p>
                 <p>Horaire :  ${date}</p>
               </div>`
-    })
+      })
+    }
     listeInteret += `</div>`
 
     let intReceveur = {
@@ -471,9 +475,12 @@ const listeInteresseNonRemis = (objet) => {
   })
   .then((donnees) => {
     let listeInteret = `<div class="interets">`;
-    donnees.forEach((interet) => {
-      let date = new Date(interet.dateRdv).toLocaleDateString("fr-BE")
-      listeInteret += `
+    if (donnees.length === 0) {
+      listeInteret += `<p>Personne n\'a encore marqué d\'intérêt</p>`;
+    } else {
+      donnees.forEach((interet) => {
+        let date = new Date(interet.dateRdv).toLocaleDateString("fr-BE")
+        listeInteret += `
               <div class="interet">
                 <input type="hidden" id="ut" value="${interet.utilisateur.idUtilisateur}">
                 <input type="hidden" id="version" value="${interet.version}">
@@ -484,7 +491,8 @@ const listeInteresseNonRemis = (objet) => {
                 <p>${interet.utilisateur.pseudo}</p>
                 <p>Horaire :  ${date}</p>
               </div>`
-    })
+      })
+    }
     listeInteret += `</div>`
 
     let intReceveur = {
@@ -518,7 +526,7 @@ const listeInteresseNonRemis = (objet) => {
                 + reponse.statusText);
           }
           return reponse.json();
-        }).then((donnee) => {
+        }).then(() => {
           nonRemis(objet)
           Redirect("/mesOffres")
         })
