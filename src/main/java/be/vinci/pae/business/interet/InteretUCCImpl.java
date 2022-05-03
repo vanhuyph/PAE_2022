@@ -160,6 +160,9 @@ public class InteretUCCImpl implements InteretUCC {
       for (int i = 0; i < listeTemp.size(); i++) {
         listeTemp.get(i).setVue(true);
         InteretDTO interetDTO = interetDAO.miseAJourInteret(listeTemp.get(i));
+        /*if (interetDTO == null) {
+          throw new OptimisticLockException("Données de l'interet périmées");
+        }*/
         liste.add(interetDTO);
       }
     } catch (Exception e) {
@@ -168,6 +171,44 @@ public class InteretUCCImpl implements InteretUCC {
     }
     serviceDAL.commettreTransaction();
     return liste;
+  }
+
+  /**
+   * notifier tout le receveur actuel que l'objet est empecher
+   *
+   * @param idUtilisateur : l'id du receveur qui va recevoir la notification
+   * @return interetDTO : renvoi un interet
+   * @throws BusinessException       : est lancée si l'id de l'utilisateur est incorrect ou si
+   *                                 l'utilisateur n'est pas le receveur actuel
+   * @throws OptimisticLockException : est lancée si les données sont périmées
+   */
+  @Override
+  public InteretDTO notifierReceveurEmpecher(int idUtilisateur) {
+    serviceDAL.commencerTransaction();
+    InteretDTO interetDTO;
+    try {
+      if (idUtilisateur <= 0) {
+        throw new BusinessException("L'id de l'utilisateur est incorrect");
+      }
+      interetDTO = interetDAO.notifierReceveurEmpecher(idUtilisateur);
+      if (interetDTO == null) {
+        return null;
+      }
+      /*if (interetDTO == null) {
+        throw new BusinessException("L'utilisateur n'est pas le receveur actuel");
+      }*/
+      interetDTO.setVueEmpecher(true);
+      interetDTO = interetDAO.miseAJourInteret(interetDTO);
+      /*if (interetDTO == null) {
+        throw new OptimisticLockException("Données de l'interet périmées");
+      }*/
+
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return interetDTO;
   }
 
   /**

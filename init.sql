@@ -57,8 +57,9 @@ CREATE TABLE projet.interets
     date            DATE                                                    NOT NULL,
     version         INTEGER                                                 NOT NULL,
     vue             BOOLEAN                                                 NOT NULL,
-    receveur_choisi BOOLEAN NULL,
-    venu_chercher   BOOLEAN NULL,
+    receveur_choisi BOOLEAN                                                 NULL,
+    venu_chercher   BOOLEAN                                                 NULL,
+    vue_empecher    BOOLEAN                                                 NOT NULL,
     PRIMARY KEY (utilisateur, objet)
 );
 
@@ -148,9 +149,9 @@ INSERT INTO projet.offres
 VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h', 0);
 
 INSERT INTO projet.interets
-VALUES (3, 3, '25-03-22', 0, false, false, NULL);
+VALUES (3, 3, '25-03-22', 0, false, false, NULL, false);
 INSERT INTO projet.interets
-VALUES (2, 3, '25-03-22', 0, false, false, NULL);
+VALUES (2, 3, '25-03-22', 0, false, false, NULL, false);
 
 /*UPDATE projet.objets SET etat_objet = 'Intéressé' WHERE id_objet = 3;
 
