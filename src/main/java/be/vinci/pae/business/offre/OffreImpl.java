@@ -81,7 +81,8 @@ public class OffreImpl implements Offre {
   @Override
   public void offrirObjet() {
     if (this.getObjetDTO().getEtatObjet() == null || this.getObjetDTO().getEtatObjet()
-        .equals("Empêché") || this.getObjetDTO().getEtatObjet().equals("Annulé")) {
+        .equals("Empêché") || this.getObjetDTO().getEtatObjet().equals("Annulé")
+        || this.getObjetDTO().getEtatObjet().equals("Confirmé")) {
       this.getObjetDTO().setEtatObjet("Offert");
     }
   }
@@ -89,7 +90,8 @@ public class OffreImpl implements Offre {
   @Override
   public void interesseObjet() {
     if (this.getObjetDTO().getEtatObjet().equals("Empêché") || this.getObjetDTO().getEtatObjet()
-        .equals("Offert") || this.getObjetDTO().getEtatObjet().equals("Annulé")) {
+        .equals("Offert") || this.getObjetDTO().getEtatObjet().equals("Annulé")
+        || this.getObjetDTO().getEtatObjet().equals("Confirmé")) {
       this.getObjetDTO().setEtatObjet("Intéressé");
     }
   }
