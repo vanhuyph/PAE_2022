@@ -181,7 +181,7 @@ public class InteretDAOImpl implements InteretDAO {
         + "a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur AND t.id_type = o.type_objet "
         + "AND a2.id_adresse = u2.adresse AND i.vue = false AND u.etat_inscription = 'Confirmé' "
         + "AND i.receveur_choisi = false AND i.venu_chercher IS NULL "
-        + "ORDER BY o.description;";
+        + "ORDER BY o.description, u.nom, u.prenom, u.pseudo;";
     InteretDTO interetDTO = factory.getInteret();
     List<InteretDTO> listeDesPersonnesInteressees;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
