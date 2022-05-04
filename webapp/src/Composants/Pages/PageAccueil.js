@@ -212,7 +212,7 @@ const PageAccueil = async () => {
   }
 
   if (session){
-    fetch( API_URL+"/notifierReceveurEmpecher/"
+    fetch( API_URL+"interets/notifierReceveurEmpecher/"
         +session.utilisateur.idUtilisateur,{
       method: "GET",
       headers: {
