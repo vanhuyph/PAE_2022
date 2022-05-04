@@ -211,6 +211,23 @@ const PageAccueil = async () => {
     }).then((data) => objetsAEvaluer(data, session))
   }
 
+  if (session){
+    fetch( API_URL+"interets/notifierReceveurEmpecher/"
+        +session.utilisateur.idUtilisateur,{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token
+      },
+    }).then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+      }
+      return reponse.json();
+    }).then((data) => offreurEmpeche(data))
+  }
+
   let pageAccueil = `
   <div class="conteneur-modal">
     <div class="overlay declencheur-modal"></div>
@@ -315,7 +332,19 @@ const PageAccueil = async () => {
     conteneurModal.classList.toggle("active")
   }))
 };
+// Affichage de la notificationen cas d'offreur empeche
+const offreurEmpeche = async (data) =>{
+  data.forEach((interet) =>{
+    Swal.fire({
+      title: "Empêchement",
+      confirmButtonText: 'ok',
+      allowOutsideClick: false,
+      html: `<p>l'offreur de l'objet  ${interet.objet.description} est actuellement indisponible</p> 
+             <p> nous vous invitons a prendre contact avec lui pour avoir plus d'informations</p>`,
 
+    })
+  })
+}
 // Change l'état d'un utilisateur
 const changerEtatUtilisateur = async (idUtilisateur) => {
   let session = recupUtilisateurDonneesSession()
