@@ -47,7 +47,7 @@ const PageAccueil = async () => {
         await changerEtatUtilisateur(session.utilisateur.idUtilisateur)
         let dansLocalStorage = localStorage.getItem("utilisateur")
         let souvenir = false;
-        let utilisateur
+        let utilisateur;
         if (!dansLocalStorage) {
           session.utilisateur.etatInscription = "Confirmé"
           utilisateur = {...session, isAutenticated: true}
@@ -211,9 +211,9 @@ const PageAccueil = async () => {
     }).then((data) => objetsAEvaluer(data, session))
   }
 
-  if (session){
-    fetch( API_URL+"interets/notifierReceveurEmpecher/"
-        +session.utilisateur.idUtilisateur,{
+  if (session) {
+    fetch(API_URL + "interets/notifierReceveurEmpecher/"
+        + session.utilisateur.idUtilisateur, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -332,19 +332,20 @@ const PageAccueil = async () => {
     conteneurModal.classList.toggle("active")
   }))
 };
-// Affichage de la notificationen cas d'offreur empeche
-const offreurEmpeche = async (data) =>{
-  data.forEach((interet) =>{
+
+// Affichage de la notification en cas d'offreur empêché
+const offreurEmpeche = async (data) => {
+  data.forEach((interet) => {
     Swal.fire({
       title: "Empêchement",
-      confirmButtonText: 'ok',
+      confirmButtonText: 'OK',
       allowOutsideClick: false,
-      html: `<p>l'offreur de l'objet  ${interet.objet.description} est actuellement indisponible</p> 
-             <p> nous vous invitons a prendre contact avec lui pour avoir plus d'informations</p>`,
-
+      html: `<p>L'offreur de l'objet : ${interet.objet.description} a eu un empêchement</p> 
+             <p>Nous vous invitons à le contacter ultérieurement pour avoir plus d'informations</p>`,
     })
   })
 }
+
 // Change l'état d'un utilisateur
 const changerEtatUtilisateur = async (idUtilisateur) => {
   let session = recupUtilisateurDonneesSession()
