@@ -160,9 +160,9 @@ public class InteretUCCImpl implements InteretUCC {
       for (int i = 0; i < listeTemp.size(); i++) {
         listeTemp.get(i).setVue(true);
         InteretDTO interetDTO = interetDAO.miseAJourInteret(listeTemp.get(i));
-        /*if (interetDTO == null) {
+        if (interetDTO == null) {
           throw new OptimisticLockException("Données de l'interet périmées");
-        }*/
+        }
         liste.add(interetDTO);
       }
     } catch (Exception e) {
@@ -191,18 +191,13 @@ public class InteretUCCImpl implements InteretUCC {
         throw new BusinessException("L'id de l'utilisateur est incorrect");
       }
       interetDTO = interetDAO.notifierReceveurEmpecher(idUtilisateur);
-      if (interetDTO == null) {
-        return null;
+      if (interetDTO != null) {
+        interetDTO.setVueEmpecher(true);
+        interetDTO = interetDAO.miseAJourInteret(interetDTO);
+        if (interetDTO == null) {
+          throw new OptimisticLockException("Données périmées");
+        }
       }
-      /*if (interetDTO == null) {
-        throw new BusinessException("L'utilisateur n'est pas le receveur actuel");
-      }*/
-      interetDTO.setVueEmpecher(true);
-      interetDTO = interetDAO.miseAJourInteret(interetDTO);
-      /*if (interetDTO == null) {
-        throw new OptimisticLockException("Données de l'interet périmées");
-      }*/
-
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
