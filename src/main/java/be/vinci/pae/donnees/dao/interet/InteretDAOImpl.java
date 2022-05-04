@@ -33,7 +33,7 @@ public class InteretDAOImpl implements InteretDAO {
    */
   @Override
   public InteretDTO ajouterInteret(InteretDTO interetDTO) {
-    String requetePs = "INSERT INTO projet.interets VALUES (?, ?, ?, ?, ?, false, NULL) "
+    String requetePs = "INSERT INTO projet.interets VALUES (?, ?, ?, ?, ?, false, NULL, false) "
         + "RETURNING *;";
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       Date dateRdvSQL = new Date(interetDTO.getDateRdv().getTime());
@@ -97,7 +97,7 @@ public class InteretDAOImpl implements InteretDAO {
         + "u2.gsm, u2.est_admin, u2.etat_inscription, u2.commentaire, u2.version, "
         + "u2.nb_objet_offert, u2.nb_objet_donne, u2.nb_objet_recu, u2.nb_objet_abandonne, "
         + "t.id_type, t.nom, o.id_objet, o.etat_objet, o.description, o.photo, o.version, o.vue, "
-        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version  FROM projet.interets i, "
+        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version, i.vue_empecher FROM projet.interets i, "
         + "projet.utilisateurs u, projet.utilisateurs u2, "
         + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
         + "WHERE o.id_objet = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
@@ -138,7 +138,8 @@ public class InteretDAOImpl implements InteretDAO {
         + "u2.gsm, u2.est_admin, u2.etat_inscription, u2.commentaire, u2.version, "
         + "u2.nb_objet_offert, u2.nb_objet_donne, u2.nb_objet_recu, u2.nb_objet_abandonne, "
         + "t.id_type, t.nom, o.id_objet, o.etat_objet, o.description, o.photo, o.version, o.vue, "
-        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version  FROM projet.interets i, "
+        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version, i.vue_empecher "
+        + "FROM projet.interets i, "
         + "projet.utilisateurs u, projet.utilisateurs u2, "
         + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
         + "WHERE o.id_objet = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
@@ -174,7 +175,8 @@ public class InteretDAOImpl implements InteretDAO {
         + "u2.gsm, u2.est_admin, u2.etat_inscription, u2.commentaire, u2.version, "
         + "u2.nb_objet_offert, u2.nb_objet_donne, u2.nb_objet_recu, u2.nb_objet_abandonne, "
         + "t.id_type, t.nom, o.id_objet, o.etat_objet, o.description, o.photo, o.version, o.vue, "
-        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version FROM projet.interets i, "
+        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version, i.vue_empecher "
+        + "FROM projet.interets i, "
         + "projet.utilisateurs u, projet.utilisateurs u2, "
         + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
         + "WHERE o.offreur = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
@@ -212,7 +214,8 @@ public class InteretDAOImpl implements InteretDAO {
         + "u2.gsm, u2.est_admin, u2.etat_inscription, u2.commentaire, u2.version, "
         + "u2.nb_objet_offert, u2.nb_objet_donne, u2.nb_objet_recu, u2.nb_objet_abandonne, "
         + "t.id_type, t.nom, o.id_objet, o.etat_objet, o.description, o.photo, o.version, o.vue, "
-        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version  FROM projet.interets i, "
+        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version, i.vue_empecher "
+        + "FROM projet.interets i, "
         + "projet.utilisateurs u, projet.utilisateurs u2, "
         + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
         + "WHERE u.id_utilisateur = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur"
@@ -293,7 +296,8 @@ public class InteretDAOImpl implements InteretDAO {
         + "u2.gsm, u2.est_admin, u2.etat_inscription, u2.commentaire, u2.version, "
         + "u2.nb_objet_offert, u2.nb_objet_donne, u2.nb_objet_recu, u2.nb_objet_abandonne, "
         + "t.id_type, t.nom, o.id_objet, o.etat_objet, o.description, o.photo, o.version, o.vue, "
-        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version FROM projet.interets i, "
+        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version, i.vue_empecher "
+        + "FROM projet.interets i, "
         + "projet.utilisateurs u, projet.utilisateurs u2, projet.types_objets t, "
         + "projet.adresses a, projet.adresses a2, projet.objets o "
         + "WHERE o.id_objet = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur "
@@ -425,6 +429,7 @@ public class InteretDAOImpl implements InteretDAO {
       }
       interetDTO.setVersion(rs.getInt(53));
       interetDTO.setObjet(objetDTO);
+      interetDTO.setVueEmpecher(rs.getBoolean(54));
     } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
