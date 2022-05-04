@@ -174,7 +174,7 @@ public class InteretUCCImpl implements InteretUCC {
   }
 
   /**
-   * notifier tout le receveur actuel que l'objet est empecher
+   * Notifier tout le receveur actuel que l'objet est empecher.
    *
    * @param idUtilisateur : l'id du receveur qui va recevoir la notification
    * @return interetDTO : renvoi un interet

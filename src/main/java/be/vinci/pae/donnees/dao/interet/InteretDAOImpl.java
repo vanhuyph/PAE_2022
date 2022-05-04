@@ -196,7 +196,7 @@ public class InteretDAOImpl implements InteretDAO {
 
 
   /**
-   * notifier tout le receveur actuel que l'objet est empecher
+   * Notifier tout le receveur actuel que l'objet est empecher.
    *
    * @param idUtilisateur : l'id du receveur qui va recevoir la notification
    * @return interetsANotifier : renvoi une liste d'interet
@@ -215,11 +215,11 @@ public class InteretDAOImpl implements InteretDAO {
         + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version  FROM projet.interets i, "
         + "projet.utilisateurs u, projet.utilisateurs u2, "
         + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
-        + "WHERE u.id_utilisateur = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
-        + "a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur AND t.id_type = o.type_objet "
-        + "AND a2.id_adresse = u2.adresse AND u.etat_inscription = 'Confirmé' AND "
-        + "u2.etat_inscription = 'Empêché' AND i.receveur_choisi = true AND i.vue_empecher = false "
-        + "AND i.venu_chercher IS NULL;";
+        + "WHERE u.id_utilisateur = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur"
+        + " AND a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur "
+        + "AND t.id_type = o.type_objet AND a2.id_adresse = u2.adresse "
+        + "AND u.etat_inscription = 'Confirmé' AND u2.etat_inscription = 'Empêché' "
+        + "AND i.receveur_choisi = true AND i.vue_empecher = false AND i.venu_chercher IS NULL;";
     InteretDTO interetDTO = factory.getInteret();
     List<InteretDTO> interetsANotifier;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
