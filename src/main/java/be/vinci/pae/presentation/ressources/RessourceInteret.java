@@ -145,13 +145,12 @@ public class RessourceInteret {
   @Path("/notifierReceveurEmpecher/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  //@Autorisation
-  public InteretDTO notifierReceveurEmpecher(@PathParam("id") int idUtilisateur) {
+  @Autorisation
+  public List<InteretDTO> notifierReceveurEmpecher(@PathParam("id") int idUtilisateur) {
     if (idUtilisateur <= 0) {
       throw new PresentationException("L'id de l'utilisateur est incorrect", Status.BAD_REQUEST);
     }
-    InteretDTO interetDTO = interetUCC.notifierReceveurEmpecher(idUtilisateur);
-    return interetDTO;
+    return interetUCC.notifierReceveurEmpecher(idUtilisateur);
   }
 
   /**

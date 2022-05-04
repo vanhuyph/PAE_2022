@@ -199,11 +199,11 @@ public class InteretDAOImpl implements InteretDAO {
    * notifier tout le receveur actuel que l'objet est empecher
    *
    * @param idUtilisateur : l'id du receveur qui va recevoir la notification
-   * @return interetDTO : renvoi un interet
+   * @return interetsANotifier : renvoi une liste d'interet
    * @throws FatalException : est lancée s'il y a eu un problème côté serveur
    */
   @Override
-  public InteretDTO notifierReceveurEmpecher(int idUtilisateur) {
+  public List<InteretDTO> notifierReceveurEmpecher(int idUtilisateur) {
     String requetePS = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
         + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
         + "u.etat_inscription, u.commentaire, u.version, u.nb_objet_offert, u.nb_objet_donne, "
@@ -220,19 +220,16 @@ public class InteretDAOImpl implements InteretDAO {
         + "AND a2.id_adresse = u2.adresse AND u.etat_inscription = 'Confirmé' AND "
         + "u2.etat_inscription = 'Empêché' AND i.receveur_choisi = true AND i.vue_empecher = false "
         + "AND i.venu_chercher IS NULL;";
+    InteretDTO interetDTO = factory.getInteret();
+    List<InteretDTO> interetsANotifier;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
       ps.setInt(1, idUtilisateur);
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          InteretDTO interetDTO = factory.getInteret();
-          return remplirInteretDepuisResulSet(interetDTO, rs);
-        } else {
-          return null;
-        }
-      }
+      interetsANotifier = remplirListeInteretDepuisResulSet(interetDTO, ps);
     } catch (SQLException e) {
+      e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
+    return interetsANotifier;
   }
 
   /**

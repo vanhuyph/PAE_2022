@@ -19,6 +19,6 @@ public interface InteretDAO {
 
   InteretDTO receveurActuel(int idObjet);
 
-  InteretDTO notifierReceveurEmpecher(int idUtilisateur);
+  List<InteretDTO> notifierReceveurEmpecher(int idUtilisateur);
 
 }

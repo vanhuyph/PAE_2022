@@ -183,19 +183,22 @@ public class InteretUCCImpl implements InteretUCC {
    * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
-  public InteretDTO notifierReceveurEmpecher(int idUtilisateur) {
+  public List<InteretDTO> notifierReceveurEmpecher(int idUtilisateur) {
     serviceDAL.commencerTransaction();
-    InteretDTO interetDTO;
+    List<InteretDTO> interetDTOs;
     try {
       if (idUtilisateur <= 0) {
         throw new BusinessException("L'id de l'utilisateur est incorrect");
       }
-      interetDTO = interetDAO.notifierReceveurEmpecher(idUtilisateur);
-      if (interetDTO != null) {
-        interetDTO.setVueEmpecher(true);
-        interetDTO = interetDAO.miseAJourInteret(interetDTO);
-        if (interetDTO == null) {
-          throw new OptimisticLockException("Données périmées");
+      interetDTOs = interetDAO.notifierReceveurEmpecher(idUtilisateur);
+      if (interetDTOs != null) {
+        for (InteretDTO interet : interetDTOs
+        ) {
+          interet.setVueEmpecher(true);
+          interet = interetDAO.miseAJourInteret(interet);
+          if (interet == null) {
+            throw new OptimisticLockException("Données périmées");
+          }
         }
       }
     } catch (Exception e) {
@@ -203,7 +206,7 @@ public class InteretUCCImpl implements InteretUCC {
       throw e;
     }
     serviceDAL.commettreTransaction();
-    return interetDTO;
+    return interetDTOs;
   }
 
   /**
