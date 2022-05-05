@@ -132,6 +132,16 @@ public class InteretImpl implements Interet {
   }
 
   @Override
+  public void estVu() {
+    this.setVue(true);
+  }
+
+  @Override
+  public void estVuEmpecher() {
+    this.setVueEmpecher(true);
+  }
+
+  @Override
   public String toString() {
     return "InteretImpl{"
         + "utilisateur=" + utilisateur

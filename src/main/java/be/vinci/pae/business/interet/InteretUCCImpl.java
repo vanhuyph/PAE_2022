@@ -145,7 +145,8 @@ public class InteretUCCImpl implements InteretUCC {
    *
    * @param idOffreur : l'id de l'offreur d'un objet dont les personnes sont intéressées
    * @return liste : la liste des intérêts non-vues
-   * @throws BusinessException : est lancée si l'id de l'objet est incorrect
+   * @throws BusinessException       : est lancée si l'id de l'objet est incorrect
+   * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
   public List<InteretDTO> listeDesPersonnesInteresseesVue(int idOffreur) {
@@ -158,7 +159,7 @@ public class InteretUCCImpl implements InteretUCC {
       }
       listeTemp = interetDAO.listeDesPersonnesInteresseesVue(idOffreur);
       for (int i = 0; i < listeTemp.size(); i++) {
-        listeTemp.get(i).setVue(true);
+        ((Interet) listeTemp.get(i)).estVu();
         InteretDTO interetDTO = interetDAO.miseAJourInteret(listeTemp.get(i));
         if (interetDTO == null) {
           throw new OptimisticLockException("Données de l'interet périmées");
@@ -178,7 +179,8 @@ public class InteretUCCImpl implements InteretUCC {
    *
    * @param interet : l'intérêt de la personne
    * @return interetDTO : interetDTO
-   * @throws BusinessException       : est lancée si le receveur n'a pas pu être indiqué
+   * @throws BusinessException       : est lancée si le receveur n'a pas pu être indiqué ou si
+   *                                 l'interet est null
    * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
@@ -186,6 +188,9 @@ public class InteretUCCImpl implements InteretUCC {
     serviceDAL.commencerTransaction();
     InteretDTO interetDTO;
     try {
+      if (interet == null) {
+        throw new BusinessException("L'interet est null");
+      }
       ((Interet) interet).indiquerReceveur();
       interetDTO = interetDAO.miseAJourInteret(interet);
       if (interetDTO == null) {
@@ -259,7 +264,7 @@ public class InteretUCCImpl implements InteretUCC {
       liste = interetDAO.notifierReceveurEmpecher(idUtilisateur);
       if (liste != null) {
         for (InteretDTO interet : liste) {
-          interet.setVueEmpecher(true);
+          ((Interet) interet).estVuEmpecher();
           interet = interetDAO.miseAJourInteret(interet);
           if (interet == null) {
             throw new OptimisticLockException("Données périmées");
