@@ -13,15 +13,6 @@ const barVertical = `
   </div>
 </div>
 `
-const barHori = `
-<div id="bar-hori">
-  <h2 class="ui large header">Admin</h2>
-  <div id="choix-page" class="ui buttons">
-    <button class="ui active button" id="inscriptions">Inscription</button>
-    <button class="ui button" id="membres">Membres</button>
-  </div>
-</div>
-`
 
 // Contenu principal de la page
 const pagePrincipal = `
@@ -70,22 +61,6 @@ const PageAdmin = () => {
   } else {
     const pageDiv = document.querySelector("#page");
     pageDiv.innerHTML = page;
-
-    // Gestion responsive avec la barre verticale pour pc et horizontale pour mobile
-    /*
-    if (window.innerWidth < 576) {
-      document.getElementById("bar").innerHTML = barHori;
-    } else {
-      document.getElementById("bar").innerHTML = barVertical;
-    }
-    window.onresize = () => {
-      if (window.innerWidth < 576) {
-        document.getElementById("bar").innerHTML = barHori;
-      } else {
-        document.getElementById("bar").innerHTML = barVertical;
-      }
-    };*/
-
     afficherDemandes()
     const listeInscriptions = document.querySelector("#inscriptions")
     const listeMembres = document.querySelector("#membres")
@@ -223,7 +198,7 @@ const envoyerRecherche = (e) => {
 }
 
 const surListeConfirme = async (donnees) => {
-  const session = recupUtilisateurDonneesSession()
+  recupUtilisateurDonneesSession();
   let contenu = document.getElementById("contenu")
   let liste = `<div class="liste-utilisateurs">`
 
@@ -234,19 +209,15 @@ const surListeConfirme = async (donnees) => {
   for (const utilisateur of donnees) {
     liste += `
     <div class="utilisateur">
-    
       <div>        
         <div class="est-empeche">
-          
           <div class="ui buttons">
             <button class="ui positive button" id="buttonUtilisateurEmpeche">Est empêché</button>
           </div>
-            
           <input id="etat-ut" type="hidden" value="${utilisateur.etatInscription}">
         </div>
       </div>
            
-      
       <div class="admin-membre">
         <div class="utilisateur-nom-prenom">
           <input id="id-ut" type="hidden" value="${utilisateur.idUtilisateur}">
@@ -311,9 +282,7 @@ const surListeConfirme = async (donnees) => {
           listeObjetsRecu(objets, idUtilisateur)
         })
       }
-
     })
-
   })
 }
 
@@ -321,49 +290,45 @@ const changerEtatUtilisateur = async (idUtilisateur, etatUtilisateur) => {
   let session = recupUtilisateurDonneesSession()
 
   if (etatUtilisateur === "Confirmé") {
-    await fetch(API_URL + "utilisateurs/indiquerEmpecherUtilisateur/" + idUtilisateur, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: session.token
-      },
-    })
-        .then((reponse) => {
-          if (!reponse.ok) {
-            throw new Error(
-                "Code d'erreur : " + reponse.status + " : " + reponse.statusText
-            );
-          }
-          return reponse.json();
+    await fetch(
+        API_URL + "utilisateurs/indiquerEmpecherUtilisateur/" + idUtilisateur, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token
+          },
         })
-
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      return reponse.json();
+    })
   }
 
   if (etatUtilisateur === "Empêché") {
-
-    await fetch(API_URL + "utilisateurs/indiquerConfirmerUtilisateur/" + idUtilisateur, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: session.token
-      },
-    })
-        .then((reponse) => {
-          if (!reponse.ok) {
-            throw new Error(
-                "Code d'erreur : " + reponse.status + " : " + reponse.statusText
-            );
-          }
-          return reponse.json();
+    await fetch(
+        API_URL + "utilisateurs/indiquerConfirmerUtilisateur/" + idUtilisateur,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token
+          },
         })
-
+    .then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      return reponse.json();
+    })
   }
   afficherMembres()
 }
-
-
-
-
 
 const listeObjetsOffert = async (objets, idUtilisateur) => {
   let session = recupUtilisateurDonneesSession()

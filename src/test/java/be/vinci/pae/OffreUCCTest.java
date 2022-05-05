@@ -178,7 +178,7 @@ public class OffreUCCTest {
 
   @Test
   @DisplayName("Test raté : méthode annulerOffre renvoie null car l'offre n'est pas trouvable.")
-  public void annulerOffreV1() {
+  public void testAnnulerOffreV1() {
     Mockito.when(objetDAO.miseAJourObjet(objetDTO1)).thenReturn(null);
     Mockito.when(objetDAO.rechercheParId(objetDTO1)).thenReturn(null);
     assertThrows(PasTrouveException.class, () -> offreUCC.annulerOffre(offreDTO1));
@@ -186,7 +186,7 @@ public class OffreUCCTest {
 
   @Test
   @DisplayName("Test raté : méthode annulerOffre renvoie null car l'offre n'est pas trouvable.")
-  public void annulerOffreV2() {
+  public void testAnnulerOffreV2() {
     Mockito.when(objetDAO.miseAJourObjet(objetDTO1)).thenReturn(null);
     Mockito.when(objetDAO.rechercheParId(objetDTO1)).thenReturn(objetDTO1);
     assertThrows(OptimisticLockException.class, () -> offreUCC.annulerOffre(offreDTO1));
@@ -194,7 +194,7 @@ public class OffreUCCTest {
 
   @Test
   @DisplayName("Test réussi : méthode annulerOffre renvoie l'offre annulée.")
-  public void annulerOffreV3() {
+  public void testAnnulerOffreV3() {
     Mockito.when(objetDAO.miseAJourObjet(offreDTO1.getObjetDTO()))
         .thenReturn(offreDTO1.getObjetDTO());
     assertEquals(offreDTO1, offreUCC.annulerOffre(offreDTO1));
@@ -202,7 +202,7 @@ public class OffreUCCTest {
 
   @Test
   @DisplayName("Test raté : méthode rechercheParId renvoie null car l'offre n'est pas trouvable.")
-  public void rechercheParIdV1() {
+  public void testRechercheParIdV1() {
     int id = -1;
     Mockito.when(offreDAO.rechercheParId(id)).thenReturn(null);
     assertThrows(PasTrouveException.class, () -> offreUCC.rechercheParId(id));
@@ -210,7 +210,7 @@ public class OffreUCCTest {
 
   @Test
   @DisplayName("Test réussi : méthode rechercheParId renvoie une offre existante.")
-  public void rechercheParIdV2() {
+  public void testRechercheParIdV2() {
     int id = offreDTO1.getIdOffre();
     Mockito.when(offreDAO.rechercheParId(id)).thenReturn(offreDTO1);
     assertEquals(offreDTO1, offreUCC.rechercheParId(id));
