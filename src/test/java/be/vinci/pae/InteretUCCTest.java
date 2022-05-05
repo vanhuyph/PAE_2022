@@ -178,11 +178,4 @@ public class InteretUCCTest {
         .thenReturn(liste);
     assertEquals(liste, interetDAO.notifierReceveurEmpecher(utilisateurDTO.getIdUtilisateur()));
   }
-
-  /*@Test
-  @DisplayName("Test réussi : méthode notifierReceveurEmpecher renvoie bien une exception car id incorrect.")
-  public void testnotifierReceveurEmpecherV2() {
-    Mockito.when(interetDAO.notifierReceveurEmpecher(-1)).thenReturn(null);
-    assertThrows(BusinessException.class, () -> interetDAO.notifierReceveurEmpecher(-1));
-  }*/
 }

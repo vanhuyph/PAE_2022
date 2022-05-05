@@ -57,8 +57,9 @@ CREATE TABLE projet.interets
     date            DATE                                                    NOT NULL,
     version         INTEGER                                                 NOT NULL,
     vue             BOOLEAN                                                 NOT NULL,
-    receveur_choisi BOOLEAN NULL,
-    venu_chercher   BOOLEAN NULL,
+    receveur_choisi BOOLEAN                                                 NULL,
+    venu_chercher   BOOLEAN                                                 NULL,
+    vue_empecher    BOOLEAN                                                 NOT NULL,
     PRIMARY KEY (utilisateur, objet)
 );
 
