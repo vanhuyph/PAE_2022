@@ -600,6 +600,7 @@ Fin Message de bienvenue*/
 .rechercher-membre {
   text-align: center;
   padding-top: 30px;
+  height: 100%;
 }
 
 #rechercherMembre {
@@ -818,6 +819,10 @@ Fin Message de bienvenue*/
 .personne-interesse .inf-int {
   width: 33%;
   text-align: center;
+}
+
+.rechercher-membre{
+  overflow-y: scroll;
 }
 
 .liste-utilisateurs .utilisateur .admin-membre {

@@ -82,12 +82,14 @@ const PageOffrirObjet = () => {
   if (session) {
     Navbar()
     afficherTypeObjet()
-
   } else {
     Redirect("/connexion");
   }
+
   if (session.utilisateur.etatInscription === "Empêché") {
     document.querySelector("#offrir-objet").classList.add("disabled");
+    document.querySelector("#ajouter-type").classList.add("disabled");
+    document.querySelector("#buttonCreerType").classList.add("disabled");
   }
 }
 
@@ -111,7 +113,6 @@ const afficherTypeObjet = () => {
     return reponse.json();
   })
   .then((data) => choixTypeObjet(data));
-
   formOffrirObjet.addEventListener("submit", surOffrirObjet);
 }
 
