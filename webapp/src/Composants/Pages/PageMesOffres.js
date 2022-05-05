@@ -12,7 +12,7 @@ const PageMesOffres = () => {
     pageDiv.innerHTML = `<div class="offres">
     <h2>Mes offres</h2>
     <div id="mesOffres"></div>
-    <h2>Mes offres avec receveur</h2>
+    <h2>Mes offres avec receveur choisi</h2>
     <div id="mesOffresReceveur"></div>
     <h2>Mes offres annulées</h2>
     <div id="mesOffresAnnulees"></div>

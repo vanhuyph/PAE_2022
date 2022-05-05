@@ -146,7 +146,8 @@ public class InteretDAOImpl implements InteretDAO {
         + "WHERE o.id_objet = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur AND "
         + "a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur AND t.id_type = o.type_objet "
         + "AND a2.id_adresse = u2.adresse AND u.etat_inscription = 'Confirmé' AND "
-        + "i.receveur_choisi = false AND i.venu_chercher IS NULL;";
+        + "i.receveur_choisi = false AND i.venu_chercher IS NULL "
+        + "ORDER BY i.date, u.nom, u.prenom, u.pseudo;";
     InteretDTO interetDTO = factory.getInteret();
     List<InteretDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
@@ -197,45 +198,6 @@ public class InteretDAOImpl implements InteretDAO {
     return listeDesPersonnesInteressees;
   }
 
-
-  /**
-   * Notifier tout le receveur actuel que l'objet est empecher.
-   *
-   * @param idUtilisateur : l'id du receveur qui va recevoir la notification
-   * @return interetsANotifier : renvoi une liste d'interet
-   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
-   */
-  @Override
-  public List<InteretDTO> notifierReceveurEmpecher(int idUtilisateur) {
-    String requetePS = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
-        + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
-        + "u.etat_inscription, u.commentaire, u.version, u.nb_objet_offert, u.nb_objet_donne, "
-        + "u.nb_objet_recu, u.nb_objet_abandonne, a2.id_adresse, a2.rue, a2.numero, a2.boite, "
-        + "a2.code_postal, a2.commune, u2.id_utilisateur, u2.pseudo, u2.nom, u2.prenom, u2.mdp, "
-        + "u2.gsm, u2.est_admin, u2.etat_inscription, u2.commentaire, u2.version, "
-        + "u2.nb_objet_offert, u2.nb_objet_donne, u2.nb_objet_recu, u2.nb_objet_abandonne, "
-        + "t.id_type, t.nom, o.id_objet, o.etat_objet, o.description, o.photo, o.version, o.vue, "
-        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version, i.vue_empecher "
-        + "FROM projet.interets i, "
-        + "projet.utilisateurs u, projet.utilisateurs u2, "
-        + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
-        + "WHERE u.id_utilisateur = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur"
-        + " AND a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur "
-        + "AND t.id_type = o.type_objet AND a2.id_adresse = u2.adresse "
-        + "AND u.etat_inscription = 'Confirmé' AND u2.etat_inscription = 'Empêché' "
-        + "AND i.receveur_choisi = true AND i.vue_empecher = false AND i.venu_chercher IS NULL;";
-    InteretDTO interetDTO = factory.getInteret();
-    List<InteretDTO> interetsANotifier;
-    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
-      ps.setInt(1, idUtilisateur);
-      interetsANotifier = remplirListeInteretDepuisResulSet(interetDTO, ps);
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException(e.getMessage(), e);
-    }
-    return interetsANotifier;
-  }
-
   /**
    * Met à jour l'intérêt.
    *
@@ -259,7 +221,6 @@ public class InteretDAOImpl implements InteretDAO {
       } else {
         ps.setBoolean(5, interetDTO.isVenuChercher());
       }
-
       ps.setBoolean(6, interetDTO.isVueEmpecher());
       ps.setInt(7, interetDTO.getVersion());
       ps.setInt(8, interetDTO.getUtilisateur().getIdUtilisateur());
@@ -320,6 +281,43 @@ public class InteretDAOImpl implements InteretDAO {
     }
   }
 
+  /**
+   * Notifie le receveur actuel de l'objet que l'offreur a eu un empêchement.
+   *
+   * @param idUtilisateur : l'id du receveur qui va recevoir la notification
+   * @return liste : la liste des notifications d'empêchements
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public List<InteretDTO> notifierReceveurEmpecher(int idUtilisateur) {
+    String requetePS = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune, "
+        + "u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, u.version, u.nb_objet_offert, u.nb_objet_donne, "
+        + "u.nb_objet_recu, u.nb_objet_abandonne, a2.id_adresse, a2.rue, a2.numero, a2.boite, "
+        + "a2.code_postal, a2.commune, u2.id_utilisateur, u2.pseudo, u2.nom, u2.prenom, u2.mdp, "
+        + "u2.gsm, u2.est_admin, u2.etat_inscription, u2.commentaire, u2.version, "
+        + "u2.nb_objet_offert, u2.nb_objet_donne, u2.nb_objet_recu, u2.nb_objet_abandonne, "
+        + "t.id_type, t.nom, o.id_objet, o.etat_objet, o.description, o.photo, o.version, o.vue, "
+        + "i.vue, i.date, i.receveur_choisi, i.venu_chercher, i.version, i.vue_empecher "
+        + "FROM projet.interets i, "
+        + "projet.utilisateurs u, projet.utilisateurs u2, "
+        + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
+        + "WHERE u.id_utilisateur = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur"
+        + " AND a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur "
+        + "AND t.id_type = o.type_objet AND a2.id_adresse = u2.adresse "
+        + "AND u.etat_inscription = 'Confirmé' AND u2.etat_inscription = 'Empêché' "
+        + "AND i.receveur_choisi = true AND i.vue_empecher = false AND i.venu_chercher IS NULL;";
+    InteretDTO interetDTO = factory.getInteret();
+    List<InteretDTO> liste;
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
+      ps.setInt(1, idUtilisateur);
+      liste = remplirListeInteretDepuisResulSet(interetDTO, ps);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return liste;
+  }
 
   /**
    * Rempli une liste d'intérêts depuis un PreparedStatement.

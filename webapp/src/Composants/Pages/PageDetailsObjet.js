@@ -285,7 +285,7 @@ const surDetailObjet = async (offre) => {
     }
   })
 
-  if(session.utilisateur.etatInscription === "Empêché"){
+  if (session.utilisateur.etatInscription === "Empêché") {
     document.querySelector("#marquer-interet").classList.add("disabled")
   }
 }
@@ -371,7 +371,7 @@ const surDetailObjetProprio = async (offre) => {
             <p>${nbInteressees}</p>
           </div>
           <div class="column">
-            <h4>Date</h4>
+            <h4>Date de l'offre</h4>
             <p>${dateOffre}</p>
           </div>
         </div>
@@ -414,7 +414,7 @@ const surDetailObjetProprio = async (offre) => {
   if (offre.objetDTO.etatObjet === "Annulé") {
     document.querySelector("#annuler-offre").classList.add("disabled");
   }
-  if(session.utilisateur.etatInscription === "Empêché"){
+  if (session.utilisateur.etatInscription === "Empêché") {
     document.querySelector("#modifier-offre").classList.add("disabled");
   }
   document.querySelector("#modifier-offre").addEventListener("click", () => {
@@ -528,7 +528,7 @@ const surDetailObjetProprioModifier = async (offre) => {
             <p>${nbInteressees}</p>
           </div>
           <div class="column">
-            <h4>Date</h4>
+            <h4>Date de l'offre</h4>
             <p>${dateOffre}</p>
           </div>
         </div>

@@ -174,42 +174,6 @@ public class InteretUCCImpl implements InteretUCC {
   }
 
   /**
-   * Notifier tout le receveur actuel que l'objet est empecher.
-   *
-   * @param idUtilisateur : l'id du receveur qui va recevoir la notification
-   * @return interetDTO : renvoi un interet
-   * @throws BusinessException       : est lancée si l'id de l'utilisateur est incorrect ou si
-   *                                 l'utilisateur n'est pas le receveur actuel
-   * @throws OptimisticLockException : est lancée si les données sont périmées
-   */
-  @Override
-  public List<InteretDTO> notifierReceveurEmpecher(int idUtilisateur) {
-    serviceDAL.commencerTransaction();
-    List<InteretDTO> interetDTOs;
-    try {
-      if (idUtilisateur <= 0) {
-        throw new BusinessException("L'id de l'utilisateur est incorrect");
-      }
-      interetDTOs = interetDAO.notifierReceveurEmpecher(idUtilisateur);
-      if (interetDTOs != null) {
-        for (InteretDTO interet : interetDTOs
-        ) {
-          interet.setVueEmpecher(true);
-          interet = interetDAO.miseAJourInteret(interet);
-          if (interet == null) {
-            throw new OptimisticLockException("Données périmées");
-          }
-        }
-      }
-    } catch (Exception e) {
-      serviceDAL.retourEnArriereTransaction();
-      throw e;
-    }
-    serviceDAL.commettreTransaction();
-    return interetDTOs;
-  }
-
-  /**
    * Permet d'indiquer à une personne intéressée comme étant receveur de l'objet.
    *
    * @param interet : l'intérêt de la personne
@@ -273,6 +237,41 @@ public class InteretUCCImpl implements InteretUCC {
     }
     serviceDAL.commettreTransaction();
     return interetDTO;
+  }
+
+  /**
+   * Notifie le receveur actuel de l'objet que l'offreur a eu un empêchement.
+   *
+   * @param idUtilisateur : l'id du receveur qui va recevoir la notification
+   * @return liste : la liste des notifications d'empêchements
+   * @throws BusinessException       : est lancée si l'id de l'utilisateur est incorrect ou si
+   *                                 l'utilisateur n'est pas le receveur actuel
+   * @throws OptimisticLockException : est lancée si les données sont périmées
+   */
+  @Override
+  public List<InteretDTO> notifierReceveurEmpecher(int idUtilisateur) {
+    serviceDAL.commencerTransaction();
+    List<InteretDTO> liste;
+    try {
+      if (idUtilisateur <= 0) {
+        throw new BusinessException("L'id de l'utilisateur est incorrect");
+      }
+      liste = interetDAO.notifierReceveurEmpecher(idUtilisateur);
+      if (liste != null) {
+        for (InteretDTO interet : liste) {
+          interet.setVueEmpecher(true);
+          interet = interetDAO.miseAJourInteret(interet);
+          if (interet == null) {
+            throw new OptimisticLockException("Données périmées");
+          }
+        }
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return liste;
   }
 
 }

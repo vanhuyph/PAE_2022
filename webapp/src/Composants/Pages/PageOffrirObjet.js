@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 const formPhoto =
     `
         <div class="field">
-        <form id="envoyerPhoto" class="ui form"  >
+        <form id="envoyerPhoto" class="ui form" >
           <label>Sélectionner une photo</label>
           <input  name="photo" id="photo" type="file"/> <br/><br/>
           <img src="#" alt="" id="image" style="max-width: 500px; margin-top: 20px;" >
@@ -86,7 +86,7 @@ const PageOffrirObjet = () => {
   } else {
     Redirect("/connexion");
   }
-  if(session.utilisateur.etatInscription === "Empêché") {
+  if (session.utilisateur.etatInscription === "Empêché") {
     document.querySelector("#offrir-objet").classList.add("disabled");
   }
 }
