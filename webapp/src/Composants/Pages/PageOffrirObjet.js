@@ -88,6 +88,8 @@ const PageOffrirObjet = () => {
   }
   if (session.utilisateur.etatInscription === "Empêché") {
     document.querySelector("#offrir-objet").classList.add("disabled");
+    document.querySelector("#ajouter-type").classList.add("disabled");
+    document.querySelector("#buttonCreerType").classList.add("disabled");
   }
 }
 
