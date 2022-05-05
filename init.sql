@@ -59,6 +59,7 @@ CREATE TABLE projet.interets
     vue             BOOLEAN                                                 NOT NULL,
     receveur_choisi BOOLEAN NULL,
     venu_chercher   BOOLEAN NULL,
+    vue_empecher    BOOLEAN                                                 NOT NULL,
     PRIMARY KEY (utilisateur, objet)
 );
 
@@ -68,7 +69,6 @@ CREATE TABLE projet.evaluations
     objet         INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
     note          INTEGER,
     commentaire   VARCHAR(255)
-
 );
 
 CREATE TABLE projet.offres
