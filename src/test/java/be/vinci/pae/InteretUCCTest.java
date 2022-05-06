@@ -189,7 +189,7 @@ public class InteretUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode notifierReceveurEmpecher renvoie bien un interet.")
+  @DisplayName("Test réussi : méthode notifierReceveurEmpecher renvoie bien un intérêt.")
   public void testNotifierReceveurEmpecherV1() {
     interetDTO.setVueEmpecher(false);
     interetDTO.setReceveurChoisi(true);
@@ -198,4 +198,5 @@ public class InteretUCCTest {
         .thenReturn(liste);
     assertEquals(liste, interetDAO.notifierReceveurEmpecher(utilisateurDTO.getIdUtilisateur()));
   }
+
 }

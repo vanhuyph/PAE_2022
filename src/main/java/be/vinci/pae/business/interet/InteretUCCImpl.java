@@ -40,11 +40,6 @@ public class InteretUCCImpl implements InteretUCC {
     serviceDAL.commencerTransaction();
     InteretDTO interet;
     try {
-      // Date date = interetDTO.getDateRdv();
-      // Date now = new Date();
-      // if (date.before(now)) {
-      //    throw new BusinessException("La date de rendez-vous ne peut pas être dans le passé");
-      //  }
       if (!interetDTO.getUtilisateur().getGsm().isBlank()) {
         UtilisateurDTO utilisateur = utilisateurDAO.modifierGsm(interetDTO.getUtilisateur());
         if (utilisateur == null) {
