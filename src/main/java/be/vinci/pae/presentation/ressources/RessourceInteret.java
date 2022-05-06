@@ -28,7 +28,7 @@ public class RessourceInteret {
   /**
    * Créer un intérêt pour une offre.
    *
-   * @param interetDTO : json envoyé par le formulaire de créer un interet
+   * @param interetDTO : json envoyé par le formulaire de créer un intérêt
    * @return interet : interetDTO
    * @throws PresentationException : est lancée s'il y a eu une erreur
    */

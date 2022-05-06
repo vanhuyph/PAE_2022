@@ -188,7 +188,7 @@ public class InteretUCCImpl implements InteretUCC {
     InteretDTO interetDTO;
     try {
       if (interet == null) {
-        throw new BusinessException("L'interet est null");
+        throw new BusinessException("L'intérêt est null");
       }
       ((Interet) interet).indiquerReceveur();
       interetDTO = interetDAO.miseAJourInteret(interet);
