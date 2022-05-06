@@ -35,7 +35,6 @@ const pageMembres = `
       <button type="submit" class="button"><img src=${rechecheIcon} alt="recheche icon" height="20px"></button>
     </div>
     </form>
-    
   </div>
   <div id="contenu">
   
@@ -156,6 +155,7 @@ const afficherMembres = () => {
   document.getElementById("rechercherMembre").addEventListener("submit",
       envoyerRecherche)
 }
+
 const envoyerRecherche = (e) => {
   e.preventDefault()
   let session = recupUtilisateurDonneesSession()
@@ -201,7 +201,6 @@ const surListeConfirme = async (donnees) => {
   recupUtilisateurDonneesSession();
   let contenu = document.getElementById("contenu")
   let liste = `<div class="liste-utilisateurs">`
-
   contenu.innerHTML = `<div class="chargement-membres">
     <div class="ui text active centred inline loader">Chargement de la liste des membres</div>
 </div>`
@@ -231,7 +230,6 @@ const surListeConfirme = async (donnees) => {
             <div><strong>Abandonnés : </strong><p>${utilisateur.nbObjetAbandonnes}</p></div>
           </div>
         </div>
-        
       </div>
       <div class="liste-utilisateur-objets">
           <div class="ui buttons">
@@ -240,7 +238,6 @@ const surListeConfirme = async (donnees) => {
           </div>
         <div class="liste-objets"></div>
       </div>
-      
     </div>
     `
   }
@@ -251,11 +248,13 @@ const surListeConfirme = async (donnees) => {
     const idUtilisateur = u.querySelector("#id-ut").value
     let boutonEmpeche = u.querySelector("#buttonUtilisateurEmpeche")
     let etatUtilisateur = u.querySelector("#etat-ut").value
+
     if (etatUtilisateur === "Confirmé") {
       boutonEmpeche.textContent = "Est empêché"
       boutonEmpeche.classList.add("positive")
       boutonEmpeche.classList.remove("yellow")
     }
+
     if (etatUtilisateur === "Empêché") {
       boutonEmpeche.textContent = "Est de retour"
       boutonEmpeche.classList.remove("positive")
@@ -331,6 +330,7 @@ const changerEtatUtilisateur = async (idUtilisateur, etatUtilisateur) => {
   afficherMembres()
 }
 
+// Récupération de la liste des objets offerts par l'utilisateur
 const listeObjetsOffert = async (objets, idUtilisateur) => {
   let session = recupUtilisateurDonneesSession()
   let liste = `<p>Pas d'objet offert</p>`
@@ -370,6 +370,7 @@ const listeObjetsOffert = async (objets, idUtilisateur) => {
   objets.querySelector(".liste-objets").innerHTML = liste
 }
 
+// Récupération de la liste des objets reçus de l'utilisateur
 const listeObjetsRecu = async (objets, idUtilisateur) => {
   let session = recupUtilisateurDonneesSession()
   let liste = `<p>Pas d'objet reçu</p>`
