@@ -335,6 +335,7 @@ const PageAccueil = async () => {
 
 // Affichage de la notification en cas d'offreur empêché
 const offreurEmpeche = async (data) => {
+  let session = recupUtilisateurDonneesSession()
   data.forEach((interet) => {
     Swal.fire({
       title: "Empêchement",
@@ -342,6 +343,24 @@ const offreurEmpeche = async (data) => {
       allowOutsideClick: false,
       html: `<p>L'offreur de l'objet : ${interet.objet.description} a eu un empêchement.</p> 
              <p>Nous vous invitons à le contacter ultérieurement pour avoir plus d'informations.</p>`,
+    }).then((r) => {
+      if(r.isConfirmed){
+        fetch(
+            API_URL + "offres/objetsAEvaluer/" + session.utilisateur.idUtilisateur,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: session.token
+              },
+            }).then((reponse) => {
+          if (!reponse.ok) {
+            throw new Error(
+                "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+          }
+          return reponse.json();
+        }).then((data) => objetsAEvaluer(data, session))
+      }
     })
   })
 }
