@@ -13,4 +13,7 @@ public interface Interet extends InteretDTO {
 
   void venuChercher();
 
+  void estVu();
+
+  void estVuEmpecher();
 }
