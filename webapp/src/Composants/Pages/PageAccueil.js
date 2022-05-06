@@ -15,6 +15,7 @@ const PageAccueil = async () => {
   const session = recupUtilisateurDonneesSession()
   let etatInscription
   let v = 1
+  let v2=1
   let commentaire
   if (session) {
     if (session.utilisateur.etatInscription !== "Confirmé"
@@ -105,7 +106,7 @@ const PageAccueil = async () => {
                     + reponse.statusText);
               }
               return reponse.json();
-            }).then((donnees) => {
+            }).then(async (donnees) => {
               v = 0
               let liste = `<p>Pas d'intérêt</p>`
               if (donnees.length > 0) {
@@ -142,13 +143,17 @@ const PageAccueil = async () => {
                   }
                 })
                 // Popup à la connexion si des personnes ont marqué un intérêt pour les objets de l'utilisateur
-                Swal.fire({
+                await Swal.fire({
                   title: '<strong>Liste des personnes intéressées pour vos objets</strong>',
                   html: `${liste}`,
                   focusConfirm: false,
                   confirmButtonText:
                       '<i class="fa fa-thumbs-up"></i> OK',
                   confirmButtonAriaLabel: 'Thumbs up, great!',
+                }).then((r)=>{
+                  if (r.isConfirmed){
+                    v2=0;
+                  }
                 })
               }
             })
@@ -161,7 +166,7 @@ const PageAccueil = async () => {
 
   // Lors de la connexion, liste les offres attribuées à l'utilisateur
   if (session) {
-    fetch(
+    await fetch(
         API_URL + "offres/voirOffreAttribuer/"
         + session.utilisateur.idUtilisateur,
         {
@@ -176,7 +181,7 @@ const PageAccueil = async () => {
             "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
       }
       return reponse.json();
-    }).then((donnees) => {
+    }).then(async (donnees) => {
       let liste = `<p>Pas d'offres</p>`
       if (donnees.length > 0) {
         liste = ""
@@ -187,7 +192,7 @@ const PageAccueil = async () => {
           </div>
           `
         })
-        Swal.fire({
+        await Swal.fire({
           title: '<strong>Liste des offres qui vous ont été attribuées</strong>',
           html: `${liste}`,
           focusConfirm: false,
@@ -264,21 +269,24 @@ const PageAccueil = async () => {
 
   // Récupération des objets à évaluer lors de la connexion de l'utilisateur
   if (session) {
-    fetch(
-        API_URL + "offres/objetsAEvaluer/" + session.utilisateur.idUtilisateur,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: session.token
-          },
-        }).then((reponse) => {
-      if (!reponse.ok) {
-        throw new Error(
-            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
-      }
-      return reponse.json();
-    }).then((data) => objetsAEvaluer(data, session))
+    if(v2 === 1) {
+      fetch(
+          API_URL + "offres/objetsAEvaluer/"
+          + session.utilisateur.idUtilisateur,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: session.token
+            },
+          }).then((reponse) => {
+        if (!reponse.ok) {
+          throw new Error(
+              "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+        }
+        return reponse.json();
+      }).then((data) => objetsAEvaluer(data, session))
+    }
   }
 
   if (session) {
