@@ -383,6 +383,7 @@ public class UtilisateurUCCTest {
 
     Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet())).thenReturn(listeInteret);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO1.getObjetDTO())).thenReturn(null);
+    Mockito.when(objetDAO.rechercheParId(offreDTO1.getObjetDTO())).thenReturn(null);
     assertThrows(PasTrouveException.class, () -> utilisateurUCC.indiquerConfirmerUtilisateur(utilisateurDTO6));
 
 
@@ -401,6 +402,7 @@ public class UtilisateurUCCTest {
     Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet())).thenReturn(listeInteret);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO2);
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO6)).thenReturn(null);
+    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO6.getIdUtilisateur())).thenReturn(null);
     assertThrows(PasTrouveException.class, () -> utilisateurUCC.indiquerConfirmerUtilisateur(utilisateurDTO6));
 
   }
@@ -426,6 +428,7 @@ public class UtilisateurUCCTest {
     listeOffre.add(offreDTO2);
     Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO6.getIdUtilisateur())).thenReturn(listeOffre);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(null);
+    Mockito.when(objetDAO.rechercheParId(offreDTO2.getObjetDTO())).thenReturn(null);
     assertThrows(PasTrouveException.class, () -> utilisateurUCC.indiquerEmpecherUtilisateur(utilisateurDTO1));
 
   }
@@ -438,7 +441,9 @@ public class UtilisateurUCCTest {
     listeOffre.add(offreDTO2);
     Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO6.getIdUtilisateur())).thenReturn(listeOffre);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(objetDTO1);
+    Mockito.when(objetDAO.rechercheParId(offreDTO2.getObjetDTO())).thenReturn(null);
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO1)).thenReturn(null);
+    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO1.getIdUtilisateur())).thenReturn(null);
     assertThrows(PasTrouveException.class, () -> utilisateurUCC.indiquerConfirmerUtilisateur(utilisateurDTO1));
 
   }
