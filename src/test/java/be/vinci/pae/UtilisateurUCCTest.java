@@ -81,7 +81,7 @@ public class UtilisateurUCCTest {
     objetDTO2 = domaineFactory.getObjet();
     objetDTO2.setIdObjet(2);
     objetDTO2.setEtatObjet("Intéressé");
-    objetDTO2.setOffreur(utilisateurDTO6);
+    objetDTO2.setOffreur(utilisateurDTO1);
 
     offreDTO1 = domaineFactory.getOffre();
     offreDTO1.setObjetDTO(objetDTO1);
