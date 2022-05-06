@@ -26,7 +26,7 @@ public class TypeObjetDAOImpl implements TypeObjetDAO {
    */
   @Override
   public List<TypeObjetDTO> listerTypeObjet() {
-    String requetePs = "SELECT * FROM projet.types_objets;";
+    String requetePs = "SELECT * FROM projet.types_objets ORDER BY nom;";
     List<TypeObjetDTO> liste = new ArrayList<>();
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
       try (ResultSet rs = ps.executeQuery()) {

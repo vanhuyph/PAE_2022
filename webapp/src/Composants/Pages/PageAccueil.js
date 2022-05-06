@@ -340,8 +340,8 @@ const offreurEmpeche = async (data) => {
       title: "Empêchement",
       confirmButtonText: 'OK',
       allowOutsideClick: false,
-      html: `<p>L'offreur de l'objet : ${interet.objet.description} a eu un empêchement</p> 
-             <p>Nous vous invitons à le contacter ultérieurement pour avoir plus d'informations</p>`,
+      html: `<p>L'offreur de l'objet : ${interet.objet.description} a eu un empêchement.</p> 
+             <p>Nous vous invitons à le contacter ultérieurement pour avoir plus d'informations.</p>`,
     })
   })
 }
