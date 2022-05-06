@@ -188,4 +188,15 @@ public class InteretUCCTest {
     assertEquals(interetDTO, interetUCC.nonRemis(id));
   }
 
+  @Test
+  @DisplayName("Test réussi : méthode notifierReceveurEmpecher renvoie bien un intérêt.")
+  public void testNotifierReceveurEmpecherV1() {
+    interetDTO.setVueEmpecher(false);
+    interetDTO.setReceveurChoisi(true);
+    List<InteretDTO> liste = new ArrayList<>();
+    Mockito.when(interetDAO.notifierReceveurEmpecher(utilisateurDTO.getIdUtilisateur()))
+        .thenReturn(liste);
+    assertEquals(liste, interetDAO.notifierReceveurEmpecher(utilisateurDTO.getIdUtilisateur()));
+  }
+
 }

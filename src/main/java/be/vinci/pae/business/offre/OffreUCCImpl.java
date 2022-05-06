@@ -358,6 +358,7 @@ public class OffreUCCImpl implements OffreUCC {
    *
    * @param idUtilisateur : l'id de l'utilisateur à qui lister ses offres attribuées
    * @return liste : la liste de toutes ses offres attribuées
+   * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   public List<OffreDTO> voirOffreAttribuer(int idUtilisateur) {
     serviceDAL.commencerTransaction();
@@ -368,6 +369,9 @@ public class OffreUCCImpl implements OffreUCC {
       for (int i = 0; i < listeTemp.size(); i++) {
         ((Objet) listeTemp.get(i).getObjetDTO()).estVu();
         ObjetDTO objet = objetDAO.miseAJourObjet(listeTemp.get(i).getObjetDTO());
+        if (objet == null) {
+          throw new OptimisticLockException("Données périmées");
+        }
         listeTemp.get(i).setObjetDTO(objet);
         liste.add(listeTemp.get(i));
       }
