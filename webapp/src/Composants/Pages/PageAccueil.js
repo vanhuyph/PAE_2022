@@ -14,6 +14,7 @@ const PageAccueil = async () => {
   const pageDiv = document.querySelector("#page");
   const session = recupUtilisateurDonneesSession()
   let etatInscription
+  let v = 1
   let commentaire
   if (session) {
     if (session.utilisateur.etatInscription !== "Confirmé"
@@ -74,19 +75,86 @@ const PageAccueil = async () => {
           return reponse.json();
         })
       } else {
-        Swal.fire({
+        await Swal.fire({
           title: 'Vous avez été marqué comme Empêché(e)',
           confirmButtonText: 'Confirmer',
           allowOutsideClick: false,
           html: `<p>Certaines fonctionnalités vous sont désactivées tant que vous êtes Empêché(e)</p>`,
+        }).then(async (r) => {
+          let dansLocalStorage = localStorage.getItem("utilisateur")
+          let souvenir = false;
+          let uti = {...session, isAutenticated: true, empeche: true}
+          if (dansLocalStorage) {
+            souvenir = true;
+          }
+          creationDonneeSessionUtilisateur(uti, souvenir)
+          if (r.isConfirmed) {
+            await fetch(
+                API_URL + "interets/listeDesPersonnesInteresseesVue/"
+                + session.utilisateur.idUtilisateur,
+                {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: session.token
+                  },
+                }).then((reponse) => {
+              if (!reponse.ok) {
+                throw new Error(
+                    "Code d'erreur : " + reponse.status + " : "
+                    + reponse.statusText);
+              }
+              return reponse.json();
+            }).then((donnees) => {
+              v = 0
+              let liste = `<p>Pas d'intérêt</p>`
+              if (donnees.length > 0) {
+                liste = ""
+                let obj;
+                donnees.forEach((donnee) => {
+                  if (!obj) {
+                    obj = donnee.objet.description
+                    liste += `
+          <div class="personne-interesse">
+            <strong>${obj}</strong>
+            `
+                  }
+                  if (obj === donnee.objet.description) {
+                    liste += `
+              <div class="personne"> 
+                  <p class="inf-int">${donnee.utilisateur.nom}</p>
+                  <p class="inf-int">${donnee.utilisateur.prenom}</p>
+                  <p class="inf-int">${donnee.utilisateur.pseudo}</p>
+              </div> 
+              `
+                  } else {
+                    liste += `</div>`
+                    obj = donnee.objet.description
+                    liste += `
+          <div class="personne-interesse">
+            <strong>${obj}</strong>
+            <div class="personne"> 
+                  <p class="inf-int">${donnee.utilisateur.nom}</p>
+                  <p class="inf-int">${donnee.utilisateur.prenom}</p>
+                  <p class="inf-int">${donnee.utilisateur.pseudo}</p>
+              </div> 
+            `
+                  }
+                })
+                // Popup à la connexion si des personnes ont marqué un intérêt pour les objets de l'utilisateur
+                Swal.fire({
+                  title: '<strong>Liste des personnes intéressées pour vos objets</strong>',
+                  html: `${liste}`,
+                  focusConfirm: false,
+                  confirmButtonText:
+                      '<i class="fa fa-thumbs-up"></i> OK',
+                  confirmButtonAriaLabel: 'Thumbs up, great!',
+                })
+              }
+            })
+          }
         })
-        let dansLocalStorage = localStorage.getItem("utilisateur")
-        let souvenir = false;
-        let uti = {...session, isAutenticated: true, empeche: true}
-        if (dansLocalStorage) {
-          souvenir = true;
-        }
-        creationDonneeSessionUtilisateur(uti, souvenir)
+
       }
     }
   }
@@ -129,6 +197,7 @@ const PageAccueil = async () => {
         })
       }
     })
+    if(v === 1){
     fetch(
         API_URL + "interets/listeDesPersonnesInteresseesVue/"
         + session.utilisateur.idUtilisateur,
@@ -190,6 +259,7 @@ const PageAccueil = async () => {
         })
       }
     })
+    }
   }
 
   // Récupération des objets à évaluer lors de la connexion de l'utilisateur
