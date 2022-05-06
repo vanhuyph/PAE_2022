@@ -101,6 +101,7 @@ public class InteretUCCImpl implements InteretUCC {
    * @param idObjet       : l'id de l'objet
    * @param idUtilisateur : l'id de l'utilisateur
    * @return interet : l'intérêt de l'objet
+   * @throws BusinessException : est lancée si l'intérêt n'a pas pu être récupéré
    */
   @Override
   public InteretDTO interetUtilisateurPourObjet(int idObjet, int idUtilisateur) {
@@ -108,6 +109,9 @@ public class InteretUCCImpl implements InteretUCC {
     InteretDTO interet;
     try {
       interet = interetDAO.interetUtilisateurPourObjet(idObjet, idUtilisateur);
+      if (interet == null) {
+        throw new BusinessException("L'intérêt n'a pas pu être récupéré");
+      }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
