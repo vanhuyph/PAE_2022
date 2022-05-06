@@ -108,6 +108,26 @@ public class InteretUCCTest {
   }
 
   @Test
+  @DisplayName("Test raté : méthode interetUtilisateurPourObjet renvoie null car il n'a pas pu "
+      + "être récupéré.")
+  public void testInteretUtilisateurPourObjetV1() {
+    Mockito.when(interetDAO.interetUtilisateurPourObjet(objetDTO.getIdObjet(),
+        utilisateurDTO.getIdUtilisateur())).thenReturn(null);
+    assertThrows(BusinessException.class,
+        () -> interetUCC.interetUtilisateurPourObjet(objetDTO.getIdObjet(),
+            utilisateurDTO.getIdUtilisateur()));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode interetUtilisateurPourObjet renvoie bien un intérêt.")
+  public void testInteretUtilisateurPourObjetV2() {
+    Mockito.when(interetDAO.interetUtilisateurPourObjet(objetDTO.getIdObjet(),
+        utilisateurDTO.getIdUtilisateur())).thenReturn(interetDTO);
+    assertEquals(interetDTO, interetUCC.interetUtilisateurPourObjet(objetDTO.getIdObjet(),
+        utilisateurDTO.getIdUtilisateur()));
+  }
+
+  @Test
   @DisplayName("Test réussi : méthode listeDesPersonnesInteressees renvoie bien une liste.")
   public void testlisteDesPersonnesInteresseesV1() {
     List<InteretDTO> liste = new ArrayList<>();
@@ -166,6 +186,17 @@ public class InteretUCCTest {
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(interetDTO.getUtilisateur()))
         .thenReturn(interetDTO.getUtilisateur());
     assertEquals(interetDTO, interetUCC.nonRemis(id));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode notifierReceveurEmpecher renvoie bien un intérêt.")
+  public void testNotifierReceveurEmpecherV1() {
+    interetDTO.setVueEmpecher(false);
+    interetDTO.setReceveurChoisi(true);
+    List<InteretDTO> liste = new ArrayList<>();
+    Mockito.when(interetDAO.notifierReceveurEmpecher(utilisateurDTO.getIdUtilisateur()))
+        .thenReturn(liste);
+    assertEquals(liste, interetDAO.notifierReceveurEmpecher(utilisateurDTO.getIdUtilisateur()));
   }
 
 }

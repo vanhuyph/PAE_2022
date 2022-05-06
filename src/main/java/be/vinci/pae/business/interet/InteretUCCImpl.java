@@ -40,11 +40,6 @@ public class InteretUCCImpl implements InteretUCC {
     serviceDAL.commencerTransaction();
     InteretDTO interet;
     try {
-      // Date date = interetDTO.getDateRdv();
-      // Date now = new Date();
-      // if (date.before(now)) {
-      //    throw new BusinessException("La date de rendez-vous ne peut pas être dans le passé");
-      //  }
       if (!interetDTO.getUtilisateur().getGsm().isBlank()) {
         UtilisateurDTO utilisateur = utilisateurDAO.modifierGsm(interetDTO.getUtilisateur());
         if (utilisateur == null) {
@@ -100,7 +95,8 @@ public class InteretUCCImpl implements InteretUCC {
    *
    * @param idObjet       : l'id de l'objet
    * @param idUtilisateur : l'id de l'utilisateur
-   * @return interet : l'interet trouvé, sinon null
+   * @return interet : l'intérêt de l'objet
+   * @throws BusinessException : est lancée si l'intérêt n'a pas pu être récupéré
    */
   @Override
   public InteretDTO interetUtilisateurPourObjet(int idObjet, int idUtilisateur) {
@@ -108,6 +104,9 @@ public class InteretUCCImpl implements InteretUCC {
     InteretDTO interet;
     try {
       interet = interetDAO.interetUtilisateurPourObjet(idObjet, idUtilisateur);
+      if (interet == null) {
+        throw new BusinessException("L'intérêt n'a pas pu être récupéré");
+      }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
@@ -145,7 +144,8 @@ public class InteretUCCImpl implements InteretUCC {
    *
    * @param idOffreur : l'id de l'offreur d'un objet dont les personnes sont intéressées
    * @return liste : la liste des intérêts non-vues
-   * @throws BusinessException : est lancée si l'id de l'objet est incorrect
+   * @throws BusinessException       : est lancée si l'id de l'objet est incorrect
+   * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
   public List<InteretDTO> listeDesPersonnesInteresseesVue(int idOffreur) {
@@ -158,8 +158,11 @@ public class InteretUCCImpl implements InteretUCC {
       }
       listeTemp = interetDAO.listeDesPersonnesInteresseesVue(idOffreur);
       for (int i = 0; i < listeTemp.size(); i++) {
-        listeTemp.get(i).setVue(true);
+        ((Interet) listeTemp.get(i)).estVu();
         InteretDTO interetDTO = interetDAO.miseAJourInteret(listeTemp.get(i));
+        if (interetDTO == null) {
+          throw new OptimisticLockException("Données de l'interet périmées");
+        }
         liste.add(interetDTO);
       }
     } catch (Exception e) {
@@ -175,7 +178,8 @@ public class InteretUCCImpl implements InteretUCC {
    *
    * @param interet : l'intérêt de la personne
    * @return interetDTO : interetDTO
-   * @throws BusinessException       : est lancée si le receveur n'a pas pu être indiqué
+   * @throws BusinessException       : est lancée si le receveur n'a pas pu être indiqué ou si
+   *                                 l'interet est null
    * @throws OptimisticLockException : est lancée si les données sont périmées
    */
   @Override
@@ -183,6 +187,9 @@ public class InteretUCCImpl implements InteretUCC {
     serviceDAL.commencerTransaction();
     InteretDTO interetDTO;
     try {
+      if (interet == null) {
+        throw new BusinessException("L'interet est null");
+      }
       ((Interet) interet).indiquerReceveur();
       interetDTO = interetDAO.miseAJourInteret(interet);
       if (interetDTO == null) {
@@ -234,6 +241,41 @@ public class InteretUCCImpl implements InteretUCC {
     }
     serviceDAL.commettreTransaction();
     return interetDTO;
+  }
+
+  /**
+   * Notifie le receveur actuel de l'objet que l'offreur a eu un empêchement.
+   *
+   * @param idUtilisateur : l'id du receveur qui va recevoir la notification
+   * @return liste : la liste des notifications d'empêchements
+   * @throws BusinessException       : est lancée si l'id de l'utilisateur est incorrect ou si
+   *                                 l'utilisateur n'est pas le receveur actuel
+   * @throws OptimisticLockException : est lancée si les données sont périmées
+   */
+  @Override
+  public List<InteretDTO> notifierReceveurEmpecher(int idUtilisateur) {
+    serviceDAL.commencerTransaction();
+    List<InteretDTO> liste;
+    try {
+      if (idUtilisateur <= 0) {
+        throw new BusinessException("L'id de l'utilisateur est incorrect");
+      }
+      liste = interetDAO.notifierReceveurEmpecher(idUtilisateur);
+      if (liste != null) {
+        for (InteretDTO interet : liste) {
+          ((Interet) interet).estVuEmpecher();
+          interet = interetDAO.miseAJourInteret(interet);
+          if (interet == null) {
+            throw new OptimisticLockException("Données périmées");
+          }
+        }
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return liste;
   }
 
 }

@@ -1,7 +1,13 @@
 package be.vinci.pae.business.utilisateur;
 
 import be.vinci.pae.business.adresse.AdresseDTO;
+import be.vinci.pae.business.objet.ObjetDTO;
+import be.vinci.pae.business.offre.Offre;
+import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
+import be.vinci.pae.donnees.dao.interet.InteretDAO;
+import be.vinci.pae.donnees.dao.objet.ObjetDAO;
+import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.donnees.services.ServiceDAL;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
@@ -19,7 +25,13 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
   @Inject
   AdresseDAO adresseDAO;
   @Inject
+  OffreDAO offreDAO;
+  @Inject
   ServiceDAL serviceDAL;
+  @Inject
+  ObjetDAO objetDAO;
+  @Inject
+  InteretDAO interetDAO;
 
   /**
    * Vérifie si le mot de passe de l'utilisateur est correct à sa connexion.
@@ -216,6 +228,10 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     try {
       liste = utilisateurDAO.listerUtilisateursEtatsInscriptions(
           etatInscription);
+      if (etatInscription.equals("Confirmé")) {
+        liste.addAll(utilisateurDAO.listerUtilisateursEtatsInscriptions("Empêché"));
+
+      }
     } catch (Exception e) {
       serviceDAL.retourEnArriereTransaction();
       throw e;
@@ -253,6 +269,102 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
         }
         throw new OptimisticLockException("Données de l'adresse sont périmées");
       }
+      utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
+      if (utilisateur == null) {
+        if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {
+          throw new PasTrouveException("L'utilisateur n'existe pas");
+        }
+        throw new OptimisticLockException("Données de l'utilisateur sont périmées");
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return utilisateur;
+  }
+
+  /**
+   * Passe l'état de l'utilisateur de "Empêché" à "Confirmé".
+   *
+   * @param utilisateurDTO : l'utilisateur dont on met à jour l'état
+   * @return utilisateurDTO : renvoit l'utilisateur avec son état changé
+   * @throws BusinessException       : est lancée si l'état spécifié n'est pas accepté
+   * @throws PasTrouveException      : est lancée si l'objet ou l'utilisateur ou l'offre n'existent
+   *                                 pas
+   * @throws OptimisticLockException : est lancée si les données sont périmées
+   */
+  @Override
+  public UtilisateurDTO indiquerConfirmerUtilisateur(UtilisateurDTO utilisateurDTO) {
+    serviceDAL.commencerTransaction();
+    UtilisateurDTO utilisateur;
+    try {
+      List<OffreDTO> liste;
+      liste = offreDAO.mesOffresEmpecher(utilisateurDTO.getIdUtilisateur());
+      for (OffreDTO offre : liste) {
+        if (interetDAO.listeDesPersonnesInteressees(offre.getObjetDTO()
+            .getIdObjet()).isEmpty()) {
+          ((Offre) offre).offrirObjet();
+        } else {
+          ((Offre) offre).interesseObjet();
+        }
+        ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
+        if (objet == null) {
+          ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
+          if (objetVerif == null) {
+            throw new PasTrouveException("L'objet n'existe pas");
+          }
+          throw new OptimisticLockException("Données périmées");
+        }
+      }
+      ((Utilisateur) utilisateurDTO).confirmerUtilisateur();
+      utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
+      if (utilisateur == null) {
+        if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {
+          throw new PasTrouveException("L'utilisateur n'existe pas");
+        }
+        throw new OptimisticLockException("Données de l'utilisateur sont périmées");
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return utilisateur;
+  }
+
+  /**
+   * Passe l'état de l'utilisateur de "Confirmé" à "Empêché".
+   *
+   * @param utilisateurDTO : l'utilisateur dont on met à jour l'état
+   * @return utilisateurDTO : renvoit l'utilisateur avec son état changé
+   * @throws BusinessException       : est lancée si l'état spécifié n'est pas accepté
+   * @throws PasTrouveException      : est lancée si L'objet ou l'utilisateur ou l'offre n'existent
+   *                                 pas
+   * @throws OptimisticLockException : est lancée si les données sont périmées
+   */
+  @Override
+  public UtilisateurDTO indiquerEmpecherUtilisateur(UtilisateurDTO utilisateurDTO) {
+    serviceDAL.commencerTransaction();
+    UtilisateurDTO utilisateur;
+    try {
+      List<OffreDTO> liste;
+      liste = offreDAO.mesOffresAEmpecher(utilisateurDTO.getIdUtilisateur());
+      for (OffreDTO offre : liste) {
+        if (!offre.getObjetDTO().getEtatObjet().equals("Annulé")
+            && !offre.getObjetDTO().getEtatObjet().equals("Confirmé")) {
+          ((Offre) offre).empecherOffre();
+          ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
+          if (objet == null) {
+            ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
+            if (objetVerif == null) {
+              throw new PasTrouveException("L'objet n'existe pas");
+            }
+            throw new OptimisticLockException("Données périmées");
+          }
+        }
+      }
+      ((Utilisateur) utilisateurDTO).empecherUtilisateur();
       utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
       if (utilisateur == null) {
         if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {

@@ -12,10 +12,14 @@ const PageMesOffres = () => {
     pageDiv.innerHTML = `<div class="offres">
     <h2>Mes offres</h2>
     <div id="mesOffres"></div>
-    <h2>Mes offres avec receveur</h2>
+    <h2>Mes offres intéréssées</h2>
+    <div id="mesOffresInte"></div>
+    <h2>Mes offres avec receveur choisi</h2>
     <div id="mesOffresReceveur"></div>
     <h2>Mes offres annulées</h2>
     <div id="mesOffresAnnulees"></div>
+    <h2>Offres reçus</h2>
+    <div id="offresRecu"></div>
   </div>`;
     const id = session.utilisateur.idUtilisateur;
     fetch("/api/offres/mesOffres/" + id, {
@@ -31,22 +35,99 @@ const PageMesOffres = () => {
       }
       return reponse.json();
     }).then((data) => surListeMesOffres(data))
+    fetch(API_URL+"offres/objetsRecus/"+id,{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": session.token,
+      },
+    }).then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+      }
+      return reponse.json();
+    }).then((data) => surListeOffresRecus(data))
   }
 };
+
+const surListeOffresRecus = (donnees) => {
+  const offresRecu = document.getElementById("offresRecu");
+  let listeRecus = `<div class="offres-recu">`;
+  donnees.forEach((offre) => {
+    listeRecus += `
+          <div class="mon-offre">
+            <div>
+              <input id="id-offre" type="hidden" value="${offre.idOffre}">
+              <input id="id-objet" type="hidden" value="${offre.objetDTO.idObjet}">
+              <input id="etat-objet" type="hidden" value="${offre.objetDTO.etatObjet}">
+              <input id="type-objet" type="hidden" value="${offre.objetDTO.typeObjet.idType}">
+              <input id="desc-objet" type="hidden" value="${offre.objetDTO.description}">
+              <input id="offreur-objet" type="hidden" value="${offre.objetDTO.offreur.idUtilisateur}">
+              <input id="photo-objet" type="hidden" value="${offre.objetDTO.photo}">
+              <input id="version-objet" type="hidden" value="${offre.objetDTO.version}">
+              <input id="vue-objet" type="hidden" value="${offre.objetDTO.vue}">
+            </div>
+              <div class="ui three column grid">
+                <div class="row">
+                  <div class="column">
+                    <img src="/api/offres/photos/${offre.objetDTO.photo}" height="170px">
+                  </div>
+                  <div class="column descri">
+                    <p>${offre.objetDTO.description}</p>
+                  </div>
+                  <div class="column actions">
+                  </div>
+                </div>
+              </div>
+            </div>`
+  })
+  listeRecus += `</div>`
+  offresRecu.innerHTML = listeRecus;
+}
 
 // Affichage des listes d'offres, des listes d'offres avec receveur et des listes d'offres annulées
 const surListeMesOffres = (data) => {
   let session = recupUtilisateurDonneesSession()
   const mesOffres = document.getElementById("mesOffres");
+  const mesOffresInt = document.getElementById("mesOffresInte");
   const mesOffresReceveur = document.getElementById("mesOffresReceveur");
   const mesOffresAnnulees = document.getElementById("mesOffresAnnulees");
   let listeMesOffres = `<div class="mes-offres">`;
+  let listeMesOffresInteresse = `<div class="mes-offres-int">`;
   let listeMesOffresConfirmees = `<div class="mes-offres-conf">`;
   let listeMesOffresAnnulees = `<div class="mes-offres-ann">`;
   data.forEach((offre) => {
-    if (offre.objetDTO.etatObjet === "Offert" || offre.objetDTO.etatObjet
-        === "Intéressé") {
+    if(offre.objetDTO.etatObjet === "Offert"){
       listeMesOffres += `
+            <div class="mon-offre">
+            <div>
+              <input id="id-offre" type="hidden" value="${offre.idOffre}">
+              <input id="id-objet" type="hidden" value="${offre.objetDTO.idObjet}">
+              <input id="etat-objet" type="hidden" value="${offre.objetDTO.etatObjet}">
+              <input id="type-objet" type="hidden" value="${offre.objetDTO.typeObjet.idType}">
+              <input id="desc-objet" type="hidden" value="${offre.objetDTO.description}">
+              <input id="offreur-objet" type="hidden" value="${offre.objetDTO.offreur.idUtilisateur}">
+              <input id="photo-objet" type="hidden" value="${offre.objetDTO.photo}">
+              <input id="version-objet" type="hidden" value="${offre.objetDTO.version}">
+              <input id="vue-objet" type="hidden" value="${offre.objetDTO.vue}">
+            </div>
+              <div class="ui three column grid">
+                <div class="row">
+                  <div class="column">
+                    <img src="/api/offres/photos/${offre.objetDTO.photo}" height="170px">
+                  </div>
+                  <div class="column descri">
+                    <p>${offre.objetDTO.description}</p>
+                  </div>
+                  <div class="column actions">
+                    <button id="annuler-offre" class="ui basic red button">Annuler mon offre</button>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+    }else if (offre.objetDTO.etatObjet === "Intéressé") {
+      listeMesOffresInteresse += `
             <div class="mon-offre">
             <div>
               <input id="id-offre" type="hidden" value="${offre.idOffre}">
@@ -106,7 +187,8 @@ const surListeMesOffres = (data) => {
               </div>
             </div>
             `;
-    } else if (offre.objetDTO.etatObjet === "Annulé") {
+    } else if (offre.objetDTO.etatObjet === "Annulé" || offre.objetDTO.etatObjet
+        === "Empêché") {
       listeMesOffresAnnulees += ` 
               <div class="mon-offre">
               <div>
@@ -138,11 +220,15 @@ const surListeMesOffres = (data) => {
     }
   })
   listeMesOffres += `</div>`;
+  listeMesOffresInteresse += `</div>`;
   listeMesOffresConfirmees += `</div>`;
   listeMesOffresAnnulees += `</div>`;
   mesOffres.innerHTML = listeMesOffres;
+  mesOffresInt.innerHTML = listeMesOffresInteresse;
   mesOffresReceveur.innerHTML = listeMesOffresConfirmees;
   mesOffresAnnulees.innerHTML = listeMesOffresAnnulees;
+
+
 
   document.querySelectorAll(".mon-offre").forEach(offre => {
     let idObj = offre.querySelector("#id-objet").value
@@ -251,6 +337,14 @@ const surListeMesOffres = (data) => {
             Swal.close()
           })
         }
+        if (session.utilisateur.etatInscription === "Empêché") {
+          offre.querySelector("#liste-interessees").classList.add("disabled")
+          offre.querySelector("#offrir").classList.add("disabled")
+          offre.querySelector("#liste-interessees").classList.add("disabled")
+          document.querySelector("#liste-interessees-non-remis").classList.add(
+              "disabled")
+          document.querySelector("#offrir-non-remis").classList.add("disabled")
+        }
       })
     }
   })
@@ -299,7 +393,7 @@ const donnerObjet = (offre) => {
     }
     return reponse.json();
   })
-  .then((donnee) => {
+  .then(() => {
     Redirect("/mesOffres")
   })
 }
@@ -321,8 +415,6 @@ const nonRemis = (objet) => {
       );
     }
     return reponse.json();
-  })
-  .then((donnee) => {
   })
 }
 
@@ -370,9 +462,12 @@ const listeInteresse = (objet) => {
   })
   .then((donnees) => {
     let listeInteret = `<div class="interets">`;
-    donnees.forEach((interet) => {
-      let date = new Date(interet.dateRdv).toLocaleDateString("fr-BE")
-      listeInteret += `
+    if (donnees.length === 0) {
+      listeInteret += `<p>Personne n\'a encore marqué d\'intérêt</p>`;
+    } else {
+      donnees.forEach((interet) => {
+        let date = new Date(interet.dateRdv).toLocaleDateString("fr-BE")
+        listeInteret += `
               <div class="interet">
                 <input type="hidden" id="ut" value="${interet.utilisateur.idUtilisateur}">
                 <input type="hidden" id="version" value="${interet.version}">
@@ -383,7 +478,8 @@ const listeInteresse = (objet) => {
                 <p>${interet.utilisateur.pseudo}</p>
                 <p>Horaire :  ${date}</p>
               </div>`
-    })
+      })
+    }
     listeInteret += `</div>`
 
     let intReceveur = {
@@ -464,9 +560,12 @@ const listeInteresseNonRemis = (objet) => {
   })
   .then((donnees) => {
     let listeInteret = `<div class="interets">`;
-    donnees.forEach((interet) => {
-      let date = new Date(interet.dateRdv).toLocaleDateString("fr-BE")
-      listeInteret += `
+    if (donnees.length === 0) {
+      listeInteret += `<p>Personne n\'a encore marqué d\'intérêt</p>`;
+    } else {
+      donnees.forEach((interet) => {
+        let date = new Date(interet.dateRdv).toLocaleDateString("fr-BE")
+        listeInteret += `
               <div class="interet">
                 <input type="hidden" id="ut" value="${interet.utilisateur.idUtilisateur}">
                 <input type="hidden" id="version" value="${interet.version}">
@@ -477,7 +576,8 @@ const listeInteresseNonRemis = (objet) => {
                 <p>${interet.utilisateur.pseudo}</p>
                 <p>Horaire :  ${date}</p>
               </div>`
-    })
+      })
+    }
     listeInteret += `</div>`
 
     let intReceveur = {
@@ -511,7 +611,7 @@ const listeInteresseNonRemis = (objet) => {
                 + reponse.statusText);
           }
           return reponse.json();
-        }).then((donnee) => {
+        }).then(() => {
           nonRemis(objet)
           Redirect("/mesOffres")
         })

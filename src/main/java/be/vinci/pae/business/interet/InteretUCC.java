@@ -18,4 +18,6 @@ public interface InteretUCC {
 
   InteretDTO nonRemis(int idObjet);
 
+  List<InteretDTO> notifierReceveurEmpecher(int idUtilisateur);
+
 }

@@ -120,7 +120,7 @@ public class ObjetImpl implements Objet {
 
   @Override
   public boolean verifierEtatPourModificationOffre() {
-    return this.etatObjet != null && !this.etatObjet.equals("Annulé") && !this.etatObjet.equals(
+    return this.etatObjet != null && !this.etatObjet.equals("Confirmé") && !this.etatObjet.equals(
         "Donné") && !this.etatObjet.equals("Evalué");
   }
 

@@ -25,6 +25,8 @@ public class InteretImpl implements Interet {
   private boolean receveurChoisi;
   @JsonView(Vues.Internal.class)
   private Boolean venuChercher;
+  @JsonView(Vues.Public.class)
+  private boolean vueEmpecher;
 
   public UtilisateurDTO getUtilisateur() {
     return utilisateur;
@@ -82,6 +84,14 @@ public class InteretImpl implements Interet {
     this.venuChercher = venuChercher;
   }
 
+  public boolean isVueEmpecher() {
+    return vueEmpecher;
+  }
+
+  public void setVueEmpecher(boolean vueEmpecher) {
+    this.vueEmpecher = vueEmpecher;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -119,6 +129,16 @@ public class InteretImpl implements Interet {
   @Override
   public void venuChercher() {
     this.setVenuChercher(true);
+  }
+
+  @Override
+  public void estVu() {
+    this.setVue(true);
+  }
+
+  @Override
+  public void estVuEmpecher() {
+    this.setVueEmpecher(true);
   }
 
   @Override

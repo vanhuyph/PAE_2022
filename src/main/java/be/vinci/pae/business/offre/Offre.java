@@ -15,4 +15,6 @@ public interface Offre extends OffreDTO {
 
   void donnerObjet();
 
+  void empecherOffre();
+
 }

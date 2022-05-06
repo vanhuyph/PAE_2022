@@ -284,6 +284,10 @@ const surDetailObjet = async (offre) => {
       .catch(err => surErreur(err))
     }
   })
+
+  if (session.utilisateur.etatInscription === "Empêché") {
+    document.querySelector("#marquer-interet").classList.add("disabled")
+  }
 }
 
 const surDetailObjetProprio = async (offre) => {
@@ -367,7 +371,7 @@ const surDetailObjetProprio = async (offre) => {
             <p>${nbInteressees}</p>
           </div>
           <div class="column">
-            <h4>Date</h4>
+            <h4>Date de l'offre</h4>
             <p>${dateOffre}</p>
           </div>
         </div>
@@ -408,8 +412,10 @@ const surDetailObjetProprio = async (offre) => {
   `
   pageDiv.innerHTML = offrePage
   if (offre.objetDTO.etatObjet === "Annulé") {
-    document.querySelector("#modifier-offre").classList.add("disabled");
     document.querySelector("#annuler-offre").classList.add("disabled");
+  }
+  if (session.utilisateur.etatInscription === "Empêché") {
+    document.querySelector("#modifier-offre").classList.add("disabled");
   }
   document.querySelector("#modifier-offre").addEventListener("click", () => {
     surDetailObjetProprioModifier(offre)
@@ -522,7 +528,7 @@ const surDetailObjetProprioModifier = async (offre) => {
             <p>${nbInteressees}</p>
           </div>
           <div class="column">
-            <h4>Date</h4>
+            <h4>Date de l'offre</h4>
             <p>${dateOffre}</p>
           </div>
         </div>
@@ -639,6 +645,20 @@ const envoiModification = async (offre) => {
       return reponse.json()
     })
     .then((donnee) => {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Vous avez bien modifié les informations de votre objet',
+        showConfirmButton: false,
+        toast: true,
+        timer: 3000,
+        showClass: {
+          popup: 'animate__animated animate__fadeInRight'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutRight'
+        }
+      })
       surDetailObjetProprio(donnee)
     })
   } else {

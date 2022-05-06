@@ -1,4 +1,5 @@
 import {
+  creationDonneeSessionUtilisateur,
   enleverDonneeSession,
   recupUtilisateurDonneesSession
 } from "../../utilitaires/session";
@@ -9,14 +10,14 @@ import rechecheIcon from "../../img/search.svg";
 import Swal from 'sweetalert2'
 
 // Page d'accueil
-const PageAccueil = () => {
+const PageAccueil = async () => {
   const pageDiv = document.querySelector("#page");
   const session = recupUtilisateurDonneesSession()
   let etatInscription
   let commentaire
-
   if (session) {
-    if (session.utilisateur.etatInscription !== "Confirmé") {
+    if (session.utilisateur.etatInscription !== "Confirmé"
+        && session.utilisateur.etatInscription !== "Empêché") {
       etatInscription = session.utilisateur.etatInscription
       if (session.utilisateur.etatInscription === "En attente") {
         commentaire = "Vous pourrez accéder aux fonctionnalités lorsqu'un administrateur aura confirmé votre inscription."
@@ -24,7 +25,72 @@ const PageAccueil = () => {
         commentaire = session.utilisateur.commentaire
       }
     }
+    if (session.utilisateur.etatInscription === "Empêché" && !session.empeche) {
+      const {value: reponse} = await Swal.fire({
+        title: 'Vous avez été marqué comme Empêché(e)',
+        confirmButtonText: 'Confirmer',
+        input: 'select',
+        inputOptions: {
+          oui: 'Oui',
+          non: 'Non',
+        },
+        inputAttributes: {
+          required: true,
+        },
+        inputPlaceholder: 'Sélectionner une réponse',
+        validationMessage: 'Nous avons besoin d\'une réponse',
+        allowOutsideClick: false,
+        html: `<p>Êtes-vous toujours Empêché(e) ? :</p>`,
+      })
+      // Passe l'état de l'utilisateur de "Empêché" à "Confirmé"
+      if (reponse === "non") {
+        await changerEtatUtilisateur(session.utilisateur.idUtilisateur)
+        let dansLocalStorage = localStorage.getItem("utilisateur")
+        let souvenir = false;
+        let utilisateur;
+        if (!dansLocalStorage) {
+          session.utilisateur.etatInscription = "Confirmé"
+          utilisateur = {...session, isAutenticated: true}
+        } else {
+          souvenir = true;
+          let ut = JSON.parse(localStorage.getItem("utilisateur"))
+          ut.utilisateur.etatInscription = "Confirmé"
+          utilisateur = {...ut, isAutenticated: true}
+        }
+        creationDonneeSessionUtilisateur(utilisateur, souvenir)
+        fetch(API_URL + "utilisateurs/indiquerConfirmerUtilisateur/"
+            + session.utilisateur.idUtilisateur, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token
+          },
+        }).then((reponse) => {
+          if (!reponse.ok) {
+            throw new Error(
+                "Code d'erreur : " + reponse.status + " : "
+                + reponse.statusText);
+          }
+          return reponse.json();
+        })
+      } else {
+        Swal.fire({
+          title: 'Vous avez été marqué comme Empêché(e)',
+          confirmButtonText: 'Confirmer',
+          allowOutsideClick: false,
+          html: `<p>Certaines fonctionnalités vous sont désactivées tant que vous êtes Empêché(e)</p>`,
+        })
+        let dansLocalStorage = localStorage.getItem("utilisateur")
+        let souvenir = false;
+        let uti = {...session, isAutenticated: true, empeche: true}
+        if (dansLocalStorage) {
+          souvenir = true;
+        }
+        creationDonneeSessionUtilisateur(uti, souvenir)
+      }
+    }
   }
+
   // Lors de la connexion, liste les offres attribuées à l'utilisateur
   if (session) {
     fetch(
@@ -145,6 +211,23 @@ const PageAccueil = () => {
     }).then((data) => objetsAEvaluer(data, session))
   }
 
+  if (session) {
+    fetch(API_URL + "interets/notifierReceveurEmpecher/"
+        + session.utilisateur.idUtilisateur, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token
+      },
+    }).then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+      }
+      return reponse.json();
+    }).then((data) => offreurEmpeche(data))
+  }
+
   let pageAccueil = `
   <div class="conteneur-modal">
     <div class="overlay declencheur-modal"></div>
@@ -171,7 +254,6 @@ const PageAccueil = () => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-
     },
   }).then((reponse) => {
     if (!reponse.ok) {
@@ -181,7 +263,8 @@ const PageAccueil = () => {
     return reponse.json();
   }).then((data) => surListeOffresRecentes(data))
   if (session) {
-    if (session.utilisateur.etatInscription !== "Confirmé") {
+    if (session.utilisateur.etatInscription !== "Confirmé"
+        && session.utilisateur.etatInscription !== "Empêché") {
       conteneurModal.classList.add('active')
       enleverDonneeSession()
       Navbar()
@@ -250,6 +333,43 @@ const PageAccueil = () => {
   }))
 };
 
+// Affichage de la notification en cas d'offreur empêché
+const offreurEmpeche = async (data) => {
+  data.forEach((interet) => {
+    Swal.fire({
+      title: "Empêchement",
+      confirmButtonText: 'OK',
+      allowOutsideClick: false,
+      html: `<p>L'offreur de l'objet : ${interet.objet.description} a eu un empêchement</p> 
+             <p>Nous vous invitons à le contacter ultérieurement pour avoir plus d'informations</p>`,
+    })
+  })
+}
+
+// Change l'état d'un utilisateur
+const changerEtatUtilisateur = async (idUtilisateur) => {
+  let session = recupUtilisateurDonneesSession()
+  let etatUtilisateurJson = {
+    etatUtilisateur: "Confirmé"
+  }
+  fetch(API_URL + "utilisateurs/indiquerEmpecherUtilisateur/" + idUtilisateur, {
+    method: "PUT",
+    body: JSON.stringify(etatUtilisateurJson),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token
+    },
+  })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+    return reponse.json();
+  })
+}
+
 // Affichage des objets à évaluer
 const objetsAEvaluer = (data, session) => {
   let note;
@@ -268,7 +388,7 @@ const objetsAEvaluer = (data, session) => {
       inputAttributes: {
         required: true,
       },
-      inputPlaceholder: 'Sélectionnez une réponse',
+      inputPlaceholder: 'Sélectionner une réponse',
       validationMessage: 'Nous avons besoin d\'une réponse',
       allowOutsideClick: false,
       html: `<p>Voulez-vous évaluer l'objet suivant :</p> 
@@ -297,7 +417,7 @@ const objetsAEvaluer = (data, session) => {
           4: '4',
           5: '5',
         },
-        inputPlaceholder: 'Sélectionnez une note',
+        inputPlaceholder: 'Sélectionner une note',
         validationMessage: 'Nous avons besoin d\'une note',
         currentProgressStep: 0
       })

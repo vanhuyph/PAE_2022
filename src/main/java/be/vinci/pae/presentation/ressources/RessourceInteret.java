@@ -169,4 +169,23 @@ public class RessourceInteret {
     return interetDTO;
   }
 
+  /**
+   * Permet de notifier le receveur actuel de l'objet que l'offreur a eu un empêchement.
+   *
+   * @param idUtilisateur : l'id du receveur qui va recevoir la notification
+   * @return liste : la liste des notifications d'empêchements
+   * @throws PresentationException : est lancée si l'id de l'utilisateur est incorrect
+   */
+  @GET
+  @Path("/notifierReceveurEmpecher/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<InteretDTO> notifierReceveurEmpecher(@PathParam("id") int idUtilisateur) {
+    if (idUtilisateur <= 0) {
+      throw new PresentationException("L'id de l'utilisateur est incorrect", Status.BAD_REQUEST);
+    }
+    return interetUCC.notifierReceveurEmpecher(idUtilisateur);
+  }
+
 }

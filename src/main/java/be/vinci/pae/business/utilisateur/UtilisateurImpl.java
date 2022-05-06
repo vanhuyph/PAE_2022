@@ -272,6 +272,20 @@ public class UtilisateurImpl implements Utilisateur {
   }
 
   @Override
+  public void confirmerUtilisateur() {
+    if (this.getEtatInscription().equals("Empêché")) {
+      this.setEtatInscription("Confirmé");
+    }
+  }
+
+  @Override
+  public void empecherUtilisateur() {
+    if (this.getEtatInscription().equals("Confirmé")) {
+      this.setEtatInscription("Empêché");
+    }
+  }
+
+  @Override
   public String toString() {
     return "UtilisateurImpl{"
         + "idUtilisateur=" + idUtilisateur
