@@ -209,15 +209,12 @@ const surListeConfirme = async (donnees) => {
   for (const utilisateur of donnees) {
     liste += `
     <div class="utilisateur">
-      <div>        
-        <div class="est-empeche">
+    <div class="est-empeche">
           <div class="ui buttons">
             <button class="ui positive button" id="buttonUtilisateurEmpeche">Est empêché</button>
           </div>
           <input id="etat-ut" type="hidden" value="${utilisateur.etatInscription}">
         </div>
-      </div>
-           
       <div class="admin-membre">
         <div class="utilisateur-nom-prenom">
           <input id="id-ut" type="hidden" value="${utilisateur.idUtilisateur}">
@@ -256,9 +253,13 @@ const surListeConfirme = async (donnees) => {
     let etatUtilisateur = u.querySelector("#etat-ut").value
     if (etatUtilisateur === "Confirmé") {
       boutonEmpeche.textContent = "Est empêché"
+      boutonEmpeche.classList.add("positive")
+      boutonEmpeche.classList.remove("yellow")
     }
     if (etatUtilisateur === "Empêché") {
       boutonEmpeche.textContent = "Est de retour"
+      boutonEmpeche.classList.remove("positive")
+      boutonEmpeche.classList.add("yellow")
     }
 
     boutonEmpeche.addEventListener("click", () => {

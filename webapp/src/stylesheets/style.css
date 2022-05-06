@@ -13,7 +13,7 @@ body {
 }
 
 main {
-  min-height: 590px;
+  min-height: 64.2vh;
   margin-top: 20px;
 }
 
@@ -249,7 +249,7 @@ main {
 
 /*Offres*/
 .offres {
-  margin: 25px auto;
+  margin: 0 auto;
   width: 60%;
 }
 
@@ -835,9 +835,16 @@ Fin Message de bienvenue*/
   text-align: left;
 }
 
+.est-empeche{
+  display: flex;
+  justify-content: left;
+}
+
 footer {
   margin-top: 68px;
-  height: 15%;
+}
+.footer{
+  min-height: 19vh;
 }
 
 @media screen and (max-width: 340px) {
