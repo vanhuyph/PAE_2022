@@ -363,9 +363,11 @@ public class UtilisateurUCCTest {
     listeOffre.add(offreDTO1);
 
     List<InteretDTO> listeInteret = new ArrayList<>();
-    Mockito.when(offreDAO.mesOffresEmpecher(utilisateurDTO6.getIdUtilisateur())).thenReturn(listeOffre);
+    Mockito.when(offreDAO.mesOffresEmpecher(utilisateurDTO6.getIdUtilisateur()))
+        .thenReturn(listeOffre);
 
-    Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet())).thenReturn(listeInteret);
+    Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet()))
+        .thenReturn(listeInteret);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO2);
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO6)).thenReturn(utilisateurDTO1);
     assertEquals(utilisateurDTO1, utilisateurUCC.indiquerConfirmerUtilisateur(utilisateurDTO6));
@@ -379,12 +381,15 @@ public class UtilisateurUCCTest {
     listeOffre.add(offreDTO1);
 
     List<InteretDTO> listeInteret = new ArrayList<>();
-    Mockito.when(offreDAO.mesOffresEmpecher(utilisateurDTO6.getIdUtilisateur())).thenReturn(listeOffre);
+    Mockito.when(offreDAO.mesOffresEmpecher(utilisateurDTO6.getIdUtilisateur()))
+        .thenReturn(listeOffre);
 
-    Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet())).thenReturn(listeInteret);
+    Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet()))
+        .thenReturn(listeInteret);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO1.getObjetDTO())).thenReturn(null);
     Mockito.when(objetDAO.rechercheParId(offreDTO1.getObjetDTO())).thenReturn(null);
-    assertThrows(PasTrouveException.class, () -> utilisateurUCC.indiquerConfirmerUtilisateur(utilisateurDTO6));
+    assertThrows(PasTrouveException.class, () -> utilisateurUCC
+        .indiquerConfirmerUtilisateur(utilisateurDTO6));
 
 
   }
@@ -399,11 +404,14 @@ public class UtilisateurUCCTest {
     List<InteretDTO> listeInteret = new ArrayList<>();
     Mockito.when(offreDAO.mesOffresEmpecher(utilisateurDTO6.getIdUtilisateur())).thenReturn(listeOffre);
 
-    Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet())).thenReturn(listeInteret);
+    Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet()))
+        .thenReturn(listeInteret);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO2);
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO6)).thenReturn(null);
-    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO6.getIdUtilisateur())).thenReturn(null);
-    assertThrows(PasTrouveException.class, () -> utilisateurUCC.indiquerConfirmerUtilisateur(utilisateurDTO6));
+    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO6
+        .getIdUtilisateur())).thenReturn(null);
+    assertThrows(PasTrouveException.class, () -> utilisateurUCC
+        .indiquerConfirmerUtilisateur(utilisateurDTO6));
 
   }
 
@@ -413,7 +421,8 @@ public class UtilisateurUCCTest {
   public void testIndiquerEmpecherUtilisateurV1() {
     List<OffreDTO> listeOffre = new ArrayList<>();
     listeOffre.add(offreDTO2);
-    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur())).thenReturn(listeOffre);
+    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur()))
+        .thenReturn(listeOffre);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(objetDTO1);
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO1)).thenReturn(utilisateurDTO6);
     assertEquals(utilisateurDTO6, utilisateurUCC.indiquerEmpecherUtilisateur(utilisateurDTO1));
@@ -428,10 +437,12 @@ public class UtilisateurUCCTest {
   public void testIndiquerEmpecherUtilisateurV2() {
     List<OffreDTO> listeOffre = new ArrayList<>();
     listeOffre.add(offreDTO2);
-    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur())).thenReturn(listeOffre);
+    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur()))
+        .thenReturn(listeOffre);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(null);
     Mockito.when(objetDAO.rechercheParId(offreDTO2.getObjetDTO())).thenReturn(null);
-    assertThrows(PasTrouveException.class, () -> utilisateurUCC.indiquerEmpecherUtilisateur(utilisateurDTO1));
+    assertThrows(PasTrouveException.class, () -> utilisateurUCC
+        .indiquerEmpecherUtilisateur(utilisateurDTO1));
 
   }
 
@@ -441,12 +452,15 @@ public class UtilisateurUCCTest {
   public void testIndiquerEmpecherUtilisateurV3() {
     List<OffreDTO> listeOffre = new ArrayList<>();
     listeOffre.add(offreDTO2);
-    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur())).thenReturn(listeOffre);
+    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur()))
+        .thenReturn(listeOffre);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(objetDTO1);
     Mockito.when(objetDAO.rechercheParId(offreDTO2.getObjetDTO())).thenReturn(null);
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO1)).thenReturn(null);
-    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO1.getIdUtilisateur())).thenReturn(null);
-    assertThrows(PasTrouveException.class, () -> utilisateurUCC.indiquerConfirmerUtilisateur(utilisateurDTO1));
+    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO1.getIdUtilisateur()))
+        .thenReturn(null);
+    assertThrows(PasTrouveException.class, () -> utilisateurUCC
+        .indiquerConfirmerUtilisateur(utilisateurDTO1));
 
   }
 
