@@ -350,11 +350,15 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
     try {
       List<OffreDTO> liste;
       liste = offreDAO.mesOffresAEmpecher(utilisateurDTO.getIdUtilisateur());
+
       for (OffreDTO offre : liste) {
+
         if (!offre.getObjetDTO().getEtatObjet().equals("Annulé")
             && !offre.getObjetDTO().getEtatObjet().equals("Confirmé")) {
+
           ((Offre) offre).empecherOffre();
           ObjetDTO objet = objetDAO.miseAJourObjet(offre.getObjetDTO());
+
           if (objet == null) {
             ObjetDTO objetVerif = objetDAO.rechercheParId(offre.getObjetDTO());
             if (objetVerif == null) {
@@ -366,6 +370,7 @@ public class UtilisateurUCCImpl implements UtilisateurUCC {
       }
       ((Utilisateur) utilisateurDTO).empecherUtilisateur();
       utilisateur = utilisateurDAO.miseAJourUtilisateur(utilisateurDTO);
+
       if (utilisateur == null) {
         if (utilisateurDAO.rechercheParId(utilisateurDTO.getIdUtilisateur()) == null) {
           throw new PasTrouveException("L'utilisateur n'existe pas");

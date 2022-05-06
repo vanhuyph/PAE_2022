@@ -413,12 +413,14 @@ public class UtilisateurUCCTest {
   public void testIndiquerEmpecherUtilisateurV1() {
     List<OffreDTO> listeOffre = new ArrayList<>();
     listeOffre.add(offreDTO2);
-    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO6.getIdUtilisateur())).thenReturn(listeOffre);
+    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur())).thenReturn(listeOffre);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(objetDTO1);
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO1)).thenReturn(utilisateurDTO6);
     assertEquals(utilisateurDTO6, utilisateurUCC.indiquerEmpecherUtilisateur(utilisateurDTO1));
 
   }
+
+
 
   @Test
   @DisplayName("Test raté : méthode indiquerEmpecherUtilisateur a échoué car "
@@ -426,7 +428,7 @@ public class UtilisateurUCCTest {
   public void testIndiquerEmpecherUtilisateurV2() {
     List<OffreDTO> listeOffre = new ArrayList<>();
     listeOffre.add(offreDTO2);
-    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO6.getIdUtilisateur())).thenReturn(listeOffre);
+    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur())).thenReturn(listeOffre);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(null);
     Mockito.when(objetDAO.rechercheParId(offreDTO2.getObjetDTO())).thenReturn(null);
     assertThrows(PasTrouveException.class, () -> utilisateurUCC.indiquerEmpecherUtilisateur(utilisateurDTO1));
@@ -439,7 +441,7 @@ public class UtilisateurUCCTest {
   public void testIndiquerEmpecherUtilisateurV3() {
     List<OffreDTO> listeOffre = new ArrayList<>();
     listeOffre.add(offreDTO2);
-    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO6.getIdUtilisateur())).thenReturn(listeOffre);
+    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur())).thenReturn(listeOffre);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(objetDTO1);
     Mockito.when(objetDAO.rechercheParId(offreDTO2.getObjetDTO())).thenReturn(null);
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO1)).thenReturn(null);
@@ -447,5 +449,7 @@ public class UtilisateurUCCTest {
     assertThrows(PasTrouveException.class, () -> utilisateurUCC.indiquerConfirmerUtilisateur(utilisateurDTO1));
 
   }
+
+
 
 }
