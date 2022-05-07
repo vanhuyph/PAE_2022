@@ -201,7 +201,7 @@ public class InteretUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode bjetANouveauOffert renvoie bien une liste.")
+  @DisplayName("Test réussi : méthode objetANouveauOffert renvoie bien une liste.")
   public void testObjetANouveauOffertV1() {
     List<InteretDTO> liste = new ArrayList<>();
     Mockito.when(interetDAO.objetANouveauOffert(utilisateurDTO.getIdUtilisateur()))
