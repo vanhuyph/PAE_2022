@@ -43,4 +43,5 @@ public interface InteretDTO {
   boolean isVueReoffert();
 
   void setVueReoffert(boolean vueReoffert);
+
 }

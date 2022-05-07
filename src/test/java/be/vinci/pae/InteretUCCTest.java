@@ -189,7 +189,7 @@ public class InteretUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode notifierReceveurEmpecher renvoie bien un intérêt.")
+  @DisplayName("Test réussi : méthode notifierReceveurEmpecher renvoie bien une liste.")
   public void testNotifierReceveurEmpecherV1() {
     interetDTO.setVueEmpecher(false);
     interetDTO.setReceveurChoisi(true);
@@ -201,7 +201,7 @@ public class InteretUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode notifierReceveurEmpecher renvoie bien un intérêt.")
+  @DisplayName("Test réussi : méthode bjetANouveauOffert renvoie bien une liste.")
   public void testObjetANouveauOffertV1() {
     List<InteretDTO> liste = new ArrayList<>();
     Mockito.when(interetDAO.objetANouveauOffert(utilisateurDTO.getIdUtilisateur()))

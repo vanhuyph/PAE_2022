@@ -280,11 +280,11 @@ public class InteretUCCImpl implements InteretUCC {
 
 
   /**
-   * Permet de notifier le receveur qui n'a pas été chercher l'objet que ce dernier est a nouveau
-   * offert.
+   * Permet de notifier le receveur qui n'est pas venu chercher l'objet que ce dernier est à nouveau
+   * réoffert.
    *
    * @param idUtilisateur : l'id du receveur qui va recevoir la notification
-   * @return liste : la liste des notifications des objets reofferts
+   * @return liste : la liste des notifications des objets réofferts
    * @throws BusinessException       : est lancée si l'id de l'utilisateur est incorrect
    * @throws OptimisticLockException : est lancée si les données sont périmées
    */

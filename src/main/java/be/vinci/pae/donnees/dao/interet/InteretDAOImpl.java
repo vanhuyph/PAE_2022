@@ -327,8 +327,7 @@ public class InteretDAOImpl implements InteretDAO {
   }
 
   /**
-   * Permet de notifier le receveur qui n'a pas été chercher l'objet que ce dernier est a nouveau
-   * offert.
+   * Notifie le receveur qui n'est pas venu chercher l'objet que ce dernier est à nouveau réoffert.
    *
    * @param idUtilisateur : l'id du receveur qui va recevoir la notification
    * @return liste : la liste des notifications des objets reofferts
@@ -351,8 +350,8 @@ public class InteretDAOImpl implements InteretDAO {
         + "projet.types_objets t, projet.adresses a, projet.adresses a2, projet.objets o "
         + "WHERE u.id_utilisateur = ? AND i.objet = o.id_objet AND i.utilisateur = u.id_utilisateur"
         + " AND a.id_adresse = u.adresse AND u2.id_utilisateur = o.offreur "
-        + "AND t.id_type = o.type_objet AND a2.id_adresse = u2.adresse"
-        + " AND i.receveur_choisi = true AND i.venu_chercher = false AND i.vue_reoffert = false;";
+        + "AND t.id_type = o.type_objet AND a2.id_adresse = u2.adresse "
+        + "AND i.receveur_choisi = true AND i.venu_chercher = false AND i.vue_reoffert = false;";
     InteretDTO interetDTO = factory.getInteret();
     List<InteretDTO> liste;
     try (PreparedStatement ps = serviceBackendDAL.getPs(requetePS)) {
