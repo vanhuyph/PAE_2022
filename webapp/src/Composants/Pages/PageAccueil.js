@@ -1,4 +1,5 @@
 import {
+  creationDonneeSessionUtilisateur,
   enleverDonneeSession,
   recupUtilisateurDonneesSession
 } from "../../utilitaires/session";
@@ -9,14 +10,16 @@ import rechecheIcon from "../../img/search.svg";
 import Swal from 'sweetalert2'
 
 // Page d'accueil
-const PageAccueil = () => {
+const PageAccueil = async () => {
   const pageDiv = document.querySelector("#page");
   const session = recupUtilisateurDonneesSession()
   let etatInscription
+  let v = 1
+  let v2 = 1
   let commentaire
-
   if (session) {
-    if (session.utilisateur.etatInscription !== "Confirmé") {
+    if (session.utilisateur.etatInscription !== "Confirmé"
+        && session.utilisateur.etatInscription !== "Empêché") {
       etatInscription = session.utilisateur.etatInscription
       if (session.utilisateur.etatInscription === "En attente") {
         commentaire = "Vous pourrez accéder aux fonctionnalités lorsqu'un administrateur aura confirmé votre inscription."
@@ -24,10 +27,146 @@ const PageAccueil = () => {
         commentaire = session.utilisateur.commentaire
       }
     }
+    if (session.utilisateur.etatInscription === "Empêché" && !session.empeche) {
+      const {value: reponse} = await Swal.fire({
+        title: 'Vous avez été marqué comme Empêché(e)',
+        confirmButtonText: 'Confirmer',
+        input: 'select',
+        inputOptions: {
+          oui: 'Oui',
+          non: 'Non',
+        },
+        inputAttributes: {
+          required: true,
+        },
+        inputPlaceholder: 'Sélectionner une réponse',
+        validationMessage: 'Nous avons besoin d\'une réponse',
+        allowOutsideClick: false,
+        html: `<p>Êtes-vous toujours Empêché(e) ? :</p>`,
+      })
+      // Passe l'état de l'utilisateur de "Empêché" à "Confirmé"
+      if (reponse === "non") {
+        await changerEtatUtilisateur(session.utilisateur.idUtilisateur)
+        let dansLocalStorage = localStorage.getItem("utilisateur")
+        let souvenir = false;
+        let utilisateur;
+        if (!dansLocalStorage) {
+          session.utilisateur.etatInscription = "Confirmé"
+          utilisateur = {...session, isAutenticated: true}
+        } else {
+          souvenir = true;
+          let ut = JSON.parse(localStorage.getItem("utilisateur"))
+          ut.utilisateur.etatInscription = "Confirmé"
+          utilisateur = {...ut, isAutenticated: true}
+        }
+        creationDonneeSessionUtilisateur(utilisateur, souvenir)
+        fetch(API_URL + "utilisateurs/indiquerConfirmerUtilisateur/"
+            + session.utilisateur.idUtilisateur, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token
+          },
+        }).then((reponse) => {
+          if (!reponse.ok) {
+            throw new Error(
+                "Code d'erreur : " + reponse.status + " : "
+                + reponse.statusText);
+          }
+          return reponse.json();
+        })
+      } else {
+        await Swal.fire({
+          title: 'Vous avez été marqué comme Empêché(e)',
+          confirmButtonText: 'Confirmer',
+          allowOutsideClick: false,
+          html: `<p>Certaines fonctionnalités vous sont désactivées tant que vous êtes Empêché(e)</p>`,
+        }).then(async (r) => {
+          let dansLocalStorage = localStorage.getItem("utilisateur")
+          let souvenir = false;
+          let uti = {...session, isAutenticated: true, empeche: true}
+          if (dansLocalStorage) {
+            souvenir = true;
+          }
+          creationDonneeSessionUtilisateur(uti, souvenir)
+          if (r.isConfirmed) {
+            await fetch(
+                API_URL + "interets/listeDesPersonnesInteresseesVue/"
+                + session.utilisateur.idUtilisateur,
+                {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: session.token
+                  },
+                }).then((reponse) => {
+              if (!reponse.ok) {
+                throw new Error(
+                    "Code d'erreur : " + reponse.status + " : "
+                    + reponse.statusText);
+              }
+              return reponse.json();
+            }).then(async (donnees) => {
+              v = 0
+              let liste = `<p>Pas d'intérêt</p>`
+              if (donnees.length > 0) {
+                liste = ""
+                let obj;
+                donnees.forEach((donnee) => {
+                  if (!obj) {
+                    obj = donnee.objet.description
+                    liste += `
+          <div class="personne-interesse">
+            <strong>${obj}</strong>
+            `
+                  }
+                  if (obj === donnee.objet.description) {
+                    liste += `
+              <div class="personne"> 
+                  <p class="inf-int">${donnee.utilisateur.nom}</p>
+                  <p class="inf-int">${donnee.utilisateur.prenom}</p>
+                  <p class="inf-int">${donnee.utilisateur.pseudo}</p>
+              </div> 
+              `
+                  } else {
+                    liste += `</div>`
+                    obj = donnee.objet.description
+                    liste += `
+          <div class="personne-interesse">
+            <strong>${obj}</strong>
+            <div class="personne"> 
+                  <p class="inf-int">${donnee.utilisateur.nom}</p>
+                  <p class="inf-int">${donnee.utilisateur.prenom}</p>
+                  <p class="inf-int">${donnee.utilisateur.pseudo}</p>
+              </div> 
+            `
+                  }
+                })
+                // Popup à la connexion si des personnes ont marqué un intérêt pour les objets de l'utilisateur
+                await Swal.fire({
+                  title: '<strong>Liste des personnes intéressées pour vos objets</strong>',
+                  html: `${liste}`,
+                  focusConfirm: false,
+                  confirmButtonText:
+                      '<i class="fa fa-thumbs-up"></i> OK',
+                  confirmButtonAriaLabel: 'Thumbs up, great!',
+                }).then((r) => {
+                  if (r.isConfirmed) {
+                    v2 = 0;
+                  }
+                })
+              }
+            })
+          }
+        })
+
+      }
+    }
   }
+
   // Lors de la connexion, liste les offres attribuées à l'utilisateur
   if (session) {
-    fetch(
+    await fetch(
         API_URL + "offres/voirOffreAttribuer/"
         + session.utilisateur.idUtilisateur,
         {
@@ -42,7 +181,7 @@ const PageAccueil = () => {
             "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
       }
       return reponse.json();
-    }).then((donnees) => {
+    }).then(async (donnees) => {
       let liste = `<p>Pas d'offres</p>`
       if (donnees.length > 0) {
         liste = ""
@@ -53,7 +192,7 @@ const PageAccueil = () => {
           </div>
           `
         })
-        Swal.fire({
+        await Swal.fire({
           title: '<strong>Liste des offres qui vous ont été attribuées</strong>',
           html: `${liste}`,
           focusConfirm: false,
@@ -63,46 +202,47 @@ const PageAccueil = () => {
         })
       }
     })
-    fetch(
-        API_URL + "interets/listeDesPersonnesInteresseesVue/"
-        + session.utilisateur.idUtilisateur,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: session.token
-          },
-        }).then((reponse) => {
-      if (!reponse.ok) {
-        throw new Error(
-            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
-      }
-      return reponse.json();
-    }).then((donnees) => {
-      let liste = `<p>Pas d'intérêt</p>`
-      if (donnees.length > 0) {
-        liste = ""
-        let obj;
-        donnees.forEach((donnee) => {
-          if (!obj) {
-            obj = donnee.objet.description
-            liste += `
+    if (v === 1) {
+      fetch(
+          API_URL + "interets/listeDesPersonnesInteresseesVue/"
+          + session.utilisateur.idUtilisateur,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: session.token
+            },
+          }).then((reponse) => {
+        if (!reponse.ok) {
+          throw new Error(
+              "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+        }
+        return reponse.json();
+      }).then((donnees) => {
+        let liste = `<p>Pas d'intérêt</p>`
+        if (donnees.length > 0) {
+          liste = ""
+          let obj;
+          donnees.forEach((donnee) => {
+            if (!obj) {
+              obj = donnee.objet.description
+              liste += `
           <div class="personne-interesse">
             <strong>${obj}</strong>
             `
-          }
-          if (obj === donnee.objet.description) {
-            liste += `
+            }
+            if (obj === donnee.objet.description) {
+              liste += `
               <div class="personne"> 
                   <p class="inf-int">${donnee.utilisateur.nom}</p>
                   <p class="inf-int">${donnee.utilisateur.prenom}</p>
                   <p class="inf-int">${donnee.utilisateur.pseudo}</p>
               </div> 
               `
-          } else {
-            liste += `</div>`
-            obj = donnee.objet.description
-            liste += `
+            } else {
+              liste += `</div>`
+              obj = donnee.objet.description
+              liste += `
           <div class="personne-interesse">
             <strong>${obj}</strong>
             <div class="personne"> 
@@ -111,38 +251,59 @@ const PageAccueil = () => {
                   <p class="inf-int">${donnee.utilisateur.pseudo}</p>
               </div> 
             `
-          }
-        })
-        // Popup à la connexion si des personnes ont marqué un intérêt pour les objets de l'utilisateur
-        Swal.fire({
-          title: '<strong>Liste des personnes intéressées pour vos objets</strong>',
-          html: `${liste}`,
-          focusConfirm: false,
-          confirmButtonText:
-              '<i class="fa fa-thumbs-up"></i> OK',
-          confirmButtonAriaLabel: 'Thumbs up, great!',
-        })
-      }
-    })
+            }
+          })
+          // Popup à la connexion si des personnes ont marqué un intérêt pour les objets de l'utilisateur
+          Swal.fire({
+            title: '<strong>Liste des personnes intéressées pour vos objets</strong>',
+            html: `${liste}`,
+            focusConfirm: false,
+            confirmButtonText:
+                '<i class="fa fa-thumbs-up"></i> OK',
+            confirmButtonAriaLabel: 'Thumbs up, great!',
+          })
+        }
+      })
+    }
   }
 
   // Récupération des objets à évaluer lors de la connexion de l'utilisateur
   if (session) {
-    fetch(
-        API_URL + "offres/objetsAEvaluer/" + session.utilisateur.idUtilisateur,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: session.token
-          },
-        }).then((reponse) => {
+    if (v2 === 1) {
+      /*fetch(
+          API_URL + "offres/objetsAEvaluer/"
+          + session.utilisateur.idUtilisateur,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: session.token
+            },
+          }).then((reponse) => {
+        if (!reponse.ok) {
+          throw new Error(
+              "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+        }
+        return reponse.json();
+      }).then((data) => objetsAEvaluer(data, session))*/
+    }
+  }
+
+  if (session) {
+    fetch(API_URL + "interets/notifierReceveurEmpecher/"
+        + session.utilisateur.idUtilisateur, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token
+      },
+    }).then((reponse) => {
       if (!reponse.ok) {
         throw new Error(
             "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
       }
       return reponse.json();
-    }).then((data) => objetsAEvaluer(data, session))
+    }).then((data) => offreurEmpeche(data))
   }
 
   let pageAccueil = `
@@ -171,7 +332,6 @@ const PageAccueil = () => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-
     },
   }).then((reponse) => {
     if (!reponse.ok) {
@@ -181,7 +341,8 @@ const PageAccueil = () => {
     return reponse.json();
   }).then((data) => surListeOffresRecentes(data))
   if (session) {
-    if (session.utilisateur.etatInscription !== "Confirmé") {
+    if (session.utilisateur.etatInscription !== "Confirmé"
+        && session.utilisateur.etatInscription !== "Empêché") {
       conteneurModal.classList.add('active')
       enleverDonneeSession()
       Navbar()
@@ -248,7 +409,104 @@ const PageAccueil = () => {
   declencheurModal.forEach(decl => decl.addEventListener("click", () => {
     conteneurModal.classList.toggle("active")
   }))
+  // Popup à la connexion de l'utilisateur pour la liste des objets qui ont été réofferts s'il n'est pas venu les chercher
+  if (session) {
+
+  }
 };
+
+// Affichage de la notification en cas d'offreur empêché
+const offreurEmpeche = async (data) => {
+  let session = recupUtilisateurDonneesSession()
+  data.forEach((interet) => {
+    Swal.fire({
+      title: "Empêchement",
+      confirmButtonText: 'OK',
+      allowOutsideClick: false,
+      html: `<p>L'offreur de l'objet : ${interet.objet.description} a eu un empêchement.</p> 
+             <p>Nous vous invitons à le contacter ultérieurement pour avoir plus d'informations.</p>`,
+    }).then(async (r) => {
+      if (r.isConfirmed) {
+        await fetch(API_URL + "/interets/objetsReoffert/"
+            + session.utilisateur.idUtilisateur, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token
+          },
+        }).then((reponse) => {
+          if (!reponse.ok) {
+            throw new Error(
+                "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+            );
+          }
+          return reponse.json();
+        }).then(async (donnees) => {
+          let liste = `<p>Pas d'objet réoffert</p>`
+          if (donnees.length > 0) {
+            liste = ""
+            donnees.forEach((donnee) => {
+              liste += `
+          <div class="objet-attr">
+            <p>${donnee.objet.description}</p>
+          </div>
+          `
+            })
+            await Swal.fire({
+              title: '<strong>Cet/Ces objet(s) que vous n\'êtes pas venu chercher a/ont été réoffert(s)</strong>',
+              html: `${liste}`,
+              focusConfirm: false,
+              confirmButtonText:
+                  '<i class="fa fa-thumbs-up"></i> OK',
+              confirmButtonAriaLabel: 'Thumbs up, great!',
+            })
+          }
+        })
+        fetch(
+            API_URL + "offres/objetsAEvaluer/"
+            + session.utilisateur.idUtilisateur,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: session.token
+              },
+            }).then((reponse) => {
+          if (!reponse.ok) {
+            throw new Error(
+                "Code d'erreur : " + reponse.status + " : "
+                + reponse.statusText);
+          }
+          return reponse.json();
+        }).then((data) => objetsAEvaluer(data, session))
+      }
+    })
+  })
+}
+
+// Change l'état d'un utilisateur
+const changerEtatUtilisateur = async (idUtilisateur) => {
+  let session = recupUtilisateurDonneesSession()
+  let etatUtilisateurJson = {
+    etatUtilisateur: "Confirmé"
+  }
+  fetch(API_URL + "utilisateurs/indiquerEmpecherUtilisateur/" + idUtilisateur, {
+    method: "PUT",
+    body: JSON.stringify(etatUtilisateurJson),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session.token
+    },
+  })
+  .then((reponse) => {
+    if (!reponse.ok) {
+      throw new Error(
+          "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+    return reponse.json();
+  })
+}
 
 // Affichage des objets à évaluer
 const objetsAEvaluer = (data, session) => {
@@ -268,7 +526,7 @@ const objetsAEvaluer = (data, session) => {
       inputAttributes: {
         required: true,
       },
-      inputPlaceholder: 'Sélectionnez une réponse',
+      inputPlaceholder: 'Sélectionner une réponse',
       validationMessage: 'Nous avons besoin d\'une réponse',
       allowOutsideClick: false,
       html: `<p>Voulez-vous évaluer l'objet suivant :</p> 
@@ -297,7 +555,7 @@ const objetsAEvaluer = (data, session) => {
           4: '4',
           5: '5',
         },
-        inputPlaceholder: 'Sélectionnez une note',
+        inputPlaceholder: 'Sélectionner une note',
         validationMessage: 'Nous avons besoin d\'une note',
         currentProgressStep: 0
       })

@@ -70,7 +70,8 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-        + "WHERE (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' OR o.etat_objet = 'Annulé')"
+        + "WHERE (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' OR o.etat_objet = 'Annulé' "
+        + "OR o.etat_objet = 'Confirmé')"
         + " AND of.date_offre = (SELECT max(of2.date_offre) "
         + "FROM projet.offres of2, projet.objets o2 "
         + "WHERE of2.id_objet = o.id_objet)"
@@ -139,7 +140,8 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-        + "WHERE (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé') "
+        + "WHERE (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
+        + "OR o.etat_objet = 'Confirmé') "
         + "AND of.date_offre = (SELECT max(of2.date_offre) "
         + "FROM projet.offres of2, projet.objets o2 "
         + "WHERE of2.id_objet = o.id_objet)"
@@ -243,7 +245,7 @@ public class OffreDAOImpl implements OffreDAO {
               + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
               + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
               + "WHERE (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
-              + "OR o.etat_objet = 'Annulé') "
+              + "OR o.etat_objet = 'Annulé' OR o.etat_objet = 'Confirmé') "
               + "AND (lower(u.nom) LIKE lower(?) "
               + "OR lower(t.nom) LIKE lower(?) OR lower(o.etat_objet) "
               + "LIKE lower(?)) "
@@ -309,10 +311,78 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
         + "WHERE u.id_utilisateur = ? AND (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé' "
-        + "OR o.etat_objet = 'Annulé' OR o.etat_objet = 'Confirmé' ) "
+        + "OR o.etat_objet = 'Annulé' OR o.etat_objet = 'Confirmé' OR o.etat_objet = 'Empêché' ) "
         + "AND of.date_offre = (SELECT max(of2.date_offre) "
         + "FROM projet.offres of2, projet.objets o2 "
         + "WHERE of2.id_objet = o.id_objet)"
+        + "ORDER BY of.date_offre DESC";
+    OffreDTO offreDTO = factory.getOffre();
+    List<OffreDTO> liste;
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setInt(1, idUtilisateur);
+      liste = remplirListeOffresDepuisResulSet(offreDTO, ps);
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+    return liste;
+  }
+
+  /**
+   * Liste les propres offres offertes et interessées de l'utilisateur dont l'id est passé en
+   * paramètre.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses offres offertes et interessées
+   * @return liste : la liste de toutes ses propres offres offertes et interessées
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public List<OffreDTO> mesOffresAEmpecher(int idUtilisateur) {
+    String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
+        + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
+        + "o.etat_objet, o.description, o.photo, o.version, o.vue, of.id_offre, of.date_offre, "
+        + "of.plage_horaire, of.version "
+        + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
+        + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
+        + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+        + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
+        + "WHERE u.id_utilisateur = ? AND (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé') "
+        + "AND of.date_offre = (SELECT max(of2.date_offre) "
+        + "FROM projet.offres of2, projet.objets o2 "
+        + "WHERE of2.id_objet = o.id_objet)"
+        + "ORDER BY of.date_offre DESC";
+    OffreDTO offreDTO = factory.getOffre();
+    List<OffreDTO> liste;
+    try (PreparedStatement ps = serviceBackendDAL.getPs(requetePs)) {
+      ps.setInt(1, idUtilisateur);
+      liste = remplirListeOffresDepuisResulSet(offreDTO, ps);
+    } catch (SQLException e) {
+      throw new FatalException(e.getMessage(), e);
+    }
+    return liste;
+  }
+
+  /**
+   * Liste les propres offres empêchées de l'utilisateur dont l'id est passé en paramètre.
+   *
+   * @param idUtilisateur : l'id de l'utilisateur à qui lister ses offres empêchées
+   * @return liste : la liste de toutes ses propres offres empêchées
+   * @throws FatalException : est lancée s'il y a eu un problème côté serveur
+   */
+  @Override
+  public List<OffreDTO> mesOffresEmpecher(int idUtilisateur) {
+    String requetePs = "SELECT a.id_adresse, a.rue, a.numero, a.boite, a.code_postal, a.commune,"
+        + "a.version, u.id_utilisateur, u.pseudo, u.nom, u.prenom, u.mdp, u.gsm, u.est_admin, "
+        + "u.etat_inscription, u.commentaire, u.version, t.id_type, t.nom, o.id_objet, "
+        + "o.etat_objet, o.description, o.photo, o.version, o.vue, of.id_offre, of.date_offre, "
+        + "of.plage_horaire, of.version "
+        + "FROM projet.offres of LEFT OUTER JOIN projet.objets o ON o.id_objet = of.id_objet "
+        + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
+        + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
+        + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
+        + "WHERE u.id_utilisateur = ? AND o.etat_objet = 'Empêché' AND "
+        + "of.date_offre = (SELECT max(of2.date_offre) FROM projet.offres of2, projet.objets o2 "
+        + "WHERE of2.id_objet = o.id_objet) "
         + "ORDER BY of.date_offre DESC";
     OffreDTO offreDTO = factory.getOffre();
     List<OffreDTO> liste;
@@ -376,7 +446,7 @@ public class OffreDAOImpl implements OffreDAO {
         + "LEFT OUTER JOIN projet.utilisateurs u ON o.offreur = u.id_utilisateur "
         + "LEFT OUTER JOIN projet.adresses a ON u.adresse = a.id_adresse "
         + "LEFT OUTER JOIN projet.types_objets t ON t.id_type = o.type_objet "
-        + "WHERE u.id_utilisateur = ? AND o.etat_objet = 'Offert' "
+        + "WHERE u.id_utilisateur = ? AND (o.etat_objet = 'Offert' OR o.etat_objet = 'Intéressé') "
         + "AND of.date_offre = (SELECT MAX(of2.date_offre) "
         + "FROM projet.offres of2, projet.objets o2 "
         + "WHERE of2.id_objet = o.id_objet)";

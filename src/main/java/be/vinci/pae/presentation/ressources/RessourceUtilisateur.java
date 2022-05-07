@@ -291,6 +291,55 @@ public class RessourceUtilisateur {
   }
 
   /**
+   * Passe l'état de l'utilisateur de "Empêché à Confirmé".
+   *
+   * @param idUtilisateur : l'id de l'utilisateur dont on veut modifier l'état
+   * @return utilisateurDTO ayant son état modifié
+   * @throws PresentationException : si l'utilisateur n'existe pas ou si le json ne possède pas
+   *                               l'état de l'utilisateur
+   */
+  @PUT
+  @Path("indiquerConfirmerUtilisateur/{idUtilisateur}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public UtilisateurDTO indiquerConfirmerUtilisateur(
+      @PathParam("idUtilisateur") int idUtilisateur) {
+    if (idUtilisateur < 1) {
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
+    }
+    UtilisateurDTO utilisateurDTO = utilisateurUCC.rechercheParId(idUtilisateur);
+    if (utilisateurDTO.getIdUtilisateur() != idUtilisateur) {
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
+    }
+    return utilisateurUCC.indiquerConfirmerUtilisateur(utilisateurDTO);
+  }
+
+  /**
+   * Passe l'état de l'utilisateur de "Confirmé à Empêché".
+   *
+   * @param idUtilisateur : l'id de l'utilisateur dont on veut modifier l'état
+   * @return utilisateurDTO ayant son etat modifié
+   * @throws PresentationException : si l'utilisateur n'existe pas ou si le json ne possède pas
+   *                               l'état de l'utilisateur
+   */
+  @PUT
+  @Path("indiquerEmpecherUtilisateur/{idUtilisateur}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public UtilisateurDTO indiquerEmpecherUtilisateur(@PathParam("idUtilisateur") int idUtilisateur) {
+    if (idUtilisateur < 1) {
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
+    }
+    UtilisateurDTO utilisateurDTO = utilisateurUCC.rechercheParId(idUtilisateur);
+    if (utilisateurDTO.getIdUtilisateur() != idUtilisateur) {
+      throw new PresentationException("L'utilisateur n'existe pas", Status.BAD_REQUEST);
+    }
+    return utilisateurUCC.indiquerEmpecherUtilisateur(utilisateurDTO);
+  }
+
+  /**
    * Modifie le mot de passe de l'utilisateur.
    *
    * @param idUtilisateur : l'id de l'utilisateur

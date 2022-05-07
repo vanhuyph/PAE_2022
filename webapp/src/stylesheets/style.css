@@ -13,7 +13,7 @@ body {
 }
 
 main {
-  min-height: 590px;
+  min-height: 64.2vh;
   margin-top: 20px;
 }
 
@@ -249,7 +249,7 @@ main {
 
 /*Offres*/
 .offres {
-  margin: 25px auto;
+  margin: 0 auto;
   width: 60%;
 }
 
@@ -600,6 +600,7 @@ Fin Message de bienvenue*/
 .rechercher-membre {
   text-align: center;
   padding-top: 30px;
+  height: 100%;
 }
 
 #rechercherMembre {
@@ -767,37 +768,41 @@ Fin Message de bienvenue*/
 .interet p {
   margin: 0;
 }
+
 .page-offrirObjet, .page-offrirObjet .segments, .page-offrirObjet .segment {
   background-color: transparent !important;
   border: 0 !important;
   box-shadow: 0 0 0 0 !important;
 }
 
-.ui.form select{
+.ui.form select {
   background-color: transparent !important;
 }
 
-#typeObjet label{
+#typeObjet label {
   font-weight: 700;
   font-size: .92857143em;
 }
-#typeObjet button{
+
+#typeObjet button {
   padding-right: 5px;
   padding-left: 5px;
   height: 56%;
   align-self: flex-end;
-  margin-bottom: 10px!important;
+  margin-bottom: 10px !important;
   font-size: small;
 }
-#typeObjet .six{
+
+#typeObjet .six {
   display: flex;
-  padding-left: 0!important;
+  padding-left: 0 !important;
 }
 
-.objet-attr{
+.objet-attr {
   padding: 15px 10px;
   border-bottom: 1px dashed #d7dee7;
 }
+
 .personne-interesse {
   text-align: left;
   border-bottom: 1px dashed #d7dee7;
@@ -805,29 +810,41 @@ Fin Message de bienvenue*/
   margin-top: 15px;
 }
 
-.personne-interesse .personne{
+.personne-interesse .personne {
   margin-top: 25px;
   display: flex;
   justify-content: space-around;
 }
 
-.personne-interesse .inf-int{
+.personne-interesse .inf-int {
   width: 33%;
   text-align: center;
 }
 
-.liste-utilisateurs .utilisateur .admin-membre{
+.rechercher-membre{
+  overflow-y: scroll;
+}
+
+.liste-utilisateurs .utilisateur .admin-membre {
   cursor: pointer;
 }
-.liste-utilisateur-objets{
+
+.liste-utilisateur-objets {
   margin-top: 30px;
   display: none;
   text-align: left;
 }
 
+.est-empeche{
+  display: flex;
+  justify-content: left;
+}
+
 footer {
   margin-top: 68px;
-  height: 15%;
+}
+.footer{
+  min-height: 19vh;
 }
 
 @media screen and (max-width: 340px) {

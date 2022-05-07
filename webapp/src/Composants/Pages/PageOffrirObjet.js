@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 const formPhoto =
     `
         <div class="field">
-        <form id="envoyerPhoto" class="ui form"  >
+        <form id="envoyerPhoto" class="ui form" >
           <label>Sélectionner une photo</label>
           <input  name="photo" id="photo" type="file"/> <br/><br/>
           <img src="#" alt="" id="image" style="max-width: 500px; margin-top: 20px;" >
@@ -54,7 +54,7 @@ const pageOffrirObjet = `
         </div>
         <div id="form-type-objet"></div>
         <div class=" tertiary inverted ">
-        <button class="ui button " type="submit">Offrir l'objet</button>
+        <button class="ui button " type="submit" id="offrir-objet">Offrir l'objet</button>
         </div>
     </form> 
      </div>
@@ -82,9 +82,14 @@ const PageOffrirObjet = () => {
   if (session) {
     Navbar()
     afficherTypeObjet()
-
   } else {
     Redirect("/connexion");
+  }
+
+  if (session.utilisateur.etatInscription === "Empêché") {
+    document.querySelector("#offrir-objet").classList.add("disabled");
+    document.querySelector("#ajouter-type").classList.add("disabled");
+    document.querySelector("#buttonCreerType").classList.add("disabled");
   }
 }
 
@@ -108,7 +113,6 @@ const afficherTypeObjet = () => {
     return reponse.json();
   })
   .then((data) => choixTypeObjet(data));
-
   formOffrirObjet.addEventListener("submit", surOffrirObjet);
 }
 

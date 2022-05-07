@@ -59,6 +59,8 @@ CREATE TABLE projet.interets
     vue             BOOLEAN                                                 NOT NULL,
     receveur_choisi BOOLEAN NULL,
     venu_chercher   BOOLEAN NULL,
+    vue_empecher    BOOLEAN                                                 NOT NULL,
+    vue_reoffert    BOOLEAN                                                 NOT NULL,
     PRIMARY KEY (utilisateur, objet)
 );
 
@@ -68,7 +70,6 @@ CREATE TABLE projet.evaluations
     objet         INTEGER REFERENCES projet.objets (id_objet) NOT NULL,
     note          INTEGER,
     commentaire   VARCHAR(255)
-
 );
 
 CREATE TABLE projet.offres
@@ -88,15 +89,21 @@ INSERT INTO projet.adresses
 VALUES (DEFAULT, 'Rue Haute Folie', 6, 'A103', 4800, 'Verviers', 0);
 INSERT INTO projet.adresses
 VALUES (DEFAULT, 'Haut-Vinâve', 13, NULL, 4845, 'Jalhay', 0);
+INSERT INTO projet.adresses
+VALUES (DEFAULT, 'Rue de Verviers', 47, NULL, 4800, 'Liège', 0);
+INSERT INTO projet.adresses
+VALUES (DEFAULT, 'Rue du salpêtré', 789, 'Bis', 1040, 'Bruxelles', 0);
+INSERT INTO projet.adresses
+VALUES (DEFAULT, 'Rue des Minières', 45, 'Ter', 4800, 'Verviers', 0);
 
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'caro', 'Line', 'Caroline',
-        '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 1, 'Refusé',
-        'Il faudra patienter un jour ou deux.', 0, 0, 0, 0, 0);
+        '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, true, 1, 'Confirmé',
+        NULL, 0, 3, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'achil', 'Ile', 'Achille',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 2,
-        'Confirmé', NULL, 0, 0, 0, 0, 0);
+        'Refusé', 'L''application n''est pas encore ouverte à tous.', 0, 0, 0, 0, 0);
 INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bazz', 'Ile', 'Basile',
         '$2a$10$fzEFB4Vk.hEEPRvpbm.27OkxekRLuhsj1W2d0gSR.ryW7hmINPVkS', NULL, false, 3, 'Confirmé',
@@ -105,6 +112,23 @@ INSERT INTO projet.utilisateurs
 VALUES (DEFAULT, 'bri', 'Lehmann', 'Brigitte',
         '$2a$10$W0IiogOO7ef5/Kw.GdmEkO46mtg6VSeDsV5SYc4Dzmp4XnnOBUAkC', NULL, true, 4, 'Confirmé',
         NULL, 0, 1, 0, 0, 0);
+INSERT INTO projet.utilisateurs
+VALUES (DEFAULT, 'theo', 'Ile', 'Théophile',
+        '$2a$10$avAv2TwCATrvOIQfxTf25uuL8NUKpoG6g7gT9Z4tZi9.vzbdBjsqq', NULL, false, 2, 'Confirmé',
+        NULL, 0, 7, 0, 0, 0);
+INSERT INTO projet.utilisateurs
+VALUES (DEFAULT, 'emi', 'Ile', 'Emile',
+        '$2a$10$ZPfoCSBFystdHe9OTinWEe8Aq0ElN7.A3VhoXlEA3KwF0fqWseuDq', NULL, false, 5, 'Refusé',
+        'L''application n''est pas encore ouverte à tous.', 0, 0, 0, 0, 0);
+INSERT INTO projet.utilisateurs
+VALUES (DEFAULT, 'cora', 'Line', 'Coralie',
+        '$2a$10$RgnvUGTI2p89Prea3I8X6OEQDKPcHtv3ntCSeZa206cN66MaPlXKW', NULL, false, 6, 'Refusé',
+        'Vous devez encore attendre quelques jours.', 0, 0, 0, 0, 0);
+INSERT INTO projet.utilisateurs
+VALUES (DEFAULT, 'charline', 'Line', 'Charles',
+        '$2a$10$91M2cZ0qMr9fPNcGFBOHfOBloy0iKiX1LxPmBdWvfHtFI6XsFPomG', NULL, false, 7,
+        'En attente',
+        NULL, 0, 0, 0, 0, 0);
 
 INSERT INTO projet.types_objets
 VALUES (DEFAULT, 'Accessoires pour animaux domestiques');
@@ -132,41 +156,117 @@ INSERT INTO projet.types_objets
 VALUES (DEFAULT, 'Vêtements');
 
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 3, 'Décorations de Noël de couleur rouge.', 3, NULL,
-        'christmas-1869533_640.png', 0, false);
+VALUES (DEFAULT, 'Annulé', 3, 'Décorations de Noël de couleur rouge', 3, NULL,
+        'christmas-1869533_640.png', 1, false);
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 3, 'Cadre représentant un chien noir sur un fond noir.', 3, NULL,
-        'dog-4118585_640.jpg', 0, false);
+VALUES (DEFAULT, 'Offert', 3, 'Cadre représentant un chien noir sur un fond noir', 3, NULL,
+        'dog-4118585_640.jpg', 1, false);
 INSERT INTO projet.objets
-VALUES (DEFAULT, 'Offert', 8, 'Ancien bureau d’écolier.', 4, NULL, 'BureauEcolier-7.JPG', 0, false);
+VALUES (DEFAULT, 'Intéressé', 8, 'Ancien bureau d’écolier', 4, NULL, 'BureauEcolier-7.JPG', 1,
+        false);
+INSERT INTO projet.objets
+VALUES (DEFAULT, 'Intéressé', 7,
+        'Brouette à deux roues à l''avant. Améliore la stabilité et ne fatigue pas le dos', 5, NULL,
+        'wheelbarrows-4566619_640.jpg', 1,
+        false);
+INSERT INTO projet.objets
+VALUES (DEFAULT, 'Offert', 7,
+        'Scie sur perche Gardena', 5, NULL,
+        'donnamis.png', 1,
+        false);
+INSERT INTO projet.objets
+VALUES (DEFAULT, 'Offert', 8,
+        'Table jardin et deux chaises en bois', 5, NULL,
+        'Table-jardin.jpg', 1,
+        false);
+INSERT INTO projet.objets
+VALUES (DEFAULT, 'Offert', 8,
+        'Table bistro', 5, NULL,
+        'table-bistro.jpg', 1,
+        false);
+INSERT INTO projet.objets
+VALUES (DEFAULT, 'Intéressé', 8,
+        'Table bistro ancienne de couleur bleue', 1, NULL,
+        'table-bistro-carree-bleue.jpg', 1,
+        false);
+INSERT INTO projet.objets
+VALUES (DEFAULT, 'Confirmé', 4,
+        'Tableau noir pour enfant', 5, NULL,
+        'Tableau.jpg', 1,
+        false);
+INSERT INTO projet.objets
+VALUES (DEFAULT, 'Intéressé', 3,
+        'Cadre cottage naïf', 5, NULL,
+        'cadre-cottage-1178704_640.jpg', 1,
+        false);
+INSERT INTO projet.objets
+VALUES (DEFAULT, 'Intéressé', 6,
+        'Tasse de couleur claire rose & mauve', 5, NULL,
+        'tasse-garden-5037113_640.jpg', 1,
+        false);
+INSERT INTO projet.objets
+VALUES (DEFAULT, 'Confirmé', 9,
+        'Pâquerettes dans pots rustiques', 1, NULL,
+        'pots-daisy-181905_640.jpg', 1,
+        false);
+INSERT INTO projet.objets
+VALUES (DEFAULT, 'Offert', 9,
+        'Pots en grès pour petites plantes', 1, NULL,
+        'pots-plants-6520443_640.jpg', 1,
+        false);
 
 INSERT INTO projet.offres
-VALUES (DEFAULT, 1, '21-03-22', 'Mardi de 17h à 22h', 0);
+VALUES (DEFAULT, 1, '21-03-22', 'Mardi de 17h à 22h', 1);
 INSERT INTO projet.offres
-VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h', 0);
+VALUES (DEFAULT, 2, '25-03-22', 'Lundi de 18h à 22h', 1);
 INSERT INTO projet.offres
-VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h', 0);
+VALUES (DEFAULT, 3, '25-03-22', 'Tous les jours de 15h à 18h', 1);
+INSERT INTO projet.offres
+VALUES (DEFAULT, 4, '28-03-22', 'Tous les matins avant 11h30', 1);
+INSERT INTO projet.offres
+VALUES (DEFAULT, 5, '28-03-22', 'Tous les matins avant 11h30', 1);
+INSERT INTO projet.offres
+VALUES (DEFAULT, 6, '29-03-22', 'En semaine, de 20h à 21h', 1);
+INSERT INTO projet.offres
+VALUES (DEFAULT, 7, '30-03-22', 'Lundi de 18h à 20h', 1);
+INSERT INTO projet.offres
+VALUES (DEFAULT, 8, '14-04-22', 'Samedi en journée', 1);
+INSERT INTO projet.offres
+VALUES (DEFAULT, 9, '14-04-22', 'Lundi de 18h à 20h', 1);
+INSERT INTO projet.offres
+VALUES (DEFAULT, 10, '21-04-22', 'Lundi de 18h30 à 20h', 1);
+INSERT INTO projet.offres
+VALUES (DEFAULT, 11, '21-04-22', 'Lundi de 18h30 à 20h', 1);
+INSERT INTO projet.offres
+VALUES (DEFAULT, 12, '21-04-22', 'Lundi de 16h à 17h', 1);
+INSERT INTO projet.offres
+VALUES (DEFAULT, 13, '21-04-22', 'Lundi de 16h à 17h', 1);
 
 INSERT INTO projet.interets
-VALUES (3, 3, '25-03-22', 0, false, false, NULL);
+VALUES (5, 3, '16-05-22', 0, false, false, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (2, 3, '25-03-22', 0, false, false, NULL);
-
--- Requêtes démo 1 client
--- SELECT u.id_utilisateur, u.pseudo, u.est_admin, u.etat_inscription, u.commentaire
--- FROM projet.utilisateurs u
--- ORDER BY u.est_admin, u.etat_inscription;
---
--- SELECT o.id_objet, o.description, t.nom AS "type", o.etat_objet, of.date_offre
--- FROM projet.objets o,
---      projet.types_objets t,
---      projet.offres of
--- WHERE o.type_objet = t.id_type
---   AND of.id_objet = o.id_objet
--- ORDER BY of.date_offre;
---
--- SELECT u.nom, o.description
--- FROM projet.objets o,
---      projet.utilisateurs u
--- WHERE u.id_utilisateur = o.offreur
--- ORDER BY u.nom, o.description;
+VALUES (3, 3, '17-05-22', 0, false, false, NULL, false, false);
+INSERT INTO projet.interets
+VALUES (4, 4, '09-05-22', 0, false, false, NULL, false, false);
+INSERT INTO projet.interets
+VALUES (3, 4, '09-05-22', 0, false, false, NULL, false, false);
+INSERT INTO projet.interets
+VALUES (1, 4, '09-05-22', 0, false, false, NULL, false, false);
+INSERT INTO projet.interets
+VALUES (4, 8, '14-05-22', 0, false, false, NULL, false, false);
+INSERT INTO projet.interets
+VALUES (5, 8, '14-05-22', 0, false, false, NULL, false, false);
+INSERT INTO projet.interets
+VALUES (1, 9, '16-05-22', 0, false, true, NULL, false, false);
+INSERT INTO projet.interets
+VALUES (4, 10, '09-05-22', 0, false, false, NULL, false, false);
+INSERT INTO projet.interets
+VALUES (3, 10, '09-05-22', 0, false, false, NULL, false, false);
+INSERT INTO projet.interets
+VALUES (1, 10, '09-05-22', 0, false, false, NULL, false, false);
+INSERT INTO projet.interets
+VALUES (3, 11, '16-05-22', 0, false, false, NULL, false, false);
+INSERT INTO projet.interets
+VALUES (1, 11, '16-05-22', 0, false, false, NULL, false, false);
+INSERT INTO projet.interets
+VALUES (3, 12, '16-05-22', 0, false, true, NULL, false, false);

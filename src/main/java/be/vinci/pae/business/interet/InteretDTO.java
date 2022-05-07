@@ -36,4 +36,12 @@ public interface InteretDTO {
 
   void setVenuChercher(Boolean venuChercher);
 
+  boolean isVueEmpecher();
+
+  void setVueEmpecher(boolean vueEmpecher);
+
+  boolean isVueReoffert();
+
+  void setVueReoffert(boolean vueReoffert);
+
 }

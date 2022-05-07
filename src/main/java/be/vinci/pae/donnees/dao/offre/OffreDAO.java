@@ -22,6 +22,10 @@ public interface OffreDAO {
 
   List<OffreDTO> mesOffres(int idUtilisateur);
 
+  List<OffreDTO> mesOffresEmpecher(int idUtilisateur);
+
+  List<OffreDTO> mesOffresAEmpecher(int idUtilisateur);
+
   List<OffreDTO> voirOffreAttribuer(int idUtilisateur);
 
   List<OffreDTO> objetsOffertsUtilisateur(int idUtilisateur);
