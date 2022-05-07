@@ -5,9 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.adresse.AdresseDTO;
+import be.vinci.pae.business.interet.Interet;
+import be.vinci.pae.business.interet.InteretDTO;
+import be.vinci.pae.business.objet.ObjetDTO;
+import be.vinci.pae.business.offre.OffreDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurDTO;
 import be.vinci.pae.business.utilisateur.UtilisateurUCC;
 import be.vinci.pae.donnees.dao.adresse.AdresseDAO;
+import be.vinci.pae.donnees.dao.interet.InteretDAO;
+import be.vinci.pae.donnees.dao.objet.ObjetDAO;
+import be.vinci.pae.donnees.dao.offre.OffreDAO;
 import be.vinci.pae.donnees.dao.utilisateur.UtilisateurDAO;
 import be.vinci.pae.utilitaires.exceptions.BusinessException;
 import be.vinci.pae.utilitaires.exceptions.ConflitException;
@@ -32,11 +39,21 @@ public class UtilisateurUCCTest {
   private UtilisateurDAO utilisateurDAO;
   private AdresseDTO adresseDTO;
   private AdresseDAO adresseDAO;
+  private InteretDAO interetDAO;
+  private ObjetDAO objetDAO;
+  private ObjetDTO objetDTO1;
+  private ObjetDTO objetDTO2;
+  private OffreDAO offreDAO;
+  private OffreDTO offreDTO1;
+  private OffreDTO offreDTO2;
   private UtilisateurDTO utilisateurDTO1;
   private UtilisateurDTO utilisateurDTO2;
   private UtilisateurDTO utilisateurDTO3;
   private UtilisateurDTO utilisateurDTO4;
   private UtilisateurDTO utilisateurDTO5;
+  private UtilisateurDTO utilisateurDTO6;
+
+
 
   @BeforeAll
   void initTout() {
@@ -46,12 +63,31 @@ public class UtilisateurUCCTest {
     this.utilisateurUCC = locator.getService(UtilisateurUCC.class);
     this.utilisateurDAO = locator.getService(UtilisateurDAO.class);
     this.adresseDAO = locator.getService(AdresseDAO.class);
+    this.objetDAO = locator.getService(ObjetDAO.class);
+    this.offreDAO = locator.getService(OffreDAO.class);
+    this.interetDAO = locator.getService(InteretDAO.class);
     adresseDTO = domaineFactory.getAdresse();
     adresseDTO.setIdAdresse(1);
     adresseDTO.setRue("Rue");
     adresseDTO.setNumero(1);
     adresseDTO.setCodePostal(1040);
     adresseDTO.setCommune("Etterbeek");
+
+    objetDTO1 = domaineFactory.getObjet();
+    objetDTO1.setIdObjet(1);
+    objetDTO1.setEtatObjet("Empêché");
+    objetDTO1.setOffreur(utilisateurDTO6);
+
+    objetDTO2 = domaineFactory.getObjet();
+    objetDTO2.setIdObjet(2);
+    objetDTO2.setEtatObjet("Intéressé");
+    objetDTO2.setOffreur(utilisateurDTO1);
+
+    offreDTO1 = domaineFactory.getOffre();
+    offreDTO1.setObjetDTO(objetDTO1);
+
+    offreDTO2 = domaineFactory.getOffre();
+    offreDTO2.setObjetDTO(objetDTO2);
 
     utilisateurDTO1 = domaineFactory.getUtilisateur();
     utilisateurDTO1.setIdUtilisateur(1);
@@ -79,6 +115,10 @@ public class UtilisateurUCCTest {
     utilisateurDTO5.setIdUtilisateur(3);
     // mdp = mdp
     utilisateurDTO5.setMdp("$2a$10$HVuwI6iTIfe9mHpt5JtL8OGWvmN0.R1lP1O8etpe9GcPlXHxzt0e2");
+
+    utilisateurDTO6 = domaineFactory.getUtilisateur();
+    utilisateurDTO6.setIdUtilisateur(2);
+    utilisateurDTO6.setEtatInscription("Empêché");
   }
 
   @Test
@@ -312,5 +352,118 @@ public class UtilisateurUCCTest {
     Mockito.when(utilisateurDAO.rechercherMembres("Verviers")).thenReturn(liste);
     assertEquals(liste, utilisateurUCC.rechercherMembres("Verviers"));
   }
+
+  @Test
+  @DisplayName("Test réussi : méthode indiquerConfirmerUtilisateur a réussi et renvoit"
+      + "l'utilisateur avec son état changé a confirme et ses offres de retour a l'état"
+      + "initial")
+  public void testIndiquerConfirmerUtilisateurV1() {
+
+    List<OffreDTO> listeOffre = new ArrayList<>();
+    listeOffre.add(offreDTO1);
+
+    List<InteretDTO> listeInteret = new ArrayList<>();
+    Mockito.when(offreDAO.mesOffresEmpecher(utilisateurDTO6.getIdUtilisateur()))
+        .thenReturn(listeOffre);
+
+    Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet()))
+        .thenReturn(listeInteret);
+    Mockito.when(objetDAO.miseAJourObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO2);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO6)).thenReturn(utilisateurDTO1);
+    assertEquals(utilisateurDTO1, utilisateurUCC.indiquerConfirmerUtilisateur(utilisateurDTO6));
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode indiquerConfirmerUtilisateur a échoué car "
+      + "L'objet n'existe pas")
+  public void testIndiquerConfirmerUtilisateurV2() {
+    List<OffreDTO> listeOffre = new ArrayList<>();
+    listeOffre.add(offreDTO1);
+
+    List<InteretDTO> listeInteret = new ArrayList<>();
+    Mockito.when(offreDAO.mesOffresEmpecher(utilisateurDTO6.getIdUtilisateur()))
+        .thenReturn(listeOffre);
+
+    Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet()))
+        .thenReturn(listeInteret);
+    Mockito.when(objetDAO.miseAJourObjet(offreDTO1.getObjetDTO())).thenReturn(null);
+    Mockito.when(objetDAO.rechercheParId(offreDTO1.getObjetDTO())).thenReturn(null);
+    assertThrows(PasTrouveException.class, () -> utilisateurUCC
+        .indiquerConfirmerUtilisateur(utilisateurDTO6));
+
+
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode indiquerConfirmerUtilisateur a échoué car "
+      + "L'utilisateur n'existe pas")
+  public void testIndiquerConfirmerUtilisateurV3() {
+    List<OffreDTO> listeOffre = new ArrayList<>();
+    listeOffre.add(offreDTO1);
+
+    List<InteretDTO> listeInteret = new ArrayList<>();
+    Mockito.when(offreDAO.mesOffresEmpecher(utilisateurDTO6.getIdUtilisateur())).thenReturn(listeOffre);
+
+    Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet()))
+        .thenReturn(listeInteret);
+    Mockito.when(objetDAO.miseAJourObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO2);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO6)).thenReturn(null);
+    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO6
+        .getIdUtilisateur())).thenReturn(null);
+    assertThrows(PasTrouveException.class, () -> utilisateurUCC
+        .indiquerConfirmerUtilisateur(utilisateurDTO6));
+
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode indiquerEmpecherUtilisateur a réussi et renvoit"
+      + "l'utilisateur avec son état changé et ses offres offres en l'état Empêché")
+  public void testIndiquerEmpecherUtilisateurV1() {
+    List<OffreDTO> listeOffre = new ArrayList<>();
+    listeOffre.add(offreDTO2);
+    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur()))
+        .thenReturn(listeOffre);
+    Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(objetDTO1);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO1)).thenReturn(utilisateurDTO6);
+    assertEquals(utilisateurDTO6, utilisateurUCC.indiquerEmpecherUtilisateur(utilisateurDTO1));
+
+  }
+
+
+
+  @Test
+  @DisplayName("Test raté : méthode indiquerEmpecherUtilisateur a échoué car "
+      + "L'objet n'existe pas")
+  public void testIndiquerEmpecherUtilisateurV2() {
+    List<OffreDTO> listeOffre = new ArrayList<>();
+    listeOffre.add(offreDTO2);
+    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur()))
+        .thenReturn(listeOffre);
+    Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(null);
+    Mockito.when(objetDAO.rechercheParId(offreDTO2.getObjetDTO())).thenReturn(null);
+    assertThrows(PasTrouveException.class, () -> utilisateurUCC
+        .indiquerEmpecherUtilisateur(utilisateurDTO1));
+
+  }
+
+  @Test
+  @DisplayName("Test raté : méthode indiquerEmpecherUtilisateur a échoué car "
+      + "L'utilisateur n'existe pas")
+  public void testIndiquerEmpecherUtilisateurV3() {
+    List<OffreDTO> listeOffre = new ArrayList<>();
+    listeOffre.add(offreDTO2);
+    Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur()))
+        .thenReturn(listeOffre);
+    Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(objetDTO1);
+    Mockito.when(objetDAO.rechercheParId(offreDTO2.getObjetDTO())).thenReturn(null);
+    Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO1)).thenReturn(null);
+    Mockito.when(utilisateurDAO.rechercheParId(utilisateurDTO1.getIdUtilisateur()))
+        .thenReturn(null);
+    assertThrows(PasTrouveException.class, () -> utilisateurUCC
+        .indiquerConfirmerUtilisateur(utilisateurDTO1));
+
+  }
+
+
 
 }
