@@ -20,4 +20,6 @@ public interface InteretUCC {
 
   List<InteretDTO> notifierReceveurEmpecher(int idUtilisateur);
 
+  List<InteretDTO> objetANouveauOffert(int idUtilisateur);
+
 }

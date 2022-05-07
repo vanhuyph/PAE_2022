@@ -278,4 +278,40 @@ public class InteretUCCImpl implements InteretUCC {
     return liste;
   }
 
+
+  /**
+   * Permet de notifier le receveur qui n'est pas venu chercher l'objet que ce dernier est à nouveau
+   * réoffert.
+   *
+   * @param idUtilisateur : l'id du receveur qui va recevoir la notification
+   * @return liste : la liste des notifications des objets réofferts
+   * @throws BusinessException       : est lancée si l'id de l'utilisateur est incorrect
+   * @throws OptimisticLockException : est lancée si les données sont périmées
+   */
+  @Override
+  public List<InteretDTO> objetANouveauOffert(int idUtilisateur) {
+    serviceDAL.commencerTransaction();
+    List<InteretDTO> liste;
+    try {
+      if (idUtilisateur <= 0) {
+        throw new BusinessException("L'id de l'utilisateur est incorrect");
+      }
+      liste = interetDAO.objetANouveauOffert(idUtilisateur);
+      if (liste != null) {
+        for (InteretDTO interet : liste) {
+          ((Interet) interet).estVuReoffert();
+          interet = interetDAO.miseAJourInteret(interet);
+          if (interet == null) {
+            throw new OptimisticLockException("Données périmées");
+          }
+        }
+      }
+    } catch (Exception e) {
+      serviceDAL.retourEnArriereTransaction();
+      throw e;
+    }
+    serviceDAL.commettreTransaction();
+    return liste;
+  }
+
 }

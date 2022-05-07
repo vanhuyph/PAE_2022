@@ -25,8 +25,10 @@ public class InteretImpl implements Interet {
   private boolean receveurChoisi;
   @JsonView(Vues.Internal.class)
   private Boolean venuChercher;
-  @JsonView(Vues.Public.class)
+  @JsonView(Vues.Internal.class)
   private boolean vueEmpecher;
+  @JsonView(Vues.Internal.class)
+  private boolean vueReoffert;
 
   public UtilisateurDTO getUtilisateur() {
     return utilisateur;
@@ -92,6 +94,14 @@ public class InteretImpl implements Interet {
     this.vueEmpecher = vueEmpecher;
   }
 
+  public boolean isVueReoffert() {
+    return vueReoffert;
+  }
+
+  public void setVueReoffert(boolean vueReoffert) {
+    this.vueReoffert = vueReoffert;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -142,6 +152,11 @@ public class InteretImpl implements Interet {
   }
 
   @Override
+  public void estVuReoffert() {
+    this.setVueReoffert(true);
+  }
+
+  @Override
   public String toString() {
     return "InteretImpl{"
         + "utilisateur=" + utilisateur
@@ -151,6 +166,7 @@ public class InteretImpl implements Interet {
         + ", version=" + version
         + ", receveur choisi=" + receveurChoisi
         + ", est venu=" + venuChercher
+        + ", est vu reoffert=" + vueReoffert
         + '}';
   }
 

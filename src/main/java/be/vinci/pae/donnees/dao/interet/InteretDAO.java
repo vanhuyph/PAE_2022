@@ -21,4 +21,6 @@ public interface InteretDAO {
 
   List<InteretDTO> notifierReceveurEmpecher(int idUtilisateur);
 
+  List<InteretDTO> objetANouveauOffert(int idUtilisateur);
+
 }

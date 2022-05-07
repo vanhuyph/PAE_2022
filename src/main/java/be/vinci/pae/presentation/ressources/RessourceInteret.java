@@ -188,4 +188,24 @@ public class RessourceInteret {
     return interetUCC.notifierReceveurEmpecher(idUtilisateur);
   }
 
+  /**
+   * Permet de notifier le receveur qui n'a pas été chercher l'objet que ce dernier est a nouveau
+   * offert.
+   *
+   * @param idUtilisateur : l'id du receveur qui va recevoir la notification
+   * @return liste : la liste des notifications des objets reofferts
+   * @throws PresentationException : est lancée si l'id de l'utilisateur est incorrect
+   */
+  @GET
+  @Path("/objetsReoffert/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Autorisation
+  public List<InteretDTO> objetANouveauOffert(@PathParam("id") int idUtilisateur) {
+    if (idUtilisateur <= 0) {
+      throw new PresentationException("L'id de l'utilisateur est incorrect", Status.BAD_REQUEST);
+    }
+    return interetUCC.objetANouveauOffert(idUtilisateur);
+  }
+
 }

@@ -60,6 +60,7 @@ CREATE TABLE projet.interets
     receveur_choisi BOOLEAN NULL,
     venu_chercher   BOOLEAN NULL,
     vue_empecher    BOOLEAN                                                 NOT NULL,
+    vue_reoffert    BOOLEAN                                                 NOT NULL,
     PRIMARY KEY (utilisateur, objet)
 );
 
@@ -242,30 +243,30 @@ INSERT INTO projet.offres
 VALUES (DEFAULT, 13, '21-04-22', 'Lundi de 16h à 17h', 1);
 
 INSERT INTO projet.interets
-VALUES (5, 3, '16-05-22', 0, false, false, NULL, false);
+VALUES (5, 3, '16-05-22', 0, false, false, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (3, 3, '17-05-22', 0, false, false, NULL, false);
+VALUES (3, 3, '17-05-22', 0, false, false, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (4, 4, '09-05-22', 0, false, false, NULL, false);
+VALUES (4, 4, '09-05-22', 0, false, false, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (3, 4, '09-05-22', 0, false, false, NULL, false);
+VALUES (3, 4, '09-05-22', 0, false, false, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (1, 4, '09-05-22', 0, false, false, NULL, false);
+VALUES (1, 4, '09-05-22', 0, false, false, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (4, 8, '14-05-22', 0, false, false, NULL, false);
+VALUES (4, 8, '14-05-22', 0, false, false, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (5, 8, '14-05-22', 0, false, false, NULL, false);
+VALUES (5, 8, '14-05-22', 0, false, false, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (1, 9, '16-05-22', 0, false, true, NULL, false);
+VALUES (1, 9, '16-05-22', 0, false, true, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (4, 10, '09-05-22', 0, false, false, NULL, false);
+VALUES (4, 10, '09-05-22', 0, false, false, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (3, 10, '09-05-22', 0, false, false, NULL, false);
+VALUES (3, 10, '09-05-22', 0, false, false, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (1, 10, '09-05-22', 0, false, false, NULL, false);
+VALUES (1, 10, '09-05-22', 0, false, false, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (3, 11, '16-05-22', 0, false, false, NULL, false);
+VALUES (3, 11, '16-05-22', 0, false, false, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (1, 11, '16-05-22', 0, false, false, NULL, false);
+VALUES (1, 11, '16-05-22', 0, false, false, NULL, false, false);
 INSERT INTO projet.interets
-VALUES (3, 12, '16-05-22', 0, false, true, NULL, false);
+VALUES (3, 12, '16-05-22', 0, false, true, NULL, false, false);
