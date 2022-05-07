@@ -290,7 +290,7 @@ const PageAccueil = async () => {
   }
 
   if (session) {
-    await fetch(API_URL + "interets/notifierReceveurEmpecher/"
+    await fetch(API_URL + "/interets/objetsReoffert/"
         + session.utilisateur.idUtilisateur, {
       method: "GET",
       headers: {
@@ -300,10 +300,50 @@ const PageAccueil = async () => {
     }).then((reponse) => {
       if (!reponse.ok) {
         throw new Error(
-            "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+        );
       }
       return reponse.json();
-    }).then((data) => offreurEmpeche(data))
+    }).then(async (donnees) => {
+      let liste = `<p>Pas d'objet réoffert</p>`
+      if (donnees.length > 0) {
+        liste = ""
+        donnees.forEach((donnee) => {
+          liste += `
+          <div class="objet-attr">
+            <p>${donnee.objet.description}</p>
+          </div>
+          `
+        })
+        await Swal.fire({
+          title: '<strong>Cet/Ces objet(s) que vous n\'êtes pas venu chercher a/ont été réoffert(s)</strong>',
+          html: `${liste}`,
+          focusConfirm: false,
+          confirmButtonText:
+              '<i class="fa fa-thumbs-up"></i> OK',
+          confirmButtonAriaLabel: 'Thumbs up, great!',
+        })
+        .then(async (r) => {
+          if(r.isConfirmed) {
+            await fetch(API_URL + "interets/notifierReceveurEmpecher/"
+                + session.utilisateur.idUtilisateur, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: session.token
+              },
+            }).then((reponse) => {
+              if (!reponse.ok) {
+                throw new Error(
+                    "Code d'erreur : " + reponse.status + " : "
+                    + reponse.statusText);
+              }
+              return reponse.json();
+            }).then((data) => offreurEmpeche(data))
+          }
+        })
+      }
+    })
   }
 
   let pageAccueil = `
