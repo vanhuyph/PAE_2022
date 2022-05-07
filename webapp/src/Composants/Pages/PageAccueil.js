@@ -270,7 +270,7 @@ const PageAccueil = async () => {
   // Récupération des objets à évaluer lors de la connexion de l'utilisateur
   if (session) {
     if (v2 === 1) {
-      fetch(
+      /*fetch(
           API_URL + "offres/objetsAEvaluer/"
           + session.utilisateur.idUtilisateur,
           {
@@ -285,7 +285,7 @@ const PageAccueil = async () => {
               "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
         }
         return reponse.json();
-      }).then((data) => objetsAEvaluer(data, session))
+      }).then((data) => objetsAEvaluer(data, session))*/
     }
   }
 
@@ -411,41 +411,7 @@ const PageAccueil = async () => {
   }))
   // Popup à la connexion de l'utilisateur pour la liste des objets qui ont été réofferts s'il n'est pas venu les chercher
   if (session) {
-    fetch(API_URL + "/interets/objetsReoffert/"
-        + session.utilisateur.idUtilisateur, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: session.token
-      },
-    }).then((reponse) => {
-      if (!reponse.ok) {
-        throw new Error(
-            "Code d'erreur : " + reponse.status + " : " + reponse.statusText
-        );
-      }
-      return reponse.json();
-    }).then(async (donnees) => {
-      let liste = `<p>Pas d'objet réoffert</p>`
-      if (donnees.length > 0) {
-        liste = ""
-        donnees.forEach((donnee) => {
-          liste += `
-          <div class="objet-attr">
-            <p>${donnee.objet.description}</p>
-          </div>
-          `
-        })
-        await Swal.fire({
-          title: '<strong>Cet/Ces objet(s) que vous n\'êtes pas venu chercher a/ont été réoffert(s)</strong>',
-          html: `${liste}`,
-          focusConfirm: false,
-          confirmButtonText:
-              '<i class="fa fa-thumbs-up"></i> OK',
-          confirmButtonAriaLabel: 'Thumbs up, great!',
-        })
-      }
-    })
+
   }
 };
 
@@ -459,8 +425,43 @@ const offreurEmpeche = async (data) => {
       allowOutsideClick: false,
       html: `<p>L'offreur de l'objet : ${interet.objet.description} a eu un empêchement.</p> 
              <p>Nous vous invitons à le contacter ultérieurement pour avoir plus d'informations.</p>`,
-    }).then((r) => {
+    }).then(async (r) => {
       if (r.isConfirmed) {
+        await fetch(API_URL + "/interets/objetsReoffert/"
+            + session.utilisateur.idUtilisateur, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.token
+          },
+        }).then((reponse) => {
+          if (!reponse.ok) {
+            throw new Error(
+                "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+            );
+          }
+          return reponse.json();
+        }).then(async (donnees) => {
+          let liste = `<p>Pas d'objet réoffert</p>`
+          if (donnees.length > 0) {
+            liste = ""
+            donnees.forEach((donnee) => {
+              liste += `
+          <div class="objet-attr">
+            <p>${donnee.objet.description}</p>
+          </div>
+          `
+            })
+            await Swal.fire({
+              title: '<strong>Cet/Ces objet(s) que vous n\'êtes pas venu chercher a/ont été réoffert(s)</strong>',
+              html: `${liste}`,
+              focusConfirm: false,
+              confirmButtonText:
+                  '<i class="fa fa-thumbs-up"></i> OK',
+              confirmButtonAriaLabel: 'Thumbs up, great!',
+            })
+          }
+        })
         fetch(
             API_URL + "offres/objetsAEvaluer/"
             + session.utilisateur.idUtilisateur,
