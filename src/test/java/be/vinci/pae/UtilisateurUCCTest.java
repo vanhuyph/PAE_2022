@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import be.vinci.pae.business.DomaineFactory;
 import be.vinci.pae.business.adresse.AdresseDTO;
-import be.vinci.pae.business.interet.Interet;
 import be.vinci.pae.business.interet.InteretDTO;
 import be.vinci.pae.business.objet.ObjetDTO;
 import be.vinci.pae.business.offre.OffreDTO;
@@ -52,7 +51,6 @@ public class UtilisateurUCCTest {
   private UtilisateurDTO utilisateurDTO4;
   private UtilisateurDTO utilisateurDTO5;
   private UtilisateurDTO utilisateurDTO6;
-
 
 
   @BeforeAll
@@ -354,18 +352,15 @@ public class UtilisateurUCCTest {
   }
 
   @Test
-  @DisplayName("Test réussi : méthode indiquerConfirmerUtilisateur a réussi et renvoit"
-      + "l'utilisateur avec son état changé a confirme et ses offres de retour a l'état"
-      + "initial")
+  @DisplayName("Test réussi : méthode indiquerConfirmerUtilisateur a réussi et renvoie"
+      + "l'utilisateur avec son état changé à Confirmé et ses offres de retour à l'état"
+      + "initial.")
   public void testIndiquerConfirmerUtilisateurV1() {
-
     List<OffreDTO> listeOffre = new ArrayList<>();
     listeOffre.add(offreDTO1);
-
     List<InteretDTO> listeInteret = new ArrayList<>();
     Mockito.when(offreDAO.mesOffresEmpecher(utilisateurDTO6.getIdUtilisateur()))
         .thenReturn(listeOffre);
-
     Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet()))
         .thenReturn(listeInteret);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO2);
@@ -374,36 +369,30 @@ public class UtilisateurUCCTest {
   }
 
   @Test
-  @DisplayName("Test raté : méthode indiquerConfirmerUtilisateur a échoué car "
-      + "L'objet n'existe pas")
+  @DisplayName("Test raté : méthode indiquerConfirmerUtilisateur a échoué car l'objet "
+      + "n'existe pas.")
   public void testIndiquerConfirmerUtilisateurV2() {
-    List<OffreDTO> listeOffre = new ArrayList<>();
-    listeOffre.add(offreDTO1);
-
+    List<OffreDTO> liste = new ArrayList<>();
+    liste.add(offreDTO1);
     List<InteretDTO> listeInteret = new ArrayList<>();
     Mockito.when(offreDAO.mesOffresEmpecher(utilisateurDTO6.getIdUtilisateur()))
-        .thenReturn(listeOffre);
-
+        .thenReturn(liste);
     Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet()))
         .thenReturn(listeInteret);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO1.getObjetDTO())).thenReturn(null);
     Mockito.when(objetDAO.rechercheParId(offreDTO1.getObjetDTO())).thenReturn(null);
     assertThrows(PasTrouveException.class, () -> utilisateurUCC
         .indiquerConfirmerUtilisateur(utilisateurDTO6));
-
-
   }
 
   @Test
-  @DisplayName("Test raté : méthode indiquerConfirmerUtilisateur a échoué car "
-      + "L'utilisateur n'existe pas")
+  @DisplayName("Test raté : méthode indiquerConfirmerUtilisateur a échoué car l'utilisateur "
+      + "n'existe pas.")
   public void testIndiquerConfirmerUtilisateurV3() {
-    List<OffreDTO> listeOffre = new ArrayList<>();
-    listeOffre.add(offreDTO1);
-
+    List<OffreDTO> liste = new ArrayList<>();
+    liste.add(offreDTO1);
     List<InteretDTO> listeInteret = new ArrayList<>();
-    Mockito.when(offreDAO.mesOffresEmpecher(utilisateurDTO6.getIdUtilisateur())).thenReturn(listeOffre);
-
+    Mockito.when(offreDAO.mesOffresEmpecher(utilisateurDTO6.getIdUtilisateur())).thenReturn(liste);
     Mockito.when(interetDAO.listeDesPersonnesInteressees(offreDTO1.getObjetDTO().getIdObjet()))
         .thenReturn(listeInteret);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO1.getObjetDTO())).thenReturn(objetDTO2);
@@ -412,12 +401,11 @@ public class UtilisateurUCCTest {
         .getIdUtilisateur())).thenReturn(null);
     assertThrows(PasTrouveException.class, () -> utilisateurUCC
         .indiquerConfirmerUtilisateur(utilisateurDTO6));
-
   }
 
   @Test
-  @DisplayName("Test réussi : méthode indiquerEmpecherUtilisateur a réussi et renvoit"
-      + "l'utilisateur avec son état changé et ses offres offres en l'état Empêché")
+  @DisplayName("Test réussi : méthode indiquerEmpecherUtilisateur a réussi et renvoie "
+      + "l'utilisateur avec son état changé et ses offres à l'état Empêché.")
   public void testIndiquerEmpecherUtilisateurV1() {
     List<OffreDTO> listeOffre = new ArrayList<>();
     listeOffre.add(offreDTO2);
@@ -426,34 +414,30 @@ public class UtilisateurUCCTest {
     Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(objetDTO1);
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO1)).thenReturn(utilisateurDTO6);
     assertEquals(utilisateurDTO6, utilisateurUCC.indiquerEmpecherUtilisateur(utilisateurDTO1));
-
   }
 
-
-
   @Test
-  @DisplayName("Test raté : méthode indiquerEmpecherUtilisateur a échoué car "
-      + "L'objet n'existe pas")
+  @DisplayName("Test raté : méthode indiquerEmpecherUtilisateur a échoué car l'objet "
+      + "n'existe pas.")
   public void testIndiquerEmpecherUtilisateurV2() {
-    List<OffreDTO> listeOffre = new ArrayList<>();
-    listeOffre.add(offreDTO2);
+    List<OffreDTO> liste = new ArrayList<>();
+    liste.add(offreDTO2);
     Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur()))
-        .thenReturn(listeOffre);
+        .thenReturn(liste);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(null);
     Mockito.when(objetDAO.rechercheParId(offreDTO2.getObjetDTO())).thenReturn(null);
     assertThrows(PasTrouveException.class, () -> utilisateurUCC
         .indiquerEmpecherUtilisateur(utilisateurDTO1));
-
   }
 
   @Test
-  @DisplayName("Test raté : méthode indiquerEmpecherUtilisateur a échoué car "
-      + "L'utilisateur n'existe pas")
+  @DisplayName("Test raté : méthode indiquerEmpecherUtilisateur a échoué car l'utilisateur "
+      + "n'existe pas.")
   public void testIndiquerEmpecherUtilisateurV3() {
-    List<OffreDTO> listeOffre = new ArrayList<>();
-    listeOffre.add(offreDTO2);
+    List<OffreDTO> liste = new ArrayList<>();
+    liste.add(offreDTO2);
     Mockito.when(offreDAO.mesOffresAEmpecher(utilisateurDTO1.getIdUtilisateur()))
-        .thenReturn(listeOffre);
+        .thenReturn(liste);
     Mockito.when(objetDAO.miseAJourObjet(offreDTO2.getObjetDTO())).thenReturn(objetDTO1);
     Mockito.when(objetDAO.rechercheParId(offreDTO2.getObjetDTO())).thenReturn(null);
     Mockito.when(utilisateurDAO.miseAJourUtilisateur(utilisateurDTO1)).thenReturn(null);
@@ -461,9 +445,6 @@ public class UtilisateurUCCTest {
         .thenReturn(null);
     assertThrows(PasTrouveException.class, () -> utilisateurUCC
         .indiquerConfirmerUtilisateur(utilisateurDTO1));
-
   }
-
-
 
 }
