@@ -270,7 +270,7 @@ const PageAccueil = async () => {
   // Récupération des objets à évaluer lors de la connexion de l'utilisateur
   if (session) {
     if (v2 === 1) {
-      fetch(
+      await fetch(
           API_URL + "offres/objetsAEvaluer/"
           + session.utilisateur.idUtilisateur,
           {
@@ -290,7 +290,7 @@ const PageAccueil = async () => {
   }
 
   if (session) {
-    fetch(API_URL + "interets/notifierReceveurEmpecher/"
+    await fetch(API_URL + "interets/notifierReceveurEmpecher/"
         + session.utilisateur.idUtilisateur, {
       method: "GET",
       headers: {
@@ -411,7 +411,7 @@ const PageAccueil = async () => {
   }))
   // Popup à la connexion de l'utilisateur pour la liste des objets qui ont été réofferts s'il n'est pas venu les chercher
   if (session) {
-    fetch(API_URL + "/interets/objetsReoffert/"
+    await fetch(API_URL + "/interets/objetsReoffert/"
         + session.utilisateur.idUtilisateur, {
       method: "GET",
       headers: {
@@ -452,8 +452,8 @@ const PageAccueil = async () => {
 // Affichage de la notification en cas d'offreur empêché
 const offreurEmpeche = async (data) => {
   let session = recupUtilisateurDonneesSession()
-  data.forEach((interet) => {
-    Swal.fire({
+  for (const interet of data) {
+    await Swal.fire({
       title: "Empêchement",
       confirmButtonText: 'OK',
       allowOutsideClick: false,
@@ -480,7 +480,7 @@ const offreurEmpeche = async (data) => {
         }).then((data) => objetsAEvaluer(data, session))
       }
     })
-  })
+  }
 }
 
 // Change l'état d'un utilisateur
