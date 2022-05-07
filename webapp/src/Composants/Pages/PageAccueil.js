@@ -270,7 +270,7 @@ const PageAccueil = async () => {
   // Récupération des objets à évaluer lors de la connexion de l'utilisateur
   if (session) {
     if (v2 === 1) {
-      fetch(
+      /*fetch(
           API_URL + "offres/objetsAEvaluer/"
           + session.utilisateur.idUtilisateur,
           {
@@ -285,7 +285,7 @@ const PageAccueil = async () => {
               "Code d'erreur : " + reponse.status + " : " + reponse.statusText);
         }
         return reponse.json();
-      }).then((data) => objetsAEvaluer(data, session))
+      }).then((data) => objetsAEvaluer(data, session))*/
     }
   }
 
