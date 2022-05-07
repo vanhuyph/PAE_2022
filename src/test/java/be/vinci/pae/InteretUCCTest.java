@@ -196,7 +196,18 @@ public class InteretUCCTest {
     List<InteretDTO> liste = new ArrayList<>();
     Mockito.when(interetDAO.notifierReceveurEmpecher(utilisateurDTO.getIdUtilisateur()))
         .thenReturn(liste);
-    assertEquals(liste, interetDAO.notifierReceveurEmpecher(utilisateurDTO.getIdUtilisateur()));
+    Mockito.when(interetDAO.miseAJourInteret(interetDTO)).thenReturn(interetDTO);
+    assertEquals(liste, interetUCC.notifierReceveurEmpecher(utilisateurDTO.getIdUtilisateur()));
+  }
+
+  @Test
+  @DisplayName("Test réussi : méthode notifierReceveurEmpecher renvoie bien un intérêt.")
+  public void testObjetANouveauOffertV1() {
+    List<InteretDTO> liste = new ArrayList<>();
+    Mockito.when(interetDAO.objetANouveauOffert(utilisateurDTO.getIdUtilisateur()))
+        .thenReturn(liste);
+    Mockito.when(interetDAO.miseAJourInteret(interetDTO)).thenReturn(interetDTO);
+    assertEquals(liste, interetUCC.objetANouveauOffert(utilisateurDTO.getIdUtilisateur()));
   }
 
 }

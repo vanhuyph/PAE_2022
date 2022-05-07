@@ -409,6 +409,43 @@ const PageAccueil = async () => {
   declencheurModal.forEach(decl => decl.addEventListener("click", () => {
     conteneurModal.classList.toggle("active")
   }))
+  if(session) {
+    fetch(API_URL + "/interets/objetsReoffert/"
+        + session.utilisateur.idUtilisateur, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session.token
+      },
+    }).then((reponse) => {
+      if (!reponse.ok) {
+        throw new Error(
+            "Code d'erreur : " + reponse.status + " : " + reponse.statusText
+        );
+      }
+      return reponse.json();
+    }).then(async (donnees) => {
+          let liste = `<p>Pas d'objet reoffert</p>`
+          if (donnees.length > 0) {
+            liste = ""
+            donnees.forEach((donnee) => {
+              liste += `
+          <div class="objet-attr">
+            <p>${donnee.objet.description}</p>
+          </div>
+          `
+            })
+            await Swal.fire({
+              title: '<strong>Ce/Ces objet(s) que vous n\'etes pas aller chercher ont été reofferts</strong>',
+              html: `${liste}`,
+              focusConfirm: false,
+              confirmButtonText:
+                  '<i class="fa fa-thumbs-up"></i> OK',
+              confirmButtonAriaLabel: 'Thumbs up, great!',
+            })
+          }
+        })
+    }
 };
 
 // Affichage de la notification en cas d'offreur empêché

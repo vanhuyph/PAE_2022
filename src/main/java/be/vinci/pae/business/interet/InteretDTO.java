@@ -40,4 +40,7 @@ public interface InteretDTO {
 
   void setVueEmpecher(boolean vueEmpecher);
 
+  boolean isVueReoffert();
+
+  void setVueReoffert(boolean vueReoffert);
 }
